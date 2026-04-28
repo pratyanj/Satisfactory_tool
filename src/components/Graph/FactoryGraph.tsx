@@ -1,10 +1,11 @@
-import { Background, BackgroundVariant, Controls, ReactFlow, useEdgesState, useNodesState, Panel, useReactFlow, getViewportForBounds } from '@xyflow/react';
+import { Background, BackgroundVariant, Controls, ReactFlow, useEdgesState, useNodesState, Panel, useReactFlow, getViewportForBounds, ReactFlowProvider } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import React, { useEffect, useCallback, useState } from 'react';
 import { Edge, Node } from '@xyflow/react';
 import { MachineNode } from './MachineNode';
 import { LogisticsNode } from './LogisticsNode';
 import { GroupNode } from './GroupNode';
+import { SatisfactoryEdge } from './SatisfactoryEdge';
 import { toPng, toSvg } from 'html-to-image';
 import { MousePointer2, Plus, Ungroup, Hand, Download, WandSparkles, SplitSquareHorizontal } from 'lucide-react';
 import ELK from 'elkjs/lib/elk.bundled.js';
@@ -27,6 +28,7 @@ const layoutOptions = {
 interface FactoryGraphProps {
   initialNodes: Node[];
   initialEdges: Edge[];
+  beltId?: string;
 }
 
 const nodeTypes = {
@@ -35,8 +37,21 @@ const nodeTypes = {
   customGroup: GroupNode,
 };
 
-function TopToolbar({ nodes, edges, setNodes, selectionMode, setSelectionMode }: { nodes: Node[], edges: Edge[], setNodes: React.Dispatch<React.SetStateAction<Node[]>>, selectionMode: boolean, setSelectionMode: (v: boolean) => void }) {
-  const { getNodes, getEdges, setNodes: setRFNodes, setEdges: setRFEdges, getNodesBounds, fitView } = useReactFlow();
+const edgeTypes = {
+  satisfactory: SatisfactoryEdge,
+};
+
+function TopToolbar({ nodes, edges, setNodes, selectionMode, setSelectionMode, beltCapacity, onExpand, onLayout }: { 
+  nodes: Node[], 
+  edges: Edge[], 
+  setNodes: React.Dispatch<React.SetStateAction<Node[]>>, 
+  selectionMode: boolean, 
+  setSelectionMode: (v: boolean) => void, 
+  beltCapacity: number,
+  onExpand: () => void,
+  onLayout: () => void
+}) {
+  const { getNodesBounds } = useReactFlow();
   const [isExporting, setIsExporting] = useState(false);
 
   const selectedNodes = nodes.filter(n => n.selected && n.type !== 'customGroup');
@@ -184,6 +199,8 @@ function TopToolbar({ nodes, edges, setNodes, selectionMode, setSelectionMode }:
     if (totalNodes <= 1) return;
 
     const ratePerMachine = (node.data.rate as number) / machinesCount;
+    const itemImageUrl = node.data.itemImageUrl as string;
+    const itemId = node.data.itemId as string;
 
     const groupId = `group-exp-${Date.now()}`;
     const newGroupNode: Node = {
@@ -198,10 +215,22 @@ function TopToolbar({ nodes, edges, setNodes, selectionMode, setSelectionMode }:
     const newNodes: Node[] = [newGroupNode];
     const newEdges: Edge[] = [];
 
-    // Create splitters/mergers for inputs and outputs roughly.
-    // For a simpler UX, we just connect the direct inputs to a single splitter, and outputs to a single merger
-    // inside the group, or just fan-in/fan-out if possible. Let's do fan-in/fan-out to all machines.
-    
+    const createSatEdge = (id: string, source: string, target: string, rate: number, extras: any = {}) => {
+        return {
+            id,
+            source,
+            target,
+            type: 'satisfactory',
+            label: `${rate.toFixed(1)}/min`,
+            data: {
+                rate,
+                isOverloaded: rate > beltCapacity,
+                itemImageUrl
+            },
+            ...extras
+        };
+    };
+
     // Generating array of machines
     const createdMachines: string[] = [];
     for (let i = 0; i < totalNodes; i++) {
@@ -225,89 +254,116 @@ function TopToolbar({ nodes, edges, setNodes, selectionMode, setSelectionMode }:
         });
     }
 
-    // Now for edges. Any edge targeting `node.id` should target a new Splitter.
     const currentEdges = getEdges();
     const incomingEdges = currentEdges.filter(e => e.target === node.id);
     const outgoingEdges = currentEdges.filter(e => e.source === node.id);
 
-    let splitterId: string | null = null;
+    let firstSplitterId: string | null = null;
     if (incomingEdges.length > 0) {
-        splitterId = `${node.id}-splitter`;
-        newNodes.push({
-            id: splitterId,
-            type: 'logistics',
-            parentId: groupId,
-            extent: 'parent',
-            position: { x: -30, y: 50 + (totalNodes * 110) / 2 },
-            data: { type: 'splitter', rate: incomingEdges.reduce((acc, e) => acc + (parseFloat(e.label?.toString() || '0') || 0), 0) }
-        });
-        
-        // Connect splitter to machines
-        createdMachines.forEach(mid => {
-           const count = newNodes.find(n => n.id === mid)?.data.machines as number || 1;
-           newEdges.push({
-               id: `e-${splitterId}-${mid}`,
-               source: splitterId,
-               target: mid,
-               type: 'smoothstep',
-               animated: true,
-               style: { stroke: '#9ca3af', strokeWidth: 3 },
-               label: `${(ratePerMachine * count).toFixed(1)}/min`,
-               labelStyle: { fill: '#e5e7eb', fontWeight: 600, fontSize: 10, fontFamily: 'monospace' },
-               labelBgStyle: { fill: '#151619', rx: 4, ry: 4, stroke: '#374151', strokeWidth: 1 },
-           } as Edge);
-        });
+        if (totalNodes === 1) {
+             firstSplitterId = createdMachines[0];
+        } else {
+             let prevMainBelt: string | null = null;
+             const totalIncomingRate = incomingEdges.reduce((acc, e) => acc + (parseFloat(e.label?.toString() || '0') || 0), 0);
+             let remainingRate = totalIncomingRate;
+
+             for (let i = 0; i < totalNodes - 1; i++) {
+                 const splitterId = `${node.id}-splt-${i}`;
+                 if (i === 0) firstSplitterId = splitterId;
+                 
+                 newNodes.push({
+                     id: splitterId,
+                     type: 'logistics',
+                     parentId: groupId,
+                     extent: 'parent',
+                     position: { x: -30, y: 50 + i * 110 },
+                     data: { type: 'splitter', rate: remainingRate }
+                 });
+
+                 const mId = createdMachines[i];
+                 const mCount = newNodes.find(n => n.id === mId)?.data.machines as number || 1;
+                 const neededRate = ratePerMachine * mCount;
+
+                 if (prevMainBelt) {
+                     newEdges.push(createSatEdge(`e-${prevMainBelt}-${splitterId}`, prevMainBelt, splitterId, remainingRate));
+                 }
+
+                 newEdges.push(createSatEdge(`e-${splitterId}-${mId}`, splitterId, mId, neededRate, { sourceHandle: 'right' }));
+
+                 prevMainBelt = splitterId;
+                 remainingRate -= neededRate;
+
+                 if (i === totalNodes - 2) {
+                     const lastMId = createdMachines[totalNodes - 1];
+                     const lastMCount = newNodes.find(n => n.id === lastMId)?.data.machines as number || 1;
+                     const lastNeededRate = ratePerMachine * lastMCount;
+                     newEdges.push(createSatEdge(`e-${splitterId}-${lastMId}`, splitterId, lastMId, lastNeededRate, { sourceHandle: 'bottom' }));
+                 }
+             }
+        }
     }
 
-    let mergerId: string | null = null;
+    let lastMergerId: string | null = null;
     if (outgoingEdges.length > 0) {
-        mergerId = `${node.id}-merger`;
-        newNodes.push({
-            id: mergerId,
-            type: 'logistics',
-            parentId: groupId,
-            extent: 'parent',
-            position: { x: 350, y: 50 + (totalNodes * 110) / 2 },
-            data: { type: 'merger', rate: node.data.rate }
-        });
+        if (totalNodes === 1) {
+            lastMergerId = createdMachines[0];
+        } else {
+            let prevMainBelt: string | null = null;
+            let accumulatedRate = 0;
 
-        // Connect machines to merger
-        createdMachines.forEach(mid => {
-           const count = newNodes.find(n => n.id === mid)?.data.machines as number || 1;
-           newEdges.push({
-               id: `e-${mid}-${mergerId}`,
-               source: mid,
-               target: mergerId,
-               type: 'smoothstep',
-               animated: true,
-               style: { stroke: '#9ca3af', strokeWidth: 3 },
-               label: `${(ratePerMachine * count).toFixed(1)}/min`,
-               labelStyle: { fill: '#e5e7eb', fontWeight: 600, fontSize: 10, fontFamily: 'monospace' },
-               labelBgStyle: { fill: '#151619', rx: 4, ry: 4, stroke: '#374151', strokeWidth: 1 },
-           } as Edge);
-        });
+            for (let i = 0; i < totalNodes - 1; i++) {
+                const mergerId = `${node.id}-mrg-${i}`;
+                const m2Id = createdMachines[i+1];
+                const count2 = newNodes.find(n => n.id === m2Id)?.data.machines as number || 1;
+                const rate2 = ratePerMachine * count2;
+
+                if (i === 0) {
+                    const m1Id = createdMachines[0];
+                    const count1 = newNodes.find(n => n.id === m1Id)?.data.machines as number || 1;
+                    const rate1 = ratePerMachine * count1;
+                    accumulatedRate = rate1 + rate2;
+                    
+                    newNodes.push({
+                        id: mergerId,
+                        type: 'logistics',
+                        parentId: groupId,
+                        extent: 'parent',
+                        position: { x: 350, y: 50 + 110 },
+                        data: { type: 'merger', rate: accumulatedRate, isFlipped: true }
+                    });
+
+                    newEdges.push(createSatEdge(`e-${m1Id}-${mergerId}`, m1Id, mergerId, rate1, { targetHandle: 'top' }));
+                } else {
+                    accumulatedRate += rate2;
+                    newNodes.push({
+                        id: mergerId,
+                        type: 'logistics',
+                        parentId: groupId,
+                        extent: 'parent',
+                        position: { x: 350, y: 50 + (i + 1) * 110 },
+                        data: { type: 'merger', rate: accumulatedRate, isFlipped: true }
+                    });
+
+                    if (prevMainBelt) {
+                        newEdges.push(createSatEdge(`e-${prevMainBelt}-${mergerId}`, prevMainBelt, mergerId, accumulatedRate - rate2, { targetHandle: 'top' }));
+                    }
+                }
+
+                newEdges.push(createSatEdge(`e-${m2Id}-${mergerId}`, m2Id, mergerId, rate2, { targetHandle: 'right' }));
+                prevMainBelt = mergerId;
+                if (i === totalNodes - 2) lastMergerId = mergerId;
+            }
+        }
     }
 
-    setRFNodes(nds => {
-        return [...nds.filter(n => n.id !== node.id), ...newNodes];
-    });
-
-    setRFEdges(eds => {
-        return eds.map(e => {
-            if (e.target === node.id && splitterId) {
-                return { ...e, target: splitterId };
-            }
-            if (e.source === node.id && mergerId) {
-                return { ...e, source: mergerId };
-            }
-            return e;
-        }).concat(newEdges);
-    });
+    setRFNodes(nds => [...nds.filter(n => n.id !== node.id), ...newNodes]);
+    setRFEdges(eds => eds.map(e => {
+        if (e.target === node.id && firstSplitterId) return { ...e, target: firstSplitterId };
+        if (e.source === node.id && lastMergerId) return { ...e, source: lastMergerId };
+        return e;
+    }).concat(newEdges));
     
-    // Small delay to let React Flow update before applying layout
-    setTimeout(() => {
-        applyAILayout();
-    }, 100);
+    setTimeout(() => applyAILayout(), 100);
   };
 
   const applyAILayout = async () => {
@@ -491,7 +547,7 @@ function TopToolbar({ nodes, edges, setNodes, selectionMode, setSelectionMode }:
       {selectedNodes.length === 1 && selectedNodes[0].type === 'machine' && (selectedNodes[0].data.machines as number) > 1 && (
         <>
           <button 
-            onClick={handleExpandArray}
+            onClick={onExpand}
             className="flex items-center gap-1.5 bg-[#4B2F83] hover:bg-[#5a3a9e] border border-[#6d4cb8] transition-all text-white px-3 py-1.5 rounded-lg text-xs font-semibold mr-1"
             title="Expand Array into single machines"
           >
@@ -529,7 +585,7 @@ function TopToolbar({ nodes, edges, setNodes, selectionMode, setSelectionMode }:
           <button 
             disabled={isExporting}
             className="flex items-center gap-1.5 bg-[#4B2F83] hover:bg-[#5a3a9e] border border-[#6d4cb8] transition-all text-white px-3 py-1.5 rounded-lg text-xs font-semibold mr-2" 
-            onClick={applyAILayout}
+            onClick={onLayout}
             title="Auto-group machines & layout"
           >
             <WandSparkles className="w-4 h-4 text-[#e0d6f6]" /> AI Design Layout
@@ -555,11 +611,292 @@ function TopToolbar({ nodes, edges, setNodes, selectionMode, setSelectionMode }:
   );
 }
 
-export function FactoryGraph({ initialNodes, initialEdges }: FactoryGraphProps) {
+export function FactoryGraph(props: FactoryGraphProps) {
+  return (
+    <ReactFlowProvider>
+      <FactoryGraphInner {...props} />
+    </ReactFlowProvider>
+  );
+}
+
+function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: FactoryGraphProps) {
+  const { getNodes, getEdges, setNodes: setRFNodes, setEdges: setRFEdges, fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectionMode, setSelectionMode] = useState(false);
+
+  const beltCapacity = beltId === 'mk1' ? 60 : beltId === 'mk2' ? 120 : beltId === 'mk3' ? 270 : beltId === 'mk4' ? 480 : 780;
+
+  const handleExpandNode = useCallback((targetNodeId: string) => {
+    const currentNodes = getNodes();
+    const node = currentNodes.find(n => n.id === targetNodeId);
+    if (!node || node.type !== 'machine') return;
+    
+    const machinesCount = node.data.machines as number;
+    if (machinesCount <= 1) return;
+
+    const totalNodes = Math.ceil(machinesCount);
+    const ratePerMachine = (node.data.rate as number) / machinesCount;
+    const itemImageUrl = node.data.itemImageUrl as string;
+
+    const groupId = `group-exp-${Date.now()}`;
+    const groupWidth = 600;
+    const groupHeight = Math.max(250, 100 + totalNodes * 120);
+
+    const newGroupNode: Node = {
+      id: groupId,
+      type: 'customGroup',
+      position: { x: node.position.x, y: node.position.y },
+      style: { width: groupWidth, height: groupHeight },
+      data: { color: '#243142', label: `${node.data.item} Array` },
+      zIndex: -1,
+    };
+
+    const newNodes: Node[] = [newGroupNode];
+    const newEdges: Edge[] = [];
+
+    const createSatEdge = (id: string, source: string, target: string, rate: number, extras: any = {}) => {
+        return {
+            id,
+            source,
+            target,
+            type: 'satisfactory',
+            label: `${rate.toFixed(1)}/min`,
+            data: {
+                rate,
+                isOverloaded: rate > beltCapacity,
+                itemImageUrl
+            },
+            ...extras
+        };
+    };
+
+    const createdMachines: string[] = [];
+    for (let i = 0; i < totalNodes; i++) {
+        const mNodeId = `${node.id}-m${i}`;
+        const isLast = i === totalNodes - 1;
+        const count = (isLast && machinesCount % 1 !== 0) ? (machinesCount % 1) : 1;
+        createdMachines.push(mNodeId);
+
+        newNodes.push({
+            id: mNodeId,
+            type: 'machine',
+            parentId: groupId,
+            extent: 'parent',
+            position: { x: 150, y: 70 + i * 115 },
+            data: {
+                ...node.data,
+                label: node.data.label?.toString().replace(/ x\d+(\.\d+)?$/, '').trim() || 'Machine',
+                machines: count,
+                rate: ratePerMachine * count,
+            }
+        });
+    }
+
+    const currentEdges = getEdges();
+    const incomingEdges = currentEdges.filter(e => e.target === node.id);
+    const outgoingEdges = currentEdges.filter(e => e.source === node.id);
+
+    let firstSplitterId: string | null = null;
+    if (incomingEdges.length > 0) {
+        if (totalNodes === 1) {
+             firstSplitterId = createdMachines[0];
+        } else {
+             let prevMainBelt: string | null = null;
+             const totalIncomingRate = incomingEdges.reduce((acc, e) => acc + (parseFloat(e.label?.toString() || '0') || 0), 0);
+             let remainingRate = totalIncomingRate;
+
+             for (let i = 0; i < totalNodes - 1; i++) {
+                 const splitterId = `${node.id}-splt-${i}`;
+                 if (i === 0) firstSplitterId = splitterId;
+                 
+                 newNodes.push({
+                     id: splitterId,
+                     type: 'logistics',
+                     parentId: groupId,
+                     extent: 'parent',
+                     position: { x: 40, y: 70 + i * 115 },
+                     data: { type: 'splitter', rate: remainingRate }
+                 });
+
+                 const mId = createdMachines[i];
+                 const mCount = newNodes.find(n => n.id === mId)?.data.machines as number || 1;
+                 const neededRate = ratePerMachine * mCount;
+
+                 if (prevMainBelt) {
+                     newEdges.push(createSatEdge(`e-${prevMainBelt}-${splitterId}`, prevMainBelt, splitterId, remainingRate));
+                 }
+                 newEdges.push(createSatEdge(`e-${splitterId}-${mId}`, splitterId, mId, neededRate, { sourceHandle: 'right' }));
+                 prevMainBelt = splitterId;
+                 remainingRate -= neededRate;
+
+                 if (i === totalNodes - 2) {
+                     const lastMId = createdMachines[totalNodes - 1];
+                     const lastMCount = newNodes.find(n => n.id === lastMId)?.data.machines as number || 1;
+                     const lastNeededRate = ratePerMachine * lastMCount;
+                     newEdges.push(createSatEdge(`e-${splitterId}-${lastMId}`, splitterId, lastMId, lastNeededRate, { sourceHandle: 'bottom' }));
+                 }
+             }
+        }
+    }
+
+    let lastMergerId: string | null = null;
+    if (outgoingEdges.length > 0) {
+        if (totalNodes === 1) {
+            lastMergerId = createdMachines[0];
+        } else {
+            let prevMainBelt: string | null = null;
+            let accumulatedRate = 0;
+            for (let i = 0; i < totalNodes - 1; i++) {
+                const mergerId = `${node.id}-mrg-${i}`;
+                const m2Id = createdMachines[i+1];
+                const count2 = newNodes.find(n => n.id === m2Id)?.data.machines as number || 1;
+                const rate2 = ratePerMachine * count2;
+
+                if (i === 0) {
+                    const m1Id = createdMachines[0];
+                    const count1 = newNodes.find(n => n.id === m1Id)?.data.machines as number || 1;
+                    const rate1 = ratePerMachine * count1;
+                    accumulatedRate = rate1 + rate2;
+                    newNodes.push({
+                        id: mergerId,
+                        type: 'logistics',
+                        parentId: groupId,
+                        extent: 'parent',
+                        position: { x: 480, y: 70 + 115 },
+                        data: { type: 'merger', rate: accumulatedRate, isFlipped: true }
+                    });
+                    newEdges.push(createSatEdge(`e-${m1Id}-${mergerId}`, m1Id, mergerId, rate1, { targetHandle: 'top' }));
+                } else {
+                    accumulatedRate += rate2;
+                    newNodes.push({
+                        id: mergerId,
+                        type: 'logistics',
+                        parentId: groupId,
+                        extent: 'parent',
+                        position: { x: 480, y: 70 + (i + 1) * 115 },
+                        data: { type: 'merger', rate: accumulatedRate, isFlipped: true }
+                    });
+                    if (prevMainBelt) {
+                        newEdges.push(createSatEdge(`e-${prevMainBelt}-${mergerId}`, prevMainBelt, mergerId, accumulatedRate - rate2, { targetHandle: 'top' }));
+                    }
+                }
+                newEdges.push(createSatEdge(`e-${m2Id}-${mergerId}`, m2Id, mergerId, rate2, { targetHandle: 'right' }));
+                prevMainBelt = mergerId;
+                if (i === totalNodes - 2) lastMergerId = mergerId;
+            }
+        }
+    }
+
+    setNodes(nds => [...nds.filter(n => n.id !== node.id), ...newNodes]);
+    setEdges(eds => eds.map(e => {
+        if (e.target === node.id && firstSplitterId) return { ...e, target: firstSplitterId };
+        if (e.source === node.id && lastMergerId) return { ...e, source: lastMergerId };
+        return e;
+    }).concat(newEdges));
+  }, [getNodes, getEdges, setNodes, setEdges, beltCapacity]);
+
+  const applyAILayout = async () => {
+    let currentNodes: Node[] = getNodes().filter(n => n.type !== 'customGroup').map(n => {
+      const { parentId, extent, ...rest } = n;
+      return rest as Node;
+    });
+
+    const groupsMap = new Map<string, Node[]>();
+    currentNodes.forEach(n => {
+      if (n.type === 'machine' && n.data?.itemId) {
+        const itemId = n.data.itemId as string;
+        if (!groupsMap.has(itemId)) groupsMap.set(itemId, []);
+        groupsMap.get(itemId)?.push(n);
+      }
+    });
+
+    const newGroups: Node[] = [];
+    const COLORS = ['#243142', '#422424', '#24422e', '#423924', '#3d2442'];
+    let colorIdx = 0;
+    
+    groupsMap.forEach((machines, itemId) => {
+      if (machines.length > 1) { 
+        const groupId = `group-${itemId}`;
+        machines.forEach(m => { m.parentId = groupId });
+        newGroups.push({
+          id: groupId,
+          type: 'customGroup',
+          position: { x: 0, y: 0 },
+          data: { color: COLORS[colorIdx % COLORS.length], label: String(machines[0].data?.item || itemId) },
+          style: { width: 100, height: 100 },
+          zIndex: -1,
+        });
+        colorIdx++;
+      }
+    });
+
+    currentNodes = [...newGroups, ...currentNodes];
+    const rootChildren: any[] = [];
+    const childrenMap = new Map<string, any[]>();
+    newGroups.forEach(g => childrenMap.set(g.id, []));
+
+    currentNodes.forEach(n => {
+      let w = 260, h = 92;
+      if (n.type === 'logistics') { w = 48; h = 48; }
+      else if (n.type === 'customGroup') { w = 100; h = 100; }
+
+      const elkNode = {
+        id: n.id, w, h,
+        layoutOptions: n.type === 'customGroup' ? { 'elk.padding': '[top=40,left=20,bottom=20,right=20]' } : undefined
+      };
+
+      if ((n as Node).parentId) {
+        if (!childrenMap.has(n.parentId!)) childrenMap.set(n.parentId!, []);
+        childrenMap.get(n.parentId!)!.push(elkNode);
+      } else if (n.type !== 'customGroup') {
+        rootChildren.push(elkNode);
+      }
+    });
+
+    newGroups.forEach(g => {
+      rootChildren.push({
+        id: g.id,
+        layoutOptions: { 'elk.padding': '[top=40,left=20,bottom=20,right=20]', 'elk.algorithm': 'layered', 'elk.direction': 'RIGHT' },
+        children: childrenMap.get(g.id) || []
+      });
+    });
+
+    const graph = { id: 'root', layoutOptions, children: rootChildren, edges: getEdges().map(e => ({ id: e.id, sources: [e.source], targets: [e.target] })) };
+
+    try {
+      const layoutedGraph = await elk.layout(graph as any);
+      const flattenNodes = (elkNodes: any[], arr: any[] = []) => {
+        elkNodes.forEach(n => {
+            arr.push({ id: n.id, x: n.x, y: n.y, width: n.width, height: n.height });
+            if (n.children) flattenNodes(n.children, arr);
+        });
+        return arr;
+      };
+      const elkNodeMap = new Map();
+      flattenNodes(layoutedGraph.children || []).forEach(n => elkNodeMap.set(n.id, n));
+      currentNodes = currentNodes.map(n => {
+        const en = elkNodeMap.get(n.id);
+        if (!en) return n;
+        if (n.type === 'customGroup') return { ...n, position: { x: en.x, y: en.y }, style: { width: en.width, height: en.height } };
+        return { ...n, position: { x: en.x, y: en.y }, extent: n.parentId ? 'parent' : undefined };
+      });
+      setNodes(currentNodes);
+      setTimeout(() => fitView({ duration: 800, padding: 0.2 }), 50);
+    } catch (e) {
+      console.error("ELK Layout error:", e);
+    }
+  };
+
+  useEffect(() => {
+    const onExpandCustom = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.nodeId) handleExpandNode(detail.nodeId);
+    };
+    window.addEventListener('expand-machine-array', onExpandCustom);
+    return () => window.removeEventListener('expand-machine-array', onExpandCustom);
+  }, [handleExpandNode]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -596,9 +933,9 @@ export function FactoryGraph({ initialNodes, initialEdges }: FactoryGraphProps) 
            ...e,
            animated: true,
            style: {
-               // default styling
-               stroke: '#9ca3af',
-               strokeWidth: 3,
+               ...e.style,
+               stroke: undefined,      // Revert to component controlled
+               strokeWidth: undefined, // Revert to component controlled
            }
        })));
        return;
@@ -657,9 +994,11 @@ export function FactoryGraph({ initialNodes, initialEdges }: FactoryGraphProps) 
             ...e,
             animated: isHighlighted,
             style: isHighlighted ? { 
+              ...e.style,
               stroke: '#ff9000',
               strokeWidth: 5
             } : {
+              ...e.style,
               stroke: 'rgba(255,255,255, 0.1)',
               strokeWidth: 2
             }
@@ -679,6 +1018,7 @@ export function FactoryGraph({ initialNodes, initialEdges }: FactoryGraphProps) 
         onNodeClick={onNodeClick}
         onPaneClick={() => setSelectedNodeId(null)}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         fitView
         colorMode="dark"
         panOnDrag={!selectionMode}
@@ -687,7 +1027,19 @@ export function FactoryGraph({ initialNodes, initialEdges }: FactoryGraphProps) 
       >
         <Background variant={BackgroundVariant.Lines} gap={40} color="rgba(255,255,255,0.15)" />
         <Controls className="bg-[#151619] fill-current text-[#8E9299] border-none shadow-md" />
-        <TopToolbar nodes={nodes} edges={edges} setNodes={setNodes} selectionMode={selectionMode} setSelectionMode={setSelectionMode} />
+        <TopToolbar 
+          nodes={nodes} 
+          edges={edges} 
+          setNodes={setNodes} 
+          selectionMode={selectionMode} 
+          setSelectionMode={setSelectionMode} 
+          beltCapacity={beltCapacity} 
+          onExpand={() => {
+            const selected = nodes.find(n => n.selected && n.type === 'machine');
+            if (selected) handleExpandNode(selected.id);
+          }}
+          onLayout={applyAILayout}
+        />
       </ReactFlow>
     </div>
   );

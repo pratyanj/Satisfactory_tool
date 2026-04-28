@@ -21,17 +21,23 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
     return `${rate.toFixed(1)}/min (${beltsNeeded}x ${beltName})`;
   }
 
-  function createEdge(id: string, source: string, target: string, label?: string): Edge {
+  function createEdge(id: string, source: string, target: string, label?: string, itemId?: string): Edge {
+    const rate = label ? parseFloat(label) : 0;
+    const isOverloaded = rate > beltCapacity;
+    const item = itemId ? items[itemId] : null;
+
     return {
         id,
         source,
         target,
         label,
-        type: 'step',
+        type: 'satisfactory',
+        data: {
+          rate,
+          isOverloaded,
+          itemImageUrl: item?.imageUrl
+        },
         animated: true,
-        style: { stroke: '#9ca3af', strokeWidth: 3 },
-        labelStyle: { fill: '#e5e7eb', fontWeight: 600, fontSize: 10, fontFamily: 'monospace' },
-        labelBgStyle: { fill: '#151619', rx: 4, ry: 4, stroke: '#374151', strokeWidth: 1 },
     };
   }
 
@@ -114,7 +120,8 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
                 `e-${childMachines[0].id}-${myMachinesInfo[0].id}`,
                 childMachines[0].id,
                 myMachinesInfo[0].id,
-                getBeltLabel(child.rate)
+                getBeltLabel(child.rate),
+                child.itemId
             ));
         } else {
             let sourceNodeForMyMachines = childMachines[0].id;
@@ -138,20 +145,28 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
                      });
                      
                      // connect previous main belt (or first machine) to merger
-                     edges.push(createEdge(
-                         `e-${currentMainBelt}-${mergerId}`,
-                         currentMainBelt,
-                         mergerId,
-                         getBeltLabel(accumulatedRate - cm.rate)
-                     ));
+                     edges.push({
+                         ...createEdge(
+                             `e-${currentMainBelt}-${mergerId}`,
+                             currentMainBelt,
+                             mergerId,
+                             getBeltLabel(accumulatedRate - cm.rate),
+                             child.itemId
+                         ),
+                         targetHandle: i === 1 ? 'top' : 'left' // First main belt enters top, subsequent enters left
+                     });
                      
                      // connect child machine to merger
-                     edges.push(createEdge(
-                         `e-${cm.id}-${mergerId}`,
-                         cm.id,
-                         mergerId,
-                         getBeltLabel(cm.rate)
-                     ));
+                     edges.push({
+                         ...createEdge(
+                             `e-${cm.id}-${mergerId}`,
+                             cm.id,
+                             mergerId,
+                             getBeltLabel(cm.rate),
+                             child.itemId
+                         ),
+                         targetHandle: i === 1 ? 'left' : 'top' // Child enters left/top respectively depending on flip
+                     });
                      
                      currentMainBelt = mergerId;
                  }
@@ -170,12 +185,16 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
 
                      if (i === numChunks - 1) {
                          // Last machine connects directly to the end of the line
-                         edges.push(createEdge(
-                             `e-${currentMainBelt}-${m.id}`,
-                             currentMainBelt,
-                             m.id,
-                             getBeltLabel(neededInputRate)
-                         ));
+                         edges.push({
+                             ...createEdge(
+                                 `e-${currentMainBelt}-${m.id}`,
+                                 currentMainBelt,
+                                 m.id,
+                                 getBeltLabel(neededInputRate),
+                                 child.itemId
+                             ),
+                             sourceHandle: 'right'
+                         });
                      } else {
                          const splitterId = generateId();
                          nodes.push({
@@ -186,20 +205,28 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
                          });
                          
                          // Connect main belt to splitter
-                         edges.push(createEdge(
-                             `e-${currentMainBelt}-${splitterId}`,
-                             currentMainBelt,
-                             splitterId,
-                             getBeltLabel(remainingRate)
-                         ));
+                         edges.push({
+                             ...createEdge(
+                                 `e-${currentMainBelt}-${splitterId}`,
+                                 currentMainBelt,
+                                 splitterId,
+                                 getBeltLabel(remainingRate),
+                                 child.itemId
+                             ),
+                             targetHandle: 'left'
+                         });
                          
                          // Connect splitter to machine
-                         edges.push(createEdge(
-                             `e-${splitterId}-${m.id}`,
-                             splitterId,
-                             m.id,
-                             getBeltLabel(neededInputRate)
-                         ));
+                         edges.push({
+                             ...createEdge(
+                                 `e-${splitterId}-${m.id}`,
+                                 splitterId,
+                                 m.id,
+                                 getBeltLabel(neededInputRate),
+                                 child.itemId
+                             ),
+                             sourceHandle: 'top'
+                         });
                          
                          currentMainBelt = splitterId;
                          remainingRate -= neededInputRate;

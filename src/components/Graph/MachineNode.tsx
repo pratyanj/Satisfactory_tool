@@ -1,12 +1,12 @@
 import { Handle, Position, useReactFlow, NodeProps, useUpdateNodeInternals } from '@xyflow/react';
 import React, { useEffect } from 'react';
 import { machines } from '../../engine/data';
-import { FlipHorizontal } from 'lucide-react';
+import { FlipHorizontal, SplitSquareHorizontal } from 'lucide-react';
 
 export function MachineNode({ id, data }: NodeProps) {
   const machineInfo = machines[data.machineId as string];
   const totalPower = (machineInfo?.powerUsage || 0) * (data.machines as number);
-  const { setNodes } = useReactFlow();
+  const { setNodes, setEdges, getNodes, getEdges } = useReactFlow();
 
   const isFlipped = !!data.isFlipped;
   const updateNodeInternals = useUpdateNodeInternals();
@@ -50,8 +50,8 @@ export function MachineNode({ id, data }: NodeProps) {
         </div>
         
         <div className="px-3 flex items-center h-[34px] shrink-0 min-w-0 group/bottom relative">
-          <span className="font-mono text-xs text-green-400 truncate flex-1" title={`${data.label} x${Math.ceil((data.machines as number) * 10) / 10}`}>
-            {data.label as string} <span className="text-[#8E9299]">x{Math.ceil((data.machines as number) * 10) / 10}</span>
+          <span className="font-mono text-[11px] text-green-400 truncate flex-1 leading-none pt-[2px]" title={data.label as string}>
+            {data.label as string}
           </span>
         </div>
       </div>

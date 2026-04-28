@@ -166,7 +166,7 @@ export default function App() {
             </div>
           ) : mainTab === 'graph' ? (
             <div className="w-full h-full pt-16">
-              <FactoryGraph initialNodes={nodes} initialEdges={edges} />
+              <FactoryGraph initialNodes={nodes} initialEdges={edges} beltId={lastInput.beltId} />
             </div>
           ) : (
             <div className="w-full h-full pt-16 overflow-hidden">
