@@ -1,6 +1,6 @@
 import { Edge, Node } from '@xyflow/react';
 import dagre from 'dagre';
-import { belts, BeltId, items, machines } from './data';
+import { belts, BeltId, items, machines, recipes } from './data';
 import { SolverNode } from './solver';
 
 function generateId() {
@@ -10,8 +10,8 @@ function generateId() {
 export type LayoutMode = 'aggregated' | 'expanded';
 
 export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'aggregated', beltId: BeltId = 'mk1'): { nodes: Node[]; edges: Edge[] } {
-  const nodes: Node[] = [];
-  const edges: Edge[] = [];
+  const nodeList: Node[] = [];
+  const edgeList: Edge[] = [];
   const beltCapacity = belts[beltId]?.capacity || 60;
   const beltName = belts[beltId]?.name || 'Mk.1 Belt';
 
@@ -25,261 +25,148 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
     const rate = label ? parseFloat(label) : 0;
     const isOverloaded = rate > beltCapacity;
     const item = itemId ? items[itemId] : null;
+    return {
+      id, source, target, label, type: 'satisfactory',
+      data: { rate, isOverloaded, itemImageUrl: item?.imageUrl },
+      animated: true,
+    };
+  }
+
+  /** Build enriched data for a machine node, including recipe details */
+  function buildNodeData(node: SolverNode, machineCount: number, rate: number, label: string) {
+    const recipe = recipes.find(r => r.outputItemId === node.itemId);
+    const machineInfo = machines[node.machineId];
+    const itemInfo = items[node.itemId];
 
     return {
-        id,
-        source,
-        target,
-        label,
-        type: 'satisfactory',
-        data: {
-          rate,
-          isOverloaded,
-          itemImageUrl: item?.imageUrl
-        },
-        animated: true,
+      label,
+      item: itemInfo?.name || node.itemId,
+      machines: machineCount,
+      rate,
+      machineId: node.machineId,
+      itemId: node.itemId,
+      itemImageUrl: itemInfo?.imageUrl,
+      // Recipe details for the expanded node card
+      outputRatePerMachine: recipe?.outputRate || 0,
+      inputDetails: (recipe?.inputs || []).map(inp => ({
+        itemId: inp.itemId,
+        name: items[inp.itemId]?.name || inp.itemId,
+        imageUrl: items[inp.itemId]?.imageUrl,
+        ratePerMachine: inp.rate,
+      })),
+      powerPerMachine: machineInfo?.powerUsage || 0,
     };
   }
 
   function traverseAggregated(node: SolverNode): string {
     const nodeId = generateId();
-
-    nodes.push({
-      id: nodeId,
-      type: 'machine',
-      position: { x: 0, y: 0 },
-      data: {
-        label: `${machines[node.machineId].name} x${Math.ceil(node.machines * 10) / 10}`,
-        item: items[node.itemId].name,
-        machines: node.machines,
-        rate: node.rate,
-        machineId: node.machineId,
-        itemId: node.itemId,
-      },
+    nodeList.push({
+      id: nodeId, type: 'machine', position: { x: 0, y: 0 },
+      data: buildNodeData(
+        node, node.machines, node.rate,
+        `${machines[node.machineId].name} x${Math.ceil(node.machines * 10) / 10}`
+      ),
     });
-
     for (const child of node.inputs) {
       const childId = traverseAggregated(child);
-      edges.push(createEdge(`e-${childId}-${nodeId}`, childId, nodeId, getBeltLabel(child.rate)));
+      edgeList.push(createEdge(`e-${childId}-${nodeId}`, childId, nodeId, getBeltLabel(child.rate), child.itemId));
     }
-
     return nodeId;
   }
 
   function traverseExpanded(node: SolverNode): { id: string; rate: number }[] {
     const totalMachines = node.machines;
     const outputRatePerMachine = node.rate / node.machines;
-    
-    // Determine maximum inputs and output flow per machine to constrain chunking by chosen belt
+
+    // Determine chunk size based on belt capacity
     let maxInputRatePerMachine = 0;
     for (const child of node.inputs) {
       maxInputRatePerMachine = Math.max(maxInputRatePerMachine, child.rate / node.machines);
     }
-    
     let maxMachinesPerBelt = Infinity;
-    if (outputRatePerMachine > 0) {
-      maxMachinesPerBelt = Math.min(maxMachinesPerBelt, Math.floor(beltCapacity / outputRatePerMachine));
-    }
-    if (maxInputRatePerMachine > 0) {
-      maxMachinesPerBelt = Math.min(maxMachinesPerBelt, Math.floor(beltCapacity / maxInputRatePerMachine));
-    }
+    if (outputRatePerMachine > 0) maxMachinesPerBelt = Math.min(maxMachinesPerBelt, Math.floor(beltCapacity / outputRatePerMachine));
+    if (maxInputRatePerMachine > 0) maxMachinesPerBelt = Math.min(maxMachinesPerBelt, Math.floor(beltCapacity / maxInputRatePerMachine));
 
-    // Limit block sizes to a sensible amount (e.g., maximum 12 machines per manifold array node)
     const chunkSize = Math.max(1, Math.min(12, maxMachinesPerBelt));
     const numChunks = Math.ceil(totalMachines / chunkSize);
-    const myMachinesInfo: { id: string; rate: number }[] = [];
-    
+    const myChunks: { id: string; rate: number }[] = [];
+
     for (let i = 0; i < numChunks; i++) {
-        const nodeId = generateId();
-        const isLast = i === numChunks - 1;
-        const machinesInThisChunk = isLast && (totalMachines % chunkSize !== 0) ? (totalMachines % chunkSize) : chunkSize;
-        const thisRate = outputRatePerMachine * machinesInThisChunk;
+      const nodeId = generateId();
+      const isLast = i === numChunks - 1;
+      const machinesInChunk = isLast && (totalMachines % chunkSize !== 0) ? (totalMachines % chunkSize) : chunkSize;
+      const thisRate = outputRatePerMachine * machinesInChunk;
+      myChunks.push({ id: nodeId, rate: thisRate });
 
-        myMachinesInfo.push({ id: nodeId, rate: thisRate });
+      const label = machinesInChunk === 1
+        ? machines[node.machineId].name
+        : `${machines[node.machineId].name} x${Math.ceil(machinesInChunk * 10) / 10}`;
 
-        nodes.push({
-            id: nodeId,
-            type: 'machine',
-            position: { x: 0, y: 0 },
-            data: {
-                label: machinesInThisChunk === 1 ? machines[node.machineId].name : `${machines[node.machineId].name} Array`,
-                item: items[node.itemId].name,
-                machines: machinesInThisChunk,
-                rate: thisRate,
-                machineId: node.machineId,
-                itemId: node.itemId,
-            }
-        });
+      nodeList.push({
+        id: nodeId, type: 'machine', position: { x: 0, y: 0 },
+        data: buildNodeData(node, machinesInChunk, thisRate, label),
+      });
     }
 
+    // Connect child recipe steps → my chunks with DIRECT edges
     for (const child of node.inputs) {
-        const childMachines = traverseExpanded(child);
-        
-        if (childMachines.length === 1 && myMachinesInfo.length === 1) {
-            edges.push(createEdge(
-                `e-${childMachines[0].id}-${myMachinesInfo[0].id}`,
-                childMachines[0].id,
-                myMachinesInfo[0].id,
-                getBeltLabel(child.rate),
-                child.itemId
-            ));
-        } else {
-            let sourceNodeForMyMachines = childMachines[0].id;
-            let currentSourceRate = child.rate;
+      const childChunks = traverseExpanded(child);
 
-            // If multiple children, they merge first (manifold style)
-            if (childMachines.length > 1) {
-                 let currentMainBelt = childMachines[0].id;
-                 let accumulatedRate = childMachines[0].rate;
-
-                 for (let i = 1; i < childMachines.length; i++) {
-                     const cm = childMachines[i];
-                     const mergerId = generateId();
-                     accumulatedRate += cm.rate;
-                     
-                     nodes.push({
-                         id: mergerId,
-                         type: 'logistics',
-                         position: { x: 0, y: 0 },
-                         data: { type: 'merger', rate: accumulatedRate }
-                     });
-                     
-                     // connect previous main belt (or first machine) to merger
-                     edges.push({
-                         ...createEdge(
-                             `e-${currentMainBelt}-${mergerId}`,
-                             currentMainBelt,
-                             mergerId,
-                             getBeltLabel(accumulatedRate - cm.rate),
-                             child.itemId
-                         ),
-                         targetHandle: i === 1 ? 'top' : 'left' // First main belt enters top, subsequent enters left
-                     });
-                     
-                     // connect child machine to merger
-                     edges.push({
-                         ...createEdge(
-                             `e-${cm.id}-${mergerId}`,
-                             cm.id,
-                             mergerId,
-                             getBeltLabel(cm.rate),
-                             child.itemId
-                         ),
-                         targetHandle: i === 1 ? 'left' : 'top' // Child enters left/top respectively depending on flip
-                     });
-                     
-                     currentMainBelt = mergerId;
-                 }
-                 sourceNodeForMyMachines = currentMainBelt;
-            }
-
-            // If multiple my machines, we need a manifold of splitters from the source
-            if (myMachinesInfo.length > 1) {
-                 let currentMainBelt = sourceNodeForMyMachines;
-                 let remainingRate = currentSourceRate;
-
-                 for (let i = 0; i < numChunks; i++) {
-                     const m = myMachinesInfo[i];
-                     const machinesInThisChunk = (i === numChunks - 1 && totalMachines % chunkSize !== 0) ? totalMachines % chunkSize : chunkSize;
-                     const neededInputRate = (child.rate / totalMachines) * machinesInThisChunk;
-
-                     if (i === numChunks - 1) {
-                         // Last machine connects directly to the end of the line
-                         edges.push({
-                             ...createEdge(
-                                 `e-${currentMainBelt}-${m.id}`,
-                                 currentMainBelt,
-                                 m.id,
-                                 getBeltLabel(neededInputRate),
-                                 child.itemId
-                             ),
-                             sourceHandle: 'right'
-                         });
-                     } else {
-                         const splitterId = generateId();
-                         nodes.push({
-                             id: splitterId,
-                             type: 'logistics',
-                             position: { x: 0, y: 0 },
-                             data: { type: 'splitter', rate: remainingRate }
-                         });
-                         
-                         // Connect main belt to splitter
-                         edges.push({
-                             ...createEdge(
-                                 `e-${currentMainBelt}-${splitterId}`,
-                                 currentMainBelt,
-                                 splitterId,
-                                 getBeltLabel(remainingRate),
-                                 child.itemId
-                             ),
-                             targetHandle: 'left'
-                         });
-                         
-                         // Connect splitter to machine
-                         edges.push({
-                             ...createEdge(
-                                 `e-${splitterId}-${m.id}`,
-                                 splitterId,
-                                 m.id,
-                                 getBeltLabel(neededInputRate),
-                                 child.itemId
-                             ),
-                             sourceHandle: 'top'
-                         });
-                         
-                         currentMainBelt = splitterId;
-                         remainingRate -= neededInputRate;
-                     }
-                 }
-            } else {
-                 // Only 1 my machine, but multiple children (via merger)
-                 const m = myMachinesInfo[0];
-                 edges.push(createEdge(
-                     `e-${sourceNodeForMyMachines}-${m.id}`,
-                     sourceNodeForMyMachines,
-                     m.id,
-                     getBeltLabel(currentSourceRate)
-                 ));
-            }
+      if (childChunks.length === 1 && myChunks.length === 1) {
+        edgeList.push(createEdge(
+          `e-${childChunks[0].id}-${myChunks[0].id}`,
+          childChunks[0].id, myChunks[0].id,
+          getBeltLabel(child.rate), child.itemId
+        ));
+      } else {
+        // Ensure EVERY chunk on both sides has at least one connection.
+        // Iterate over the larger set and map proportionally to the smaller set.
+        const maxLen = Math.max(childChunks.length, myChunks.length);
+        const connected = new Set<string>();
+        for (let i = 0; i < maxLen; i++) {
+          const ci = Math.min(Math.floor(i * childChunks.length / maxLen), childChunks.length - 1);
+          const pi = Math.min(Math.floor(i * myChunks.length / maxLen), myChunks.length - 1);
+          const key = `${ci}-${pi}`;
+          if (connected.has(key)) continue;
+          connected.add(key);
+          edgeList.push(createEdge(
+            `e-${childChunks[ci].id}-${myChunks[pi].id}`,
+            childChunks[ci].id, myChunks[pi].id,
+            getBeltLabel(childChunks[ci].rate), child.itemId
+          ));
         }
+      }
     }
 
-    return myMachinesInfo;
+    return myChunks;
   }
 
   if (mode === 'expanded') {
-      traverseExpanded(root);
+    traverseExpanded(root);
   } else {
-      traverseAggregated(root);
+    traverseAggregated(root);
   }
 
-  // Apply Dagre layout
+  // Apply Dagre layout — use taller nodes to accommodate recipe details
+  const NODE_W = 320;
+  const NODE_H = 160;
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
-  dagreGraph.setGraph({ rankdir: 'LR', nodesep: 40, ranksep: 100 });
+  dagreGraph.setGraph({ rankdir: 'LR', nodesep: 40, ranksep: 120 });
 
-  nodes.forEach((node) => {
-    const isLogistics = node.type === 'logistics';
-    dagreGraph.setNode(node.id, { width: isLogistics ? 48 : 260, height: isLogistics ? 48 : 92 });
+  nodeList.forEach((node) => {
+    dagreGraph.setNode(node.id, { width: NODE_W, height: NODE_H });
   });
-
-  edges.forEach((edge) => {
+  edgeList.forEach((edge) => {
     dagreGraph.setEdge(edge.source, edge.target);
   });
 
   dagre.layout(dagreGraph);
 
-  nodes.forEach((node) => {
-    const nodeWithPosition = dagreGraph.node(node.id);
-    const isLogistics = node.type === 'logistics';
-    const w = isLogistics ? 48 : 260;
-    const h = isLogistics ? 48 : 92;
-    node.position = {
-      x: nodeWithPosition.x - w / 2,
-      y: nodeWithPosition.y - h / 2,
-    };
+  nodeList.forEach((node) => {
+    const pos = dagreGraph.node(node.id);
+    node.position = { x: pos.x - NODE_W / 2, y: pos.y - NODE_H / 2 };
   });
 
-  return { nodes, edges };
+  return { nodes: nodeList, edges: edgeList };
 }

@@ -9,7 +9,7 @@ const COLORS = [
   '#3d2442', // Purple
 ];
 
-export function GroupNode({ id, selected, data }: NodeProps) {
+export const GroupNode = React.memo(function GroupNode({ id, selected, data }: NodeProps) {
   const { setNodes } = useReactFlow();
   const color = (data.color as string) || COLORS[0];
 
@@ -53,4 +53,4 @@ export function GroupNode({ id, selected, data }: NodeProps) {
       </div>
     </div>
   );
-}
+})

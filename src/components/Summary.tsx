@@ -39,7 +39,7 @@ export function Summary({ summary }: SummaryProps) {
           {Object.entries(summary.machineCounts).map(([machineId, count]) => (
             <li key={machineId} className="flex justify-between items-center">
               <span className="text-sm text-[#d1d1d1]">{machines[machineId]?.name || machineId}</span>
-              <span className="font-mono text-sm">x{Math.ceil(count * 10) / 10}</span>
+              <span className="font-mono text-sm">x{isFinite(count) ? Math.ceil(count * 10) / 10 : Math.ceil(count)}</span>
             </li>
           ))}
           {Object.keys(summary.machineCounts).length === 0 && (

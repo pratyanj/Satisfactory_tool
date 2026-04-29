@@ -7,23 +7,76 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { InputForm } from './components/InputForm';
 import { Summary } from './components/Summary';
 import { FactoryGraph } from './components/Graph/FactoryGraph';
-import { Dashboard } from './components/Dashboard';
-import { solve, calculateSummary, SummaryData } from './engine/solver';
+import { TreeList } from './components/TreeList';
+import { ItemsTab } from './components/ItemsTab';
+import { BuildingsTab } from './components/BuildingsTab';
+import { solve, calculateSummary, SummaryData, SolverNode } from './engine/solver';
 import { mapSolverResultToGraph, LayoutMode } from './engine/graphMapper';
 import { BeltId, MachineId, items, machines, belts } from './engine/data';
 import { Edge, Node } from '@xyflow/react';
+
+type MainTab = 'network_graph' | 'tree_list' | 'items' | 'buildings';
+
+const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
+  {
+    id: 'network_graph',
+    label: 'Network graph',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'tree_list',
+    label: 'Tree list',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+        <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'items',
+    label: 'Items',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
+        <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
+        <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'buildings',
+    label: 'Buildings',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="4" y="2" width="16" height="20" rx="2" ry="2"/>
+        <path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/>
+        <path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/>
+        <path d="M8 10h.01"/><path d="M8 14h.01"/>
+      </svg>
+    ),
+  },
+];
 
 export default function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [summary, setSummary] = useState<SummaryData | null>(null);
+  const [rootNode, setRootNode] = useState<SolverNode | null>(null);
   const [error, setError] = useState<string | null>(null);
   
   const [lastInput, setLastInput] = useState<{itemId: string, rate: number, minerId: MachineId, beltId: BeltId}>({ itemId: 'copper_sheet', rate: 120, minerId: 'miner_mk1', beltId: 'mk1' });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
-  const [mainTab, setMainTab] = useState<'graph' | 'dashboard'>('graph');
+  const [mainTab, setMainTab] = useState<MainTab>('network_graph');
   
   const [copied, setCopied] = useState(false);
+  const [isRecalculating, setIsRecalculating] = useState(false);
 
   // Parse URL Hash on mount
   useEffect(() => {
@@ -65,15 +118,17 @@ export default function App() {
     setLastInput({ itemId, rate, minerId, beltId });
     try {
       setError(null);
-      const rootNode = solve(itemId, rate, minerId);
-      const newSummary = calculateSummary(rootNode);
-      const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(rootNode, mode, beltId);
+      const solvedRoot = solve(itemId, rate, minerId);
+      const newSummary = calculateSummary(solvedRoot);
+      const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(solvedRoot, mode, beltId);
 
+      setRootNode(solvedRoot);
       setSummary(newSummary);
       setNodes(newNodes);
       setEdges(newEdges);
     } catch (err: any) {
       setError(err.message || 'An error occurred during calculation.');
+      setRootNode(null);
       setSummary(null);
       setNodes([]);
       setEdges([]);
@@ -81,15 +136,68 @@ export default function App() {
   };
 
   // Run calculation strictly when requested
-  // HandleCalculate from input form now triggers the URL state update to naturally be shareable if desired
   const handleCalculate = (itemId: string, rate: number, minerId: MachineId, beltId: BeltId) => {
     calculatePlan(itemId, rate, minerId, beltId, layoutMode);
   };
 
   useEffect(() => {
-    calculatePlan(lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, layoutMode);
+    // Show spinner first, then defer the heavy computation
+    setIsRecalculating(true);
+    requestAnimationFrame(() => {
+      calculatePlan(lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, layoutMode);
+      setIsRecalculating(false);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [layoutMode]);
+
+  const renderTabContent = () => {
+    if (error) {
+      return (
+        <div className="bg-red-900/20 border border-red-500/50 rounded-xl p-4 m-4 text-red-200 z-10 md:mt-20 relative">
+          {error}
+        </div>
+      );
+    }
+
+    switch (mainTab) {
+      case 'network_graph':
+        return (
+          <div className="w-full h-full">
+            <div className="absolute top-4 right-4 z-10 flex bg-[#1c1e22] rounded-lg border border-[#2a2d33] p-1 shadow-xl">
+              <button 
+                onClick={() => setLayoutMode('aggregated')}
+                disabled={isRecalculating}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'aggregated' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'} disabled:opacity-50`}
+              >
+                Aggregated View
+              </button>
+              <button 
+                onClick={() => setLayoutMode('expanded')}
+                disabled={isRecalculating}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'expanded' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'} disabled:opacity-50`}
+              >
+                Machine View
+              </button>
+            </div>
+            {isRecalculating && (
+              <div className="graph-loading-overlay">
+                <div className="graph-loading-spinner" />
+                <span className="text-sm text-[#8E9299] font-medium">Building graph layout…</span>
+              </div>
+            )}
+            <FactoryGraph initialNodes={nodes} initialEdges={edges} beltId={lastInput.beltId} />
+          </div>
+        );
+      case 'tree_list':
+        return <TreeList rootNode={rootNode} summary={summary} />;
+      case 'items':
+        return <ItemsTab summary={summary} />;
+      case 'buildings':
+        return <BuildingsTab summary={summary} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans p-4 md:p-8 gap-6">
@@ -126,53 +234,24 @@ export default function App() {
         {/* Left Side: Main Area */}
         <div className="flex flex-col h-full h-[600px] lg:h-auto min-h-0 relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
           
-          {/* Main Tab Toggle */}
-          <div className="absolute top-4 left-4 z-10 flex bg-[#1c1e22] rounded-lg border border-[#2a2d33] p-1 shadow-xl">
-            <button 
-              onClick={() => setMainTab('graph')}
-              className={`px-3 py-1.5 text-sm font-semibold rounded-md transition-all duration-200 ${mainTab === 'graph' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
-            >
-              Visual Graph
-            </button>
-            <button 
-              onClick={() => setMainTab('dashboard')}
-              className={`px-3 py-1.5 text-sm font-semibold rounded-md transition-all duration-200 ${mainTab === 'dashboard' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
-            >
-              Dashboard Stats
-            </button>
+          {/* 4-Tab Navigation Bar */}
+          <div className="tab-bar">
+            {TAB_CONFIG.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setMainTab(tab.id)}
+                className={`tab-bar-btn ${mainTab === tab.id ? 'tab-bar-btn--active' : ''}`}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+              </button>
+            ))}
           </div>
 
-          {/* Toggle Control Overlay */}
-          {mainTab === 'graph' && (
-            <div className="absolute top-4 right-4 z-10 flex bg-[#1c1e22] rounded-lg border border-[#2a2d33] p-1 shadow-xl">
-              <button 
-                onClick={() => setLayoutMode('aggregated')}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'aggregated' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
-              >
-                Aggregated View
-              </button>
-              <button 
-                onClick={() => setLayoutMode('expanded')}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'expanded' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
-              >
-                Machine View
-              </button>
-            </div>
-          )}
-
-          {error ? (
-            <div className="bg-red-900/20 border border-red-500/50 rounded-xl p-4 m-4 text-red-200 z-10 md:mt-20 relative">
-              {error}
-            </div>
-          ) : mainTab === 'graph' ? (
-            <div className="w-full h-full pt-16">
-              <FactoryGraph initialNodes={nodes} initialEdges={edges} beltId={lastInput.beltId} />
-            </div>
-          ) : (
-            <div className="w-full h-full pt-16 overflow-hidden">
-              <Dashboard summary={summary} />
-            </div>
-          )}
+          {/* Tab Content */}
+          <div className="flex-1 min-h-0 relative overflow-hidden">
+            {renderTabContent()}
+          </div>
         </div>
 
         {/* Right Side: Sidebar */}
@@ -186,4 +265,3 @@ export default function App() {
     </div>
   );
 }
-

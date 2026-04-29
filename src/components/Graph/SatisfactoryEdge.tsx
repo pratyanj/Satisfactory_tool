@@ -1,7 +1,7 @@
 import React from 'react';
 import { BaseEdge, EdgeProps, getSmoothStepPath, EdgeLabelRenderer } from '@xyflow/react';
 
-export function SatisfactoryEdge({
+export const SatisfactoryEdge = React.memo(function SatisfactoryEdge({
   id,
   sourceX,
   sourceY,
@@ -45,7 +45,7 @@ export function SatisfactoryEdge({
         }} 
       />
       
-      {/* Moving dots animation */}
+      {/* Moving dots animation — keyframe is in index.css */}
       <path
         d={edgePath}
         fill="none"
@@ -58,17 +58,6 @@ export function SatisfactoryEdge({
           opacity: 0.8
         }}
       />
-
-      <style>{`
-        @keyframes dash {
-          from {
-            stroke-dashoffset: 20;
-          }
-          to {
-            stroke-dashoffset: 0;
-          }
-        }
-      `}</style>
 
       {label && (
         <EdgeLabelRenderer>
@@ -106,4 +95,4 @@ export function SatisfactoryEdge({
       )}
     </>
   );
-}
+});
