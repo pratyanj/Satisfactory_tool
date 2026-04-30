@@ -6,6 +6,7 @@ export interface SolverNode {
   machines: number;
   machineId: MachineId;
   inputs: SolverNode[];
+  byproducts?: { itemId: ItemId; rate: number }[];
 }
 
 function getRecipeForItem(itemId: ItemId): typeof recipes[0] | undefined {
@@ -24,10 +25,14 @@ export function solve(itemId: ItemId, requiredRate: number, minerId: MachineId =
 
   // Adjust extraction rate for miners
   if (recipe.inputs.length === 0) {
-    machineIdToUse = minerId;
-    if (minerId === "miner_mk2") outputRate = 120;
-    else if (minerId === "miner_mk3") outputRate = 240;
-    else outputRate = 60; // Default Mk.1
+    if (machineIdToUse.startsWith('miner')) {
+      machineIdToUse = minerId;
+      if (minerId === "miner_mk2") outputRate = 120;
+      else if (minerId === "miner_mk3") outputRate = 240;
+      else outputRate = 60; // Default Mk.1
+    }
+    // Non-miner extractors (water_extractor, resource_well_pressurizer, etc.) 
+    // will keep their original machineId and outputRate.
   }
 
   const machineCount = requiredRate / outputRate;
@@ -37,7 +42,11 @@ export function solve(itemId: ItemId, requiredRate: number, minerId: MachineId =
     rate: requiredRate,
     machines: machineCount,
     machineId: machineIdToUse,
-    inputs: []
+    inputs: [],
+    byproducts: (recipe.byproducts || []).map(bp => ({
+      itemId: bp.itemId,
+      rate: bp.rate * machineCount
+    }))
   };
 
   for (const input of recipe.inputs) {
@@ -85,6 +94,13 @@ export function calculateSummary(rootNode: SolverNode): SummaryData {
 
     // Aggregate all item rates (every node produces something)
     allItemRates[node.itemId] = (allItemRates[node.itemId] || 0) + node.rate;
+    
+    if (node.byproducts) {
+      for (const bp of node.byproducts) {
+        allItemRates[bp.itemId] = (allItemRates[bp.itemId] || 0) + bp.rate;
+        producedItems[bp.itemId] = (producedItems[bp.itemId] || 0) + bp.rate;
+      }
+    }
 
     // Aggregate building details
     if (!buildingDetails[node.machineId]) {

@@ -54,6 +54,12 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
         imageUrl: items[inp.itemId]?.imageUrl,
         ratePerMachine: inp.rate,
       })),
+      byproductDetails: (recipe?.byproducts || []).map(bp => ({
+        itemId: bp.itemId,
+        name: items[bp.itemId]?.name || bp.itemId,
+        imageUrl: items[bp.itemId]?.imageUrl,
+        ratePerMachine: bp.rate,
+      })),
       powerPerMachine: machineInfo?.powerUsage || 0,
     };
   }
