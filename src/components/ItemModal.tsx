@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { items, ItemId } from '../engine/data';
+import { AppImage } from './AppImage';
 
 interface ItemModalProps {
   isOpen: boolean;
@@ -45,37 +46,53 @@ export function ItemModal({ isOpen, onClose, onSelect }: ItemModalProps) {
           </div>
         </div>
 
-        {/* Grid */}
-        <div className="p-6 overflow-y-auto min-h-0 flex-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 bg-[#1a1b1e]">
-          {filteredItems.map(item => (
-            <button
-              key={item.id}
-              onClick={() => {
-                onSelect(item.id);
-                onClose();
-              }}
-              className="flex flex-col items-center justify-center p-4 bg-[#242528] rounded-lg border border-[#3b3d42] hover:border-orange-500 hover:bg-[#2a2b30] transition-all group"
-            >
-              <div className="w-20 h-20 mb-3 flex items-center justify-center relative">
-                {/* Background glow effect on hover */}
-                <div className="absolute inset-0 bg-orange-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                
-                {item.imageUrl ? (
-                  <img 
-                    src={`https://wsrv.nl/?url=${encodeURIComponent(item.imageUrl)}&default=${encodeURIComponent(item.imageUrl)}`} 
-                    alt={item.name} 
-                    crossOrigin="anonymous"
-                    className="w-full h-full object-contain relative z-10 drop-shadow-lg group-hover:scale-110 transition-transform duration-300"
-                  />
-                ) : (
-                  <div className="w-12 h-12 bg-[#3b3d42] rounded-md relative z-10" />
-                )}
+        {/* Categories */}
+        <div className="p-6 overflow-y-auto min-h-0 flex-1 bg-[#1a1b1e] space-y-8">
+          {Object.entries(
+            filteredItems.reduce((acc, item) => {
+              const cat = item.category || 'Uncategorized';
+              if (!acc[cat]) acc[cat] = [];
+              acc[cat].push(item);
+              return acc;
+            }, {} as Record<string, typeof filteredItems>)
+          ).map(([category, itemsInCategory]) => (
+            <div key={category}>
+              <h3 className="text-sm font-semibold text-[#8E9299] uppercase tracking-wider mb-4 border-b border-[#3b3d42] pb-2">
+                {category}
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {itemsInCategory.map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      onSelect(item.id);
+                      onClose();
+                    }}
+                    className="flex flex-col items-center justify-center p-4 bg-[#242528] rounded-lg border border-[#3b3d42] hover:border-orange-500 hover:bg-[#2a2b30] transition-all group"
+                  >
+                    <div className="w-20 h-20 mb-3 flex items-center justify-center relative">
+                      {/* Background glow effect on hover */}
+                      <div className="absolute inset-0 bg-orange-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                      
+                      {item.imageUrl ? (
+                        <AppImage 
+                          idKey={item.id}
+                          fallbackUrl={item.imageUrl}
+                          alt={item.name} 
+                          className="w-full h-full object-contain relative z-10 drop-shadow-lg group-hover:scale-110 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 bg-[#3b3d42] rounded-md relative z-10" />
+                      )}
+                    </div>
+                    <span className="text-sm font-medium text-[#e4e3e0] text-center group-hover:text-white transition-colors">{item.name}</span>
+                  </button>
+                ))}
               </div>
-              <span className="text-sm font-medium text-[#e4e3e0] text-center group-hover:text-white transition-colors">{item.name}</span>
-            </button>
+            </div>
           ))}
           {filteredItems.length === 0 && (
-            <div className="col-span-full py-12 text-center text-[#8E9299]">
+            <div className="py-12 text-center text-[#8E9299]">
               No items found.
             </div>
           )}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { SummaryData } from '../engine/solver';
 import { items } from '../engine/data';
+import { AppImage } from './AppImage';
 
 interface ItemsTabProps {
   summary: SummaryData | null;
@@ -31,9 +32,9 @@ export function ItemsTab({ summary }: ItemsTabProps) {
             <div key={itemId} className="items-row">
               <div className="items-icon">
                 {item?.imageUrl && (
-                  <img
-                    src={`https://wsrv.nl/?url=${encodeURIComponent(item.imageUrl)}&default=${encodeURIComponent(item.imageUrl)}`}
-                    crossOrigin="anonymous"
+                  <AppImage
+                    idKey={itemId}
+                    fallbackUrl={item.imageUrl}
                     alt={item?.name || itemId}
                   />
                 )}

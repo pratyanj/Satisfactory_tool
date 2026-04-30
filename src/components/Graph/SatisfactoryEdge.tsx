@@ -1,4 +1,5 @@
 import React from 'react';
+import { AppImage } from '../AppImage';
 import { BaseEdge, EdgeProps, getSmoothStepPath, EdgeLabelRenderer } from '@xyflow/react';
 
 export const SatisfactoryEdge = React.memo(function SatisfactoryEdge({
@@ -77,12 +78,12 @@ export const SatisfactoryEdge = React.memo(function SatisfactoryEdge({
                 }`}
             >
               {data?.itemImageUrl && (
-                <img 
-                    src={`https://wsrv.nl/?url=${encodeURIComponent(data.itemImageUrl as string)}&w=32&output=webp`} 
-                    alt="item" 
-                    className="w-3 h-3 object-contain"
-                />
-              )}
+                <AppImage 
+                  idKey={undefined}
+                  fallbackUrl={data.itemImageUrl as string}
+                  className="w-4 h-4 object-contain shrink-0" 
+                  alt="Item" 
+                />)}
               {label}
             </div>
             {isOverloaded && (

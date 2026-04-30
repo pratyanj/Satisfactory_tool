@@ -2,6 +2,7 @@ import { Handle, Position, useReactFlow, NodeProps, useUpdateNodeInternals } fro
 import React, { useEffect } from 'react';
 import { machines } from '../../engine/data';
 import { FlipHorizontal } from 'lucide-react';
+import { AppImage } from '../AppImage';
 
 export const MachineNode = React.memo(function MachineNode({ id, data }: NodeProps) {
   const machineInfo = machines[data.machineId as string];
@@ -33,7 +34,7 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
         {/* Machine image */}
         <div className={`w-[72px] bg-[#101114] flex items-center justify-center shrink-0 overflow-hidden relative ${isFlipped ? 'border-l border-[#2a2d33]' : 'border-r border-[#2a2d33]'}`} style={{ minHeight: 72 }}>
           {machineInfo?.imageUrl ? (
-            <img src={`https://wsrv.nl/?url=${encodeURIComponent(machineInfo.imageUrl)}&w=128&output=webp&maxage=30d`} crossOrigin="anonymous" className="w-full h-full object-cover" alt={machineInfo.name} loading="lazy" />
+            <AppImage idKey={data.machineId as string} fallbackUrl={machineInfo.imageUrl} className="w-full h-full object-cover" alt={machineInfo.name} />
           ) : (
             <div className="w-full h-full bg-[#1c1e22]" />
           )}
@@ -73,7 +74,7 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
           <div key={idx} className="flex items-center gap-1.5 text-[10px]">
             <span className="text-blue-400 font-bold w-4 text-center shrink-0">IN</span>
             {inp.imageUrl && (
-              <img src={`https://wsrv.nl/?url=${encodeURIComponent(inp.imageUrl)}&w=32&output=webp`} className="w-3.5 h-3.5 object-contain shrink-0" alt={inp.name} />
+              <AppImage idKey={inp.itemId} fallbackUrl={inp.imageUrl} className="w-3.5 h-3.5 object-contain shrink-0" alt={inp.name} />
             )}
             <span className="text-[#a0a4ab] truncate flex-1">{inp.name}</span>
             <span className="font-mono text-[#cbd5e1] shrink-0">{inp.ratePerMachine}/m</span>
@@ -84,12 +85,23 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
           <div className="flex items-center gap-1.5 text-[10px]">
             <span className="text-orange-400 font-bold w-4 text-center shrink-0">OUT</span>
             {data.itemImageUrl && (
-              <img src={`https://wsrv.nl/?url=${encodeURIComponent(data.itemImageUrl as string)}&w=32&output=webp`} className="w-3.5 h-3.5 object-contain shrink-0" alt={data.item as string} />
+              <AppImage idKey={data.itemId as string} fallbackUrl={data.itemImageUrl as string} className="w-3.5 h-3.5 object-contain shrink-0" alt={data.item as string} />
             )}
             <span className="text-[#a0a4ab] truncate flex-1">{data.item as string}</span>
             <span className="font-mono text-[#cbd5e1] shrink-0">{outputRatePerMachine}/m</span>
           </div>
         )}
+        {/* Byproducts */}
+        {(data.byproductDetails as any[] || []).length > 0 && (data.byproductDetails as any[]).map((bp: any, idx: number) => (
+          <div key={`bp-${idx}`} className="flex items-center gap-1.5 text-[10px]">
+            <span className="text-orange-400 font-bold w-4 text-center shrink-0">OUT</span>
+            {bp.imageUrl && (
+              <AppImage idKey={bp.itemId} fallbackUrl={bp.imageUrl} className="w-3.5 h-3.5 object-contain shrink-0" alt={bp.name} />
+            )}
+            <span className="text-[#a0a4ab] truncate flex-1">{bp.name}</span>
+            <span className="font-mono text-[#cbd5e1] shrink-0">{bp.ratePerMachine}/m</span>
+          </div>
+        ))}
         {/* Power per machine */}
         {powerPerMachine > 0 && (
           <div className="flex items-center gap-1.5 text-[10px] pt-1 mt-1 border-t border-[#2a2d33]">

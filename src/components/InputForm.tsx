@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { Settings2, Zap, Play } from 'lucide-react';
+import { AppImage } from './AppImage';
 import { items, belts, machines, BeltId, MachineId } from '../engine/data';
 import { ItemModal } from './ItemModal';
+import { CustomSelect } from './CustomSelect';
 
 interface InputFormProps {
   onCalculate: (itemId: string, rate: number, minerId: MachineId, beltId: BeltId) => void;
@@ -58,7 +61,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded shrink-0 overflow-hidden bg-[#242528] flex items-center justify-center p-0.5">
                 {selectedItemData?.imageUrl ? (
-                  <img src={`https://wsrv.nl/?url=${encodeURIComponent(selectedItemData.imageUrl)}&default=${encodeURIComponent(selectedItemData.imageUrl)}`} crossOrigin="anonymous" alt={selectedItemData.name} className="w-full h-full object-contain" />
+                  <AppImage idKey={selectedItemData.id} fallbackUrl={selectedItemData.imageUrl} alt={selectedItemData.name} className="w-full h-full object-contain" />
                 ) : null}
               </div>
               <span className="text-sm font-medium">{selectedItemData?.name || 'Select Item'}</span>
@@ -84,28 +87,20 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">
           <label className="text-xs font-mono tracking-widest text-[#8E9299] uppercase text-[10px]">Miner Tier</label>
-          <select 
+          <CustomSelect 
             value={minerId}
-            onChange={(e) => setMinerId(e.target.value as MachineId)}
-            className="bg-[#1c1e22] border border-[#2a2d33] rounded-lg px-2 py-2 outline-none focus:border-orange-500 transition-colors text-xs"
-          >
-            {availableMiners.map(miner => (
-              <option key={miner.id} value={miner.id}>{miner.name}</option>
-            ))}
-          </select>
+            onChange={(val) => setMinerId(val as MachineId)}
+            options={availableMiners.map(m => ({ value: m.id, label: m.name }))}
+          />
         </div>
 
         <div className="flex flex-col gap-2">
           <label className="text-xs font-mono tracking-widest text-[#8E9299] uppercase text-[10px]">Belt Tier</label>
-          <select 
+          <CustomSelect 
             value={beltId}
-            onChange={(e) => setBeltId(e.target.value as BeltId)}
-            className="bg-[#1c1e22] border border-[#2a2d33] rounded-lg px-2 py-2 outline-none focus:border-orange-500 transition-colors text-xs"
-          >
-            {availableBelts.map(belt => (
-              <option key={belt.id} value={belt.id}>{belt.name}</option>
-            ))}
-          </select>
+            onChange={(val) => setBeltId(val as BeltId)}
+            options={availableBelts.map(b => ({ value: b.id, label: b.name }))}
+          />
         </div>
       </div>
 

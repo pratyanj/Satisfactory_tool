@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { SolverNode } from '../engine/solver';
 import { SummaryData } from '../engine/solver';
 import { items, machines } from '../engine/data';
+import { AppImage } from './AppImage';
 
 interface TreeListProps {
   rootNode: SolverNode | null;
@@ -58,9 +59,9 @@ function TreeNodeRow({ node, depth }: { node: SolverNode; depth: number }) {
         {/* Machine icon */}
         <div className="tree-icon">
           {machine?.imageUrl && (
-            <img
-              src={`https://wsrv.nl/?url=${encodeURIComponent(machine.imageUrl)}&default=${encodeURIComponent(machine.imageUrl)}`}
-              crossOrigin="anonymous"
+            <AppImage
+              idKey={node.machineId}
+              fallbackUrl={machine.imageUrl}
               alt={machine.name}
             />
           )}
@@ -108,9 +109,9 @@ export function TreeList({ rootNode, summary }: TreeListProps) {
       <div className="tree-target">
         <div className="tree-target-icon">
           {item?.imageUrl && (
-            <img
-              src={`https://wsrv.nl/?url=${encodeURIComponent(item.imageUrl)}&default=${encodeURIComponent(item.imageUrl)}`}
-              crossOrigin="anonymous"
+            <AppImage
+              idKey={rootNode.itemId}
+              fallbackUrl={item.imageUrl}
               alt={item?.name}
             />
           )}

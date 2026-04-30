@@ -1,6 +1,7 @@
 import React from 'react';
 import { SummaryData } from '../engine/solver';
 import { items, machines } from '../engine/data';
+import { AppImage } from './AppImage';
 
 interface BuildingsTabProps {
   summary: SummaryData | null;
@@ -42,13 +43,11 @@ export function BuildingsTab({ summary }: BuildingsTabProps) {
               {/* Left: building icon + name + count */}
               <div className="buildings-left">
                 <div className="buildings-icon">
-                  {machine?.imageUrl && (
-                    <img
-                      src={`https://wsrv.nl/?url=${encodeURIComponent(machine.imageUrl)}&default=${encodeURIComponent(machine.imageUrl)}`}
-                      crossOrigin="anonymous"
-                      alt={machine?.name}
-                    />
-                  )}
+                  <AppImage
+                    idKey={detail.machineId}
+                    fallbackUrl={machine?.imageUrl}
+                    alt={machine?.name || detail.machineId}
+                  />
                 </div>
                 <span className="buildings-count">{count}x</span>
                 <span className="buildings-name">{machine?.name || detail.machineId}</span>
@@ -63,13 +62,11 @@ export function BuildingsTab({ summary }: BuildingsTabProps) {
                       {idx > 0 && <span className="buildings-separator">,</span>}
                       {rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}x
                       <span className="buildings-item-icon">
-                        {item?.imageUrl && (
-                          <img
-                            src={`https://wsrv.nl/?url=${encodeURIComponent(item.imageUrl)}&default=${encodeURIComponent(item.imageUrl)}`}
-                            crossOrigin="anonymous"
-                            alt={item?.name || itemId}
-                          />
-                        )}
+                        <AppImage
+                          idKey={itemId}
+                          fallbackUrl={items[itemId]?.imageUrl}
+                          alt={items[itemId]?.name || itemId}
+                        />
                       </span>
                       <span className="buildings-item-name">{item?.name || itemId}</span>
                     </span>
@@ -93,13 +90,11 @@ export function BuildingsTab({ summary }: BuildingsTabProps) {
                   {rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}x
                 </span>
                 <span className="buildings-item-icon">
-                  {item?.imageUrl && (
-                    <img
-                      src={`https://wsrv.nl/?url=${encodeURIComponent(item.imageUrl)}&default=${encodeURIComponent(item.imageUrl)}`}
-                      crossOrigin="anonymous"
-                      alt={item?.name || itemId}
-                    />
-                  )}
+                  <AppImage
+                    idKey={itemId}
+                    fallbackUrl={item?.imageUrl}
+                    alt={item?.name || itemId}
+                  />
                 </span>
                 <span className="buildings-total-name">{item?.name || itemId}</span>
               </div>
