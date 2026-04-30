@@ -24,8 +24,9 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
   const powerPerMachine = data.powerPerMachine as number || 0;
 
   return (
-    <div className={`bg-[#151619] border border-[#2a2d33] rounded-xl shadow-xl w-[320px] text-white font-sans overflow-hidden hover:border-[#4a4d53] transition-colors cursor-pointer group flex flex-col relative`}>
-      <Handle key={`target-${isFlipped}`} type="target" position={isFlipped ? Position.Right : Position.Left} className="w-3 h-3 bg-blue-500 border-none opacity-0 group-hover:opacity-100 transition-opacity" />
+    <div className="relative group">
+      <div className={`bg-[#151619] border border-[#2a2d33] rounded-xl shadow-xl w-[240px] text-white font-sans overflow-hidden group-hover:border-[#4a4d53] transition-colors cursor-pointer flex flex-col relative`}>
+        <Handle key={`target-${isFlipped}`} type="target" position={isFlipped ? Position.Right : Position.Left} className="w-3 h-3 bg-blue-500 border-none opacity-0 group-hover:opacity-100 transition-opacity" />
 
       {/* Top section: image + item name + rate + machine label */}
       <div className={`flex ${isFlipped ? 'flex-row-reverse' : ''}`}>
@@ -62,8 +63,11 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
         </div>
       </div>
 
-      {/* Recipe details section */}
-      <div className="border-t border-[#2a2d33] px-3 py-1.5 bg-[#101114] space-y-1">
+        <Handle key={`source-${isFlipped}`} type="source" position={isFlipped ? Position.Left : Position.Right} className="w-3 h-3 bg-orange-500 border-none opacity-0 group-hover:opacity-100 transition-opacity" />
+      </div>
+
+      {/* Hover Floating Card for Recipe details */}
+      <div className="absolute top-full left-0 mt-2 w-full hidden group-hover:block border border-[#2a2d33] rounded-xl px-3 py-2 bg-[#151619] shadow-2xl z-[100] space-y-1.5 pointer-events-none text-white font-sans">
         {/* Inputs */}
         {inputDetails.length > 0 && inputDetails.map((inp: any, idx: number) => (
           <div key={idx} className="flex items-center gap-1.5 text-[10px]">
@@ -88,14 +92,12 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
         )}
         {/* Power per machine */}
         {powerPerMachine > 0 && (
-          <div className="flex items-center gap-1.5 text-[10px] pt-0.5 border-t border-[#1c1e22]">
+          <div className="flex items-center gap-1.5 text-[10px] pt-1 mt-1 border-t border-[#2a2d33]">
             <span className="text-yellow-500">⚡</span>
             <span className="text-[#8E9299]">{powerPerMachine} MW/machine</span>
           </div>
         )}
       </div>
-
-      <Handle key={`source-${isFlipped}`} type="source" position={isFlipped ? Position.Left : Position.Right} className="w-3 h-3 bg-orange-500 border-none opacity-0 group-hover:opacity-100 transition-opacity" />
     </div>
   );
 });

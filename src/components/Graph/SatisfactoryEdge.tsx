@@ -23,7 +23,7 @@ export const SatisfactoryEdge = React.memo(function SatisfactoryEdge({
     targetX,
     targetY,
     targetPosition,
-    borderRadius: 20,
+    borderRadius: 0,
   });
 
   const isOverloaded = !!data?.isOverloaded;
