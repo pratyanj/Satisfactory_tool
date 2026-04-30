@@ -1,0 +1,104 @@
+{
+  "miner_mk1": {
+    "id": "miner_mk1",
+    "name": "Miner Mk.1",
+    "powerUsage": 5,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk1.png"
+  },
+  "miner_mk2": {
+    "id": "miner_mk2",
+    "name": "Miner Mk.2",
+    "powerUsage": 12,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk2.png"
+  },
+  "miner_mk3": {
+    "id": "miner_mk3",
+    "name": "Miner Mk.3",
+    "powerUsage": 30,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk3.png"
+  },
+  "water_extractor": {
+    "id": "water_extractor",
+    "name": "Water Extractor",
+    "powerUsage": 20,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Water_Extractor.png"
+  },
+  "oil_extractor": {
+    "id": "oil_extractor",
+    "name": "Oil Extractor",
+    "powerUsage": 40,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Oil_Extractor.png"
+  },
+  "resource_well_pressurizer": {
+    "id": "resource_well_pressurizer",
+    "name": "Resource Well Pressurizer",
+    "powerUsage": 150,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Resource_Well_Pressurizer.png"
+  },
+  "smelter": {
+    "id": "smelter",
+    "name": "Smelter",
+    "powerUsage": 4,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Smelter.png"
+  },
+  "foundry": {
+    "id": "foundry",
+    "name": "Foundry",
+    "powerUsage": 16,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Foundry.png"
+  },
+  "constructor": {
+    "id": "constructor",
+    "name": "Constructor",
+    "powerUsage": 4,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Constructor.png"
+  },
+  "assembler": {
+    "id": "assembler",
+    "name": "Assembler",
+    "powerUsage": 15,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Assembler.png"
+  },
+  "manufacturer": {
+    "id": "manufacturer",
+    "name": "Manufacturer",
+    "powerUsage": 55,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Manufacturer.png"
+  },
+  "refinery": {
+    "id": "refinery",
+    "name": "Refinery",
+    "powerUsage": 30,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Refinery.png"
+  },
+  "blender": {
+    "id": "blender",
+    "name": "Blender",
+    "powerUsage": 75,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Blender.png"
+  },
+  "packager": {
+    "id": "packager",
+    "name": "Packager",
+    "powerUsage": 10,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packager.png"
+  },
+  "particle_accelerator": {
+    "id": "particle_accelerator",
+    "name": "Particle Accelerator",
+    "powerUsage": 250,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Particle_Accelerator.png"
+  },
+  "quantum_encoder": {
+    "id": "quantum_encoder",
+    "name": "Quantum Encoder",
+    "powerUsage": 1000,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Quantum_Encoder.png"
+  },
+  "converter": {
+    "id": "converter",
+    "name": "Converter",
+    "powerUsage": 250,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Converter.png"
+  }
+}

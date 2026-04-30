@@ -1,0 +1,27 @@
+{
+  "mk1": {
+    "id": "mk1",
+    "name": "Mk.1 Belt",
+    "capacity": 60
+  },
+  "mk2": {
+    "id": "mk2",
+    "name": "Mk.2 Belt",
+    "capacity": 120
+  },
+  "mk3": {
+    "id": "mk3",
+    "name": "Mk.3 Belt",
+    "capacity": 270
+  },
+  "mk4": {
+    "id": "mk4",
+    "name": "Mk.4 Belt",
+    "capacity": 480
+  },
+  "mk5": {
+    "id": "mk5",
+    "name": "Mk.5 Belt",
+    "capacity": 780
+  }
+}
