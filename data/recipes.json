@@ -1641,5 +1641,55 @@
       }
     ],
     "machineId": "assembler"
+  },
+  {
+    "id": "recipe_dissolved_silica",
+    "outputItemId": "dissolved_silica",
+    "outputRate": 120,
+    "inputs": [
+      {
+        "itemId": "raw_quartz",
+        "rate": 120
+      },
+      {
+        "itemId": "nitric_acid",
+        "rate": 15
+      }
+    ],
+    "machineId": "refinery",
+    "byproducts": [
+      {
+        "itemId": "quartz_crystal",
+        "rate": 75
+      }
+    ]
+  },
+  {
+    "id": "recipe_polymer_resin",
+    "outputItemId": "polymer_resin",
+    "outputRate": 130,
+    "inputs": [
+      {
+        "itemId": "crude_oil",
+        "rate": 60
+      }
+    ],
+    "machineId": "refinery"
+  },
+  {
+    "id": "recipe_fabric",
+    "outputItemId": "fabric",
+    "outputRate": 15,
+    "inputs": [
+      {
+        "itemId": "mycelia",
+        "rate": 15
+      },
+      {
+        "itemId": "biomass",
+        "rate": 75
+      }
+    ],
+    "machineId": "assembler"
   }
 ]

@@ -3,19 +3,19 @@
     "id": "miner_mk1",
     "name": "Miner Mk.1",
     "powerUsage": 5,
-    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk1.png"
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk.1.png"
   },
   "miner_mk2": {
     "id": "miner_mk2",
     "name": "Miner Mk.2",
     "powerUsage": 12,
-    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk2.png"
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk.2.png"
   },
   "miner_mk3": {
     "id": "miner_mk3",
     "name": "Miner Mk.3",
     "powerUsage": 30,
-    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk3.png"
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk.3.png"
   },
   "water_extractor": {
     "id": "water_extractor",

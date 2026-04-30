@@ -3,757 +3,908 @@
     "limestone": {
       "id": "limestone",
       "name": "Limestone",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Limestone.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Limestone.png",
+      "category": "Ores"
     },
     "iron_ore": {
       "id": "iron_ore",
       "name": "Iron Ore",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Ore.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Ore.png",
+      "category": "Ores"
     },
     "copper_ore": {
       "id": "copper_ore",
       "name": "Copper Ore",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Copper_Ore.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Copper_Ore.png",
+      "category": "Ores"
     },
     "caterium_ore": {
       "id": "caterium_ore",
       "name": "Caterium Ore",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Caterium_Ore.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Caterium_Ore.png",
+      "category": "Ores"
     },
     "coal": {
       "id": "coal",
       "name": "Coal",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Coal.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Coal.png",
+      "category": "Ores"
     },
     "raw_quartz": {
       "id": "raw_quartz",
       "name": "Raw Quartz",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Raw_Quartz.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Raw_Quartz.png",
+      "category": "Ores"
     },
     "sulfur": {
       "id": "sulfur",
       "name": "Sulfur",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Sulfur.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Sulfur.png",
+      "category": "Ores"
     },
     "bauxite": {
       "id": "bauxite",
       "name": "Bauxite",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Bauxite.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Bauxite.png",
+      "category": "Ores"
     },
     "sam": {
       "id": "sam",
       "name": "SAM",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/SAM.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/SAM.png",
+      "category": "Ores"
     },
     "uranium": {
       "id": "uranium",
       "name": "Uranium",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Uranium.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Uranium.png",
+      "category": "Ores"
     },
     "iron_ingot": {
       "id": "iron_ingot",
       "name": "Iron Ingot",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Ingot.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Ingot.png",
+      "category": "Ingots"
     },
     "copper_ingot": {
       "id": "copper_ingot",
       "name": "Copper Ingot",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Copper_Ingot.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Copper_Ingot.png",
+      "category": "Ingots"
     },
     "caterium_ingot": {
       "id": "caterium_ingot",
       "name": "Caterium Ingot",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Caterium_Ingot.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Caterium_Ingot.png",
+      "category": "Ingots"
     },
     "steel_ingot": {
       "id": "steel_ingot",
       "name": "Steel Ingot",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Steel_Ingot.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Steel_Ingot.png",
+      "category": "Ingots"
     },
     "aluminum_ingot": {
       "id": "aluminum_ingot",
       "name": "Aluminum Ingot",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Aluminum_Ingot.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Aluminum_Ingot.png",
+      "category": "Ingots"
     },
     "ficsite_ingot": {
       "id": "ficsite_ingot",
       "name": "Ficsite Ingot",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ficsite_Ingot.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ficsite_Ingot.png",
+      "category": "Ingots"
     },
     "concrete": {
       "id": "concrete",
       "name": "Concrete",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Concrete.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Concrete.png",
+      "category": "Minerals"
     },
     "quartz_crystal": {
       "id": "quartz_crystal",
       "name": "Quartz Crystal",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Quartz_Crystal.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Quartz_Crystal.png",
+      "category": "Minerals"
     },
     "silica": {
       "id": "silica",
       "name": "Silica",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Silica.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Silica.png",
+      "category": "Minerals"
     },
     "copper_powder": {
       "id": "copper_powder",
       "name": "Copper Powder",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Copper_Powder.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Copper_Powder.png",
+      "category": "Minerals"
     },
     "polymer_resin": {
       "id": "polymer_resin",
       "name": "Polymer Resin",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Polymer_Resin.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Polymer_Resin.png",
+      "category": "Minerals"
     },
     "petroleum_coke": {
       "id": "petroleum_coke",
       "name": "Petroleum Coke",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Petroleum_Coke.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Petroleum_Coke.png",
+      "category": "Minerals"
     },
     "aluminum_scrap": {
       "id": "aluminum_scrap",
       "name": "Aluminum Scrap",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Aluminum_Scrap.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Aluminum_Scrap.png",
+      "category": "Minerals"
     },
     "alien_protein": {
       "id": "alien_protein",
       "name": "Alien Protein",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alien_Protein.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alien_Protein.png",
+      "category": "Aliens"
     },
     "alien_dna_capsule": {
       "id": "alien_dna_capsule",
       "name": "Alien DNA Capsule",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alien_DNA_Capsule.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alien_DNA_Capsule.png",
+      "category": "Aliens"
     },
     "water": {
       "id": "water",
       "name": "Water",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Water.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Water.png",
+      "category": "Liquids"
     },
     "crude_oil": {
       "id": "crude_oil",
       "name": "Crude Oil",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Crude_Oil.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Crude_Oil.png",
+      "category": "Liquids"
     },
     "heavy_oil_residue": {
       "id": "heavy_oil_residue",
       "name": "Heavy Oil Residue",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Heavy_Oil_Residue.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Heavy_Oil_Residue.png",
+      "category": "Liquids"
     },
     "fuel": {
       "id": "fuel",
       "name": "Fuel",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Fuel.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Fuel.png",
+      "category": "Liquids"
     },
     "liquid_biofuel": {
       "id": "liquid_biofuel",
       "name": "Liquid Biofuel",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Liquid_Biofuel.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Liquid_Biofuel.png",
+      "category": "Liquids"
     },
     "turbofuel": {
       "id": "turbofuel",
       "name": "Turbofuel",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Turbofuel.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Turbofuel.png",
+      "category": "Liquids"
     },
     "alumina_solution": {
       "id": "alumina_solution",
       "name": "Alumina Solution",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alumina_Solution.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alumina_Solution.png",
+      "category": "Liquids"
     },
     "sulfuric_acid": {
       "id": "sulfuric_acid",
       "name": "Sulfuric Acid",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Sulfuric_Acid.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Sulfuric_Acid.png",
+      "category": "Liquids"
     },
     "nitric_acid": {
       "id": "nitric_acid",
       "name": "Nitric Acid",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nitric_Acid.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nitric_Acid.png",
+      "category": "Liquids"
     },
     "dissolved_silica": {
       "id": "dissolved_silica",
       "name": "Dissolved Silica",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Dissolved_Silica.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Dissolved_Silica.png",
+      "category": "Liquids"
     },
     "nitrogen_gas": {
       "id": "nitrogen_gas",
       "name": "Nitrogen Gas",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nitrogen_Gas.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nitrogen_Gas.png",
+      "category": "Gas"
     },
     "rocket_fuel": {
       "id": "rocket_fuel",
       "name": "Rocket Fuel",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Rocket_Fuel.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Rocket_Fuel.png",
+      "category": "Gas"
     },
     "ionized_fuel": {
       "id": "ionized_fuel",
       "name": "Ionized Fuel",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ionized_Fuel.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ionized_Fuel.png",
+      "category": "Gas"
     },
     "dark_matter_residue": {
       "id": "dark_matter_residue",
       "name": "Dark Matter Residue",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Dark_Matter_Residue.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Dark_Matter_Residue.png",
+      "category": "Gas"
     },
     "excited_photonic_matter": {
       "id": "excited_photonic_matter",
       "name": "Excited Photonic Matter",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Excited_Photonic_Matter.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Excited_Photonic_Matter.png",
+      "category": "Gas"
     },
     "iron_rod": {
       "id": "iron_rod",
       "name": "Iron Rod",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Rod.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Rod.png",
+      "category": "Standard Parts"
     },
     "screw": {
       "id": "screw",
       "name": "Screw",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Screw.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Screw.png",
+      "category": "Standard Parts"
     },
     "iron_plate": {
       "id": "iron_plate",
       "name": "Iron Plate",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Plate.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Plate.png",
+      "category": "Standard Parts"
     },
     "reinforced_iron_plate": {
       "id": "reinforced_iron_plate",
       "name": "Reinforced Iron Plate",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Reinforced_Iron_Plate.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Reinforced_Iron_Plate.png",
+      "category": "Standard Parts"
     },
     "copper_sheet": {
       "id": "copper_sheet",
       "name": "Copper Sheet",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Copper_Sheet.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Copper_Sheet.png",
+      "category": "Standard Parts"
     },
     "alclad_aluminum_sheet": {
       "id": "alclad_aluminum_sheet",
       "name": "Alclad Aluminum Sheet",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alclad_Aluminum_Sheet.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alclad_Aluminum_Sheet.png",
+      "category": "Standard Parts"
     },
     "aluminum_casing": {
       "id": "aluminum_casing",
       "name": "Aluminum Casing",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Aluminum_Casing.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Aluminum_Casing.png",
+      "category": "Standard Parts"
     },
     "steel_pipe": {
       "id": "steel_pipe",
       "name": "Steel Pipe",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Steel_Pipe.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Steel_Pipe.png",
+      "category": "Standard Parts"
     },
     "steel_beam": {
       "id": "steel_beam",
       "name": "Steel Beam",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Steel_Beam.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Steel_Beam.png",
+      "category": "Standard Parts"
     },
     "encased_industrial_beam": {
       "id": "encased_industrial_beam",
       "name": "Encased Industrial Beam",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Encased_Industrial_Beam.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Encased_Industrial_Beam.png",
+      "category": "Standard Parts"
     },
     "modular_frame": {
       "id": "modular_frame",
       "name": "Modular Frame",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Modular_Frame.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Modular_Frame.png",
+      "category": "Standard Parts"
     },
     "heavy_modular_frame": {
       "id": "heavy_modular_frame",
       "name": "Heavy Modular Frame",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Heavy_Modular_Frame.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Heavy_Modular_Frame.png",
+      "category": "Standard Parts"
     },
     "fused_modular_frame": {
       "id": "fused_modular_frame",
       "name": "Fused Modular Frame",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Fused_Modular_Frame.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Fused_Modular_Frame.png",
+      "category": "Standard Parts"
     },
     "ficsite_trigon": {
       "id": "ficsite_trigon",
       "name": "Ficsite Trigon",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ficsite_Trigon.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ficsite_Trigon.png",
+      "category": "Standard Parts"
     },
     "fabric": {
       "id": "fabric",
       "name": "Fabric",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Fabric.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Fabric.png",
+      "category": "Standard Parts"
     },
     "plastic": {
       "id": "plastic",
       "name": "Plastic",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Plastic.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Plastic.png",
+      "category": "Standard Parts"
     },
     "rubber": {
       "id": "rubber",
       "name": "Rubber",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Rubber.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Rubber.png",
+      "category": "Standard Parts"
     },
     "rotor": {
       "id": "rotor",
       "name": "Rotor",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Rotor.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Rotor.png",
+      "category": "Industrial Parts"
     },
     "stator": {
       "id": "stator",
       "name": "Stator",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Stator.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Stator.png",
+      "category": "Industrial Parts"
     },
     "battery": {
       "id": "battery",
       "name": "Battery",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Battery.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Battery.png",
+      "category": "Industrial Parts"
     },
     "motor": {
       "id": "motor",
       "name": "Motor",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Motor.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Motor.png",
+      "category": "Industrial Parts"
     },
     "heat_sink": {
       "id": "heat_sink",
       "name": "Heat Sink",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Heat_Sink.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Heat_Sink.png",
+      "category": "Industrial Parts"
     },
     "cooling_system": {
       "id": "cooling_system",
       "name": "Cooling System",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Cooling_System.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Cooling_System.png",
+      "category": "Industrial Parts"
     },
     "turbo_motor": {
       "id": "turbo_motor",
       "name": "Turbo Motor",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Turbo_Motor.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Turbo_Motor.png",
+      "category": "Industrial Parts"
     },
     "wire": {
       "id": "wire",
       "name": "Wire",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Wire.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Wire.png",
+      "category": "Electronics"
     },
     "cable": {
       "id": "cable",
       "name": "Cable",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Cable.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Cable.png",
+      "category": "Electronics"
     },
     "quickwire": {
       "id": "quickwire",
       "name": "Quickwire",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Quickwire.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Quickwire.png",
+      "category": "Electronics"
     },
     "circuit_board": {
       "id": "circuit_board",
       "name": "Circuit Board",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Circuit_Board.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Circuit_Board.png",
+      "category": "Electronics"
     },
     "ai_limiter": {
       "id": "ai_limiter",
       "name": "AI Limiter",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/AI_Limiter.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/AI_Limiter.png",
+      "category": "Electronics"
     },
     "high_speed_connector": {
       "id": "high_speed_connector",
       "name": "High-Speed Connector",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/High-Speed_Connector.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/High-Speed_Connector.png",
+      "category": "Electronics"
     },
     "reanimated_sam": {
       "id": "reanimated_sam",
       "name": "Reanimated SAM",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Reanimated_SAM.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Reanimated_SAM.png",
+      "category": "Electronics"
     },
     "sam_fluctuator": {
       "id": "sam_fluctuator",
       "name": "SAM Fluctuator",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/SAM_Fluctuator.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/SAM_Fluctuator.png",
+      "category": "Electronics"
     },
     "computer": {
       "id": "computer",
       "name": "Computer",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Computer.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Computer.png",
+      "category": "Communications"
     },
     "supercomputer": {
       "id": "supercomputer",
       "name": "Supercomputer",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Supercomputer.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Supercomputer.png",
+      "category": "Communications"
     },
     "radio_control_unit": {
       "id": "radio_control_unit",
       "name": "Radio Control Unit",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Radio_Control_Unit.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Radio_Control_Unit.png",
+      "category": "Communications"
     },
     "crystal_oscillator": {
       "id": "crystal_oscillator",
       "name": "Crystal Oscillator",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Crystal_Oscillator.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Crystal_Oscillator.png",
+      "category": "Communications"
     },
     "superposition_oscillator": {
       "id": "superposition_oscillator",
       "name": "Superposition Oscillator",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Superposition_Oscillator.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Superposition_Oscillator.png",
+      "category": "Communications"
     },
     "diamonds": {
       "id": "diamonds",
       "name": "Diamonds",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Diamonds.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Diamonds.png",
+      "category": "Quantum Technology"
     },
     "time_crystal": {
       "id": "time_crystal",
       "name": "Time Crystal",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Time_Crystal.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Time_Crystal.png",
+      "category": "Quantum Technology"
     },
     "dark_matter_crystal": {
       "id": "dark_matter_crystal",
       "name": "Dark Matter Crystal",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Dark_Matter_Crystal.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Dark_Matter_Crystal.png",
+      "category": "Quantum Technology"
     },
     "singularity_cell": {
       "id": "singularity_cell",
       "name": "Singularity Cell",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Singularity_Cell.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Singularity_Cell.png",
+      "category": "Quantum Technology"
     },
     "neural_quantum_processor": {
       "id": "neural_quantum_processor",
       "name": "Neural-Quantum Processor",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Neural-Quantum_Processor.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Neural-Quantum_Processor.png",
+      "category": "Quantum Technology"
     },
     "alien_power_matrix": {
       "id": "alien_power_matrix",
       "name": "Alien Power Matrix",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alien_Power_Matrix.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alien_Power_Matrix.png",
+      "category": "Quantum Technology"
     },
     "empty_canister": {
       "id": "empty_canister",
       "name": "Empty Canister",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Empty_Canister.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Empty_Canister.png",
+      "category": "Containers"
     },
     "empty_fluid_tank": {
       "id": "empty_fluid_tank",
       "name": "Empty Fluid Tank",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Empty_Fluid_Tank.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Empty_Fluid_Tank.png",
+      "category": "Containers"
     },
     "pressure_conversion_cube": {
       "id": "pressure_conversion_cube",
       "name": "Pressure Conversion Cube",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Pressure_Conversion_Cube.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Pressure_Conversion_Cube.png",
+      "category": "Containers"
     },
     "packaged_water": {
       "id": "packaged_water",
       "name": "Packaged Water",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Water.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Water.png",
+      "category": "Containers"
     },
     "packaged_alumina_solution": {
       "id": "packaged_alumina_solution",
       "name": "Packaged Alumina Solution",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Alumina_Solution.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Alumina_Solution.png",
+      "category": "Containers"
     },
     "packaged_sulfuric_acid": {
       "id": "packaged_sulfuric_acid",
       "name": "Packaged Sulfuric Acid",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Sulfuric_Acid.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Sulfuric_Acid.png",
+      "category": "Containers"
     },
     "packaged_nitric_acid": {
       "id": "packaged_nitric_acid",
       "name": "Packaged Nitric Acid",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Nitric_Acid.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Nitric_Acid.png",
+      "category": "Containers"
     },
     "packaged_nitrogen_gas": {
       "id": "packaged_nitrogen_gas",
       "name": "Packaged Nitrogen Gas",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Nitrogen_Gas.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Nitrogen_Gas.png",
+      "category": "Containers"
     },
     "leaves": {
       "id": "leaves",
       "name": "Leaves",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Leaves.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Leaves.png",
+      "category": "Fuels"
     },
     "mycelia": {
       "id": "mycelia",
       "name": "Mycelia",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Mycelia.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Mycelia.png",
+      "category": "Fuels"
     },
     "flower_petals": {
       "id": "flower_petals",
       "name": "Flower Petals",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Flower_Petals.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Flower_Petals.png",
+      "category": "Fuels"
     },
     "wood": {
       "id": "wood",
       "name": "Wood",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Wood.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Wood.png",
+      "category": "Fuels"
     },
     "biomass": {
       "id": "biomass",
       "name": "Biomass",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Biomass.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Biomass.png",
+      "category": "Fuels"
     },
     "compacted_coal": {
       "id": "compacted_coal",
       "name": "Compacted Coal",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Compacted_Coal.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Compacted_Coal.png",
+      "category": "Fuels"
     },
     "packaged_oil": {
       "id": "packaged_oil",
       "name": "Packaged Oil",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Oil.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Oil.png",
+      "category": "Fuels"
     },
     "packaged_heavy_oil_residue": {
       "id": "packaged_heavy_oil_residue",
       "name": "Packaged Heavy Oil Residue",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Heavy_Oil_Residue.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Heavy_Oil_Residue.png",
+      "category": "Fuels"
     },
     "solid_biofuel": {
       "id": "solid_biofuel",
       "name": "Solid Biofuel",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Solid_Biofuel.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Solid_Biofuel.png",
+      "category": "Fuels"
     },
     "packaged_fuel": {
       "id": "packaged_fuel",
       "name": "Packaged Fuel",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Fuel.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Fuel.png",
+      "category": "Fuels"
     },
     "packaged_liquid_biofuel": {
       "id": "packaged_liquid_biofuel",
       "name": "Packaged Liquid Biofuel",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Liquid_Biofuel.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Liquid_Biofuel.png",
+      "category": "Fuels"
     },
     "packaged_turbofuel": {
       "id": "packaged_turbofuel",
       "name": "Packaged Turbofuel",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Turbofuel.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Turbofuel.png",
+      "category": "Fuels"
     },
     "packaged_rocket_fuel": {
       "id": "packaged_rocket_fuel",
       "name": "Packaged Rocket Fuel",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Rocket_Fuel.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Rocket_Fuel.png",
+      "category": "Fuels"
     },
     "packaged_ionized_fuel": {
       "id": "packaged_ionized_fuel",
       "name": "Packaged Ionized Fuel",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Ionized_Fuel.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Ionized_Fuel.png",
+      "category": "Fuels"
     },
     "uranium_fuel_rod": {
       "id": "uranium_fuel_rod",
       "name": "Uranium Fuel Rod",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Uranium_Fuel_Rod.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Uranium_Fuel_Rod.png",
+      "category": "Fuels"
     },
     "plutonium_fuel_rod": {
       "id": "plutonium_fuel_rod",
       "name": "Plutonium Fuel Rod",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Plutonium_Fuel_Rod.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Plutonium_Fuel_Rod.png",
+      "category": "Fuels"
     },
     "black_powder": {
       "id": "black_powder",
       "name": "Black Powder",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Black_Powder.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Black_Powder.png",
+      "category": "Consumed"
     },
     "smokeless_powder": {
       "id": "smokeless_powder",
       "name": "Smokeless Powder",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Smokeless_Powder.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Smokeless_Powder.png",
+      "category": "Consumed"
     },
     "gas_filter": {
       "id": "gas_filter",
       "name": "Gas Filter",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Gas_Filter.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Gas_Filter.png",
+      "category": "Consumed"
     },
     "color_cartridge": {
       "id": "color_cartridge",
       "name": "Color Cartridge",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Color_Cartridge.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Color_Cartridge.png",
+      "category": "Consumed"
     },
     "beacon": {
       "id": "beacon",
       "name": "Beacon",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Beacon.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Beacon.png",
+      "category": "Consumed"
     },
     "iodine_infused_filter": {
       "id": "iodine_infused_filter",
       "name": "Iodine-Infused Filter",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iodine-Infused_Filter.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iodine-Infused_Filter.png",
+      "category": "Consumed"
     },
     "iron_rebar": {
       "id": "iron_rebar",
       "name": "Iron Rebar",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Rebar.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Rebar.png",
+      "category": "Ammos"
     },
     "stun_rebar": {
       "id": "stun_rebar",
       "name": "Stun Rebar",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Stun_Rebar.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Stun_Rebar.png",
+      "category": "Ammos"
     },
     "shatter_rebar": {
       "id": "shatter_rebar",
       "name": "Shatter Rebar",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Shatter_Rebar.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Shatter_Rebar.png",
+      "category": "Ammos"
     },
     "explosive_rebar": {
       "id": "explosive_rebar",
       "name": "Explosive Rebar",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Explosive_Rebar.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Explosive_Rebar.png",
+      "category": "Ammos"
     },
     "rifle_ammo": {
       "id": "rifle_ammo",
       "name": "Rifle Ammo",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Rifle_Ammo.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Rifle_Ammo.png",
+      "category": "Ammos"
     },
     "homing_rifle_ammo": {
       "id": "homing_rifle_ammo",
       "name": "Homing Rifle Ammo",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Homing_Rifle_Ammo.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Homing_Rifle_Ammo.png",
+      "category": "Ammos"
     },
     "turbo_rifle_ammo": {
       "id": "turbo_rifle_ammo",
       "name": "Turbo Rifle Ammo",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Turbo_Rifle_Ammo.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Turbo_Rifle_Ammo.png",
+      "category": "Ammos"
     },
     "nobelisk": {
       "id": "nobelisk",
       "name": "Nobelisk",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nobelisk.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nobelisk.png",
+      "category": "Ammos"
     },
     "gas_nobelisk": {
       "id": "gas_nobelisk",
       "name": "Gas Nobelisk",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Gas_Nobelisk.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Gas_Nobelisk.png",
+      "category": "Ammos"
     },
     "pulse_nobelisk": {
       "id": "pulse_nobelisk",
       "name": "Pulse Nobelisk",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Pulse_Nobelisk.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Pulse_Nobelisk.png",
+      "category": "Ammos"
     },
     "cluster_nobelisk": {
       "id": "cluster_nobelisk",
       "name": "Cluster Nobelisk",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Cluster_Nobelisk.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Cluster_Nobelisk.png",
+      "category": "Ammos"
     },
     "nuke_nobelisk": {
       "id": "nuke_nobelisk",
       "name": "Nuke Nobelisk",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nuke_Nobelisk.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nuke_Nobelisk.png",
+      "category": "Ammos"
     },
     "electromagnetic_control_rod": {
       "id": "electromagnetic_control_rod",
       "name": "Electromagnetic Control Rod",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Electromagnetic_Control_Rod.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Electromagnetic_Control_Rod.png",
+      "category": "Nuclear"
     },
     "encased_uranium_cell": {
       "id": "encased_uranium_cell",
       "name": "Encased Uranium Cell",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Encased_Uranium_Cell.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Encased_Uranium_Cell.png",
+      "category": "Nuclear"
     },
     "non_fissile_uranium": {
       "id": "non_fissile_uranium",
       "name": "Non-Fissile Uranium",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Non-Fissile_Uranium.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Non-Fissile_Uranium.png",
+      "category": "Nuclear"
     },
     "plutonium_pellet": {
       "id": "plutonium_pellet",
       "name": "Plutonium Pellet",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Plutonium_Pellet.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Plutonium_Pellet.png",
+      "category": "Nuclear"
     },
     "encased_plutonium_cell": {
       "id": "encased_plutonium_cell",
       "name": "Encased Plutonium Cell",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Encased_Plutonium_Cell.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Encased_Plutonium_Cell.png",
+      "category": "Nuclear"
     },
     "ficsonium": {
       "id": "ficsonium",
       "name": "Ficsonium",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ficsonium.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ficsonium.png",
+      "category": "Nuclear"
     },
     "ficsonium_fuel_rod": {
       "id": "ficsonium_fuel_rod",
       "name": "Ficsonium Fuel Rod",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ficsonium_Fuel_Rod.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ficsonium_Fuel_Rod.png",
+      "category": "Nuclear"
     },
     "uranium_waste": {
       "id": "uranium_waste",
       "name": "Uranium Waste",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Uranium_Waste.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Uranium_Waste.png",
+      "category": "Waste"
     },
     "plutonium_waste": {
       "id": "plutonium_waste",
       "name": "Plutonium Waste",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Plutonium_Waste.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Plutonium_Waste.png",
+      "category": "Waste"
     },
     "blue_power_slug": {
       "id": "blue_power_slug",
       "name": "Blue Power Slug",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Blue_Power_Slug.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Blue_Power_Slug.png",
+      "category": "Special"
     },
     "yellow_power_slug": {
       "id": "yellow_power_slug",
       "name": "Yellow Power Slug",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Yellow_Power_Slug.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Yellow_Power_Slug.png",
+      "category": "Special"
     },
     "purple_power_slug": {
       "id": "purple_power_slug",
       "name": "Purple Power Slug",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Purple_Power_Slug.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Purple_Power_Slug.png",
+      "category": "Special"
     },
     "power_shard": {
       "id": "power_shard",
       "name": "Power Shard",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Power_Shard.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Power_Shard.png",
+      "category": "Special"
     },
     "ficsit_coupon": {
       "id": "ficsit_coupon",
       "name": "FICSIT Coupon",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/FICSIT_Coupon.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/FICSIT_Coupon.png",
+      "category": "Special"
     },
     "smart_plating": {
       "id": "smart_plating",
       "name": "Smart Plating",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Smart_Plating.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Smart_Plating.png",
+      "category": "Special"
     },
     "versatile_framework": {
       "id": "versatile_framework",
       "name": "Versatile Framework",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Versatile_Framework.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Versatile_Framework.png",
+      "category": "Special"
     },
     "automated_wiring": {
       "id": "automated_wiring",
       "name": "Automated Wiring",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Automated_Wiring.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Automated_Wiring.png",
+      "category": "Special"
     },
     "modular_engine": {
       "id": "modular_engine",
       "name": "Modular Engine",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Modular_Engine.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Modular_Engine.png",
+      "category": "Special"
     },
     "adaptive_control_unit": {
       "id": "adaptive_control_unit",
       "name": "Adaptive Control Unit",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Adaptive_Control_Unit.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Adaptive_Control_Unit.png",
+      "category": "Special"
     },
     "assembly_director_system": {
       "id": "assembly_director_system",
       "name": "Assembly Director System",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Assembly_Director_System.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Assembly_Director_System.png",
+      "category": "Special"
     },
     "magnetic_field_generator": {
       "id": "magnetic_field_generator",
       "name": "Magnetic Field Generator",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Magnetic_Field_Generator.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Magnetic_Field_Generator.png",
+      "category": "Special"
     },
     "thermal_propulsion_rocket": {
       "id": "thermal_propulsion_rocket",
       "name": "Thermal Propulsion Rocket",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Thermal_Propulsion_Rocket.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Thermal_Propulsion_Rocket.png",
+      "category": "Special"
     },
     "nuclear_pasta": {
       "id": "nuclear_pasta",
       "name": "Nuclear Pasta",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nuclear_Pasta.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nuclear_Pasta.png",
+      "category": "Special"
     },
     "biochemical_sculptor": {
       "id": "biochemical_sculptor",
       "name": "Biochemical Sculptor",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Biochemical_Sculptor.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Biochemical_Sculptor.png",
+      "category": "Special"
     },
     "ballistic_warp_drive": {
       "id": "ballistic_warp_drive",
       "name": "Ballistic Warp Drive",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ballistic_Warp_Drive.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ballistic_Warp_Drive.png",
+      "category": "Special"
     },
     "ai_expansion_server": {
       "id": "ai_expansion_server",
       "name": "AI Expansion Server",
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/AI_Expansion_Server.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/AI_Expansion_Server.png",
+      "category": "Special"
     }
   },
   "machines": {
@@ -761,19 +912,19 @@
       "id": "miner_mk1",
       "name": "Miner Mk.1",
       "powerUsage": 5,
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk1.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk.1.png"
     },
     "miner_mk2": {
       "id": "miner_mk2",
       "name": "Miner Mk.2",
       "powerUsage": 12,
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk2.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk.2.png"
     },
     "miner_mk3": {
       "id": "miner_mk3",
       "name": "Miner Mk.3",
       "powerUsage": 30,
-      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk3.png"
+      "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Miner_Mk.3.png"
     },
     "water_extractor": {
       "id": "water_extractor",
