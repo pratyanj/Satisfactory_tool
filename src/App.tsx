@@ -10,12 +10,13 @@ import { FactoryGraph } from './components/Graph/FactoryGraph';
 import { TreeList } from './components/TreeList';
 import { ItemsTab } from './components/ItemsTab';
 import { BuildingsTab } from './components/BuildingsTab';
+import { MapTab } from './components/Map/MapTab';
 import { solve, calculateSummary, SummaryData, SolverNode } from './engine/solver';
 import { mapSolverResultToGraph, LayoutMode } from './engine/graphMapper';
 import { BeltId, MachineId, items, machines, belts } from './engine/data';
 import { Edge, Node } from '@xyflow/react';
 
-type MainTab = 'network_graph' | 'tree_list' | 'items' | 'buildings';
+type MainTab = 'network_graph' | 'tree_list' | 'items' | 'buildings' | 'world_map';
 
 const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
   {
@@ -59,6 +60,17 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
         <path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/>
         <path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/>
         <path d="M8 10h.01"/><path d="M8 14h.01"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'world_map',
+    label: 'World Map',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="2" y1="12" x2="22" y2="12"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
       </svg>
     ),
   },
@@ -194,6 +206,8 @@ export default function App() {
         return <ItemsTab summary={summary} />;
       case 'buildings':
         return <BuildingsTab summary={summary} />;
+      case 'world_map':
+        return <MapTab />;
       default:
         return null;
     }
