@@ -144,7 +144,7 @@ export function WorldMap({
 
   const center: L.LatLngExpression = [MAP_IMAGE_SIZE / 2, MAP_IMAGE_SIZE / 2];
   const layerConfig = MAP_LAYERS.find(l => l.id === mapLayer);
-  const bgUrl = layerConfig?.url ?? '/map/world_map.jpg';
+  const bgUrl = layerConfig?.url ?? '/map/maprz5.png';
 
   return (
     <div className="world-map-root">

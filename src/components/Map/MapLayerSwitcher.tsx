@@ -18,13 +18,13 @@ export const MAP_LAYERS: MapLayerConfig[] = [
   {
     id: 'realistic',
     label: 'Realistic',
-    url: '/map/world_map.jpg',
+    url: '/map/maprz5.png',
     thumb: '#1a3a2a',
   },
   {
     id: 'blueprint',
-    label: 'Blueprint',
-    url: '/map/world_map.jpg', // same for now — will swap when topology asset added
+    label: 'Game Map',
+    url: '/map/mapgz5.png',
     thumb: '#0d1b2e',
   },
   {
@@ -54,7 +54,7 @@ export function MapLayerSwitcher({ current, onChange }: MapLayerSwitcherProps) {
           >
             <div
               className="mls-thumb"
-              style={{ background: layer.id === 'realistic' ? `url(${layer.url}) center/cover` : layer.thumb }}
+              style={{ background: layer.id !== 'blank' ? `url(${layer.url}) center/cover` : layer.thumb }}
             />
             <span className="mls-label">{layer.label}</span>
           </button>

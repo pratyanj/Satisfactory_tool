@@ -11,6 +11,7 @@ import { TreeList } from './components/TreeList';
 import { ItemsTab } from './components/ItemsTab';
 import { BuildingsTab } from './components/BuildingsTab';
 import { MapTab } from './components/Map/MapTab';
+import { WorldMapTab } from './components/Map/WorldMapTab';
 import { solve, calculateSummary, SummaryData, SolverNode } from './engine/solver';
 import { mapSolverResultToGraph, LayoutMode } from './engine/graphMapper';
 import { BeltId, MachineId, items, machines, belts } from './engine/data';
@@ -65,7 +66,7 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
   },
 ];
 
-type TopLevelTab = 'planner' | 'map';
+type TopLevelTab = 'planner' | 'save_map' | 'world_map';
 
 export default function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
@@ -219,17 +220,24 @@ export default function App() {
         <div className="flex bg-[#1c1e22] rounded-xl p-1.5 border border-[#2a2d33] shadow-lg">
           <button 
             onClick={() => setTopLevelTab('planner')} 
-            className={`px-8 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'planner' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
+            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'planner' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             Production Planner
           </button>
           <button 
-            onClick={() => setTopLevelTab('map')} 
-            className={`px-8 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'map' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
+            onClick={() => setTopLevelTab('save_map')} 
+            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'save_map' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            Save Game Map
+          </button>
+          <button 
+            onClick={() => setTopLevelTab('world_map')} 
+            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'world_map' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            Interactive Map
+            World Map
           </button>
         </div>
 
@@ -285,9 +293,13 @@ export default function App() {
             {summary && <Summary summary={summary} />}
           </div>
         </main>
-      ) : (
+      ) : topLevelTab === 'save_map' ? (
         <main className="flex-1 w-full mx-auto relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
           <MapTab />
+        </main>
+      ) : (
+        <main className="flex-1 w-full mx-auto relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
+          <WorldMapTab />
         </main>
       )}
 
