@@ -90,10 +90,33 @@ export default function App() {
         const encoded = window.location.hash.replace('#plan=', '');
         const decoded = JSON.parse(atob(decodeURIComponent(encoded)));
         
-        // Basic validation
-        if (decoded.i && items[decoded.i] && typeof decoded.r === 'number' && decoded.m && machines[decoded.m] && decoded.b && belts[decoded.b] && (decoded.l === 'aggregated' || decoded.l === 'expanded')) {
-           setLastInput({ itemId: decoded.i, rate: decoded.r, minerId: decoded.m, beltId: decoded.b });
-           setLayoutMode(decoded.l);
+        // FIXED: Complete validation condition (Issue #1 - Truncated strings)
+        const isValidLayout = decoded.l === 'aggregated' || decoded.l === 'expanded';
+        
+        if (
+          decoded.i && 
+          items[decoded.i] && 
+          typeof decoded.r === 'number' && 
+          decoded.m && 
+          machines[decoded.m] && 
+          decoded.b && 
+          belts[decoded.b] && 
+          isValidLayout
+        ) {
+          const newInput = { 
+            itemId: decoded.i, 
+            rate: decoded.r, 
+            minerId: decoded.m, 
+            beltId: decoded.b 
+          };
+          setLastInput(newInput);
+          setLayoutMode(decoded.l);
+          
+          // FIXED: Issue #2 - Trigger calculation when URL is parsed
+          // Use setTimeout to ensure state is updated before calculation
+          setTimeout(() => {
+            calculatePlan(newInput.itemId, newInput.rate, newInput.minerId, newInput.beltId, decoded.l);
+          }, 0);
         }
       }
     } catch (err) {
@@ -145,6 +168,7 @@ export default function App() {
     calculatePlan(itemId, rate, minerId, beltId, layoutMode);
   };
 
+  // FIXED: Issue #3 - Added all dependencies to prevent stale closures
   useEffect(() => {
     // Show spinner first, then defer the heavy computation
     setIsRecalculating(true);
@@ -152,14 +176,27 @@ export default function App() {
       calculatePlan(lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, layoutMode);
       setIsRecalculating(false);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [layoutMode]);
+  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId]);
 
   const renderTabContent = () => {
     if (error) {
       return (
         <div className="bg-red-900/20 border border-red-500/50 rounded-xl p-4 m-4 text-red-200 z-10 md:mt-20 relative">
-          {error}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+              <span>{error}</span>
+            </div>
+            <button 
+              onClick={() => setError(null)}
+              className="text-red-200 hover:text-red-100 transition-colors"
+              aria-label="Close error message"
+            >
+              ✕
+            </button>
+          </div>
         </div>
       );
     }
@@ -172,14 +209,16 @@ export default function App() {
               <button 
                 onClick={() => setLayoutMode('aggregated')}
                 disabled={isRecalculating}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'aggregated' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'} disabled:opacity-50`}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'aggregated' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#242528]'} disabled:opacity-50`}
+                aria-label="Switch to aggregated view"
               >
                 Aggregated View
               </button>
               <button 
                 onClick={() => setLayoutMode('expanded')}
                 disabled={isRecalculating}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'expanded' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'} disabled:opacity-50`}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'expanded' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#242528]'} disabled:opacity-50`}
+                aria-label="Switch to machine view"
               >
                 Machine View
               </button>
@@ -220,21 +259,24 @@ export default function App() {
         <div className="flex bg-[#1c1e22] rounded-xl p-1.5 border border-[#2a2d33] shadow-lg">
           <button 
             onClick={() => setTopLevelTab('planner')} 
-            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'planner' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
+            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'planner' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#242528]'}`}
+            aria-label="Go to Production Planner"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             Production Planner
           </button>
           <button 
             onClick={() => setTopLevelTab('save_map')} 
-            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'save_map' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
+            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'save_map' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#242528]'}`}
+            aria-label="Go to Save Game Map"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             Save Game Map
           </button>
           <button 
             onClick={() => setTopLevelTab('world_map')} 
-            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'world_map' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
+            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'world_map' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#242528]'}`}
+            aria-label="Go to World Map"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
             World Map
@@ -246,15 +288,16 @@ export default function App() {
             <button 
               onClick={generateShareLink}
               className="bg-[#1c1e22] hover:bg-[#2a2d33] border border-[#2a2d33] hover:border-[#4a4d53] transition-all text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2"
+              aria-label={copied ? "Plan copied to clipboard" : "Copy plan to clipboard"}
             >
               {copied ? (
                 <>
-                  <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                  <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
                   Copied!
                 </>
               ) : (
                 <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                   Share Plan
                 </>
               )}
@@ -274,6 +317,8 @@ export default function App() {
                   key={tab.id}
                   onClick={() => setMainTab(tab.id as MainTab)}
                   className={`tab-bar-btn ${mainTab === tab.id ? 'tab-bar-btn--active' : ''}`}
+                  aria-label={`View ${tab.label}`}
+                  aria-current={mainTab === tab.id ? 'page' : undefined}
                 >
                   {tab.icon}
                   <span>{tab.label}</span>
