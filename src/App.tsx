@@ -298,7 +298,7 @@ export default function App() {
           <MapTab />
         </main>
       ) : (
-        <main className="flex-1 w-full mx-auto relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
+        <main className="flex-1 w-full mx-auto relative flex flex-col rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
           <WorldMapTab />
         </main>
       )}
