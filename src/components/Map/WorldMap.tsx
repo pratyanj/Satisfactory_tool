@@ -2,7 +2,7 @@
  * WorldMap.tsx — Sprint 3 update
  * Adds PlayerMarker and ResourceNodeLayer integration
  */
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MapContainer, ImageOverlay, Polyline, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -41,8 +41,17 @@ function MapController({
   onZoomChange: (z: number) => void;
 }) {
   const map = useMap();
-  useEffect(() => { mapRef.current = map; onZoomChange(map.getZoom()); }, [map]);
-  useMapEvents({ zoomend: () => onZoomChange(map.getZoom()) });
+  useEffect(() => { 
+    console.log('[MapController] Map mounted or updated:', map);
+    mapRef.current = map; 
+    onZoomChange(map.getZoom()); 
+  }, [map]);
+  useMapEvents({ 
+    zoomend: () => {
+      console.log('[MapController] Zoom ended:', map.getZoom());
+      onZoomChange(map.getZoom());
+    }
+  });
   return null;
 }
 
@@ -56,8 +65,10 @@ function BuildingMarkersLayer({
   altitudeRange: AltitudeRange | null;
   onPlanProduction?: (itemId: string, rate: number) => void;
 }) {
-  const visible = useMemo(() =>
-    buildings.filter(b => {
+  console.log('[BuildingMarkersLayer] Render. Buildings count:', buildings.length);
+
+  const visible = useMemo(() => {
+    const v = buildings.filter(b => {
       const info = classifyBuilding(b.typePath);
       if (!layers.categories[info.category]) return false;
       if (altitudeRange) {
@@ -65,9 +76,10 @@ function BuildingMarkersLayer({
         if (zm < altitudeRange.low || zm > altitudeRange.high) return false;
       }
       return true;
-    }),
-    [buildings, layers.categories, altitudeRange],
-  );
+    });
+    console.log('[BuildingMarkersLayer] Visible buildings calculated:', v.length);
+    return v;
+  }, [buildings, layers.categories, altitudeRange]);
 
   return (
     <>
@@ -129,6 +141,47 @@ interface WorldMapProps {
   onPlanProduction?: (itemId: string, rate: number) => void;
 }
 
+// ─── Map Image Loader ───────────────────────────────────────────────────────────
+function MapImageLoader({ url, onLoaded }: { url: string; onLoaded: () => void }) {
+  const [pct, setPct] = useState(0);
+
+  useEffect(() => {
+    let frame = 10;
+    const timer = setInterval(() => {
+      frame = Math.min(frame + 5, 85);
+      setPct(frame);
+    }, 100);
+
+    const img = new Image();
+    img.onload = () => {
+      clearInterval(timer);
+      setPct(100);
+      setTimeout(onLoaded, 300);
+    };
+    img.onerror = () => {
+      clearInterval(timer);
+      setPct(100);
+      setTimeout(onLoaded, 300);
+    };
+    img.src = url;
+
+    return () => clearInterval(timer);
+  }, [url, onLoaded]);
+
+  return (
+    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#0d1117] transition-opacity duration-300">
+      <div className="w-16 h-16 border-4 border-[#2a2d33] border-t-[#f97316] rounded-full animate-spin mb-4" />
+      <div className="text-[#c4c7cd] font-semibold text-lg animate-pulse mb-2">Downloading High-Res Map...</div>
+      <div className="text-[#8E9299] text-sm mb-6 max-w-sm text-center">
+        The map image is around 45MB and might take a moment to load depending on your network.
+      </div>
+      <div className="w-64 h-2 bg-[#1a1b1e] rounded overflow-hidden">
+        <div className="h-full bg-orange-500 transition-all duration-300" style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 export function WorldMap({
   buildings, conveyors, pipes, powerLines, players,
@@ -138,6 +191,8 @@ export function WorldMap({
   onMapLayerChange,
   onPlanProduction,
 }: WorldMapProps) {
+  console.log('[WorldMap] Rendering with mapLayer:', mapLayer, 'buildings count:', buildings.length);
+
   const internalRef = useRef<L.Map | null>(null);
   const combinedRef = (mapRef as React.MutableRefObject<L.Map | null>) ?? internalRef;
   const [zoom, setZoom] = useState(-2);
@@ -145,21 +200,45 @@ export function WorldMap({
   const center: L.LatLngExpression = [MAP_IMAGE_SIZE / 2, MAP_IMAGE_SIZE / 2];
   const layerConfig = MAP_LAYERS.find(l => l.id === mapLayer);
   const bgUrl = layerConfig?.url ?? '/map/maprz5.png';
+  console.log('[WorldMap] Background URL resolved to:', bgUrl);
+
+  // Track whether the background image has finished downloading.
+  // BUG FIX: onLoaded must be stable (useCallback) so MapImageLoader's
+  // useEffect doesn't re-run on every parent render and reset progress.
+  const [bgLoaded, setBgLoaded] = useState(false);
+  const handleBgLoaded = useCallback(() => {
+    console.log('[WorldMap] Background image loaded, revealing map.');
+    setBgLoaded(true);
+  }, []);
+
+  // Reset loader when the user switches map layer
+  useEffect(() => {
+    if (bgUrl) {
+      console.log('[WorldMap] bgUrl changed, resetting bgLoaded:', bgUrl);
+      setBgLoaded(false);
+    } else {
+      // "No Map" blank layer — nothing to load
+      setBgLoaded(true);
+    }
+  }, [bgUrl]);
 
   return (
-    <div className="world-map-root">
+    <div className="world-map-root flex flex-col flex-1">
       {buildings.length > 0 && (
         <div className="world-map-search-overlay">
           <MapSearch buildings={buildings} mapRef={combinedRef} />
         </div>
       )}
 
+      {/* Layer switcher (Realistic / Game Map / No Map) */}
       {onMapLayerChange && (
         <div className="world-map-layer-switcher">
           <MapLayerSwitcher current={mapLayer} onChange={onMapLayerChange} />
         </div>
       )}
 
+      {/* MapContainer is ALWAYS mounted so Leaflet initialises immediately.
+          The loading overlay above covers it until the image is ready. */}
       <MapContainer
         crs={CRS} center={center} zoom={-2} minZoom={-4} maxZoom={2}
         maxBounds={[[-200, -200], [MAP_IMAGE_SIZE + 200, MAP_IMAGE_SIZE + 200]]}
@@ -172,10 +251,10 @@ export function WorldMap({
 
         {bgUrl && <ImageOverlay url={bgUrl} bounds={MAP_BOUNDS} opacity={1} />}
 
-        {/* Resource nodes (static, no save needed) */}
+        {/* Resource nodes — visible even without a save file */}
         {layers.resourceNodes && <ResourceNodeLayer />}
 
-        {/* Building markers */}
+        {/* Building markers from save */}
         <BuildingMarkersLayer
           buildings={buildings} layers={layers} zoom={zoom}
           altitudeRange={altitudeRange} onPlanProduction={onPlanProduction} />

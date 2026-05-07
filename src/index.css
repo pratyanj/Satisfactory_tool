@@ -2,8 +2,13 @@
 
 /* ===== Edge Flow Animation (single global keyframe) ===== */
 @keyframes dash {
-  from { stroke-dashoffset: 20; }
-  to   { stroke-dashoffset: 0; }
+  from {
+    stroke-dashoffset: 20;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 /* ===== Graph Loading Overlay ===== */
@@ -22,8 +27,13 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .graph-loading-spinner {
@@ -36,7 +46,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ===== Tab Bar Navigation ===== */
@@ -486,7 +498,8 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 input[type="number"] {
-  -moz-appearance: textfield; /* Firefox */
+  -moz-appearance: textfield;
+  /* Firefox */
 }
 
 /* ===== Custom Scrollbar ===== */
@@ -542,15 +555,35 @@ input[type="number"] {
   flex: 1;
   min-width: 0;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
 }
 
 /* ── World Map Container ───────────────────────────────────────── */
 .world-map-root {
   position: relative;
   width: 100%;
-  height: 100%;
+  /* Grow to fill the flex-column parent (WorldMapTab wrapper div) */
+  flex: 1;
+  min-height: 0;
+  /* Make this a flex column so .leaflet-container can use flex:1 */
+  display: flex;
+  flex-direction: column;
 }
 
+/* Leaflet map stretches to fill world-map-root */
+.leaflet-container {
+  width: 100% !important;
+  /* flex:1 is more reliable than height:100% inside a flex parent */
+  flex: 1 !important;
+  min-height: 0 !important;
+  background: #0d1117 !important;
+  font-family: inherit;
+}
+
+/* Search bar — floats in the top-center of the map */
 .world-map-search-overlay {
   position: absolute;
   top: 12px;
@@ -564,6 +597,7 @@ input[type="number"] {
 .leaflet-container {
   background: #0d1117 !important;
   font-family: inherit;
+  flex: 1;
 }
 
 /* ── Leaflet Popup Override ────────────────────────────────────── */
@@ -571,7 +605,7 @@ input[type="number"] {
   background: #1c1e22;
   border: 1px solid #2a2d33;
   border-radius: 10px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
   padding: 0;
   overflow: hidden;
 }
@@ -646,7 +680,7 @@ input[type="number"] {
 .map-uploader-icon {
   font-size: 56px;
   line-height: 1;
-  filter: drop-shadow(0 0 24px rgba(249,115,22,0.4));
+  filter: drop-shadow(0 0 24px rgba(249, 115, 22, 0.4));
 }
 
 .map-uploader-title {
@@ -681,12 +715,12 @@ input[type="number"] {
 
 .map-drop-zone:hover {
   border-color: #f97316;
-  background: rgba(249,115,22,0.04);
+  background: rgba(249, 115, 22, 0.04);
 }
 
 .map-drop-zone--active {
   border-color: #f97316;
-  background: rgba(249,115,22,0.08);
+  background: rgba(249, 115, 22, 0.08);
   transform: scale(1.01);
 }
 
@@ -773,8 +807,8 @@ input[type="number"] {
 }
 
 .map-uploader-error {
-  background: rgba(239,68,68,0.1);
-  border: 1px solid rgba(239,68,68,0.3);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 8px;
   padding: 10px 16px;
   font-size: 13px;
@@ -790,6 +824,12 @@ input[type="number"] {
   gap: 8px;
   justify-content: center;
   max-width: 500px;
+}
+
+/* ── Resource Node Markers ─────────────────────────────────────── */
+.rn-diamond {
+  transform: rotate(45deg);
+  border: 1px solid;
 }
 
 .map-feature-chip {
@@ -1003,13 +1043,13 @@ input[type="number"] {
 .map-search-box {
   display: flex;
   align-items: center;
-  background: rgba(13,14,17,0.92);
+  background: rgba(13, 14, 17, 0.92);
   border: 1px solid #2a2d33;
   border-radius: 10px;
   padding: 7px 12px;
   gap: 8px;
   backdrop-filter: blur(8px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 .map-search-icon {
@@ -1054,7 +1094,7 @@ input[type="number"] {
   border: 1px solid #2a2d33;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
   z-index: 2000;
 }
 
@@ -1179,12 +1219,10 @@ input[type="number"] {
 .bpop-header-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to right,
-    rgba(10, 11, 14, 0.92) 0%,
-    rgba(10, 11, 14, 0.6) 60%,
-    rgba(10, 11, 14, 0.2) 100%
-  );
+  background: linear-gradient(to right,
+      rgba(10, 11, 14, 0.92) 0%,
+      rgba(10, 11, 14, 0.6) 60%,
+      rgba(10, 11, 14, 0.2) 100%);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1194,7 +1232,7 @@ input[type="number"] {
 .bpop-emoji {
   font-size: 24px;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
 }
 
 .bpop-header-text {
@@ -1374,8 +1412,15 @@ input[type="number"] {
 
 /* ── Pulse animation for highlighted buildings ────────────────── */
 @keyframes markerPulse {
-  0%, 100% { box-shadow: 0 0 6px #f97316; }
-  50%       { box-shadow: 0 0 18px #f97316, 0 0 32px #f9731644; }
+
+  0%,
+  100% {
+    box-shadow: 0 0 6px #f97316;
+  }
+
+  50% {
+    box-shadow: 0 0 18px #f97316, 0 0 32px #f9731644;
+  }
 }
 
 .bm-root--highlighted {
@@ -1393,18 +1438,11 @@ input[type="number"] {
    SPRINT 2 — Status Bar, Altitude Filter, Layer Switcher
    ================================================================ */
 
-/* ── Map Tab layout with altitude filter ───────────────────────── */
-.map-tab-canvas {
-  position: relative;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
+/* ── Map Tab layout with altitude filter (Sprint 2 additions only — canvas defined above) ── */
 .map-tab-altitude {
   position: absolute;
-  bottom: 38px; /* sits just above the status bar */
+  bottom: 38px;
+  /* sits just above the status bar */
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
@@ -1449,12 +1487,31 @@ input[type="number"] {
   white-space: nowrap;
 }
 
-.msb-left   { flex-shrink: 0; min-width: 140px; }
-.msb-centre { flex: 1; justify-content: center; }
-.msb-biome-section { flex: 1; justify-content: center; }
-.msb-right  { flex-shrink: 0; min-width: 80px; justify-content: center; border-right: none; }
+.msb-left {
+  flex-shrink: 0;
+  min-width: 140px;
+}
 
-.msb-icon { font-size: 12px; }
+.msb-centre {
+  flex: 1;
+  justify-content: center;
+}
+
+.msb-biome-section {
+  flex: 1;
+  justify-content: center;
+}
+
+.msb-right {
+  flex-shrink: 0;
+  min-width: 80px;
+  justify-content: center;
+  border-right: none;
+}
+
+.msb-icon {
+  font-size: 12px;
+}
 
 .msb-label {
   color: #4b5563;
@@ -1463,10 +1520,29 @@ input[type="number"] {
   font-size: 9px;
 }
 
-.msb-text { color: #9ca3af; font-variant-numeric: tabular-nums; }
-.msb-save-name { color: #d1d5db; font-weight: 600; max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
-.msb-coords { color: #f97316; font-weight: 600; font-variant-numeric: tabular-nums; }
-.msb-biome  { color: #4ade80; font-weight: 600; }
+.msb-text {
+  color: #9ca3af;
+  font-variant-numeric: tabular-nums;
+}
+
+.msb-save-name {
+  color: #d1d5db;
+  font-weight: 600;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.msb-coords {
+  color: #f97316;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.msb-biome {
+  color: #4ade80;
+  font-weight: 600;
+}
 
 /* ── AltitudeFilter ────────────────────────────────────────────── */
 .alt-root {
@@ -1478,7 +1554,7 @@ input[type="number"] {
   border: 1px solid #1e2025;
   border-radius: 20px;
   backdrop-filter: blur(8px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
   white-space: nowrap;
 }
 
@@ -1517,8 +1593,13 @@ input[type="number"] {
   outline: none;
 }
 
-.alt-range--low  { z-index: 3; }
-.alt-range--high { z-index: 4; }
+.alt-range--low {
+  z-index: 3;
+}
+
+.alt-range--high {
+  z-index: 4;
+}
 
 .alt-range::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -1530,7 +1611,7 @@ input[type="number"] {
   border: 2px solid #0a0b0d;
   cursor: pointer;
   pointer-events: all;
-  box-shadow: 0 0 4px rgba(249,115,22,0.5);
+  box-shadow: 0 0 4px rgba(249, 115, 22, 0.5);
   transition: transform 0.1s ease;
 }
 
@@ -1590,7 +1671,10 @@ input[type="number"] {
   text-align: center;
 }
 
-.alt-sep { color: #374151; font-size: 11px; }
+.alt-sep {
+  color: #374151;
+  font-size: 11px;
+}
 
 .alt-reset {
   background: none;
@@ -1609,7 +1693,10 @@ input[type="number"] {
   transition: color 0.15s, border-color 0.15s;
 }
 
-.alt-reset:hover { color: #ef4444; border-color: #ef4444; }
+.alt-reset:hover {
+  color: #ef4444;
+  border-color: #ef4444;
+}
 
 /* ── MapLayerSwitcher ───────────────────────────────────────────── */
 .mls-root {
@@ -1618,7 +1705,7 @@ input[type="number"] {
   border-radius: 10px;
   padding: 8px 10px;
   backdrop-filter: blur(8px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
   min-width: 120px;
 }
 
@@ -1649,11 +1736,14 @@ input[type="number"] {
   transition: border-color 0.15s ease, transform 0.1s ease;
 }
 
-.mls-option:hover { border-color: #4b5563; transform: scale(1.03); }
+.mls-option:hover {
+  border-color: #4b5563;
+  transform: scale(1.03);
+}
 
 .mls-option--active {
   border-color: #f97316;
-  box-shadow: 0 0 8px rgba(249,115,22,0.3);
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.3);
 }
 
 .mls-thumb {
@@ -1673,7 +1763,9 @@ input[type="number"] {
   white-space: nowrap;
 }
 
-.mls-option--active .mls-label { color: #f97316; }
+.mls-option--active .mls-label {
+  color: #f97316;
+}
 
 /* ================================================================
    SPRINT 3 — StatsDashboard, PlayerMarker, ResourceNodes
@@ -1705,7 +1797,10 @@ input[type="number"] {
   overflow: hidden;
 }
 
-.sdb-header-icon { font-size: 18px; flex-shrink: 0; }
+.sdb-header-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
 
 .sdb-header-text {
   display: flex;
@@ -1744,7 +1839,11 @@ input[type="number"] {
   flex-shrink: 0;
   transition: color 0.15s, border-color 0.15s;
 }
-.sdb-clear-btn:hover { color: #ef4444; border-color: #ef4444; }
+
+.sdb-clear-btn:hover {
+  color: #ef4444;
+  border-color: #ef4444;
+}
 
 /* ── Quick chips ─────────────────────────────────────────────────── */
 .sdb-chips {
@@ -1800,8 +1899,14 @@ input[type="number"] {
   font-family: inherit;
 }
 
-.sdb-tab:hover { color: #9ca3af; }
-.sdb-tab--active { color: #f97316; border-bottom-color: #f97316; }
+.sdb-tab:hover {
+  color: #9ca3af;
+}
+
+.sdb-tab--active {
+  color: #f97316;
+  border-bottom-color: #f97316;
+}
 
 /* ── Body ────────────────────────────────────────────────────────── */
 .sdb-body {
@@ -1833,7 +1938,7 @@ input[type="number"] {
   align-items: center;
   gap: 3px;
   padding: 8px 4px;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid #1e2025;
   border-radius: 8px;
   cursor: pointer;
@@ -1844,18 +1949,22 @@ input[type="number"] {
 
 .sdb-cat-btn:hover {
   border-color: var(--cat-color, #f97316);
-  background: rgba(249,115,22,0.05);
+  background: rgba(249, 115, 22, 0.05);
 }
 
 .sdb-cat-btn--active {
   border-color: var(--cat-color, #f97316);
-  background: rgba(249,115,22,0.12);
-  box-shadow: 0 0 8px rgba(249,115,22,0.2);
+  background: rgba(249, 115, 22, 0.12);
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.2);
 }
 
-.sdb-cat-btn--empty { opacity: 0.35; }
+.sdb-cat-btn--empty {
+  opacity: 0.35;
+}
 
-.sdb-cat-emoji { font-size: 16px; }
+.sdb-cat-emoji {
+  font-size: 16px;
+}
 
 .sdb-cat-count {
   font-size: 13px;
@@ -1884,12 +1993,14 @@ input[type="number"] {
   align-items: center;
   gap: 8px;
   padding: 6px 8px;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid #1e2025;
   border-radius: 8px;
 }
 
-.sdb-player-icon { font-size: 18px; }
+.sdb-player-icon {
+  font-size: 18px;
+}
 
 .sdb-player-info {
   display: flex;
@@ -1940,8 +2051,13 @@ input[type="number"] {
   font-variant-numeric: tabular-nums;
 }
 
-.sdb-power-prod { color: #22c55e; }
-.sdb-power-cons { color: #f97316; }
+.sdb-power-prod {
+  color: #22c55e;
+}
+
+.sdb-power-cons {
+  color: #f97316;
+}
 
 .sdb-power-bar-wrap {
   height: 6px;
@@ -1955,9 +2071,18 @@ input[type="number"] {
   border-radius: 3px;
   transition: width 0.5s ease;
 }
-.sdb-power-bar--ok   { background: linear-gradient(90deg, #16a34a, #22c55e); }
-.sdb-power-bar--warn { background: linear-gradient(90deg, #d97706, #fbbf24); }
-.sdb-power-bar--crit { background: linear-gradient(90deg, #dc2626, #f87171); }
+
+.sdb-power-bar--ok {
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+}
+
+.sdb-power-bar--warn {
+  background: linear-gradient(90deg, #d97706, #fbbf24);
+}
+
+.sdb-power-bar--crit {
+  background: linear-gradient(90deg, #dc2626, #f87171);
+}
 
 .sdb-power-footer {
   display: flex;
@@ -1975,8 +2100,14 @@ input[type="number"] {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
-.sdb-power-surplus.pos { color: #22c55e; }
-.sdb-power-surplus.neg { color: #ef4444; }
+
+.sdb-power-surplus.pos {
+  color: #22c55e;
+}
+
+.sdb-power-surplus.neg {
+  color: #ef4444;
+}
 
 .sdb-power-chips {
   display: flex;
@@ -1991,7 +2122,7 @@ input[type="number"] {
   align-items: center;
   gap: 2px;
   padding: 8px;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid #1e2025;
   border-radius: 8px;
 }
@@ -2022,7 +2153,7 @@ input[type="number"] {
 .player-marker-icon {
   font-size: 20px;
   z-index: 2;
-  filter: drop-shadow(0 0 4px rgba(255,255,255,0.8));
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
 }
 
 .player-marker-pulse {
@@ -2034,8 +2165,17 @@ input[type="number"] {
 }
 
 @keyframes playerPulse {
-  0%, 100% { transform: scale(1);   opacity: 0.8; }
-  50%       { transform: scale(1.4); opacity: 0.2; }
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.4);
+    opacity: 0.2;
+  }
 }
 
 .player-tooltip {
@@ -2075,7 +2215,10 @@ input[type="number"] {
   flex-shrink: 0;
 }
 
-.rn-tooltip-type { font-weight: 600; text-transform: capitalize; }
+.rn-tooltip-type {
+  font-weight: 600;
+  text-transform: capitalize;
+}
 
 .rn-tooltip-purity {
   font-size: 9px;
@@ -2083,6 +2226,7 @@ input[type="number"] {
   letter-spacing: 0.08em;
   color: #6b7280;
 }
+
 /* ================================================================
    SPRINT 4 — Train / Vehicle / Drone / Power Circuits
    ================================================================ */
@@ -2156,7 +2300,9 @@ input[type="number"] {
   font-variant-numeric: tabular-nums;
 }
 
-.drone-popup-paired { color: #22c55e !important; }
+.drone-popup-paired {
+  color: #22c55e !important;
+}
 
 /* ── Vehicle Marker ───────────────────────────────────────────────── */
 .vehicle-marker {
@@ -2207,4 +2353,82 @@ input[type="number"] {
   height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
+}
+
+/* ================================================================
+   MAP IMAGE LOADING OVERLAY
+   ================================================================ */
+
+.map-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2000;
+  background: #0d1117;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 280px;
+}
+
+.map-loading-icon {
+  font-size: 52px;
+  animation: mapIconBounce 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(249, 115, 22, 0.5));
+}
+
+@keyframes mapIconBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-10px) scale(1.05); }
+}
+
+.map-loading-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.map-loading-bar-wrap {
+  width: 100%;
+  height: 5px;
+  background: #1e2025;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.map-loading-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #c2410c, #f97316, #fdba74);
+  border-radius: 3px;
+  transition: width 0.1s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-loading-bar::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -60%; width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  animation: mapShimmer 1.1s ease-in-out infinite;
+}
+
+@keyframes mapShimmer {
+  0%   { left: -60%; }
+  100% { left: 120%; }
+}
+
+.map-loading-pct {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f97316;
+  font-variant-numeric: tabular-nums;
 }
