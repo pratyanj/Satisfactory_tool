@@ -223,14 +223,7 @@ export function WorldMap({
   }, [bgUrl]);
 
   return (
-    <div className="world-map-root">
-
-      {/* Loading overlay — sits on top while image downloads, then disappears */}
-      {!bgLoaded && bgUrl && (
-        <MapImageLoader url={bgUrl} onLoaded={handleBgLoaded} />
-      )}
-
-      {/* Search bar — only when buildings are loaded from a save */}
+    <div className="world-map-root flex flex-col flex-1">
       {buildings.length > 0 && (
         <div className="world-map-search-overlay">
           <MapSearch buildings={buildings} mapRef={combinedRef} />

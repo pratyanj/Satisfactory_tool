@@ -25,8 +25,8 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
     label: 'Network graph',
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
       </svg>
     ),
   },
@@ -35,8 +35,8 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
     label: 'Tree list',
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
-        <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+        <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" />
+        <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
       </svg>
     ),
   },
@@ -45,10 +45,10 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
     label: 'Items',
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
-        <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
-        <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
-        <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>
+        <line x1="4" y1="21" x2="4" y2="14" /><line x1="4" y1="10" x2="4" y2="3" />
+        <line x1="12" y1="21" x2="12" y2="12" /><line x1="12" y1="8" x2="12" y2="3" />
+        <line x1="20" y1="21" x2="20" y2="16" /><line x1="20" y1="12" x2="20" y2="3" />
+        <line x1="1" y1="14" x2="7" y2="14" /><line x1="9" y1="8" x2="15" y2="8" /><line x1="17" y1="16" x2="23" y2="16" />
       </svg>
     ),
   },
@@ -57,10 +57,10 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
     label: 'Buildings',
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="4" y="2" width="16" height="20" rx="2" ry="2"/>
-        <path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/>
-        <path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/>
-        <path d="M8 10h.01"/><path d="M8 14h.01"/>
+        <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
+        <path d="M9 22v-4h6v4" /><path d="M8 6h.01" /><path d="M16 6h.01" /><path d="M12 6h.01" />
+        <path d="M12 10h.01" /><path d="M12 14h.01" /><path d="M16 10h.01" /><path d="M16 14h.01" />
+        <path d="M8 10h.01" /><path d="M8 14h.01" />
       </svg>
     ),
   },
@@ -74,12 +74,12 @@ export default function App() {
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [rootNode, setRootNode] = useState<SolverNode | null>(null);
   const [error, setError] = useState<string | null>(null);
-  
-  const [lastInput, setLastInput] = useState<{itemId: string, rate: number, minerId: MachineId, beltId: BeltId}>({ itemId: 'copper_sheet', rate: 120, minerId: 'miner_mk1', beltId: 'mk1' });
+
+  const [lastInput, setLastInput] = useState<{ itemId: string, rate: number, minerId: MachineId, beltId: BeltId }>({ itemId: 'copper_sheet', rate: 120, minerId: 'miner_mk1', beltId: 'mk1' });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
   const [mainTab, setMainTab] = useState<MainTab>('network_graph');
   const [topLevelTab, setTopLevelTab] = useState<TopLevelTab>('planner');
-  
+
   const [copied, setCopied] = useState(false);
   const [isRecalculating, setIsRecalculating] = useState(false);
 
@@ -89,11 +89,11 @@ export default function App() {
       if (window.location.hash.startsWith('#plan=')) {
         const encoded = window.location.hash.replace('#plan=', '');
         const decoded = JSON.parse(atob(decodeURIComponent(encoded)));
-        
+
         // Basic validation
         if (decoded.i && items[decoded.i] && typeof decoded.r === 'number' && decoded.m && machines[decoded.m] && decoded.b && belts[decoded.b] && (decoded.l === 'aggregated' || decoded.l === 'expanded')) {
-           setLastInput({ itemId: decoded.i, rate: decoded.r, minerId: decoded.m, beltId: decoded.b });
-           setLayoutMode(decoded.l);
+          setLastInput({ itemId: decoded.i, rate: decoded.r, minerId: decoded.m, beltId: decoded.b });
+          setLayoutMode(decoded.l);
         }
       }
     } catch (err) {
@@ -109,10 +109,10 @@ export default function App() {
       b: lastInput.beltId,
       l: layoutMode
     };
-    
+
     const encoded = encodeURIComponent(btoa(JSON.stringify(payload)));
     const url = `${window.location.origin}${window.location.pathname}#plan=${encoded}`;
-    
+
     navigator.clipboard.writeText(url).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -169,14 +169,14 @@ export default function App() {
         return (
           <div className="w-full h-full">
             <div className="absolute top-4 right-4 z-10 flex bg-[#1c1e22] rounded-lg border border-[#2a2d33] p-1 shadow-xl">
-              <button 
+              <button
                 onClick={() => setLayoutMode('aggregated')}
                 disabled={isRecalculating}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'aggregated' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'} disabled:opacity-50`}
               >
                 Aggregated View
               </button>
-              <button 
+              <button
                 onClick={() => setLayoutMode('expanded')}
                 disabled={isRecalculating}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'expanded' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'} disabled:opacity-50`}
@@ -206,7 +206,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans p-4 md:p-8 gap-6">
-      
+
       <header className="flex justify-between items-center gap-4 shrink-0">
         <div className="flex flex-col gap-1 w-[250px]">
           <h1 className="text-3xl font-semibold tracking-tight text-white flex items-center gap-3">
@@ -215,35 +215,35 @@ export default function App() {
           </h1>
           <p className="text-[#8E9299]">Plan and optimize your production lines effortlessly.</p>
         </div>
-        
+
         {/* Top Level Navigation */}
         <div className="flex bg-[#1c1e22] rounded-xl p-1.5 border border-[#2a2d33] shadow-lg">
-          <button 
-            onClick={() => setTopLevelTab('planner')} 
+          <button
+            onClick={() => setTopLevelTab('planner')}
             className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'planner' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             Production Planner
           </button>
-          <button 
-            onClick={() => setTopLevelTab('save_map')} 
+          <button
+            onClick={() => setTopLevelTab('save_map')}
             className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'save_map' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
             Save Game Map
           </button>
-          <button 
-            onClick={() => setTopLevelTab('world_map')} 
+          <button
+            onClick={() => setTopLevelTab('world_map')}
             className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'world_map' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
             World Map
           </button>
         </div>
 
         <div className="flex justify-end w-[250px]">
           {topLevelTab === 'planner' && (
-            <button 
+            <button
               onClick={generateShareLink}
               className="bg-[#1c1e22] hover:bg-[#2a2d33] border border-[#2a2d33] hover:border-[#4a4d53] transition-all text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2"
             >
@@ -294,11 +294,11 @@ export default function App() {
           </div>
         </main>
       ) : topLevelTab === 'save_map' ? (
-        <main className="flex-1 w-full mx-auto relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
+        <main className="flex flex-col w-full mx-auto relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
           <MapTab />
         </main>
       ) : (
-        <main className="flex-1 w-full mx-auto relative flex flex-col rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
+        <main className="flex flex-col w-full mx-auto relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
           <WorldMapTab />
         </main>
       )}
