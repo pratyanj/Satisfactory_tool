@@ -23,7 +23,7 @@ export function WorldMapTab() {
   console.log('[WorldMapTab] layers config:', layers);
 
   return (
-    <div className="w-full flex-1 min-h-0 flex flex-col relative rounded-2xl overflow-hidden bg-[#0d1117]" data-debug-worldmaptab>
+    <div className="flex flex-col flex-1 w-full h-full relative rounded-2xl overflow-hidden bg-[#0d1117]">
       <WorldMap
         buildings={[]}
         conveyors={[]}
