@@ -2227,6 +2227,368 @@ input[type="number"] {
   color: #6b7280;
 }
 
+.rn-tooltip-coords {
+  font-size: 9px;
+  color: #4b5563;
+  font-variant-numeric: tabular-nums;
+  margin-left: auto;
+}
+
+/* ================================================================
+   WORLD MAP TAB — Root layout
+   ================================================================ */
+
+.wmt-root {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  background: #0d1117;
+}
+
+.wmt-map {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ================================================================
+   RESOURCE NODE SIDEBAR
+   ================================================================ */
+
+.rn-sidebar {
+  width: 272px;
+  min-width: 272px;
+  height: 100%;
+  background: #13151a;
+  border-right: 1px solid #1e2330;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* ── Header ──────────────────────────────────────────────────────── */
+.rn-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px 10px;
+  background: #0d0f14;
+  border-bottom: 1px solid #1e2330;
+  flex-shrink: 0;
+}
+
+.rn-sidebar-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #e4e3e0;
+  letter-spacing: 0.03em;
+}
+
+.rn-sidebar-icon {
+  font-size: 16px;
+}
+
+.rn-sidebar-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.rn-action-btn {
+  padding: 3px 9px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 1px solid;
+}
+
+.rn-action-all {
+  background: rgba(249, 115, 22, 0.12);
+  border-color: rgba(249, 115, 22, 0.4);
+  color: #f97316;
+}
+
+.rn-action-all:hover {
+  background: rgba(249, 115, 22, 0.22);
+  border-color: #f97316;
+}
+
+.rn-action-clear {
+  background: rgba(107, 114, 128, 0.08);
+  border-color: rgba(107, 114, 128, 0.3);
+  color: #6b7280;
+}
+
+.rn-action-clear:not(:disabled):hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #ef4444;
+}
+
+.rn-action-clear.disabled,
+.rn-action-clear:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+/* ── Column headers ──────────────────────────────────────────────── */
+.rn-col-headers {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px 4px;
+  border-bottom: 1px solid #1a1e26;
+  background: #0f1117;
+  flex-shrink: 0;
+}
+
+.rn-col-resource-label {
+  flex: 1;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.rn-col-purity-labels {
+  display: flex;
+  gap: 0;
+  width: 168px; /* 3 × 56px */
+}
+
+.rn-col-purity-label {
+  width: 56px;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ── Resource list (scrollable) ──────────────────────────────────── */
+.rn-resource-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 0 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #2d3038 transparent;
+}
+
+.rn-resource-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.rn-resource-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.rn-resource-list::-webkit-scrollbar-thumb {
+  background: #2d3038;
+  border-radius: 2px;
+}
+
+/* ── Single resource row ─────────────────────────────────────────── */
+.rn-resource-row {
+  display: flex;
+  align-items: center;
+  padding: 5px 14px;
+  transition: background 0.12s;
+  gap: 8px;
+}
+
+.rn-resource-row:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.rn-resource-name-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.rn-resource-name {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rn-resource-total {
+  font-size: 9px;
+  color: #4b5563;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 3 purity buttons per row ────────────────────────────────────── */
+.rn-purity-btns {
+  display: flex;
+  gap: 0;
+  width: 168px; /* 3 × 56px */
+  flex-shrink: 0;
+}
+
+/* ── Single purity circle button ─────────────────────────────────── */
+.rn-purity-btn {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+  border-radius: 50%;
+  font-family: inherit;
+}
+
+.rn-purity-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.rn-purity-btn:not(:disabled):hover {
+  transform: scale(1.1);
+}
+
+.rn-purity-btn:not(:disabled):active {
+  transform: scale(0.96);
+}
+
+/* Inner circle — shows the image */
+.rn-btn-inner {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--ring-color, #6b7280);
+  background: #1a1c22;
+  overflow: hidden;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    opacity 0.18s ease;
+}
+
+/* Active state — full ring glow, full image opacity */
+.rn-purity-btn.active .rn-btn-inner {
+  border-color: var(--ring-color, #6b7280);
+  box-shadow:
+    0 0 0 2px var(--ring-color, #6b7280),
+    0 0 10px var(--ring-color, #6b7280),
+    inset 0 0 6px rgba(0,0,0,0.4);
+  opacity: 1;
+}
+
+/* Inactive state — dim ring and image */
+.rn-purity-btn.inactive .rn-btn-inner {
+  border-color: color-mix(in srgb, var(--ring-color, #6b7280) 25%, #1a1c22);
+  box-shadow: none;
+  opacity: 0.35;
+}
+
+.rn-btn-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 50%;
+  display: block;
+  image-rendering: auto;
+}
+
+.rn-btn-emoji {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Count badge — top-right corner */
+.rn-badge {
+  position: absolute;
+  top: 0;
+  right: 2px;
+  background: #f97316;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  padding: 1px 4px;
+  border-radius: 6px;
+  line-height: 1.4;
+  min-width: 16px;
+  text-align: center;
+  pointer-events: none;
+  border: 1px solid #0d0f14;
+  z-index: 2;
+}
+
+/* ── Legend strip at bottom ─────────────────────────────────────── */
+.rn-legend {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 8px 14px;
+  border-top: 1px solid #1a1e26;
+  background: #0d0f14;
+  flex-shrink: 0;
+}
+
+.rn-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.rn-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ================================================================
+   RESOURCE NODE MAP PINS
+   ================================================================ */
+
+.rn-map-pin {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rn-map-pin:hover {
+  transform: scale(1.15);
+}
+
+
 /* ================================================================
    SPRINT 4 — Train / Vehicle / Drone / Power Circuits
    ================================================================ */

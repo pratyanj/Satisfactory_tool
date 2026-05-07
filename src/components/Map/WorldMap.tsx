@@ -139,6 +139,8 @@ interface WorldMapProps {
   mapLayer?: MapLayerType;
   onMapLayerChange?: (layer: MapLayerType) => void;
   onPlanProduction?: (itemId: string, rate: number) => void;
+  /** Resource node filter: Map<resourceName, Set<purity>> */
+  activeFilters?: Map<string, Set<string>>;
 }
 
 // ─── Map Image Loader ───────────────────────────────────────────────────────────
@@ -190,6 +192,7 @@ export function WorldMap({
   mapLayer = 'realistic',
   onMapLayerChange,
   onPlanProduction,
+  activeFilters,
 }: WorldMapProps) {
   console.log('[WorldMap] Rendering with mapLayer:', mapLayer, 'buildings count:', buildings.length);
 
@@ -252,7 +255,9 @@ export function WorldMap({
         {bgUrl && <ImageOverlay url={bgUrl} bounds={MAP_BOUNDS} opacity={1} />}
 
         {/* Resource nodes — visible even without a save file */}
-        {layers.resourceNodes && <ResourceNodeLayer />}
+        {layers.resourceNodes && (
+          <ResourceNodeLayer activeFilters={activeFilters ?? new Map()} />
+        )}
 
         {/* Building markers from save */}
         <BuildingMarkersLayer
