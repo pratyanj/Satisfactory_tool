@@ -7,7 +7,7 @@
  * for multi-select filtering. Icons are circular images with purity-colored rings.
  */
 import React, { useEffect, useState } from 'react';
-import { Marker, Tooltip } from 'react-leaflet';
+import { Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { gameToLatLng } from './mapUtils';
 
@@ -131,28 +131,104 @@ export function ResourceNodeLayer({ activeFilters }: ResourceNodeLayerProps) {
 
   return (
     <>
-      {visible.map(node => {
-        const color = PURITY_COLORS[node.purity] ?? '#6b7280';
-        return (
-          <React.Fragment key={`rn-${node.id}`}>
-            <Marker
-              position={gameToLatLng(node.world_x, node.world_y)}
-              icon={createPinIcon(node.resource, node.purity)}
-            >
-              <Tooltip direction="top" offset={[0, -6]}>
-                <div className="rn-tooltip">
-                  <span className="rn-tooltip-dot" style={{ background: color }} />
-                  <span className="rn-tooltip-type">{node.resource}</span>
-                  <span className="rn-tooltip-purity">{node.purity}</span>
-                  <span className="rn-tooltip-coords">
-                    {Math.round(node.world_x / 100)}m, {Math.round(node.world_y / 100)}m, {Math.round(node.world_z / 100)}m
-                  </span>
-                </div>
-              </Tooltip>
-            </Marker>
-          </React.Fragment>
-        );
-      })}
+      {visible.map(node => (
+        <Marker
+          key={`rn-${node.id}`}
+          position={gameToLatLng(node.world_x, node.world_y)}
+          icon={createPinIcon(node.resource, node.purity)}
+        >
+          <Popup className="rn-rich-popup" minWidth={300} maxWidth={300}>
+            <ResourceNodeCard node={node} />
+          </Popup>
+        </Marker>
+      ))}
     </>
+  );
+}
+
+// ─── Miner output rates ───────────────────────────────────────────────────────
+const BASE_RATES: Record<string, number> = {
+  Impure: 30,
+  Normal: 60,
+  Pure:   120,
+};
+const MINER_MULTIPLIERS = [1, 2, 4] as const;
+const MINER_LABELS = ['Miner Mk.1', 'Miner Mk.2', 'Miner Mk.3'] as const;
+const CLOCK_SPEEDS = [50, 100, 150, 200, 250] as const;
+
+// ─── Rich node card ───────────────────────────────────────────────────────────
+function ResourceNodeCard({ node }: { node: ResourceNode }) {
+  const color   = PURITY_COLORS[node.purity] ?? '#6b7280';
+  const imgKey  = RESOURCE_IMAGE_KEY[node.resource] ?? '';
+  const imgSrc  = imgKey ? `/images/${imgKey}.png` : '';
+  const baseRate = BASE_RATES[node.purity] ?? 60;
+  const wx = Math.round(node.world_x / 100);
+  const wy = Math.round(node.world_y / 100);
+  const wz = Math.round(node.world_z / 100);
+
+  return (
+    <div className="rnc-root">
+      {/* Header */}
+      <div className="rnc-header" style={{ borderColor: color }}>
+        {imgSrc && <img src={imgSrc} className="rnc-icon" alt={node.resource} draggable={false} />}
+        <div className="rnc-header-text">
+          <span className="rnc-title">{node.resource}</span>
+          <span className="rnc-badges">
+            <span className="rnc-badge-purity" style={{ background: color + '22', color, borderColor: color + '55' }}>
+              {node.purity.toUpperCase()}
+            </span>
+            <span className="rnc-badge-type">{node.type === 'well' ? 'OIL WELL' : 'NODE'}</span>
+          </span>
+        </div>
+      </div>
+
+      {/* Coordinates */}
+      <div className="rnc-coords">
+        <div className="rnc-coord-row">
+          <span className="rnc-coord-label">Coordinates</span>
+          <span className="rnc-coord-val">{wx.toLocaleString()} / {wy.toLocaleString()}</span>
+        </div>
+        <div className="rnc-coord-row">
+          <span className="rnc-coord-label">Altitude</span>
+          <span className="rnc-coord-val">{wz.toLocaleString()}m</span>
+        </div>
+      </div>
+
+      {/* Extraction rate table — only for solid nodes */}
+      {node.type !== 'well' && (
+        <div className="rnc-table-wrap">
+          <table className="rnc-table">
+            <thead>
+              <tr>
+                <th></th>
+                {CLOCK_SPEEDS.map(cs => (
+                  <th key={cs}>{cs}%</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {MINER_LABELS.map((label, i) => (
+                <tr key={label}>
+                  <td className="rnc-miner-label">{label}</td>
+                  {CLOCK_SPEEDS.map(cs => (
+                    <td key={cs}>
+                      {Math.round(baseRate * MINER_MULTIPLIERS[i] * cs / 100)}
+                      <span className="rnc-unit"> /m</span>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Oil well note */}
+      {node.type === 'well' && (
+        <div className="rnc-well-note">
+          Requires Oil Extractor — output depends on clock speed.
+        </div>
+      )}
+    </div>
   );
 }

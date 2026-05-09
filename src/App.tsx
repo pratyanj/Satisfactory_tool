@@ -83,21 +83,61 @@ export default function App() {
   const [copied, setCopied] = useState(false);
   const [isRecalculating, setIsRecalculating] = useState(false);
 
+  // Sync URL hash whenever navigation state changes
+  const updateHash = useCallback((top: TopLevelTab, sub: MainTab) => {
+    const hash = `#tab=${top}&sub=${sub}`;
+    window.history.replaceState(null, '', hash);
+    sessionStorage.setItem('sf_tab', top);
+    sessionStorage.setItem('sf_sub', sub);
+  }, []);
+
+  const handleTopLevelTab = useCallback((tab: TopLevelTab) => {
+    setTopLevelTab(tab);
+    updateHash(tab, mainTab);
+  }, [mainTab, updateHash]);
+
+  const handleMainTab = useCallback((tab: MainTab) => {
+    setMainTab(tab);
+    updateHash(topLevelTab, tab);
+  }, [topLevelTab, updateHash]);
+
   // Parse URL Hash on mount
   useEffect(() => {
+    const hash = window.location.hash;
     try {
-      if (window.location.hash.startsWith('#plan=')) {
-        const encoded = window.location.hash.replace('#plan=', '');
+      if (hash.startsWith('#plan=')) {
+        const encoded = hash.replace('#plan=', '');
         const decoded = JSON.parse(atob(decodeURIComponent(encoded)));
-
-        // Basic validation
         if (decoded.i && items[decoded.i] && typeof decoded.r === 'number' && decoded.m && machines[decoded.m] && decoded.b && belts[decoded.b] && (decoded.l === 'aggregated' || decoded.l === 'expanded')) {
           setLastInput({ itemId: decoded.i, rate: decoded.r, minerId: decoded.m, beltId: decoded.b });
           setLayoutMode(decoded.l);
+          const top: TopLevelTab = decoded.t ?? 'planner';
+          const sub: MainTab = decoded.s ?? 'network_graph';
+          setTopLevelTab(top);
+          setMainTab(sub);
         }
+        return;
       }
+
+      if (hash.startsWith('#tab=')) {
+        const params = new URLSearchParams(hash.slice(1));
+        const top = (params.get('tab') ?? '') as TopLevelTab;
+        const sub = (params.get('sub') ?? '') as MainTab;
+        if (['planner', 'save_map', 'world_map'].includes(top)) setTopLevelTab(top);
+        if (['network_graph', 'tree_list', 'items', 'buildings'].includes(sub)) setMainTab(sub);
+        return;
+      }
+
+      // No hash — restore from session
+      const storedTop = sessionStorage.getItem('sf_tab') as TopLevelTab | null;
+      const storedSub = sessionStorage.getItem('sf_sub') as MainTab | null;
+      const resolvedTop = (storedTop && ['planner', 'save_map', 'world_map'].includes(storedTop)) ? storedTop : 'planner';
+      const resolvedSub = (storedSub && ['network_graph', 'tree_list', 'items', 'buildings'].includes(storedSub)) ? storedSub : 'network_graph';
+      setTopLevelTab(resolvedTop);
+      setMainTab(resolvedSub);
+      window.history.replaceState(null, '', `tab=${resolvedTop}&sub=${resolvedSub}`);
     } catch (err) {
-      console.warn("Failed to parse plan from URL", err);
+      console.warn('Failed to parse navigation from URL', err);
     }
   }, []);
 
@@ -107,7 +147,9 @@ export default function App() {
       r: lastInput.rate,
       m: lastInput.minerId,
       b: lastInput.beltId,
-      l: layoutMode
+      l: layoutMode,
+      t: topLevelTab,
+      s: mainTab,
     };
 
     const encoded = encodeURIComponent(btoa(JSON.stringify(payload)));
@@ -117,7 +159,7 @@ export default function App() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
-  }, [lastInput, layoutMode]);
+  }, [lastInput, layoutMode, topLevelTab, mainTab]);
 
   const calculatePlan = (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, mode: LayoutMode) => {
     setLastInput({ itemId, rate, minerId, beltId });
@@ -221,57 +263,59 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans p-4 md:p-8 gap-6">
+    <div className="min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans gap-6">
 
-      <header className="flex justify-between items-center gap-4 shrink-0">
-        <div className="flex flex-col gap-1 w-[250px]">
-          <h1 className="text-3xl font-semibold tracking-tight text-white flex items-center gap-3">
-            <span className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-sm">🏗️</span>
-            Factory Visual Planner
-          </h1>
-          <p className="text-[#8E9299]">Plan and optimize your production lines effortlessly.</p>
+      <header className="app-header">
+        {/* Brand */}
+        <div className="app-header-brand">
+          <img src="public/icons/factory-building-icon.png" alt="factory" className="app-header-logo" draggable={false} />
+          <div>
+            <div className="app-header-title">FACTORY VISUAL PLANNER</div>
+            <div className="app-header-title-underline" />
+          </div>
         </div>
 
         {/* Top Level Navigation */}
-        <div className="flex bg-[#1c1e22] rounded-xl p-1.5 border border-[#2a2d33] shadow-lg">
+        <nav className="app-header-nav">
           <button
-            onClick={() => setTopLevelTab('planner')}
-            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'planner' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
+            onClick={() => handleTopLevelTab('planner')}
+            className={`app-header-nav-btn ${topLevelTab === 'planner' ? 'app-header-nav-btn--active' : ''}`}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             Production Planner
           </button>
           <button
-            onClick={() => setTopLevelTab('save_map')}
-            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'save_map' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
+            onClick={() => handleTopLevelTab('save_map')}
+            className={`app-header-nav-btn ${topLevelTab === 'save_map' ? 'app-header-nav-btn--active' : ''}`}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             Save Game Map
           </button>
           <button
-            onClick={() => setTopLevelTab('world_map')}
-            className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${topLevelTab === 'world_map' ? 'bg-[#2a2d33] text-white shadow-md' : 'text-[#8E9299] hover:text-white hover:bg-[#2a2d33]/50'}`}
+            onClick={() => handleTopLevelTab('world_map')}
+            className={`app-header-nav-btn ${topLevelTab === 'world_map' ? 'app-header-nav-btn--active' : ''}`}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
             World Map
           </button>
-        </div>
+        </nav>
 
-        <div className="flex justify-end w-[250px]">
+        {/* Share */}
+        <div className="app-header-actions">
           {topLevelTab === 'planner' && (
             <button
               onClick={generateShareLink}
-              className="bg-[#1c1e22] hover:bg-[#2a2d33] border border-[#2a2d33] hover:border-[#4a4d53] transition-all text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2"
-              aria-label={copied ? "Plan copied to clipboard" : "Copy plan to clipboard"}
+              className={`app-header-share-btn ${copied ? 'app-header-share-btn--copied' : ''}`}
+              aria-label={copied ? 'Plan copied to clipboard' : 'Copy plan to clipboard'}
             >
               {copied ? (
                 <>
-                  <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
+                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
                   Copied!
                 </>
               ) : (
                 <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                   Share Plan
                 </>
               )}
@@ -281,7 +325,7 @@ export default function App() {
       </header>
 
       {topLevelTab === 'planner' ? (
-        <main className="flex-1 max-w-[1600px] w-full mx-auto grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6" style={{ height: 'calc(100vh - 120px)' }}>
+        <main className="flex-1 max-w-[1600px] w-full mx-auto grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 px-4 md:px-8 pb-8" style={{ height: 'calc(100vh - 88px)' }}>
           {/* Left Side: Main Area */}
           <div className="flex flex-col h-full h-[600px] lg:h-auto min-h-0 relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
             {/* 4-Tab Navigation Bar */}
@@ -289,7 +333,7 @@ export default function App() {
               {TAB_CONFIG.map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setMainTab(tab.id as MainTab)}
+                  onClick={() => handleMainTab(tab.id as MainTab)}
                   className={`tab-bar-btn ${mainTab === tab.id ? 'tab-bar-btn--active' : ''}`}
                   aria-label={`View ${tab.label}`}
                   aria-current={mainTab === tab.id ? 'page' : undefined}
@@ -313,11 +357,11 @@ export default function App() {
           </div>
         </main>
       ) : topLevelTab === 'save_map' ? (
-        <main className="flex flex-col w-full mx-auto relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
+        <main className="flex flex-col w-full mx-auto relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden mx-4 md:mx-8" style={{ height: 'calc(100vh - 88px)' }}>
           <MapTab />
         </main>
       ) : (
-        <main className="flex flex-col w-full mx-auto relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
+        <main className="flex flex-col w-full mx-auto relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden mx-4 md:mx-8" style={{ height: 'calc(100vh - 88px)' }}>
           <WorldMapTab />
         </main>
       )}

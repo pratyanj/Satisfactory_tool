@@ -1,5 +1,159 @@
 @import "tailwindcss";
 
+/* ================================================================
+   APP HEADER — Neon Accent Gradient
+   ================================================================ */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 32px;
+  height: 64px;
+  flex-shrink: 0;
+  position: relative;
+  background: linear-gradient(90deg, rgba(249, 115, 22, 0.10) 0%, rgba(249, 115, 22, 0.03) 30%, transparent 55%);
+  border-bottom: 1px solid rgba(249, 115, 22, 0.18);
+  box-shadow: 0 1px 0 rgba(249, 115, 22, 0.06), 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* subtle left-edge glow column */
+.app-header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #f97316 0%, #ea580c 100%);
+  border-radius: 0 2px 2px 0;
+}
+
+/* Brand */
+.app-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.app-header-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.5));
+}
+
+.app-header-title {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #e4e3e0;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.app-header-title-underline {
+  margin-top: 5px;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, #f97316 0%, transparent 100%);
+  border-radius: 1px;
+}
+
+/* Nav */
+.app-header-nav {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  gap: 0;
+}
+
+.app-header-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px;
+  height: 100%;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  background: transparent;
+  border: none;
+  border-right: 1px solid #1e2025;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+  font-family: inherit;
+  position: relative;
+}
+
+.app-header-nav-btn:first-child {
+  border-left: 1px solid #1e2025;
+}
+
+.app-header-nav-btn:hover {
+  color: #c4c7cd;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.app-header-nav-btn--active {
+  color: #ffffff;
+  background: rgba(249, 115, 22, 0.10);
+}
+
+.app-header-nav-btn--active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #f97316;
+}
+
+/* Actions */
+.app-header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 120px;
+  justify-content: flex-end;
+}
+
+.app-header-share-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #f97316;
+  background: transparent;
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.app-header-share-btn:hover {
+  background: rgba(249, 115, 22, 0.12);
+  border-color: #f97316;
+}
+
+.app-header-share-btn--copied {
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.app-header-share-btn--copied:hover {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: #22c55e;
+}
+
 /* ===== Edge Flow Animation (single global keyframe) ===== */
 @keyframes dash {
   from {
@@ -2577,8 +2731,186 @@ input[type="number"] {
 }
 
 /* ================================================================
-   RESOURCE NODE MAP PINS
+   RESOURCE NODE RICH POPUP CARD
    ================================================================ */
+
+.rn-rich-popup .leaflet-popup-content-wrapper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+.rn-rich-popup .leaflet-popup-content {
+  margin: 0 !important;
+  width: auto !important;
+}
+.rn-rich-popup .leaflet-popup-tip-container { display: none; }
+
+.rnc-root {
+  width: 300px;
+  background: #0f1015;
+  border: 1px solid #2a2d33;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.8);
+  font-family: inherit;
+  color: #e4e3e0;
+}
+
+.rnc-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #161820;
+  border-bottom: 2px solid;
+}
+
+.rnc-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #1a1c22;
+  padding: 3px;
+  flex-shrink: 0;
+}
+
+.rnc-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.rnc-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e4e3e0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rnc-badges {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.rnc-badge-purity {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid;
+}
+
+.rnc-badge-type {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #2a2d33;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.rnc-coords {
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-bottom: 1px solid #1a1b1e;
+  background: #0d0e11;
+}
+
+.rnc-coord-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.rnc-coord-label {
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 9px;
+}
+
+.rnc-coord-val {
+  color: #c4c7cd;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.rnc-table-wrap {
+  padding: 8px 10px 10px;
+  background: #0d0e11;
+}
+
+.rnc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+
+.rnc-table thead th {
+  padding: 3px 4px;
+  text-align: center;
+  color: #f97316;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid #2a2d33;
+}
+
+.rnc-table thead th:first-child {
+  text-align: left;
+}
+
+.rnc-table tbody tr:nth-child(odd) td {
+  background: rgba(255,255,255,0.02);
+}
+
+.rnc-table tbody td {
+  padding: 4px 4px;
+  text-align: center;
+  color: #c4c7cd;
+  font-variant-numeric: tabular-nums;
+  border-bottom: 1px solid #1a1b1e;
+}
+
+.rnc-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.rnc-miner-label {
+  text-align: left !important;
+  color: #8e9299 !important;
+  font-weight: 600;
+  white-space: nowrap;
+  padding-right: 6px !important;
+}
+
+.rnc-unit {
+  color: #4b5563;
+  font-size: 8px;
+}
+
+.rnc-well-note {
+  padding: 8px 12px;
+  font-size: 10px;
+  color: #6b7280;
+  text-align: center;
+  font-style: italic;
+  background: #0d0e11;
+}
+
 
 .rn-map-pin {
   transition: transform 0.15s ease, box-shadow 0.15s ease;
