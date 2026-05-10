@@ -12,6 +12,7 @@ import { ItemsTab } from './components/ItemsTab';
 import { BuildingsTab } from './components/BuildingsTab';
 import { MapTab } from './components/Map/MapTab';
 import { WorldMapTab } from './components/Map/WorldMapTab';
+import { ItemBrowser } from './components/ItemBrowser';
 import { solve, calculateSummary, SummaryData, SolverNode } from './engine/solver';
 import { mapSolverResultToGraph, LayoutMode } from './engine/graphMapper';
 import { BeltId, MachineId, items, machines, belts } from './engine/data';
@@ -66,7 +67,7 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
   },
 ];
 
-type TopLevelTab = 'planner' | 'save_map' | 'world_map';
+type TopLevelTab = 'planner' | 'save_map' | 'world_map' | 'codex';
 
 export default function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
@@ -75,7 +76,7 @@ export default function App() {
   const [rootNode, setRootNode] = useState<SolverNode | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const [lastInput, setLastInput] = useState<{ itemId: string, rate: number, minerId: MachineId, beltId: BeltId }>({ itemId: 'copper_sheet', rate: 120, minerId: 'miner_mk1', beltId: 'mk1' });
+  const [lastInput, setLastInput] = useState<{ itemId: string, rate: number, minerId: MachineId, beltId: BeltId }>({ itemId: 'reinforced_iron_plate', rate: 100, minerId: 'miner_mk1', beltId: 'mk1' });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
   const [mainTab, setMainTab] = useState<MainTab>('network_graph');
   const [topLevelTab, setTopLevelTab] = useState<TopLevelTab>('planner');
@@ -131,7 +132,7 @@ export default function App() {
       // No hash — restore from session
       const storedTop = sessionStorage.getItem('sf_tab') as TopLevelTab | null;
       const storedSub = sessionStorage.getItem('sf_sub') as MainTab | null;
-      const resolvedTop = (storedTop && ['planner', 'save_map', 'world_map'].includes(storedTop)) ? storedTop : 'planner';
+      const resolvedTop = (storedTop && ['planner', 'save_map', 'world_map', 'codex'].includes(storedTop)) ? storedTop : 'planner';
       const resolvedSub = (storedSub && ['network_graph', 'tree_list', 'items', 'buildings'].includes(storedSub)) ? storedSub : 'network_graph';
       setTopLevelTab(resolvedTop);
       setMainTab(resolvedSub);
@@ -263,16 +264,16 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans gap-6">
+    <div className="min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans">
 
       <header className="app-header">
         {/* Brand */}
         <div className="app-header-brand">
-          <img src="public/icons/factory-building-icon.png" alt="factory" className="app-header-logo" draggable={false} />
-          <div>
+          <img src="public/logo/satisfactory_tool_logo.png" alt="factory" draggable={false} style={{ height: '80px', width: 'auto', objectFit: 'cover' }} />
+          {/* <div>
             <div className="app-header-title">FACTORY VISUAL PLANNER</div>
             <div className="app-header-title-underline" />
-          </div>
+          </div> */}
         </div>
 
         {/* Top Level Navigation */}
@@ -297,6 +298,13 @@ export default function App() {
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
             World Map
+          </button>
+          <button
+            onClick={() => handleTopLevelTab('codex')}
+            className={`app-header-nav-btn ${topLevelTab === 'codex' ? 'app-header-nav-btn--active' : ''}`}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            Item Codex
           </button>
         </nav>
 
@@ -323,9 +331,9 @@ export default function App() {
           )}
         </div>
       </header>
-
+      <br />  
       {topLevelTab === 'planner' ? (
-        <main className="flex-1 max-w-[1600px] w-full mx-auto grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 px-4 md:px-8 pb-8" style={{ height: 'calc(100vh - 88px)' }}>
+        <main className="flex-1 max-w-[1600px] w-full mx-auto grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 64px)' }}>
           {/* Left Side: Main Area */}
           <div className="flex flex-col h-full h-[600px] lg:h-auto min-h-0 relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
             {/* 4-Tab Navigation Bar */}
@@ -356,14 +364,24 @@ export default function App() {
             {summary && <Summary summary={summary} />}
           </div>
         </main>
+      ) : topLevelTab === 'codex' ? (
+        <div className="px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 64px)' }}>
+          <main className="flex flex-col w-full h-full relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
+            <ItemBrowser />
+          </main>
+        </div>
       ) : topLevelTab === 'save_map' ? (
-        <main className="flex flex-col w-full mx-auto relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden mx-4 md:mx-8" style={{ height: 'calc(100vh - 88px)' }}>
-          <MapTab />
-        </main>
+        <div className="px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 64px)' }}>
+          <main className="flex flex-col w-full h-full relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
+            <MapTab />
+          </main>
+        </div>
       ) : (
-        <main className="flex flex-col w-full mx-auto relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden mx-4 md:mx-8" style={{ height: 'calc(100vh - 88px)' }}>
-          <WorldMapTab />
-        </main>
+        <div className="px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 64px)' }}>
+          <main className="flex flex-col w-full h-full relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
+            <WorldMapTab />
+          </main>
+        </div>
       )}
 
     </div>
