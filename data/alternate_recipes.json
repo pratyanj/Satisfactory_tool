@@ -1,0 +1,3946 @@
+[
+  {
+    "className": "Recipe_Alternate_RocketFuel_Nitro_C",
+    "name": "Nitro Rocket Fuel",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Sulfur Research|MAM Sulfur Research]] - Rocket Fuel",
+    "duration": 2.4,
+    "ingredients": [
+      {
+        "item": "Desc_LiquidFuel_C",
+        "amount": 4
+      },
+      {
+        "item": "Desc_NitrogenGas_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_Sulfur_C",
+        "amount": 4
+      },
+      {
+        "item": "Desc_Coal_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_RocketFuel_C",
+        "amount": 6
+      },
+      {
+        "item": "Desc_CompactedCoal_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_Blender_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_IonizedFuel_Dark_C",
+    "name": "Dark-Ion Fuel",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Sulfur Research|MAM Sulfur Research]] - Ionized Fuel AND<br>[[Tier 9]] - Quantum Encoding",
+    "duration": 3,
+    "ingredients": [
+      {
+        "item": "Desc_PackagedRocketFuel_C",
+        "amount": 12
+      },
+      {
+        "item": "Desc_DarkMatter_C",
+        "amount": 4
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IonizedFuel_C",
+        "amount": 10
+      },
+      {
+        "item": "Desc_CompactedCoal_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_Converter_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": 100,
+    "maxPower": 400,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Diamond_Turbo_C",
+    "name": "Turbo Diamonds",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Sulfur Research|MAM Sulfur Research]] - Turbofuel AND<br>[[Tier 9]] - Matter Conversion",
+    "duration": 3,
+    "ingredients": [
+      {
+        "item": "Desc_Coal_C",
+        "amount": 30
+      },
+      {
+        "item": "Desc_TurboFuel_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Diamond_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_HadronCollider_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": 250,
+    "maxPower": 750,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Diamond_Pink_C",
+    "name": "Pink Diamonds",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 9]] - Matter Conversion",
+    "duration": 4,
+    "ingredients": [
+      {
+        "item": "Desc_Coal_C",
+        "amount": 8
+      },
+      {
+        "item": "Desc_QuartzCrystal_C",
+        "amount": 3
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Diamond_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_Converter_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": 100,
+    "maxPower": 400,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Diamond_Petroleum_C",
+    "name": "Petroleum Diamonds",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 9]] - Matter Conversion",
+    "duration": 2,
+    "ingredients": [
+      {
+        "item": "Desc_PetroleumCoke_C",
+        "amount": 24
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Diamond_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_HadronCollider_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": 250,
+    "maxPower": 750,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Diamond_OilBased_C",
+    "name": "Oil-Based Diamonds",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 9]] - Matter Conversion",
+    "duration": 3,
+    "ingredients": [
+      {
+        "item": "Desc_LiquidOil_C",
+        "amount": 10
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Diamond_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_HadronCollider_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": 250,
+    "maxPower": 750,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Diamond_Cloudy_C",
+    "name": "Cloudy Diamonds",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 9]] - Matter Conversion",
+    "duration": 3,
+    "ingredients": [
+      {
+        "item": "Desc_Coal_C",
+        "amount": 12
+      },
+      {
+        "item": "Desc_Stone_C",
+        "amount": 24
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Diamond_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_HadronCollider_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": 250,
+    "maxPower": 750,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_DarkMatter_Trap_C",
+    "name": "Dark Matter Trap",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 9]] - Quantum Encoding",
+    "duration": 2,
+    "ingredients": [
+      {
+        "item": "Desc_TimeCrystal_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_DarkEnergy_C",
+        "amount": 5
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_DarkMatter_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_HadronCollider_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": 500,
+    "maxPower": 1500,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_DarkMatter_Crystallization_C",
+    "name": "Dark Matter Crystallization",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 9]] - Quantum Encoding",
+    "duration": 3,
+    "ingredients": [
+      {
+        "item": "Desc_DarkEnergy_C",
+        "amount": 10
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_DarkMatter_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_HadronCollider_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": 500,
+    "maxPower": 1500,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_WetConcrete_C",
+    "name": "Wet Concrete",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Coal Power",
+    "duration": 3,
+    "ingredients": [
+      {
+        "item": "Desc_Stone_C",
+        "amount": 6
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 5
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Cement_C",
+        "amount": 4
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_TurboHeavyFuel_C",
+    "name": "Turbo Heavy Fuel",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Sulfur Research|MAM Sulfur Research]] - Compacted Coal AND<br>[[Tier 5]] - Oil Processing",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_HeavyOilResidue_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_CompactedCoal_C",
+        "amount": 4
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_LiquidTurboFuel_C",
+        "amount": 4
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_SteelRod_C",
+    "name": "Steel Rod",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 5,
+    "ingredients": [
+      {
+        "item": "Desc_SteelIngot_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IronRod_C",
+        "amount": 4
+      }
+    ],
+    "producedIn": [
+      "Desc_ConstructorMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_SteelCanister_C",
+    "name": "Steel Canister",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Fluid Packaging",
+    "duration": 6,
+    "ingredients": [
+      {
+        "item": "Desc_SteelIngot_C",
+        "amount": 4
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_FluidCanister_C",
+        "amount": 4
+      }
+    ],
+    "producedIn": [
+      "Desc_ConstructorMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_SteamedCopperSheet_C",
+    "name": "Steamed Copper Sheet",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Coal Power",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_CopperIngot_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 3
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_CopperSheet_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_RubberConcrete_C",
+    "name": "Rubber Concrete",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 6,
+    "ingredients": [
+      {
+        "item": "Desc_Stone_C",
+        "amount": 10
+      },
+      {
+        "item": "Desc_Rubber_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Cement_C",
+        "amount": 9
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_RecycledRubber_C",
+    "name": "Recycled Rubber",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_Plastic_C",
+        "amount": 6
+      },
+      {
+        "item": "Desc_LiquidFuel_C",
+        "amount": 6
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Rubber_C",
+        "amount": 12
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_PureQuartzCrystal_C",
+    "name": "Pure Quartz Crystal",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Quartz Research|MAM Quartz Research]] - Quartz Crystals AND<br>[[Tier 5]] - Oil Processing",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_RawQuartz_C",
+        "amount": 9
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 5
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_QuartzCrystal_C",
+        "amount": 7
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_PureIronIngot_C",
+    "name": "Pure Iron Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_OreIron_C",
+        "amount": 7
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 4
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IronIngot_C",
+        "amount": 13
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_PureCopperIngot_C",
+    "name": "Pure Copper Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 24,
+    "ingredients": [
+      {
+        "item": "Desc_OreCopper_C",
+        "amount": 6
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 4
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_CopperIngot_C",
+        "amount": 15
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_PureCateriumIngot_C",
+    "name": "Pure Caterium Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - Caterium AND<br>[[Tier 5]] - Oil Processing",
+    "duration": 5,
+    "ingredients": [
+      {
+        "item": "Desc_OreGold_C",
+        "amount": 2
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_GoldIngot_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_PureAluminumIngot_C",
+    "name": "Pure Aluminum Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Bauxite Refinement",
+    "duration": 2,
+    "ingredients": [
+      {
+        "item": "Desc_AluminumScrap_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_AluminumIngot_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_SmelterMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_PolymerResin_C",
+    "name": "Polymer Resin",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 6,
+    "ingredients": [
+      {
+        "item": "Desc_LiquidOil_C",
+        "amount": 6
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_PolymerResin_C",
+        "amount": 13
+      },
+      {
+        "item": "Desc_HeavyOilResidue_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_PlasticSmartPlating_C",
+    "name": "Plastic Smart Plating",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 24,
+    "ingredients": [
+      {
+        "item": "Desc_IronPlateReinforced_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_Rotor_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_Plastic_C",
+        "amount": 3
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_SpaceElevatorPart_1_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_HighSpeedWiring_C",
+    "name": "Automated Speed Wiring",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - AI Limiter AND<br>[[Tier 4]] - Advanced Steel Production",
+    "duration": 32,
+    "ingredients": [
+      {
+        "item": "Desc_Stator_C",
+        "amount": 2
+      },
+      {
+        "item": "Desc_Wire_C",
+        "amount": 40
+      },
+      {
+        "item": "Desc_HighSpeedConnector_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_SpaceElevatorPart_3_C",
+        "amount": 4
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_HeavyOilResidue_C",
+    "name": "Heavy Oil Residue",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 6,
+    "ingredients": [
+      {
+        "item": "Desc_LiquidOil_C",
+        "amount": 3
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_HeavyOilResidue_C",
+        "amount": 4
+      },
+      {
+        "item": "Desc_PolymerResin_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_HeavyFlexibleFrame_C",
+    "name": "Heavy Flexible Frame",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 6]] - Industrial Manufacturing",
+    "duration": 16,
+    "ingredients": [
+      {
+        "item": "Desc_ModularFrame_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_SteelPlateReinforced_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_Rubber_C",
+        "amount": 20
+      },
+      {
+        "item": "Desc_IronScrew_C",
+        "amount": 104
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_ModularFrameHeavy_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_FusedWire_C",
+    "name": "Fused Wire",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - Caterium",
+    "duration": 20,
+    "ingredients": [
+      {
+        "item": "Desc_CopperIngot_C",
+        "amount": 4
+      },
+      {
+        "item": "Desc_GoldIngot_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Wire_C",
+        "amount": 30
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_FlexibleFramework_C",
+    "name": "Flexible Framework",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 16,
+    "ingredients": [
+      {
+        "item": "Desc_ModularFrame_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_SteelPlate_C",
+        "amount": 6
+      },
+      {
+        "item": "Desc_Rubber_C",
+        "amount": 8
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_SpaceElevatorPart_2_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_ElectrodeCircuitBoard_C",
+    "name": "Electrode Circuit Board",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_Rubber_C",
+        "amount": 4
+      },
+      {
+        "item": "Desc_PetroleumCoke_C",
+        "amount": 8
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_CircuitBoard_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_ElectroAluminumScrap_C",
+    "name": "Electrode Aluminum Scrap",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Bauxite Refinement",
+    "duration": 4,
+    "ingredients": [
+      {
+        "item": "Desc_AluminaSolution_C",
+        "amount": 12
+      },
+      {
+        "item": "Desc_PetroleumCoke_C",
+        "amount": 4
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_AluminumScrap_C",
+        "amount": 20
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 7
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_DilutedPackagedFuel_C",
+    "name": "Diluted Packaged Fuel",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 2,
+    "ingredients": [
+      {
+        "item": "Desc_HeavyOilResidue_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_PackagedWater_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Fuel_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CopperRotor_C",
+    "name": "Copper Rotor",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 2]] - Part Assembly",
+    "duration": 16,
+    "ingredients": [
+      {
+        "item": "Desc_CopperSheet_C",
+        "amount": 6
+      },
+      {
+        "item": "Desc_IronScrew_C",
+        "amount": 52
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Rotor_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CopperAlloyIngot_C",
+    "name": "Copper Alloy Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 6,
+    "ingredients": [
+      {
+        "item": "Desc_OreCopper_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_OreIron_C",
+        "amount": 5
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_CopperIngot_C",
+        "amount": 10
+      }
+    ],
+    "producedIn": [
+      "Desc_FoundryMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CokeSteelIngot_C",
+    "name": "Coke Steel Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_OreIron_C",
+        "amount": 15
+      },
+      {
+        "item": "Desc_PetroleumCoke_C",
+        "amount": 15
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_SteelIngot_C",
+        "amount": 20
+      }
+    ],
+    "producedIn": [
+      "Desc_FoundryMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CoatedIronPlate_C",
+    "name": "Coated Iron Plate",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_IronIngot_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_Plastic_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IronPlate_C",
+        "amount": 10
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CoatedIronCanister_C",
+    "name": "Coated Iron Canister",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Fluid Packaging",
+    "duration": 4,
+    "ingredients": [
+      {
+        "item": "Desc_IronPlate_C",
+        "amount": 2
+      },
+      {
+        "item": "Desc_CopperSheet_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_FluidCanister_C",
+        "amount": 4
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CoatedCable_C",
+    "name": "Coated Cable",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_Wire_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_HeavyOilResidue_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Cable_C",
+        "amount": 9
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_BoltedFrame_C",
+    "name": "Bolted Frame",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 2]] - Part Assembly",
+    "duration": 24,
+    "ingredients": [
+      {
+        "item": "Desc_IronPlateReinforced_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_IronScrew_C",
+        "amount": 56
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_ModularFrame_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_AdheredIronPlate_C",
+    "name": "Adhered Iron Plate",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 16,
+    "ingredients": [
+      {
+        "item": "Desc_IronPlate_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_Rubber_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IronPlateReinforced_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_TurboPressureMotor_C",
+    "name": "Turbo Pressure Motor",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 8]] - Particle Enrichment",
+    "duration": 32,
+    "ingredients": [
+      {
+        "item": "Desc_Motor_C",
+        "amount": 4
+      },
+      {
+        "item": "Desc_PressureConversionCube_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_PackagedNitrogenGas_C",
+        "amount": 24
+      },
+      {
+        "item": "Desc_Stator_C",
+        "amount": 8
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_MotorLightweight_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_TurboBlendFuel_C",
+    "name": "Turbo Blend Fuel",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Control System Development",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_LiquidFuel_C",
+        "amount": 2
+      },
+      {
+        "item": "Desc_HeavyOilResidue_C",
+        "amount": 4
+      },
+      {
+        "item": "Desc_Sulfur_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_PetroleumCoke_C",
+        "amount": 3
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_LiquidTurboFuel_C",
+        "amount": 6
+      }
+    ],
+    "producedIn": [
+      "Desc_Blender_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_SuperStateComputer_C",
+    "name": "Super-State Computer",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Control System Development AND<br>[[Tier 8]] - Nuclear Power",
+    "duration": 25,
+    "ingredients": [
+      {
+        "item": "Desc_Computer_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_ElectromagneticControlRod_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_Battery_C",
+        "amount": 10
+      },
+      {
+        "item": "Desc_Wire_C",
+        "amount": 25
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_ComputerSuper_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_SloppyAlumina_C",
+    "name": "Sloppy Alumina",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Bauxite Refinement",
+    "duration": 3,
+    "ingredients": [
+      {
+        "item": "Desc_OreBauxite_C",
+        "amount": 10
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 10
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_AluminaSolution_C",
+        "amount": 12
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_RadioControlSystem_C",
+    "name": "Radio Control System",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Control System Development",
+    "duration": 40,
+    "ingredients": [
+      {
+        "item": "Desc_CrystalOscillator_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_CircuitBoard_C",
+        "amount": 10
+      },
+      {
+        "item": "Desc_AluminumCasing_C",
+        "amount": 60
+      },
+      {
+        "item": "Desc_Rubber_C",
+        "amount": 30
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_ModularFrameLightweight_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_PlutoniumFuelUnit_C",
+    "name": "Plutonium Fuel Unit",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 8]] - Particle Enrichment",
+    "duration": 120,
+    "ingredients": [
+      {
+        "item": "Desc_PlutoniumCell_C",
+        "amount": 20
+      },
+      {
+        "item": "Desc_PressureConversionCube_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_PlutoniumFuelRod_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_OCSupercomputer_C",
+    "name": "OC Supercomputer",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Control System Development AND<br>[[Tier 8]] - Advanced Aluminum Production",
+    "duration": 20,
+    "ingredients": [
+      {
+        "item": "Desc_ModularFrameLightweight_C",
+        "amount": 2
+      },
+      {
+        "item": "Desc_CoolingSystem_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_ComputerSuper_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_InstantScrap_C",
+    "name": "Instant Scrap",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Bauxite Refinement AND<br>[[Tier 7]] - Control System Development",
+    "duration": 6,
+    "ingredients": [
+      {
+        "item": "Desc_OreBauxite_C",
+        "amount": 15
+      },
+      {
+        "item": "Desc_Coal_C",
+        "amount": 10
+      },
+      {
+        "item": "Desc_SulfuricAcid_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 6
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_AluminumScrap_C",
+        "amount": 30
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 5
+      }
+    ],
+    "producedIn": [
+      "Desc_Blender_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_InstantPlutoniumCell_C",
+    "name": "Instant Plutonium Cell",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 8]] - Particle Enrichment",
+    "duration": 120,
+    "ingredients": [
+      {
+        "item": "Desc_NonFissibleUranium_C",
+        "amount": 150
+      },
+      {
+        "item": "Desc_AluminumCasing_C",
+        "amount": 20
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_PlutoniumCell_C",
+        "amount": 20
+      }
+    ],
+    "producedIn": [
+      "Desc_HadronCollider_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": 250,
+    "maxPower": 750,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_HeatFusedFrame_C",
+    "name": "Heat-Fused Frame",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 8]] - Particle Enrichment",
+    "duration": 20,
+    "ingredients": [
+      {
+        "item": "Desc_ModularFrameHeavy_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_AluminumIngot_C",
+        "amount": 50
+      },
+      {
+        "item": "Desc_NitricAcid_C",
+        "amount": 8
+      },
+      {
+        "item": "Desc_LiquidFuel_C",
+        "amount": 10
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_ModularFrameFused_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_Blender_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_FertileUranium_C",
+    "name": "Fertile Uranium",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 8]] - Particle Enrichment",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_OreUranium_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_NuclearWaste_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_NitricAcid_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_SulfuricAcid_C",
+        "amount": 5
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_NonFissibleUranium_C",
+        "amount": 20
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 8
+      }
+    ],
+    "producedIn": [
+      "Desc_Blender_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_ElectricMotor_C",
+    "name": "Electric Motor",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 8]] - Nuclear Power",
+    "duration": 16,
+    "ingredients": [
+      {
+        "item": "Desc_ElectromagneticControlRod_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_Rotor_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Motor_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_DilutedFuel_C",
+    "name": "Diluted Fuel",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Control System Development",
+    "duration": 6,
+    "ingredients": [
+      {
+        "item": "Desc_HeavyOilResidue_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 10
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_LiquidFuel_C",
+        "amount": 10
+      }
+    ],
+    "producedIn": [
+      "Desc_Blender_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CoolingDevice_C",
+    "name": "Cooling Device",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 8]] - Advanced Aluminum Production",
+    "duration": 24,
+    "ingredients": [
+      {
+        "item": "Desc_AluminumPlateReinforced_C",
+        "amount": 4
+      },
+      {
+        "item": "Desc_Motor_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_NitrogenGas_C",
+        "amount": 24
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_CoolingSystem_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_Blender_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_ClassicBattery_C",
+    "name": "Classic Battery",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Control System Development",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_Sulfur_C",
+        "amount": 6
+      },
+      {
+        "item": "Desc_AluminumPlate_C",
+        "amount": 7
+      },
+      {
+        "item": "Desc_Plastic_C",
+        "amount": 8
+      },
+      {
+        "item": "Desc_Wire_C",
+        "amount": 12
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Battery_C",
+        "amount": 4
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_AutomatedMiner_C",
+    "name": "Automated Miner",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 60,
+    "ingredients": [
+      {
+        "item": "Desc_SteelPipe_C",
+        "amount": 4
+      },
+      {
+        "item": "Desc_IronPlate_C",
+        "amount": 4
+      }
+    ],
+    "products": [
+      {
+        "item": "BP_ItemDescriptorPortableMiner_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_AlcladCasing_C",
+    "name": "Alclad Casing",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Bauxite Refinement",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_AluminumIngot_C",
+        "amount": 20
+      },
+      {
+        "item": "Desc_CopperIngot_C",
+        "amount": 10
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_AluminumCasing_C",
+        "amount": 15
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_SteelPipe_Molded_C",
+    "name": "Molded Steel Pipe",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 6,
+    "ingredients": [
+      {
+        "item": "Desc_SteelIngot_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_Cement_C",
+        "amount": 3
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_SteelPipe_C",
+        "amount": 5
+      }
+    ],
+    "producedIn": [
+      "Desc_FoundryMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_SteelPipe_Iron_C",
+    "name": "Iron Pipe",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_IronIngot_C",
+        "amount": 20
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_SteelPipe_C",
+        "amount": 5
+      }
+    ],
+    "producedIn": [
+      "Desc_ConstructorMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_SteelCastedPlate_C",
+    "name": "Steel Cast Plate",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 4,
+    "ingredients": [
+      {
+        "item": "Desc_IronIngot_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_SteelIngot_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IronPlate_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_FoundryMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_SteelBeam_Molded_C",
+    "name": "Molded Beam",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_SteelIngot_C",
+        "amount": 24
+      },
+      {
+        "item": "Desc_Cement_C",
+        "amount": 16
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_SteelPlate_C",
+        "amount": 9
+      }
+    ],
+    "producedIn": [
+      "Desc_FoundryMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_SteelBeam_Aluminum_C",
+    "name": "Aluminum Beam",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Bauxite Refinement",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_AluminumIngot_C",
+        "amount": 3
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_SteelPlate_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_ConstructorMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_AluminumRod_C",
+    "name": "Aluminum Rod",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Bauxite Refinement",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_AluminumIngot_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IronRod_C",
+        "amount": 7
+      }
+    ],
+    "producedIn": [
+      "Desc_ConstructorMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_AILimiter_Plastic_C",
+    "name": "Plastic AI Limiter",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - AI Limiter AND<br>[[Tier 5]] - Oil Processing",
+    "duration": 15,
+    "ingredients": [
+      {
+        "item": "Desc_HighSpeedWire_C",
+        "amount": 30
+      },
+      {
+        "item": "Desc_Plastic_C",
+        "amount": 7
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_CircuitBoardHighSpeed_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Silica_Distilled_C",
+    "name": "Distilled Silica",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Control System Development",
+    "duration": 6,
+    "ingredients": [
+      {
+        "item": "Desc_DissolvedSilica_C",
+        "amount": 12
+      },
+      {
+        "item": "Desc_Stone_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 10
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Silica_C",
+        "amount": 27
+      },
+      {
+        "item": "Desc_Water_C",
+        "amount": 8
+      }
+    ],
+    "producedIn": [
+      "Desc_Blender_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Quartz_Purified_C",
+    "name": "Quartz Purification",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Control System Development",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_RawQuartz_C",
+        "amount": 24
+      },
+      {
+        "item": "Desc_NitricAcid_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_QuartzCrystal_C",
+        "amount": 15
+      },
+      {
+        "item": "Desc_DissolvedSilica_C",
+        "amount": 12
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Quartz_Fused_C",
+    "name": "Fused Quartz Crystal",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Quartz Research|MAM Quartz Research]] - Quartz Crystals AND<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 20,
+    "ingredients": [
+      {
+        "item": "Desc_RawQuartz_C",
+        "amount": 25
+      },
+      {
+        "item": "Desc_Coal_C",
+        "amount": 12
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_QuartzCrystal_C",
+        "amount": 18
+      }
+    ],
+    "producedIn": [
+      "Desc_FoundryMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_IronIngot_Leached_C",
+    "name": "Leached Iron Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Control System Development",
+    "duration": 6,
+    "ingredients": [
+      {
+        "item": "Desc_OreIron_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_SulfuricAcid_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IronIngot_C",
+        "amount": 10
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_IronIngot_Basic_C",
+    "name": "Basic Iron Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_OreIron_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_Stone_C",
+        "amount": 8
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IronIngot_C",
+        "amount": 10
+      }
+    ],
+    "producedIn": [
+      "Desc_FoundryMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CopperIngot_Tempered_C",
+    "name": "Tempered Copper Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_OreCopper_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_PetroleumCoke_C",
+        "amount": 8
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_CopperIngot_C",
+        "amount": 12
+      }
+    ],
+    "producedIn": [
+      "Desc_FoundryMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CopperIngot_Leached_C",
+    "name": "Leached Copper Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Control System Development",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_OreCopper_C",
+        "amount": 9
+      },
+      {
+        "item": "Desc_SulfuricAcid_C",
+        "amount": 5
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_CopperIngot_C",
+        "amount": 22
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CateriumIngot_Tempered_C",
+    "name": "Tempered Caterium Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_OreGold_C",
+        "amount": 6
+      },
+      {
+        "item": "Desc_PetroleumCoke_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_GoldIngot_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_FoundryMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CateriumIngot_Leached_C",
+    "name": "Leached Caterium Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 7]] - Control System Development",
+    "duration": 10,
+    "ingredients": [
+      {
+        "item": "Desc_OreGold_C",
+        "amount": 9
+      },
+      {
+        "item": "Desc_SulfuricAcid_C",
+        "amount": 5
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_GoldIngot_C",
+        "amount": 6
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 99,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Wire_2_C",
+    "name": "Caterium Wire",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - Caterium",
+    "duration": 4,
+    "ingredients": [
+      {
+        "item": "Desc_GoldIngot_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Wire_C",
+        "amount": 8
+      }
+    ],
+    "producedIn": [
+      "Desc_ConstructorMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Wire_1_C",
+    "name": "Iron Wire",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 1]] - Field Research",
+    "duration": 24,
+    "ingredients": [
+      {
+        "item": "Desc_IronIngot_C",
+        "amount": 5
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Wire_C",
+        "amount": 9
+      }
+    ],
+    "producedIn": [
+      "Desc_ConstructorMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_UraniumCell_1_C",
+    "name": "Infused Uranium Cell",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - Caterium Ingots AND<br>[[Quartz Research|MAM Quartz Research]] - Quartz AND<br>[[Sulfur Research|MAM Sulfur Research]] - Sulfur AND<br>[[Tier 8]] - Nuclear Power",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_OreUranium_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_Silica_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_Sulfur_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_HighSpeedWire_C",
+        "amount": 15
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_UraniumCell_C",
+        "amount": 4
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_TurboMotor_1_C",
+    "name": "Turbo Electric Motor",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 8]] - Nuclear Power AND<br>[[Tier 8]] - Leading-Edge Production",
+    "duration": 64,
+    "ingredients": [
+      {
+        "item": "Desc_Motor_C",
+        "amount": 7
+      },
+      {
+        "item": "Desc_ModularFrameLightweight_C",
+        "amount": 9
+      },
+      {
+        "item": "Desc_ElectromagneticControlRod_C",
+        "amount": 5
+      },
+      {
+        "item": "Desc_Rotor_C",
+        "amount": 7
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_MotorLightweight_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Stator_C",
+    "name": "Quickwire Stator",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - Caterium Ingots AND<br>[[Tier 4]] - Advanced Steel Production",
+    "duration": 15,
+    "ingredients": [
+      {
+        "item": "Desc_SteelPipe_C",
+        "amount": 4
+      },
+      {
+        "item": "Desc_HighSpeedWire_C",
+        "amount": 15
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Stator_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Silica_C",
+    "name": "Cheap Silica",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Quartz Research|MAM Quartz Research]] - Silica",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_RawQuartz_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_Stone_C",
+        "amount": 5
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Silica_C",
+        "amount": 7
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Screw_2_C",
+    "name": "Steel Screws",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_SteelPlate_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IronScrew_C",
+        "amount": 52
+      }
+    ],
+    "producedIn": [
+      "Desc_ConstructorMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Screw_C",
+    "name": "Cast Screws",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 1]] - Field Research",
+    "duration": 24,
+    "ingredients": [
+      {
+        "item": "Desc_IronIngot_C",
+        "amount": 5
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IronScrew_C",
+        "amount": 20
+      }
+    ],
+    "producedIn": [
+      "Desc_ConstructorMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Rotor_C",
+    "name": "Steel Rotor",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_SteelPipe_C",
+        "amount": 2
+      },
+      {
+        "item": "Desc_Wire_C",
+        "amount": 6
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Rotor_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_EncasedIndustrialBeam_C",
+    "name": "Encased Industrial Pipe",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 4]] - Advanced Steel Production",
+    "duration": 15,
+    "ingredients": [
+      {
+        "item": "Desc_SteelPipe_C",
+        "amount": 6
+      },
+      {
+        "item": "Desc_Cement_C",
+        "amount": 5
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_SteelPlateReinforced_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_ReinforcedIronPlate_2_C",
+    "name": "Stitched Iron Plate",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 2]] - Part Assembly",
+    "duration": 32,
+    "ingredients": [
+      {
+        "item": "Desc_IronPlate_C",
+        "amount": 10
+      },
+      {
+        "item": "Desc_Wire_C",
+        "amount": 20
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IronPlateReinforced_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_ReinforcedIronPlate_1_C",
+    "name": "Bolted Iron Plate",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 2]] - Part Assembly",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_IronPlate_C",
+        "amount": 18
+      },
+      {
+        "item": "Desc_IronScrew_C",
+        "amount": 50
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IronPlateReinforced_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_RadioControlUnit_1_C",
+    "name": "Radio Connection Unit",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - AI Limiter AND<br>[[Tier 8]] - Advanced Aluminum Production",
+    "duration": 16,
+    "ingredients": [
+      {
+        "item": "Desc_AluminumPlateReinforced_C",
+        "amount": 4
+      },
+      {
+        "item": "Desc_HighSpeedConnector_C",
+        "amount": 2
+      },
+      {
+        "item": "Desc_QuartzCrystal_C",
+        "amount": 12
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_ModularFrameLightweight_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Quickwire_C",
+    "name": "Fused Quickwire",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - Caterium Ingots",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_GoldIngot_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_CopperIngot_C",
+        "amount": 5
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_HighSpeedWire_C",
+        "amount": 12
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Plastic_1_C",
+    "name": "Recycled Plastic",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_Rubber_C",
+        "amount": 6
+      },
+      {
+        "item": "Desc_LiquidFuel_C",
+        "amount": 6
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Plastic_C",
+        "amount": 12
+      }
+    ],
+    "producedIn": [
+      "Desc_OilRefinery_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_NuclearFuelRod_1_C",
+    "name": "Uranium Fuel Unit",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Quartz Research|MAM Quartz Research]] - Quartz Crystals AND<br>[[Tier 8]] - Nuclear Power",
+    "duration": 300,
+    "ingredients": [
+      {
+        "item": "Desc_UraniumCell_C",
+        "amount": 100
+      },
+      {
+        "item": "Desc_ElectromagneticControlRod_C",
+        "amount": 10
+      },
+      {
+        "item": "Desc_CrystalOscillator_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_Rotor_C",
+        "amount": 10
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_NuclearFuelRod_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Motor_1_C",
+    "name": "Rigor Motor",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Quartz Research|MAM Quartz Research]] - Quartz Crystals AND<br>[[Tier 4]] - Advanced Steel Production",
+    "duration": 48,
+    "ingredients": [
+      {
+        "item": "Desc_Rotor_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_Stator_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_CrystalOscillator_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Motor_C",
+        "amount": 6
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_ModularFrame_C",
+    "name": "Steeled Frame",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 60,
+    "ingredients": [
+      {
+        "item": "Desc_IronPlateReinforced_C",
+        "amount": 2
+      },
+      {
+        "item": "Desc_SteelPipe_C",
+        "amount": 10
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_ModularFrame_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_IngotSteel_2_C",
+    "name": "Compacted Steel Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Sulfur Research|MAM Sulfur Research]] - Compacted Coal AND<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 24,
+    "ingredients": [
+      {
+        "item": "Desc_OreIron_C",
+        "amount": 2
+      },
+      {
+        "item": "Desc_CompactedCoal_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_SteelIngot_C",
+        "amount": 4
+      }
+    ],
+    "producedIn": [
+      "Desc_FoundryMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_IngotSteel_1_C",
+    "name": "Solid Steel Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 3,
+    "ingredients": [
+      {
+        "item": "Desc_IronIngot_C",
+        "amount": 2
+      },
+      {
+        "item": "Desc_Coal_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_SteelIngot_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_FoundryMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_IngotIron_C",
+    "name": "Iron Alloy Ingot",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 3]] - Basic Steel Production",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_OreIron_C",
+        "amount": 8
+      },
+      {
+        "item": "Desc_OreCopper_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_IronIngot_C",
+        "amount": 15
+      }
+    ],
+    "producedIn": [
+      "Desc_FoundryMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_HighSpeedConnector_C",
+    "name": "Silicon High-Speed Connector",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - High-Speed Connector AND<br>[[Quartz Research|MAM Quartz Research]] - Quartz AND<br>[[Tier 5]] - Oil Processing",
+    "duration": 40,
+    "ingredients": [
+      {
+        "item": "Desc_HighSpeedWire_C",
+        "amount": 60
+      },
+      {
+        "item": "Desc_Silica_C",
+        "amount": 25
+      },
+      {
+        "item": "Desc_CircuitBoard_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_HighSpeedConnector_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_ModularFrameHeavy_C",
+    "name": "Heavy Encased Frame",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 6]] - Industrial Manufacturing",
+    "duration": 64,
+    "ingredients": [
+      {
+        "item": "Desc_ModularFrame_C",
+        "amount": 8
+      },
+      {
+        "item": "Desc_SteelPlateReinforced_C",
+        "amount": 10
+      },
+      {
+        "item": "Desc_SteelPipe_C",
+        "amount": 36
+      },
+      {
+        "item": "Desc_Cement_C",
+        "amount": 22
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_ModularFrameHeavy_C",
+        "amount": 3
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_HeatSink_1_C",
+    "name": "Heat Exchanger",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 8]] - Advanced Aluminum Production",
+    "duration": 6,
+    "ingredients": [
+      {
+        "item": "Desc_AluminumCasing_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_Rubber_C",
+        "amount": 3
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_AluminumPlateReinforced_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Gunpowder_1_C",
+    "name": "Fine Black Powder",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Sulfur Research|MAM Sulfur Research]] - Compacted Coal",
+    "duration": 8,
+    "ingredients": [
+      {
+        "item": "Desc_Sulfur_C",
+        "amount": 1
+      },
+      {
+        "item": "Desc_CompactedCoal_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Gunpowder_C",
+        "amount": 6
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_ElectromagneticControlRod_1_C",
+    "name": "Electromagnetic Connection Rod",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - AI Limiter AND<br>[[Tier 8]] - Nuclear Power",
+    "duration": 15,
+    "ingredients": [
+      {
+        "item": "Desc_Stator_C",
+        "amount": 2
+      },
+      {
+        "item": "Desc_HighSpeedConnector_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_ElectromagneticControlRod_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CrystalOscillator_C",
+    "name": "Insulated Crystal Oscillator",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - Caterium Electronics AND<br>[[Quartz Research|MAM Quartz Research]] - Crystal Oscillator AND<br>[[Tier 5]] - Oil Processing",
+    "duration": 32,
+    "ingredients": [
+      {
+        "item": "Desc_QuartzCrystal_C",
+        "amount": 10
+      },
+      {
+        "item": "Desc_Rubber_C",
+        "amount": 7
+      },
+      {
+        "item": "Desc_CircuitBoardHighSpeed_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_CrystalOscillator_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Concrete_C",
+    "name": "Fine Concrete",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Quartz Research|MAM Quartz Research]] - Quartz",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_Silica_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_Stone_C",
+        "amount": 12
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Cement_C",
+        "amount": 10
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Computer_2_C",
+    "name": "Crystal Computer",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Quartz Research|MAM Quartz Research]] - Quartz Crystals AND<br>[[Tier 6]] - Industrial Manufacturing",
+    "duration": 36,
+    "ingredients": [
+      {
+        "item": "Desc_CircuitBoard_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_CrystalOscillator_C",
+        "amount": 1
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Computer_C",
+        "amount": 2
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Computer_1_C",
+    "name": "Caterium Computer",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - Caterium Ingots AND<br>[[Tier 6]] - Industrial Manufacturing",
+    "duration": 16,
+    "ingredients": [
+      {
+        "item": "Desc_CircuitBoard_C",
+        "amount": 4
+      },
+      {
+        "item": "Desc_HighSpeedWire_C",
+        "amount": 14
+      },
+      {
+        "item": "Desc_Rubber_C",
+        "amount": 6
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Computer_C",
+        "amount": 1
+      }
+    ],
+    "producedIn": [
+      "Desc_ManufacturerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CircuitBoard_2_C",
+    "name": "Caterium Circuit Board",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - Caterium Ingots AND<br>[[Tier 5]] - Oil Processing",
+    "duration": 48,
+    "ingredients": [
+      {
+        "item": "Desc_Plastic_C",
+        "amount": 10
+      },
+      {
+        "item": "Desc_HighSpeedWire_C",
+        "amount": 30
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_CircuitBoard_C",
+        "amount": 7
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_CircuitBoard_1_C",
+    "name": "Silicon Circuit Board",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Quartz Research|MAM Quartz Research]] - Quartz AND<br>[[Tier 5]] - Oil Processing",
+    "duration": 24,
+    "ingredients": [
+      {
+        "item": "Desc_CopperSheet_C",
+        "amount": 11
+      },
+      {
+        "item": "Desc_Silica_C",
+        "amount": 11
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_CircuitBoard_C",
+        "amount": 5
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Cable_2_C",
+    "name": "Quickwire Cable",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Caterium Research|MAM Caterium Research]] - Caterium Ingots AND<br>[[Tier 5]] - Oil Processing",
+    "duration": 24,
+    "ingredients": [
+      {
+        "item": "Desc_HighSpeedWire_C",
+        "amount": 3
+      },
+      {
+        "item": "Desc_Rubber_C",
+        "amount": 2
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Cable_C",
+        "amount": 11
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  },
+  {
+    "className": "Recipe_Alternate_Cable_1_C",
+    "name": "Insulated Cable",
+    "unlockedBy": "[[Hard Drive|Hard Drive scanning]] after unlocking:<br>[[Tier 5]] - Oil Processing",
+    "duration": 12,
+    "ingredients": [
+      {
+        "item": "Desc_Wire_C",
+        "amount": 9
+      },
+      {
+        "item": "Desc_Rubber_C",
+        "amount": 6
+      }
+    ],
+    "products": [
+      {
+        "item": "Desc_Cable_C",
+        "amount": 20
+      }
+    ],
+    "producedIn": [
+      "Desc_AssemblerMk1_C"
+    ],
+    "inCraftBench": false,
+    "inWorkshop": false,
+    "inBuildGun": false,
+    "inCustomizer": false,
+    "manualCraftingMultiplier": 1,
+    "alternate": true,
+    "minPower": null,
+    "maxPower": null,
+    "seasons": [],
+    "stable": true,
+    "experimental": true
+  }
+]
