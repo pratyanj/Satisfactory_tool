@@ -21,11 +21,13 @@ export interface ResourceInput {
 
 export interface Recipe {
   id: RecipeId;
+  name?: string;
   outputItemId: ItemId;
   outputRate: number; // per minute
   inputs: ResourceInput[];
   byproducts?: ResourceInput[];
   machineId: MachineId;
+  isAlternate?: boolean;
 }
 
 export interface Machine {

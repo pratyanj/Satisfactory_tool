@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏗️ Factory Visual Planner
+# <img src="public/icons/factory-icon.png" alt="Factory" width="24" height="24" align="center"> Factory Visual Planner
 
 ### A production line calculator & visualizer for [Satisfactory](https://www.satisfactorygame.com/)
 
@@ -12,36 +12,36 @@ Plan, optimize, and share your factory layouts — from raw resources to final p
 
 ---
 
-## ✨ Features
+## <img src="public/icons/features-icon.png" alt="Features" width="20" height="20" align="center"> Features
 
-### 📊 Network Graph
+### <img src="public/icons/chart-icon.png" alt="Chart" width="18" height="18" align="center"> Network Graph
 Interactive flowchart visualization of your entire production chain powered by [React Flow](https://reactflow.dev/). Drag, zoom, and pan through your factory layout. Each node shows the machine type, item produced, rate per minute, and power consumption. Belt overload warnings are highlighted in red.
 
 ![Network Graph - Aggregated View](docs/screenshots/network_graph.png)
 
-### 🔧 Machine View
+### <img src="public/icons/wrench-icon.png" alt="Wrench" width="18" height="18" align="center"> Machine View
 Switch from **Aggregated View** (grouped by recipe) to **Machine View** (expanded per-machine arrays) to see how your factory will physically look with splitters, mergers, and manifold belt routing.
 
 ![Machine View](docs/screenshots/machine_view.png)
 
-### 🌳 Tree List
+### <img src="public/icons/tree-icon.png" alt="Tree" width="18" height="18" align="center"> Tree List
 A collapsible, hierarchical tree view of the full production chain. Quickly see what each building step requires — with machine icons, multiplier counts, and throughput rates.
 
 ![Tree List](docs/screenshots/tree_list.png)
 
-### 📦 Items
+### <img src="public/icons/box-icon.png" alt="Box" width="18" height="18" align="center"> Items
 A flat breakdown of **every item** needed per minute across your entire production chain — including intermediates and raw resources. Sorted by rate for quick reference.
 
 ![Items Tab](docs/screenshots/items_tab.png)
 
-### 🏭 Buildings
+### <img src="public/icons/factory-building-icon.png" alt="Buildings" width="18" height="18" align="center"> Buildings
 See exactly how many of each building type you need, what each one produces, and the total power required. Perfect for planning your factory floor.
 
 ![Buildings Tab](docs/screenshots/buildings_tab.png)
 
 ---
 
-## 🚀 Additional Features
+## <img src="public/icons/rocket-icon.png" alt="Rocket" width="20" height="20" align="center"> Additional Features
 
 | Feature | Description |
 |---|---|
@@ -55,7 +55,7 @@ See exactly how many of each building type you need, what each one produces, and
 
 ---
 
-## 🛠️ Tech Stack
+## <img src="public/icons/tools-icon.png" alt="Tools" width="20" height="20" align="center"> Tech Stack
 
 - **Framework**: [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
 - **Build Tool**: [Vite](https://vitejs.dev/)
@@ -67,7 +67,7 @@ See exactly how many of each building type you need, what each one produces, and
 
 ---
 
-## 📁 Project Structure
+## <img src="public/icons/folder-icon.png" alt="Folder" width="20" height="20" align="center"> Project Structure
 
 ```
 src/
@@ -91,7 +91,7 @@ src/
 
 ---
 
-## 🎮 Supported Items
+## <img src="public/icons/gamepad-icon.png" alt="Gamepad" width="20" height="20" align="center"> Supported Items
 
 The planner currently supports **21 items** across the early-to-mid game:
 
@@ -105,7 +105,7 @@ The planner currently supports **21 items** across the early-to-mid game:
 
 ---
 
-## ⚡ Getting Started
+## <img src="public/icons/lightning-icon.png" alt="Lightning" width="20" height="20" align="center"> Getting Started
 
 ### Prerequisites
 
@@ -139,7 +139,7 @@ npm run preview
 
 ---
 
-## 📖 How It Works
+## <img src="public/icons/book-icon.png" alt="Book" width="20" height="20" align="center"> How It Works
 
 1. **Select a target item** (e.g., Copper Sheet) and desired **production rate** (items/min)
 2. **Choose your miner tier** and **belt tier** to match your in-game progression
@@ -152,12 +152,12 @@ npm run preview
 
 ---
 
-## 🤝 Contributing
+## <img src="public/icons/handshake-icon.png" alt="Handshake" width="20" height="20" align="center"> Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests.
 
 ---
 
-## 📄 License
+## <img src="public/icons/document-icon.png" alt="Document" width="20" height="20" align="center"> License
 
 This project is open source under the [Apache 2.0 License](LICENSE).

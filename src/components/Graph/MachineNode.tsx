@@ -32,7 +32,7 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
       {/* Top section: image + item name + rate + machine label */}
       <div className={`flex ${isFlipped ? 'flex-row-reverse' : ''}`}>
         {/* Machine image */}
-        <div className={`w-[72px] bg-[#101114] flex items-center justify-center shrink-0 overflow-hidden relative ${isFlipped ? 'border-l border-[#2a2d33]' : 'border-r border-[#2a2d33]'}`} style={{ minHeight: 72 }}>
+        <div className={`w-[100px] bg-[#101114] flex items-center justify-center shrink-0 overflow-hidden relative ${isFlipped ? 'border-l border-[#2a2d33]' : 'border-r border-[#2a2d33]'}`} style={{ minHeight: 72 }}>
           {machineInfo?.imageUrl ? (
             <AppImage idKey={data.machineId as string} fallbackUrl={machineInfo.imageUrl} className="w-full h-full object-cover" alt={machineInfo.name} />
           ) : (
@@ -52,8 +52,13 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
               </div>
               <div className="font-mono text-[10px] text-orange-400 shrink-0">{totalPower.toFixed(1)} MW</div>
             </div>
-            <div className="font-semibold text-sm leading-tight truncate">
-              {(data.rate as number).toFixed(1)}/min
+            <div className="flex items-center gap-2 mt-0.5">
+              {data.itemImageUrl && (
+                <AppImage idKey={data.itemId as string} fallbackUrl={data.itemImageUrl as string} className="w-8 h-8 object-contain shrink-0" alt={data.item as string} />
+              )}
+              <div className="font-semibold text-sm leading-tight truncate">
+                {(data.rate as number).toFixed(1)}/min
+              </div>
             </div>
           </div>
           <div className="px-3 flex items-center h-[30px] shrink-0 min-w-0">

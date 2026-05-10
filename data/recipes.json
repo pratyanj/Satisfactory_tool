@@ -1691,5 +1691,1933 @@
       }
     ],
     "machineId": "assembler"
+  },
+  {
+    "id": "recipe_alternate_rocketfuel_nitro_c",
+    "name": "Nitro Rocket Fuel",
+    "outputItemId": "rocket_fuel",
+    "outputRate": 150,
+    "inputs": [
+      {
+        "itemId": "fuel",
+        "rate": 100
+      },
+      {
+        "itemId": "nitrogen_gas",
+        "rate": 75
+      },
+      {
+        "itemId": "sulfur",
+        "rate": 100
+      },
+      {
+        "itemId": "coal",
+        "rate": 50
+      }
+    ],
+    "machineId": "blender",
+    "isAlternate": true,
+    "byproducts": [
+      {
+        "itemId": "compacted_coal",
+        "rate": 25
+      }
+    ]
+  },
+  {
+    "id": "recipe_alternate_ionizedfuel_dark_c",
+    "name": "Dark-Ion Fuel",
+    "outputItemId": "ionized_fuel",
+    "outputRate": 200,
+    "inputs": [
+      {
+        "itemId": "packaged_rocket_fuel",
+        "rate": 240
+      },
+      {
+        "itemId": "dark_matter_crystal",
+        "rate": 80
+      }
+    ],
+    "machineId": "converter",
+    "isAlternate": true,
+    "byproducts": [
+      {
+        "itemId": "compacted_coal",
+        "rate": 40
+      }
+    ]
+  },
+  {
+    "id": "recipe_alternate_diamond_turbo_c",
+    "name": "Turbo Diamonds",
+    "outputItemId": "diamonds",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "coal",
+        "rate": 600
+      },
+      {
+        "itemId": "packaged_turbofuel",
+        "rate": 40
+      }
+    ],
+    "machineId": "particle_accelerator",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_diamond_pink_c",
+    "name": "Pink Diamonds",
+    "outputItemId": "diamonds",
+    "outputRate": 15,
+    "inputs": [
+      {
+        "itemId": "coal",
+        "rate": 120
+      },
+      {
+        "itemId": "quartz_crystal",
+        "rate": 45
+      }
+    ],
+    "machineId": "converter",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_diamond_petroleum_c",
+    "name": "Petroleum Diamonds",
+    "outputItemId": "diamonds",
+    "outputRate": 30,
+    "inputs": [
+      {
+        "itemId": "petroleum_coke",
+        "rate": 720
+      }
+    ],
+    "machineId": "particle_accelerator",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_diamond_oilbased_c",
+    "name": "Oil-Based Diamonds",
+    "outputItemId": "diamonds",
+    "outputRate": 40,
+    "inputs": [
+      {
+        "itemId": "crude_oil",
+        "rate": 200
+      }
+    ],
+    "machineId": "particle_accelerator",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_diamond_cloudy_c",
+    "name": "Cloudy Diamonds",
+    "outputItemId": "diamonds",
+    "outputRate": 20,
+    "inputs": [
+      {
+        "itemId": "coal",
+        "rate": 240
+      },
+      {
+        "itemId": "limestone",
+        "rate": 480
+      }
+    ],
+    "machineId": "particle_accelerator",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_darkmatter_trap_c",
+    "name": "Dark Matter Trap",
+    "outputItemId": "dark_matter_crystal",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "time_crystal",
+        "rate": 30
+      },
+      {
+        "itemId": "dark_matter_residue",
+        "rate": 150
+      }
+    ],
+    "machineId": "particle_accelerator",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_darkmatter_crystallization_c",
+    "name": "Dark Matter Crystallization",
+    "outputItemId": "dark_matter_crystal",
+    "outputRate": 20,
+    "inputs": [
+      {
+        "itemId": "dark_matter_residue",
+        "rate": 200
+      }
+    ],
+    "machineId": "particle_accelerator",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_wetconcrete_c",
+    "name": "Wet Concrete",
+    "outputItemId": "concrete",
+    "outputRate": 80,
+    "inputs": [
+      {
+        "itemId": "limestone",
+        "rate": 120
+      },
+      {
+        "itemId": "water",
+        "rate": 100
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_turboheavyfuel_c",
+    "name": "Turbo Heavy Fuel",
+    "outputItemId": "turbofuel",
+    "outputRate": 30,
+    "inputs": [
+      {
+        "itemId": "heavy_oil_residue",
+        "rate": 37.5
+      },
+      {
+        "itemId": "compacted_coal",
+        "rate": 30
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_steelrod_c",
+    "name": "Steel Rod",
+    "outputItemId": "iron_rod",
+    "outputRate": 48,
+    "inputs": [
+      {
+        "itemId": "steel_ingot",
+        "rate": 12
+      }
+    ],
+    "machineId": "constructor",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_steelcanister_c",
+    "name": "Steel Canister",
+    "outputItemId": "empty_canister",
+    "outputRate": 40,
+    "inputs": [
+      {
+        "itemId": "steel_ingot",
+        "rate": 40
+      }
+    ],
+    "machineId": "constructor",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_steamedcoppersheet_c",
+    "name": "Steamed Copper Sheet",
+    "outputItemId": "copper_sheet",
+    "outputRate": 22.5,
+    "inputs": [
+      {
+        "itemId": "copper_ingot",
+        "rate": 22.5
+      },
+      {
+        "itemId": "water",
+        "rate": 22.5
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_rubberconcrete_c",
+    "name": "Rubber Concrete",
+    "outputItemId": "concrete",
+    "outputRate": 90,
+    "inputs": [
+      {
+        "itemId": "limestone",
+        "rate": 100
+      },
+      {
+        "itemId": "rubber",
+        "rate": 20
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_recycledrubber_c",
+    "name": "Recycled Rubber",
+    "outputItemId": "rubber",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "plastic",
+        "rate": 30
+      },
+      {
+        "itemId": "fuel",
+        "rate": 30
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_purequartzcrystal_c",
+    "name": "Pure Quartz Crystal",
+    "outputItemId": "quartz_crystal",
+    "outputRate": 52.5,
+    "inputs": [
+      {
+        "itemId": "raw_quartz",
+        "rate": 67.5
+      },
+      {
+        "itemId": "water",
+        "rate": 37.5
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_pureironingot_c",
+    "name": "Pure Iron Ingot",
+    "outputItemId": "iron_ingot",
+    "outputRate": 65,
+    "inputs": [
+      {
+        "itemId": "iron_ore",
+        "rate": 35
+      },
+      {
+        "itemId": "water",
+        "rate": 20
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_purecopperingot_c",
+    "name": "Pure Copper Ingot",
+    "outputItemId": "copper_ingot",
+    "outputRate": 37.5,
+    "inputs": [
+      {
+        "itemId": "copper_ore",
+        "rate": 15
+      },
+      {
+        "itemId": "water",
+        "rate": 10
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_purecateriumingot_c",
+    "name": "Pure Caterium Ingot",
+    "outputItemId": "caterium_ingot",
+    "outputRate": 12,
+    "inputs": [
+      {
+        "itemId": "caterium_ore",
+        "rate": 24
+      },
+      {
+        "itemId": "water",
+        "rate": 24
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_purealuminumingot_c",
+    "name": "Pure Aluminum Ingot",
+    "outputItemId": "aluminum_ingot",
+    "outputRate": 30,
+    "inputs": [
+      {
+        "itemId": "aluminum_scrap",
+        "rate": 60
+      }
+    ],
+    "machineId": "smelter",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_polymerresin_c",
+    "name": "Polymer Resin",
+    "outputItemId": "polymer_resin",
+    "outputRate": 130,
+    "inputs": [
+      {
+        "itemId": "crude_oil",
+        "rate": 60
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true,
+    "byproducts": [
+      {
+        "itemId": "heavy_oil_residue",
+        "rate": 20
+      }
+    ]
+  },
+  {
+    "id": "recipe_alternate_plasticsmartplating_c",
+    "name": "Plastic Smart Plating",
+    "outputItemId": "smart_plating",
+    "outputRate": 5,
+    "inputs": [
+      {
+        "itemId": "reinforced_iron_plate",
+        "rate": 2.5
+      },
+      {
+        "itemId": "rotor",
+        "rate": 2.5
+      },
+      {
+        "itemId": "plastic",
+        "rate": 7.5
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_highspeedwiring_c",
+    "name": "Automated Speed Wiring",
+    "outputItemId": "automated_wiring",
+    "outputRate": 7.5,
+    "inputs": [
+      {
+        "itemId": "stator",
+        "rate": 3.75
+      },
+      {
+        "itemId": "wire",
+        "rate": 75
+      },
+      {
+        "itemId": "high_speed_connector",
+        "rate": 1.875
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_heavyoilresidue_c",
+    "name": "Heavy Oil Residue",
+    "outputItemId": "heavy_oil_residue",
+    "outputRate": 40,
+    "inputs": [
+      {
+        "itemId": "crude_oil",
+        "rate": 30
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true,
+    "byproducts": [
+      {
+        "itemId": "polymer_resin",
+        "rate": 20
+      }
+    ]
+  },
+  {
+    "id": "recipe_alternate_fusedwire_c",
+    "name": "Fused Wire",
+    "outputItemId": "wire",
+    "outputRate": 90,
+    "inputs": [
+      {
+        "itemId": "copper_ingot",
+        "rate": 12
+      },
+      {
+        "itemId": "caterium_ingot",
+        "rate": 3
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_flexibleframework_c",
+    "name": "Flexible Framework",
+    "outputItemId": "versatile_framework",
+    "outputRate": 7.5,
+    "inputs": [
+      {
+        "itemId": "modular_frame",
+        "rate": 3.75
+      },
+      {
+        "itemId": "steel_beam",
+        "rate": 22.5
+      },
+      {
+        "itemId": "rubber",
+        "rate": 30
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_electrodecircuitboard_c",
+    "name": "Electrode Circuit Board",
+    "outputItemId": "circuit_board",
+    "outputRate": 5,
+    "inputs": [
+      {
+        "itemId": "rubber",
+        "rate": 20
+      },
+      {
+        "itemId": "petroleum_coke",
+        "rate": 40
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_electroaluminumscrap_c",
+    "name": "Electrode Aluminum Scrap",
+    "outputItemId": "aluminum_scrap",
+    "outputRate": 300,
+    "inputs": [
+      {
+        "itemId": "alumina_solution",
+        "rate": 180
+      },
+      {
+        "itemId": "petroleum_coke",
+        "rate": 60
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true,
+    "byproducts": [
+      {
+        "itemId": "water",
+        "rate": 105
+      }
+    ]
+  },
+  {
+    "id": "recipe_alternate_dilutedpackagedfuel_c",
+    "name": "Diluted Packaged Fuel",
+    "outputItemId": "packaged_fuel",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "heavy_oil_residue",
+        "rate": 30
+      },
+      {
+        "itemId": "packaged_water",
+        "rate": 60
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_copperalloyingot_c",
+    "name": "Copper Alloy Ingot",
+    "outputItemId": "copper_ingot",
+    "outputRate": 100,
+    "inputs": [
+      {
+        "itemId": "copper_ore",
+        "rate": 50
+      },
+      {
+        "itemId": "iron_ore",
+        "rate": 50
+      }
+    ],
+    "machineId": "foundry",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_cokesteelingot_c",
+    "name": "Coke Steel Ingot",
+    "outputItemId": "steel_ingot",
+    "outputRate": 100,
+    "inputs": [
+      {
+        "itemId": "iron_ore",
+        "rate": 75
+      },
+      {
+        "itemId": "petroleum_coke",
+        "rate": 75
+      }
+    ],
+    "machineId": "foundry",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_coatedironplate_c",
+    "name": "Coated Iron Plate",
+    "outputItemId": "iron_plate",
+    "outputRate": 75,
+    "inputs": [
+      {
+        "itemId": "iron_ingot",
+        "rate": 37.5
+      },
+      {
+        "itemId": "plastic",
+        "rate": 7.5
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_coatedironcanister_c",
+    "name": "Coated Iron Canister",
+    "outputItemId": "empty_canister",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "iron_plate",
+        "rate": 30
+      },
+      {
+        "itemId": "copper_sheet",
+        "rate": 15
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_coatedcable_c",
+    "name": "Coated Cable",
+    "outputItemId": "cable",
+    "outputRate": 67.5,
+    "inputs": [
+      {
+        "itemId": "wire",
+        "rate": 37.5
+      },
+      {
+        "itemId": "heavy_oil_residue",
+        "rate": 15
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_adheredironplate_c",
+    "name": "Adhered Iron Plate",
+    "outputItemId": "reinforced_iron_plate",
+    "outputRate": 3.75,
+    "inputs": [
+      {
+        "itemId": "iron_plate",
+        "rate": 11.25
+      },
+      {
+        "itemId": "rubber",
+        "rate": 3.75
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_turbopressuremotor_c",
+    "name": "Turbo Pressure Motor",
+    "outputItemId": "turbo_motor",
+    "outputRate": 3.75,
+    "inputs": [
+      {
+        "itemId": "motor",
+        "rate": 7.5
+      },
+      {
+        "itemId": "pressure_conversion_cube",
+        "rate": 1.875
+      },
+      {
+        "itemId": "packaged_nitrogen_gas",
+        "rate": 45
+      },
+      {
+        "itemId": "stator",
+        "rate": 15
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_turboblendfuel_c",
+    "name": "Turbo Blend Fuel",
+    "outputItemId": "turbofuel",
+    "outputRate": 45,
+    "inputs": [
+      {
+        "itemId": "fuel",
+        "rate": 15
+      },
+      {
+        "itemId": "heavy_oil_residue",
+        "rate": 30
+      },
+      {
+        "itemId": "sulfur",
+        "rate": 22.5
+      },
+      {
+        "itemId": "petroleum_coke",
+        "rate": 22.5
+      }
+    ],
+    "machineId": "blender",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_superstatecomputer_c",
+    "name": "Super-State Computer",
+    "outputItemId": "supercomputer",
+    "outputRate": 2.4,
+    "inputs": [
+      {
+        "itemId": "computer",
+        "rate": 7.199999999999999
+      },
+      {
+        "itemId": "electromagnetic_control_rod",
+        "rate": 2.4
+      },
+      {
+        "itemId": "battery",
+        "rate": 24
+      },
+      {
+        "itemId": "wire",
+        "rate": 60
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_sloppyalumina_c",
+    "name": "Sloppy Alumina",
+    "outputItemId": "alumina_solution",
+    "outputRate": 240,
+    "inputs": [
+      {
+        "itemId": "bauxite",
+        "rate": 200
+      },
+      {
+        "itemId": "water",
+        "rate": 200
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_radiocontrolsystem_c",
+    "name": "Radio Control System",
+    "outputItemId": "radio_control_unit",
+    "outputRate": 4.5,
+    "inputs": [
+      {
+        "itemId": "crystal_oscillator",
+        "rate": 1.5
+      },
+      {
+        "itemId": "circuit_board",
+        "rate": 15
+      },
+      {
+        "itemId": "aluminum_casing",
+        "rate": 90
+      },
+      {
+        "itemId": "rubber",
+        "rate": 45
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_plutoniumfuelunit_c",
+    "name": "Plutonium Fuel Unit",
+    "outputItemId": "plutonium_fuel_rod",
+    "outputRate": 0.5,
+    "inputs": [
+      {
+        "itemId": "encased_plutonium_cell",
+        "rate": 10
+      },
+      {
+        "itemId": "pressure_conversion_cube",
+        "rate": 0.5
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_ocsupercomputer_c",
+    "name": "OC Supercomputer",
+    "outputItemId": "supercomputer",
+    "outputRate": 3,
+    "inputs": [
+      {
+        "itemId": "radio_control_unit",
+        "rate": 6
+      },
+      {
+        "itemId": "cooling_system",
+        "rate": 6
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_instantscrap_c",
+    "name": "Instant Scrap",
+    "outputItemId": "aluminum_scrap",
+    "outputRate": 300,
+    "inputs": [
+      {
+        "itemId": "bauxite",
+        "rate": 150
+      },
+      {
+        "itemId": "coal",
+        "rate": 100
+      },
+      {
+        "itemId": "sulfuric_acid",
+        "rate": 50
+      },
+      {
+        "itemId": "water",
+        "rate": 60
+      }
+    ],
+    "machineId": "blender",
+    "isAlternate": true,
+    "byproducts": [
+      {
+        "itemId": "water",
+        "rate": 50
+      }
+    ]
+  },
+  {
+    "id": "recipe_alternate_instantplutoniumcell_c",
+    "name": "Instant Plutonium Cell",
+    "outputItemId": "encased_plutonium_cell",
+    "outputRate": 10,
+    "inputs": [
+      {
+        "itemId": "non_fissile_uranium",
+        "rate": 75
+      },
+      {
+        "itemId": "aluminum_casing",
+        "rate": 10
+      }
+    ],
+    "machineId": "particle_accelerator",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_heatfusedframe_c",
+    "name": "Heat-Fused Frame",
+    "outputItemId": "fused_modular_frame",
+    "outputRate": 3,
+    "inputs": [
+      {
+        "itemId": "heavy_modular_frame",
+        "rate": 3
+      },
+      {
+        "itemId": "aluminum_ingot",
+        "rate": 150
+      },
+      {
+        "itemId": "nitric_acid",
+        "rate": 24
+      },
+      {
+        "itemId": "fuel",
+        "rate": 30
+      }
+    ],
+    "machineId": "blender",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_fertileuranium_c",
+    "name": "Fertile Uranium",
+    "outputItemId": "non_fissile_uranium",
+    "outputRate": 100,
+    "inputs": [
+      {
+        "itemId": "uranium",
+        "rate": 25
+      },
+      {
+        "itemId": "uranium_waste",
+        "rate": 25
+      },
+      {
+        "itemId": "nitric_acid",
+        "rate": 15
+      },
+      {
+        "itemId": "sulfuric_acid",
+        "rate": 25
+      }
+    ],
+    "machineId": "blender",
+    "isAlternate": true,
+    "byproducts": [
+      {
+        "itemId": "water",
+        "rate": 40
+      }
+    ]
+  },
+  {
+    "id": "recipe_alternate_electricmotor_c",
+    "name": "Electric Motor",
+    "outputItemId": "motor",
+    "outputRate": 7.5,
+    "inputs": [
+      {
+        "itemId": "electromagnetic_control_rod",
+        "rate": 3.75
+      },
+      {
+        "itemId": "rotor",
+        "rate": 7.5
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_dilutedfuel_c",
+    "name": "Diluted Fuel",
+    "outputItemId": "fuel",
+    "outputRate": 100,
+    "inputs": [
+      {
+        "itemId": "heavy_oil_residue",
+        "rate": 50
+      },
+      {
+        "itemId": "water",
+        "rate": 100
+      }
+    ],
+    "machineId": "blender",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_coolingdevice_c",
+    "name": "Cooling Device",
+    "outputItemId": "cooling_system",
+    "outputRate": 5,
+    "inputs": [
+      {
+        "itemId": "heat_sink",
+        "rate": 10
+      },
+      {
+        "itemId": "motor",
+        "rate": 2.5
+      },
+      {
+        "itemId": "nitrogen_gas",
+        "rate": 60
+      }
+    ],
+    "machineId": "blender",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_classicbattery_c",
+    "name": "Classic Battery",
+    "outputItemId": "battery",
+    "outputRate": 30,
+    "inputs": [
+      {
+        "itemId": "sulfur",
+        "rate": 45
+      },
+      {
+        "itemId": "alclad_aluminum_sheet",
+        "rate": 52.5
+      },
+      {
+        "itemId": "plastic",
+        "rate": 60
+      },
+      {
+        "itemId": "wire",
+        "rate": 90
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_alcladcasing_c",
+    "name": "Alclad Casing",
+    "outputItemId": "aluminum_casing",
+    "outputRate": 112.5,
+    "inputs": [
+      {
+        "itemId": "aluminum_ingot",
+        "rate": 150
+      },
+      {
+        "itemId": "copper_ingot",
+        "rate": 75
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_steelpipe_molded_c",
+    "name": "Molded Steel Pipe",
+    "outputItemId": "steel_pipe",
+    "outputRate": 50,
+    "inputs": [
+      {
+        "itemId": "steel_ingot",
+        "rate": 50
+      },
+      {
+        "itemId": "concrete",
+        "rate": 30
+      }
+    ],
+    "machineId": "foundry",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_steelpipe_iron_c",
+    "name": "Iron Pipe",
+    "outputItemId": "steel_pipe",
+    "outputRate": 25,
+    "inputs": [
+      {
+        "itemId": "iron_ingot",
+        "rate": 100
+      }
+    ],
+    "machineId": "constructor",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_steelcastedplate_c",
+    "name": "Steel Cast Plate",
+    "outputItemId": "iron_plate",
+    "outputRate": 45,
+    "inputs": [
+      {
+        "itemId": "iron_ingot",
+        "rate": 15
+      },
+      {
+        "itemId": "steel_ingot",
+        "rate": 15
+      }
+    ],
+    "machineId": "foundry",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_steelbeam_molded_c",
+    "name": "Molded Beam",
+    "outputItemId": "steel_beam",
+    "outputRate": 45,
+    "inputs": [
+      {
+        "itemId": "steel_ingot",
+        "rate": 120
+      },
+      {
+        "itemId": "concrete",
+        "rate": 80
+      }
+    ],
+    "machineId": "foundry",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_steelbeam_aluminum_c",
+    "name": "Aluminum Beam",
+    "outputItemId": "steel_beam",
+    "outputRate": 22.5,
+    "inputs": [
+      {
+        "itemId": "aluminum_ingot",
+        "rate": 22.5
+      }
+    ],
+    "machineId": "constructor",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_aluminumrod_c",
+    "name": "Aluminum Rod",
+    "outputItemId": "iron_rod",
+    "outputRate": 52.5,
+    "inputs": [
+      {
+        "itemId": "aluminum_ingot",
+        "rate": 7.5
+      }
+    ],
+    "machineId": "constructor",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_ailimiter_plastic_c",
+    "name": "Plastic AI Limiter",
+    "outputItemId": "ai_limiter",
+    "outputRate": 8,
+    "inputs": [
+      {
+        "itemId": "quickwire",
+        "rate": 120
+      },
+      {
+        "itemId": "plastic",
+        "rate": 28
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_silica_distilled_c",
+    "name": "Distilled Silica",
+    "outputItemId": "silica",
+    "outputRate": 270,
+    "inputs": [
+      {
+        "itemId": "dissolved_silica",
+        "rate": 120
+      },
+      {
+        "itemId": "limestone",
+        "rate": 50
+      },
+      {
+        "itemId": "water",
+        "rate": 100
+      }
+    ],
+    "machineId": "blender",
+    "isAlternate": true,
+    "byproducts": [
+      {
+        "itemId": "water",
+        "rate": 80
+      }
+    ]
+  },
+  {
+    "id": "recipe_alternate_quartz_purified_c",
+    "name": "Quartz Purification",
+    "outputItemId": "quartz_crystal",
+    "outputRate": 75,
+    "inputs": [
+      {
+        "itemId": "raw_quartz",
+        "rate": 120
+      },
+      {
+        "itemId": "nitric_acid",
+        "rate": 10
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true,
+    "byproducts": [
+      {
+        "itemId": "dissolved_silica",
+        "rate": 60
+      }
+    ]
+  },
+  {
+    "id": "recipe_alternate_quartz_fused_c",
+    "name": "Fused Quartz Crystal",
+    "outputItemId": "quartz_crystal",
+    "outputRate": 54,
+    "inputs": [
+      {
+        "itemId": "raw_quartz",
+        "rate": 75
+      },
+      {
+        "itemId": "coal",
+        "rate": 36
+      }
+    ],
+    "machineId": "foundry",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_ironingot_leached_c",
+    "name": "Leached Iron Ingot",
+    "outputItemId": "iron_ingot",
+    "outputRate": 100,
+    "inputs": [
+      {
+        "itemId": "iron_ore",
+        "rate": 50
+      },
+      {
+        "itemId": "sulfuric_acid",
+        "rate": 10
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_ironingot_basic_c",
+    "name": "Basic Iron Ingot",
+    "outputItemId": "iron_ingot",
+    "outputRate": 50,
+    "inputs": [
+      {
+        "itemId": "iron_ore",
+        "rate": 25
+      },
+      {
+        "itemId": "limestone",
+        "rate": 40
+      }
+    ],
+    "machineId": "foundry",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_copperingot_tempered_c",
+    "name": "Tempered Copper Ingot",
+    "outputItemId": "copper_ingot",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "copper_ore",
+        "rate": 25
+      },
+      {
+        "itemId": "petroleum_coke",
+        "rate": 40
+      }
+    ],
+    "machineId": "foundry",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_copperingot_leached_c",
+    "name": "Leached Copper Ingot",
+    "outputItemId": "copper_ingot",
+    "outputRate": 110,
+    "inputs": [
+      {
+        "itemId": "copper_ore",
+        "rate": 45
+      },
+      {
+        "itemId": "sulfuric_acid",
+        "rate": 25
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_cateriumingot_tempered_c",
+    "name": "Tempered Caterium Ingot",
+    "outputItemId": "caterium_ingot",
+    "outputRate": 22.5,
+    "inputs": [
+      {
+        "itemId": "caterium_ore",
+        "rate": 45
+      },
+      {
+        "itemId": "petroleum_coke",
+        "rate": 15
+      }
+    ],
+    "machineId": "foundry",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_cateriumingot_leached_c",
+    "name": "Leached Caterium Ingot",
+    "outputItemId": "caterium_ingot",
+    "outputRate": 36,
+    "inputs": [
+      {
+        "itemId": "caterium_ore",
+        "rate": 54
+      },
+      {
+        "itemId": "sulfuric_acid",
+        "rate": 30
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_wire_2_c",
+    "name": "Caterium Wire",
+    "outputItemId": "wire",
+    "outputRate": 120,
+    "inputs": [
+      {
+        "itemId": "caterium_ingot",
+        "rate": 15
+      }
+    ],
+    "machineId": "constructor",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_wire_1_c",
+    "name": "Iron Wire",
+    "outputItemId": "wire",
+    "outputRate": 22.5,
+    "inputs": [
+      {
+        "itemId": "iron_ingot",
+        "rate": 12.5
+      }
+    ],
+    "machineId": "constructor",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_uraniumcell_1_c",
+    "name": "Infused Uranium Cell",
+    "outputItemId": "encased_uranium_cell",
+    "outputRate": 20,
+    "inputs": [
+      {
+        "itemId": "uranium",
+        "rate": 25
+      },
+      {
+        "itemId": "silica",
+        "rate": 15
+      },
+      {
+        "itemId": "sulfur",
+        "rate": 25
+      },
+      {
+        "itemId": "quickwire",
+        "rate": 75
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_turbomotor_1_c",
+    "name": "Turbo Electric Motor",
+    "outputItemId": "turbo_motor",
+    "outputRate": 2.8125,
+    "inputs": [
+      {
+        "itemId": "motor",
+        "rate": 6.5625
+      },
+      {
+        "itemId": "radio_control_unit",
+        "rate": 8.4375
+      },
+      {
+        "itemId": "electromagnetic_control_rod",
+        "rate": 4.6875
+      },
+      {
+        "itemId": "rotor",
+        "rate": 6.5625
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_stator_c",
+    "name": "Quickwire Stator",
+    "outputItemId": "stator",
+    "outputRate": 8,
+    "inputs": [
+      {
+        "itemId": "steel_pipe",
+        "rate": 16
+      },
+      {
+        "itemId": "quickwire",
+        "rate": 60
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_silica_c",
+    "name": "Cheap Silica",
+    "outputItemId": "silica",
+    "outputRate": 52.5,
+    "inputs": [
+      {
+        "itemId": "raw_quartz",
+        "rate": 22.5
+      },
+      {
+        "itemId": "limestone",
+        "rate": 37.5
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_rotor_c",
+    "name": "Steel Rotor",
+    "outputItemId": "rotor",
+    "outputRate": 5,
+    "inputs": [
+      {
+        "itemId": "steel_pipe",
+        "rate": 10
+      },
+      {
+        "itemId": "wire",
+        "rate": 30
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_encasedindustrialbeam_c",
+    "name": "Encased Industrial Pipe",
+    "outputItemId": "encased_industrial_beam",
+    "outputRate": 4,
+    "inputs": [
+      {
+        "itemId": "steel_pipe",
+        "rate": 24
+      },
+      {
+        "itemId": "concrete",
+        "rate": 20
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_reinforcedironplate_2_c",
+    "name": "Stitched Iron Plate",
+    "outputItemId": "reinforced_iron_plate",
+    "outputRate": 5.625,
+    "inputs": [
+      {
+        "itemId": "iron_plate",
+        "rate": 18.75
+      },
+      {
+        "itemId": "wire",
+        "rate": 37.5
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_radiocontrolunit_1_c",
+    "name": "Radio Connection Unit",
+    "outputItemId": "radio_control_unit",
+    "outputRate": 3.75,
+    "inputs": [
+      {
+        "itemId": "heat_sink",
+        "rate": 15
+      },
+      {
+        "itemId": "high_speed_connector",
+        "rate": 7.5
+      },
+      {
+        "itemId": "quartz_crystal",
+        "rate": 45
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_quickwire_c",
+    "name": "Fused Quickwire",
+    "outputItemId": "quickwire",
+    "outputRate": 90,
+    "inputs": [
+      {
+        "itemId": "caterium_ingot",
+        "rate": 7.5
+      },
+      {
+        "itemId": "copper_ingot",
+        "rate": 37.5
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_plastic_1_c",
+    "name": "Recycled Plastic",
+    "outputItemId": "plastic",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "rubber",
+        "rate": 30
+      },
+      {
+        "itemId": "fuel",
+        "rate": 30
+      }
+    ],
+    "machineId": "refinery",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_nuclearfuelrod_1_c",
+    "name": "Uranium Fuel Unit",
+    "outputItemId": "uranium_fuel_rod",
+    "outputRate": 0.6000000000000001,
+    "inputs": [
+      {
+        "itemId": "encased_uranium_cell",
+        "rate": 20
+      },
+      {
+        "itemId": "electromagnetic_control_rod",
+        "rate": 2
+      },
+      {
+        "itemId": "crystal_oscillator",
+        "rate": 0.6000000000000001
+      },
+      {
+        "itemId": "rotor",
+        "rate": 2
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_motor_1_c",
+    "name": "Rigor Motor",
+    "outputItemId": "motor",
+    "outputRate": 7.5,
+    "inputs": [
+      {
+        "itemId": "rotor",
+        "rate": 3.75
+      },
+      {
+        "itemId": "stator",
+        "rate": 3.75
+      },
+      {
+        "itemId": "crystal_oscillator",
+        "rate": 1.25
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_modularframe_c",
+    "name": "Steeled Frame",
+    "outputItemId": "modular_frame",
+    "outputRate": 3,
+    "inputs": [
+      {
+        "itemId": "reinforced_iron_plate",
+        "rate": 2
+      },
+      {
+        "itemId": "steel_pipe",
+        "rate": 10
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_ingotsteel_2_c",
+    "name": "Compacted Steel Ingot",
+    "outputItemId": "steel_ingot",
+    "outputRate": 10,
+    "inputs": [
+      {
+        "itemId": "iron_ore",
+        "rate": 5
+      },
+      {
+        "itemId": "compacted_coal",
+        "rate": 2.5
+      }
+    ],
+    "machineId": "foundry",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_ingotsteel_1_c",
+    "name": "Solid Steel Ingot",
+    "outputItemId": "steel_ingot",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "iron_ingot",
+        "rate": 40
+      },
+      {
+        "itemId": "coal",
+        "rate": 40
+      }
+    ],
+    "machineId": "foundry",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_ingotiron_c",
+    "name": "Iron Alloy Ingot",
+    "outputItemId": "iron_ingot",
+    "outputRate": 75,
+    "inputs": [
+      {
+        "itemId": "iron_ore",
+        "rate": 40
+      },
+      {
+        "itemId": "copper_ore",
+        "rate": 10
+      }
+    ],
+    "machineId": "foundry",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_highspeedconnector_c",
+    "name": "Silicon High-Speed Connector",
+    "outputItemId": "high_speed_connector",
+    "outputRate": 3,
+    "inputs": [
+      {
+        "itemId": "quickwire",
+        "rate": 90
+      },
+      {
+        "itemId": "silica",
+        "rate": 37.5
+      },
+      {
+        "itemId": "circuit_board",
+        "rate": 3
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_modularframeheavy_c",
+    "name": "Heavy Encased Frame",
+    "outputItemId": "heavy_modular_frame",
+    "outputRate": 2.8125,
+    "inputs": [
+      {
+        "itemId": "modular_frame",
+        "rate": 7.5
+      },
+      {
+        "itemId": "encased_industrial_beam",
+        "rate": 9.375
+      },
+      {
+        "itemId": "steel_pipe",
+        "rate": 33.75
+      },
+      {
+        "itemId": "concrete",
+        "rate": 20.625
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_heatsink_1_c",
+    "name": "Heat Exchanger",
+    "outputItemId": "heat_sink",
+    "outputRate": 10,
+    "inputs": [
+      {
+        "itemId": "aluminum_casing",
+        "rate": 30
+      },
+      {
+        "itemId": "rubber",
+        "rate": 30
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_gunpowder_1_c",
+    "name": "Fine Black Powder",
+    "outputItemId": "black_powder",
+    "outputRate": 45,
+    "inputs": [
+      {
+        "itemId": "sulfur",
+        "rate": 7.5
+      },
+      {
+        "itemId": "compacted_coal",
+        "rate": 15
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_electromagneticcontrolrod_1_c",
+    "name": "Electromagnetic Connection Rod",
+    "outputItemId": "electromagnetic_control_rod",
+    "outputRate": 8,
+    "inputs": [
+      {
+        "itemId": "stator",
+        "rate": 8
+      },
+      {
+        "itemId": "high_speed_connector",
+        "rate": 4
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_crystaloscillator_c",
+    "name": "Insulated Crystal Oscillator",
+    "outputItemId": "crystal_oscillator",
+    "outputRate": 1.875,
+    "inputs": [
+      {
+        "itemId": "quartz_crystal",
+        "rate": 18.75
+      },
+      {
+        "itemId": "rubber",
+        "rate": 13.125
+      },
+      {
+        "itemId": "ai_limiter",
+        "rate": 1.875
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_concrete_c",
+    "name": "Fine Concrete",
+    "outputItemId": "concrete",
+    "outputRate": 50,
+    "inputs": [
+      {
+        "itemId": "silica",
+        "rate": 15
+      },
+      {
+        "itemId": "limestone",
+        "rate": 60
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_computer_2_c",
+    "name": "Crystal Computer",
+    "outputItemId": "computer",
+    "outputRate": 3.3333333333333335,
+    "inputs": [
+      {
+        "itemId": "circuit_board",
+        "rate": 5
+      },
+      {
+        "itemId": "crystal_oscillator",
+        "rate": 1.6666666666666667
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_computer_1_c",
+    "name": "Caterium Computer",
+    "outputItemId": "computer",
+    "outputRate": 3.75,
+    "inputs": [
+      {
+        "itemId": "circuit_board",
+        "rate": 15
+      },
+      {
+        "itemId": "quickwire",
+        "rate": 52.5
+      },
+      {
+        "itemId": "rubber",
+        "rate": 22.5
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_circuitboard_2_c",
+    "name": "Caterium Circuit Board",
+    "outputItemId": "circuit_board",
+    "outputRate": 8.75,
+    "inputs": [
+      {
+        "itemId": "plastic",
+        "rate": 12.5
+      },
+      {
+        "itemId": "quickwire",
+        "rate": 37.5
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_circuitboard_1_c",
+    "name": "Silicon Circuit Board",
+    "outputItemId": "circuit_board",
+    "outputRate": 12.5,
+    "inputs": [
+      {
+        "itemId": "copper_sheet",
+        "rate": 27.5
+      },
+      {
+        "itemId": "silica",
+        "rate": 27.5
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_cable_2_c",
+    "name": "Quickwire Cable",
+    "outputItemId": "cable",
+    "outputRate": 27.5,
+    "inputs": [
+      {
+        "itemId": "quickwire",
+        "rate": 7.5
+      },
+      {
+        "itemId": "rubber",
+        "rate": 5
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_cable_1_c",
+    "name": "Insulated Cable",
+    "outputItemId": "cable",
+    "outputRate": 100,
+    "inputs": [
+      {
+        "itemId": "wire",
+        "rate": 45
+      },
+      {
+        "itemId": "rubber",
+        "rate": 30
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
   }
 ]
