@@ -34,7 +34,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
 
   /** Build enriched data for a machine node, including recipe details */
   function buildNodeData(node: SolverNode, machineCount: number, rate: number, label: string) {
-    const recipe = recipes.find(r => r.outputItemId === node.itemId);
+    const recipe = recipes.find(r => r.id === node.recipeId) || recipes.find(r => r.outputItemId === node.itemId);
     const machineInfo = machines[node.machineId];
     const itemInfo = items[node.itemId];
 
