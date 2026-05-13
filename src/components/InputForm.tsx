@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 import { Settings2, Zap, Play } from 'lucide-react';
 import { AppImage } from './AppImage';
-import { items, belts, machines, BeltId, MachineId } from '../engine/data';
+import { items, belts, machines, BeltId, MachineId, RecipeId } from '../engine/data';
 import { ItemModal } from './ItemModal';
 import { CustomSelect } from './CustomSelect';
+import { getAlternateRecipeCandidates, RecipeSelectionMap } from '../engine/solver';
 
 interface InputFormProps {
-  onCalculate: (itemId: string, rate: number, minerId: MachineId, beltId: BeltId) => void;
-  initialValues?: { itemId: string, rate: number, minerId: MachineId, beltId: BeltId };
+  onCalculate: (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap) => void;
+  initialValues?: { itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections?: RecipeSelectionMap };
+}
+
+function formatRecipeLabel(recipeId: RecipeId): string {
+  return recipeId
+    .replace(/^recipe_/, '')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (match) => match.toUpperCase());
 }
 
 export function InputForm({ onCalculate, initialValues }: InputFormProps) {
@@ -15,6 +23,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   const [rate, setRate] = useState<number>(initialValues?.rate || 120);
   const [minerId, setMinerId] = useState<MachineId>(initialValues?.minerId || 'miner_mk1');
   const [beltId, setBeltId] = useState<BeltId>(initialValues?.beltId || 'mk1');
+  const [recipeSelections, setRecipeSelections] = useState<RecipeSelectionMap>(initialValues?.recipeSelections || {});
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Sync state if initialValues changes (e.g. from URL load)
@@ -24,13 +33,14 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
       setRate(initialValues.rate);
       setMinerId(initialValues.minerId);
       setBeltId(initialValues.beltId);
+      setRecipeSelections(initialValues.recipeSelections || {});
     }
   }, [initialValues]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedItem && rate > 0) {
-      onCalculate(selectedItem, rate, minerId, beltId);
+      onCalculate(selectedItem, rate, minerId, beltId, recipeSelections);
     }
   };
 
@@ -42,6 +52,21 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   const availableBelts = Object.values(belts);
 
   const selectedItemData = items[selectedItem as keyof typeof items];
+  const alternateRecipeCandidates = React.useMemo(
+    () => getAlternateRecipeCandidates(selectedItem, recipeSelections),
+    [selectedItem, recipeSelections]
+  );
+
+  const handleAlternateRecipeChange = (itemId: string, recipeId: string) => {
+    const nextSelections: RecipeSelectionMap = {
+      ...recipeSelections,
+      [itemId]: recipeId,
+    };
+    setRecipeSelections(nextSelections);
+    if (selectedItem && rate > 0) {
+      onCalculate(selectedItem, rate, minerId, beltId, nextSelections);
+    }
+  };
 
   return (
     <>
@@ -102,6 +127,35 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
             options={availableBelts.map(b => ({ value: b.id, label: b.name }))}
           />
         </div>
+      </div>
+
+      <div className="border-t border-[#2a2d33] pt-4 flex flex-col gap-3">
+        <div>
+          <h3 className="text-xs font-mono tracking-widest text-[#8E9299] uppercase">Alternate Recipes</h3>
+          <p className="text-[11px] text-[#6f7681] mt-1">Choose recipes for items used in this production chain.</p>
+        </div>
+
+        {alternateRecipeCandidates.length === 0 ? (
+          <div className="text-xs text-[#8E9299] bg-[#1c1e22] border border-[#2a2d33] rounded-lg px-3 py-2">
+            No alternate recipes available for this goal.
+          </div>
+        ) : (
+          alternateRecipeCandidates.map((candidate) => (
+            <div key={candidate.itemId} className="flex flex-col gap-1.5">
+              <label className="text-[11px] text-[#b8bec9]">
+                {items[candidate.itemId]?.name || candidate.itemId}
+              </label>
+              <CustomSelect
+                value={candidate.selectedRecipeId}
+                onChange={(value) => handleAlternateRecipeChange(candidate.itemId, value)}
+                options={candidate.recipes.map((recipe) => ({
+                  value: recipe.id,
+                  label: `${formatRecipeLabel(recipe.id)} (${recipe.outputRate}/min)`,
+                }))}
+              />
+            </div>
+          ))
+        )}
       </div>
 
       <button 
