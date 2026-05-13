@@ -1,163 +1,195 @@
-<div align="center">
+# Factory Visual Planner for Satisfactory
 
-# <img src="public/icons/factory-icon.png" alt="Factory" width="24" height="24" align="center"> Factory Visual Planner
+A production planning and save-map analysis tool for [Satisfactory](https://www.satisfactorygame.com/).
 
-### A production line calculator & visualizer for [Satisfactory](https://www.satisfactorygame.com/)
-
-Plan, optimize, and share your factory layouts — from raw resources to final products.
+This app helps you:
+- Plan production chains and machine counts.
+- Visualize logistics in an interactive graph.
+- Parse `.sav` files and inspect your factory on a world map.
+- Explore resource nodes on a standalone map without uploading a save.
 
 ![Network Graph View](docs/screenshots/network_graph.png)
 
-</div>
+## Features
 
----
+### 1) Production Planner
 
-## <img src="public/icons/features-icon.png" alt="Features" width="20" height="20" align="center"> Features
+Main planning flow with four result tabs:
 
-### <img src="public/icons/chart-icon.png" alt="Chart" width="18" height="18" align="center"> Network Graph
-Interactive flowchart visualization of your entire production chain powered by [React Flow](https://reactflow.dev/). Drag, zoom, and pan through your factory layout. Each node shows the machine type, item produced, rate per minute, and power consumption. Belt overload warnings are highlighted in red.
+- `Network graph`
+  - Aggregated view and machine view.
+  - Belt overload highlighting.
+  - Click-to-trace upstream/downstream dependencies.
+  - Group and ungroup selected machines.
+  - Expand machine arrays into splitters/mergers.
+  - Auto layout (`AI Design Layout`) using ELK.
+  - Export graph as PNG or SVG.
+- `Tree list`
+  - Hierarchical production breakdown.
+- `Items`
+  - Required items per minute summary.
+- `Buildings`
+  - Building counts and power-focused breakdown.
 
-![Network Graph - Aggregated View](docs/screenshots/network_graph.png)
-
-### <img src="public/icons/wrench-icon.png" alt="Wrench" width="18" height="18" align="center"> Machine View
-Switch from **Aggregated View** (grouped by recipe) to **Machine View** (expanded per-machine arrays) to see how your factory will physically look with splitters, mergers, and manifold belt routing.
+Planner utilities:
+- Target item selector with item modal.
+- Rate/min input.
+- Miner tier selection (`Mk.1`, `Mk.2`, `Mk.3`).
+- Belt tier selection (`Mk.1` to `Mk.5`).
+- Shareable plan URL (`#plan=...`) including tabs and layout mode.
 
 ![Machine View](docs/screenshots/machine_view.png)
-
-### <img src="public/icons/tree-icon.png" alt="Tree" width="18" height="18" align="center"> Tree List
-A collapsible, hierarchical tree view of the full production chain. Quickly see what each building step requires — with machine icons, multiplier counts, and throughput rates.
-
 ![Tree List](docs/screenshots/tree_list.png)
-
-### <img src="public/icons/box-icon.png" alt="Box" width="18" height="18" align="center"> Items
-A flat breakdown of **every item** needed per minute across your entire production chain — including intermediates and raw resources. Sorted by rate for quick reference.
-
 ![Items Tab](docs/screenshots/items_tab.png)
-
-### <img src="public/icons/factory-building-icon.png" alt="Buildings" width="18" height="18" align="center"> Buildings
-See exactly how many of each building type you need, what each one produces, and the total power required. Perfect for planning your factory floor.
-
 ![Buildings Tab](docs/screenshots/buildings_tab.png)
 
----
+### 2) Save Game Map
 
-## <img src="public/icons/rocket-icon.png" alt="Rocket" width="20" height="20" align="center"> Additional Features
+Upload a Satisfactory `.sav` file to analyze your live factory:
 
-| Feature | Description |
-|---|---|
-| **Miner Tier Selection** | Choose between Miner Mk.1, Mk.2, or Mk.3 — extraction rates adjust automatically |
-| **Belt Tier Selection** | Select belt speed (Mk.1 – Mk.5) to see overload warnings when throughput exceeds capacity |
-| **Power Summary** | Total power consumption calculated across all machines |
-| **Share Plan** | Generate a shareable URL link that encodes your entire plan (item, rate, miner, belt, layout mode) |
-| **Export** | Export your graph as PNG or SVG directly from the toolbar |
-| **AI Design Layout** | Reorganize graph layout with one click |
-| **Factory Summary Sidebar** | At-a-glance stats: power, raw inputs, and building counts |
+- Drag-and-drop uploader with parse progress.
+- Building markers by category.
+- Conveyor, pipe, and power-line overlays.
+- Player markers.
+- Altitude range filter.
+- Layer toggles:
+  - Building categories
+  - Conveyors, pipes, power lines
+  - Resource nodes, players
+  - Train network, vehicles, drones, power circuits
+- Save stats dashboard:
+  - Building and infrastructure counts
+  - Category breakdown with focus filter
+  - Power production/consumption summary
+- Map layer switcher (Realistic, Game map, No map)
+- Building search
 
----
+### 3) World Map (No Save Required)
 
-## <img src="public/icons/tools-icon.png" alt="Tools" width="20" height="20" align="center"> Tech Stack
+Standalone resource map mode:
 
-- **Framework**: [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- **Build Tool**: [Vite](https://vitejs.dev/)
-- **Graph Visualization**: [React Flow](https://reactflow.dev/) ([@xyflow/react](https://github.com/xyflow/xyflow))
-- **Graph Layout**: [Dagre](https://github.com/dagrejs/dagre)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **Image Export**: [html-to-image](https://github.com/nicojones/html-to-image)
-- **Animations**: [Motion](https://motion.dev/)
+- Browse resource nodes without uploading a save.
+- Filter by resource type and purity (`Impure`, `Normal`, `Pure`).
+- Clear/select all filter shortcuts.
+- Switch map background layer.
 
----
+## Data Coverage (Current Repository)
 
-## <img src="public/icons/folder-icon.png" alt="Folder" width="20" height="20" align="center"> Project Structure
+- Items: `151`
+- Recipes: `115`
+- Machines: `17`
+- Belts: `5`
+- Resource nodes: `459` across `11` resource types
 
-```
-src/
-├── engine/
-│   ├── data.ts          # Item, recipe, machine & belt definitions
-│   ├── solver.ts        # Recursive production chain solver
-│   └── graphMapper.ts   # Converts solver output to React Flow nodes/edges
-├── components/
-│   ├── InputForm.tsx     # Production goal input form
-│   ├── Summary.tsx       # Factory summary sidebar
-│   ├── TreeList.tsx      # Hierarchical tree view
-│   ├── ItemsTab.tsx      # Items breakdown tab
-│   ├── BuildingsTab.tsx  # Buildings breakdown tab
-│   ├── ItemModal.tsx     # Item detail modal
-│   ├── Dashboard.tsx     # Dashboard panel
-│   └── Graph/
-│       └── FactoryGraph.tsx  # React Flow graph component
-├── App.tsx               # Main application shell
-└── index.css             # Global styles & design system
-```
+Notes:
+- Resource node data is read from `public/data/resource_nodes.json`.
+- The map image is high-resolution and can take time to load on slower networks.
 
----
+## Tech Stack
 
-## <img src="public/icons/gamepad-icon.png" alt="Gamepad" width="20" height="20" align="center"> Supported Items
+- React 19 + TypeScript
+- Vite 6
+- React Flow (`@xyflow/react`) for production graph UI
+- ELK + Dagre for layout logic
+- Leaflet + React Leaflet for map rendering
+- `@etothepii/satisfactory-file-parser` for `.sav` parsing
+- Tailwind CSS v4 + custom CSS
+- `html-to-image` for PNG/SVG export
 
-The planner currently supports **21 items** across the early-to-mid game:
-
-| Category | Items |
-|---|---|
-| **Copper Chain** | Copper Ore → Copper Ingot → Copper Sheet, Wire → Cable |
-| **Iron Chain** | Iron Ore → Iron Ingot → Iron Plate, Iron Rod → Screw → Reinforced Iron Plate |
-| **Steel Chain** | Iron Ore + Coal → Steel Ingot → Steel Beam, Steel Pipe → Encased Industrial Beam |
-| **Assembly** | Rotor, Stator → Motor, Modular Frame → Heavy Modular Frame |
-| **Raw Resources** | Copper Ore, Iron Ore, Limestone, Coal |
-
----
-
-## <img src="public/icons/lightning-icon.png" alt="Lightning" width="20" height="20" align="center"> Getting Started
+## Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18 or later)
+- Node.js `18+` (LTS recommended)
+- npm
 
-### Installation
+### Install
 
 ```bash
-# Clone the repository
 git clone https://github.com/pratyanj/Satisfactory_tool.git
 cd Satisfactory_tool
-
-# Install dependencies
 npm install
 ```
 
-### Run Locally
+### Run Development Server
 
 ```bash
 npm run dev
 ```
 
-The app will start at `http://localhost:3000`.
+App runs on:
+- [http://localhost:3000](http://localhost:3000)
 
-### Build for Production
+### Production Build
 
 ```bash
 npm run build
 npm run preview
 ```
 
----
+### Type Check
 
-## <img src="public/icons/book-icon.png" alt="Book" width="20" height="20" align="center"> How It Works
+```bash
+npm run lint
+```
 
-1. **Select a target item** (e.g., Copper Sheet) and desired **production rate** (items/min)
-2. **Choose your miner tier** and **belt tier** to match your in-game progression
-3. Click **Calculate Flow** — the solver recursively computes:
-   - How many machines of each type you need
-   - The throughput rate at every stage
-   - Total raw resources and power required
-4. **Explore the results** across 4 visualization tabs
-5. **Share your plan** with a URL link or **export** the graph as an image
+## How To Use
 
----
+### Plan a factory
 
-## <img src="public/icons/handshake-icon.png" alt="Handshake" width="20" height="20" align="center"> Contributing
+1. Open `Production Planner`.
+2. Pick a target item.
+3. Enter desired output rate per minute.
+4. Choose miner and belt tiers.
+5. Click `Calculate Flow`.
+6. Review outputs in `Network graph`, `Tree list`, `Items`, and `Buildings`.
+7. Copy a share link if you want to send the plan.
 
-Contributions are welcome! Feel free to open issues or submit pull requests.
+### Analyze a save file
 
----
+1. Open `Save Game Map`.
+2. Drop a `.sav` file into the uploader.
+3. Wait for parsing to complete.
+4. Use layer toggles, category focus, search, and altitude filters to inspect your world.
 
-## <img src="public/icons/document-icon.png" alt="Document" width="20" height="20" align="center"> License
+### Explore resources quickly
 
-This project is open source under the [Apache 2.0 License](LICENSE).
+1. Open `World Map`.
+2. Pick resource filters by type and purity.
+3. Toggle map styles as needed.
+
+## Project Structure
+
+```text
+src/
+  components/
+    Graph/      # React Flow graph, nodes, edges, toolbar actions
+    Map/        # Save uploader, world map, overlays, filters, stats
+  engine/
+    data.ts     # Typed item/recipe/machine/belt data exports
+    solver.ts   # Production chain solver
+    graphMapper.ts
+    saveParser.ts
+  App.tsx       # Main app shell and tab routing
+  index.css     # Global styles
+data/           # Source data (items, recipes, machines, map data)
+public/         # Static images, icons, map assets, resource node data
+docs/screenshots/
+```
+
+## Troubleshooting
+
+- Blank map or slow first load:
+  - The high-resolution map asset is large; give it time to download.
+- Save upload fails:
+  - Ensure the file extension is `.sav`.
+- Graph feels dense:
+  - Switch to `Aggregated View`, then use `AI Design Layout`.
+
+## Contributing
+
+Contributions are welcome through issues and pull requests.
+
+## License
+
+Apache-2.0. See [LICENSE](LICENSE).
