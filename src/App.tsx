@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { Header } from './components/Layout/Header/Header';
 import { InputForm } from './components/InputForm';
 import { Summary } from './components/Summary';
 import { FactoryGraph } from './components/Graph/FactoryGraph';
@@ -68,6 +69,32 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
 ];
 
 type TopLevelTab = 'planner' | 'save_map' | 'world_map' | 'codex';
+type LastInputState = {
+  itemId: string;
+  rate: number;
+  minerId: MachineId;
+  beltId: BeltId;
+  recipeSelections: RecipeSelectionMap;
+};
+
+const TOP_LEVEL_PATHS: Record<TopLevelTab, string> = {
+  planner: '/planner',
+  save_map: '/save-map',
+  world_map: '/world-map',
+  codex: '/codex',
+};
+
+const TOP_LEVEL_BY_PATH: Record<string, TopLevelTab> = Object.fromEntries(
+  Object.entries(TOP_LEVEL_PATHS).map(([key, value]) => [value, key as TopLevelTab])
+);
+
+function getTopLevelFromPath(pathname: string): TopLevelTab {
+  return TOP_LEVEL_BY_PATH[pathname] || 'planner';
+}
+
+function isMainTab(value: string | null): value is MainTab {
+  return !!value && ['network_graph', 'tree_list', 'items', 'buildings', 'world_map'].includes(value);
+}
 
 function parseRecipeSelections(value: unknown): RecipeSelectionMap {
   if (!value || typeof value !== 'object') return {};
@@ -87,7 +114,13 @@ export default function App() {
   const [rootNode, setRootNode] = useState<SolverNode | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const [lastInput, setLastInput] = useState<{ itemId: string, rate: number, minerId: MachineId, beltId: BeltId }>({ itemId: 'copper_sheet', rate: 120, minerId: 'miner_mk1', beltId: 'mk1' });
+  const [lastInput, setLastInput] = useState<LastInputState>({
+    itemId: 'copper_sheet',
+    rate: 120,
+    minerId: 'miner_mk1',
+    beltId: 'mk1',
+    recipeSelections: {},
+  });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
   const [mainTab, setMainTab] = useState<MainTab>('network_graph');
   const [topLevelTab, setTopLevelTab] = useState<TopLevelTab>('planner');
@@ -95,69 +128,80 @@ export default function App() {
   const [copied, setCopied] = useState(false);
   const [isRecalculating, setIsRecalculating] = useState(false);
 
-  // Sync URL hash whenever navigation state changes
-  const updateHash = useCallback((top: TopLevelTab, sub: MainTab) => {
-    const hash = `#tab=${top}&sub=${sub}`;
-    window.history.replaceState(null, '', hash);
+  // Sync URL path whenever navigation state changes
+  const updatePath = useCallback((top: TopLevelTab, sub: MainTab, method: 'push' | 'replace' = 'replace') => {
+    const path = TOP_LEVEL_PATHS[top] || '/planner';
+    const search = top === 'planner' ? `?sub=${sub}` : '';
+    const nextUrl = `${path}${search}`;
+    if (method === 'push') {
+      window.history.pushState(null, '', nextUrl);
+    } else {
+      window.history.replaceState(null, '', nextUrl);
+    }
     sessionStorage.setItem('sf_tab', top);
     sessionStorage.setItem('sf_sub', sub);
   }, []);
 
   const handleTopLevelTab = useCallback((tab: TopLevelTab) => {
     setTopLevelTab(tab);
-    updateHash(tab, mainTab);
-  }, [mainTab, updateHash]);
+    updatePath(tab, mainTab, 'push');
+  }, [mainTab, updatePath]);
 
   const handleMainTab = useCallback((tab: MainTab) => {
     setMainTab(tab);
-    updateHash(topLevelTab, tab);
-  }, [topLevelTab, updateHash]);
+    updatePath(topLevelTab, tab, 'replace');
+  }, [topLevelTab, updatePath]);
 
-  // Parse URL Hash on mount
+  // Parse URL on mount and browser navigation
   useEffect(() => {
-    const hash = window.location.hash;
-    try {
+    const applyRouteFromLocation = () => {
+      const hash = window.location.hash;
+      const searchParams = new URLSearchParams(window.location.search);
+
       if (hash.startsWith('#plan=')) {
-        const encoded = hash.replace('#plan=', '');
-        const decoded = JSON.parse(atob(decodeURIComponent(encoded)));
-        if (decoded.i && items[decoded.i] && typeof decoded.r === 'number' && decoded.m && machines[decoded.m] && decoded.b && belts[decoded.b] && (decoded.l === 'aggregated' || decoded.l === 'expanded')) {
-          setLastInput({
-            itemId: decoded.i,
-            rate: decoded.r,
-            minerId: decoded.m,
-            beltId: decoded.b,
-            recipeSelections: parseRecipeSelections(decoded.ar),
-          });
-          setLayoutMode(decoded.l);
-          const top: TopLevelTab = decoded.t ?? 'planner';
-          const sub: MainTab = decoded.s ?? 'network_graph';
-          setTopLevelTab(top);
-          setMainTab(sub);
+        try {
+          const encoded = hash.replace('#plan=', '');
+          const decoded = JSON.parse(atob(decodeURIComponent(encoded)));
+          if (decoded.i && items[decoded.i] && typeof decoded.r === 'number' && decoded.m && machines[decoded.m] && decoded.b && belts[decoded.b] && (decoded.l === 'aggregated' || decoded.l === 'expanded')) {
+            setLastInput({
+              itemId: decoded.i,
+              rate: decoded.r,
+              minerId: decoded.m,
+              beltId: decoded.b,
+              recipeSelections: parseRecipeSelections(decoded.ar),
+            });
+            setLayoutMode(decoded.l);
+            const decodedTop = (decoded.t as TopLevelTab) || 'planner';
+            const decodedSub = (decoded.s as MainTab) || 'network_graph';
+            const topFromPath = getTopLevelFromPath(window.location.pathname);
+            const resolvedTop = topFromPath || decodedTop;
+            const subFromSearch = searchParams.get('sub');
+            const resolvedSub = isMainTab(subFromSearch) ? subFromSearch : decodedSub;
+            setTopLevelTab(resolvedTop);
+            setMainTab(resolvedSub);
+            return;
+          }
+        } catch (err) {
+          console.warn('Failed to parse shared plan from URL hash', err);
         }
-        return;
       }
 
-      if (hash.startsWith('#tab=')) {
-        const params = new URLSearchParams(hash.slice(1));
-        const top = (params.get('tab') ?? '') as TopLevelTab;
-        const sub = (params.get('sub') ?? '') as MainTab;
-        if (['planner', 'save_map', 'world_map'].includes(top)) setTopLevelTab(top);
-        if (['network_graph', 'tree_list', 'items', 'buildings'].includes(sub)) setMainTab(sub);
-        return;
-      }
-
-      // No hash — restore from session
-      const storedTop = sessionStorage.getItem('sf_tab') as TopLevelTab | null;
+      const pathTop = getTopLevelFromPath(window.location.pathname);
+      const subParam = searchParams.get('sub');
       const storedSub = sessionStorage.getItem('sf_sub') as MainTab | null;
-      const resolvedTop = (storedTop && ['planner', 'save_map', 'world_map', 'codex'].includes(storedTop)) ? storedTop : 'planner';
-      const resolvedSub = (storedSub && ['network_graph', 'tree_list', 'items', 'buildings'].includes(storedSub)) ? storedSub : 'network_graph';
-      setTopLevelTab(resolvedTop);
+      const resolvedSub: MainTab = isMainTab(subParam) ? subParam : (storedSub && isMainTab(storedSub) ? storedSub : 'network_graph');
+
+      setTopLevelTab(pathTop);
       setMainTab(resolvedSub);
-      window.history.replaceState(null, '', `tab=${resolvedTop}&sub=${resolvedSub}`);
-    } catch (err) {
-      console.warn('Failed to parse navigation from URL', err);
-    }
-  }, []);
+      updatePath(pathTop, resolvedSub, 'replace');
+    };
+
+    applyRouteFromLocation();
+    window.addEventListener('popstate', applyRouteFromLocation);
+    return () => {
+      window.removeEventListener('popstate', applyRouteFromLocation);
+    };
+  }, [updatePath]);
 
   const generateShareLink = useCallback(() => {
     const payload = {
@@ -229,7 +273,7 @@ export default function App() {
               </svg>
               <span>{error}</span>
             </div>
-            <button 
+            <button
               onClick={() => setError(null)}
               className="text-red-200 hover:text-red-100 transition-colors"
               aria-label="Close error message"
@@ -286,74 +330,17 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans">
 
-      <header className="app-header">
-        {/* Brand */}
-        <div className="app-header-brand">
-          <img src="public/logo/satisfactory_tool_logo.png" alt="factory" draggable={false} style={{ height: '80px', width: 'auto', objectFit: 'cover' }} />
-          {/* <div>
-            <div className="app-header-title">FACTORY VISUAL PLANNER</div>
-            <div className="app-header-title-underline" />
-          </div> */}
-        </div>
+      {/* ── New modular header ── */}
+      <Header
+        activeTab={topLevelTab}
+        onTabChange={handleTopLevelTab}
+        showShare={topLevelTab === 'planner'}
+        onShare={generateShareLink}
+        copied={copied}
+      />
 
-        {/* Top Level Navigation */}
-        <nav className="app-header-nav">
-          <button
-            onClick={() => handleTopLevelTab('planner')}
-            className={`app-header-nav-btn ${topLevelTab === 'planner' ? 'app-header-nav-btn--active' : ''}`}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Production Planner
-          </button>
-          <button
-            onClick={() => handleTopLevelTab('save_map')}
-            className={`app-header-nav-btn ${topLevelTab === 'save_map' ? 'app-header-nav-btn--active' : ''}`}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            Save Game Map
-          </button>
-          <button
-            onClick={() => handleTopLevelTab('world_map')}
-            className={`app-header-nav-btn ${topLevelTab === 'world_map' ? 'app-header-nav-btn--active' : ''}`}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
-            World Map
-          </button>
-          <button
-            onClick={() => handleTopLevelTab('codex')}
-            className={`app-header-nav-btn ${topLevelTab === 'codex' ? 'app-header-nav-btn--active' : ''}`}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-            Item Codex
-          </button>
-        </nav>
-
-        {/* Share */}
-        <div className="app-header-actions">
-          {topLevelTab === 'planner' && (
-            <button
-              onClick={generateShareLink}
-              className={`app-header-share-btn ${copied ? 'app-header-share-btn--copied' : ''}`}
-              aria-label={copied ? 'Plan copied to clipboard' : 'Copy plan to clipboard'}
-            >
-              {copied ? (
-                <>
-                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                  Share Plan
-                </>
-              )}
-            </button>
-          )}
-        </div>
-      </header>
-      <br />  
       {topLevelTab === 'planner' ? (
-        <main className="flex-1 max-w-[1600px] w-full mx-auto grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 64px)' }}>
+        <main className="flex-1 max-w-[1600px] w-full mx-auto grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 80px)' }}>
           {/* Left Side: Main Area */}
           <div className="flex flex-col h-full h-[600px] lg:h-auto min-h-0 relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
             {/* 4-Tab Navigation Bar */}
@@ -385,19 +372,19 @@ export default function App() {
           </div>
         </main>
       ) : topLevelTab === 'codex' ? (
-        <div className="px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 64px)' }}>
+        <div className="px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 80px)' }}>
           <main className="flex flex-col w-full h-full relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
             <ItemBrowser />
           </main>
         </div>
       ) : topLevelTab === 'save_map' ? (
-        <div className="px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 64px)' }}>
+        <div className="px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 80px)' }}>
           <main className="flex flex-col w-full h-full relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
             <MapTab />
           </main>
         </div>
       ) : (
-        <div className="px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 64px)' }}>
+        <div className="px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 80px)' }}>
           <main className="flex flex-col w-full h-full relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
             <WorldMapTab />
           </main>
