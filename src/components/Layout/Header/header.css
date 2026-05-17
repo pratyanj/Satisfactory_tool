@@ -1,0 +1,318 @@
+/* ================================================================
+   SATISFACTORY TOOL — FRAMED HEADER (v3 — pixel-accurate)
+
+   Frame layout (measured from the image):
+   ┌──────────────────────────────────────────────────────────────┐
+   │  LEFT DARK (32%)  │    WHITE NAV PANEL (50%)   │ RIGHT (18%) │
+   └──────────────────────────────────────────────────────────────┘
+
+   Strategy:
+   • Left zone  → transparent clickable area (frame has the logo)
+   • Centre zone → nav buttons sit ON the white panel
+   • Right zone → share button on dark FICSIT panel
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
+
+/* ── Root variables ─────────────────────────────────────────────── */
+:root {
+  --sf-orange: #f97316;
+  --sf-orange-glow: rgba(249, 115, 22, 0.5);
+  --sf-nav-text: #2c2c2c;
+  --sf-nav-muted: #666666;
+}
+
+/* ── Header shell ───────────────────────────────────────────────── */
+.sf-header {
+  position: relative;
+  width: 100%;
+  height: 110px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+
+  background-image: url('/logo/main headers frame.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #4a5a92;
+
+}
+
+/* ── LEFT: Logo clickable zone (covers the dark left panel) ─────── */
+.sf-header-logo-block {
+  position: relative;
+  z-index: 2;
+
+  /* Match the dark left panel: 0% → 29% */
+  width: 38%;
+  flex-shrink: 0;
+  cursor: pointer;
+  /* No visible children — the frame shows SATISFACTORY TOOL for us */
+}
+
+/* Hidden — frame image already displays the brand text */
+.sf-header-logo-text {
+  display: none;
+
+}
+
+/* ── CENTRE: Nav buttons sit on the white panel ─────────────────── */
+.sf-header-nav {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: right;
+  /* Span the white panel: from 32% to 82% → 50% total width */
+  width: 45%;
+  flex-shrink: 0;
+  height: 100%;
+  /* Inner padding to keep buttons away from the panel borders */
+  padding: 10px 8px;
+  gap: 4px;
+}
+
+.sf-header-nav-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex: 1;
+  height: 100%;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  color: var(--sf-nav-muted);
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.16s ease, background 0.16s ease;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Orange underline bar */
+.sf-header-nav-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 12px;
+  left: 18%;
+  right: 18%;
+  height: 3px;
+  background: var(--sf-orange);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.8);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sf-header-nav-btn:hover {
+  color: #111111;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.sf-header-nav-btn:hover::after {
+  transform: scaleX(0.9);
+}
+
+/* Icons */
+.sf-header-nav-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: #888888;
+  transition: transform 0.16s ease, color 0.16s ease;
+}
+
+.sf-header-nav-btn:hover svg {
+  transform: translateY(-2px);
+  color: #333333;
+}
+
+/* ── ACTIVE STATE ───────────────────────────────────────────────── */
+.sf-header-nav-btn--active {
+  color: #111111;
+}
+
+.sf-header-nav-btn--active::after {
+  transform: scaleX(0.9);
+}
+
+.sf-header-nav-btn--active svg {
+  color: var(--sf-orange);
+  filter: drop-shadow(0 0 5px rgba(249, 115, 22, 0.7));
+}
+
+/* ── RIGHT: FICSIT dark panel — share button ────────────────────── */
+.sf-header-actions {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Right panel: 82% → 100% = 18% */
+  flex: 1;
+  /* take remaining space */
+  padding: 0 16px;
+}
+
+.sf-share-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--sf-orange);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(249, 115, 22, 0.5);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.sf-share-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+      rgba(249, 115, 22, 0.14),
+      rgba(249, 115, 22, 0.04));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sf-share-btn:hover {
+  border-color: var(--sf-orange);
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.35);
+  transform: translateY(-1px);
+}
+
+.sf-share-btn:hover::before {
+  opacity: 1;
+}
+
+.sf-share-btn--copied {
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.5);
+}
+
+.sf-share-btn--copied:hover {
+  border-color: #22c55e;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.25);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 1280px) {
+  .sf-header-nav-btn {
+    font-size: 9.5px;
+    gap: 4px;
+  }
+
+  .sf-header-nav-btn svg {
+    width: 17px;
+    height: 17px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .sf-header-logo-block {
+    width: 28%;
+  }
+
+  .sf-header-nav {
+    width: 54%;
+    padding: 8px 6px;
+    gap: 2px;
+  }
+
+  .sf-header-nav-btn {
+    font-size: 8.5px;
+    gap: 3px;
+  }
+
+  .sf-header-nav-btn svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sf-header {
+    height: 72px;
+  }
+
+  .sf-header-logo-block {
+    width: 26%;
+  }
+
+  .sf-header-nav {
+    padding: 6px 4px;
+  }
+
+  .sf-header-nav-btn {
+    font-size: 7.5px;
+    gap: 3px;
+  }
+
+  .sf-header-nav-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .sf-share-btn {
+    padding: 4px 8px;
+    font-size: 9.5px;
+  }
+}
+
+@media (max-width: 580px) {
+  .sf-header {
+    height: 60px;
+  }
+
+  .sf-header-logo-block {
+    width: 22%;
+  }
+
+  .sf-header-nav {
+    padding: 4px 2px;
+    gap: 1px;
+  }
+
+  .sf-header-nav-btn {
+    font-size: 6.5px;
+    gap: 2px;
+  }
+
+  .sf-header-nav-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Icon-only on very small screens */
+  .sf-header-nav-btn span {
+    display: none;
+  }
+
+  .sf-share-btn span {
+    display: none;
+  }
+
+  .sf-share-btn {
+    padding: 5px 7px;
+  }
+}
