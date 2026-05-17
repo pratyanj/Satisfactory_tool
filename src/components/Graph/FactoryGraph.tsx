@@ -1,4 +1,4 @@
-import { Background, BackgroundVariant, Controls, ReactFlow, useEdgesState, useNodesState, Panel, useReactFlow, ReactFlowProvider } from '@xyflow/react';
+import { Background, BackgroundVariant, Controls, ReactFlow, SelectionMode, useEdgesState, useNodesState, Panel, useReactFlow, ReactFlowProvider } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import React, { useEffect, useCallback, useState } from 'react';
 import { Edge, Node } from '@xyflow/react';
@@ -6,10 +6,10 @@ import { MachineNode } from './MachineNode';
 import { LogisticsNode } from './LogisticsNode';
 import { GroupNode } from './GroupNode';
 import { SatisfactoryEdge } from './SatisfactoryEdge';
-import { toPng, toSvg } from 'html-to-image';
+import { toSvg } from 'html-to-image';
 import { MousePointer2, Plus, Ungroup, Hand, Download, WandSparkles, SplitSquareHorizontal } from 'lucide-react';
 import ELK from 'elkjs/lib/elk.bundled.js';
-
+import { exportGraphAsImage } from '../Export/exportGraphAsImage';
 const elk = new ELK();
 
 const layoutOptions = {
@@ -42,67 +42,21 @@ const edgeTypes = {
 
 // ─── Toolbar (cleaned up — no more dead code) ───────────────────────────────
 
-function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand, onLayout }: {
+function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand, onLayout, onExportPng, onExportSvg }: {
   nodes: Node[],
   setNodes: React.Dispatch<React.SetStateAction<Node[]>>,
   selectionMode: boolean,
   setSelectionMode: (v: boolean) => void,
   onExpand: () => void,
-  onLayout: () => void
+  onLayout: () => void,
+  onExportPng: () => Promise<void> | void,
+  onExportSvg: () => Promise<void> | void
 }) {
-  const { getNodesBounds, getNodes: rfGetNodes } = useReactFlow();
+  const { getNodesBounds } = useReactFlow();
   const [isExporting, setIsExporting] = useState(false);
 
   const selectedNodes = nodes.filter(n => n.selected && n.type !== 'customGroup');
   const selectedGroups = nodes.filter(n => n.selected && n.type === 'customGroup');
-
-  const onExport = (format: 'png' | 'svg') => {
-    setIsExporting(true);
-    const viewportElement = document.querySelector('.react-flow__viewport') as HTMLElement;
-    if (!viewportElement) { setIsExporting(false); return; }
-    const currentNodes = rfGetNodes();
-    if (currentNodes.length === 0) { setIsExporting(false); return; }
-
-    const bounds = getNodesBounds(currentNodes);
-    const padding = 100;
-    const imageWidth = bounds.width + padding * 2;
-    const imageHeight = bounds.height + padding * 2;
-    const exportFn = format === 'svg' ? toSvg : toPng;
-    const exportConfig = {
-      width: imageWidth, height: imageHeight, pixelRatio: 3, cacheBust: true,
-      style: {
-        width: `${imageWidth}px`, height: `${imageHeight}px`,
-        transform: `translate(${-bounds.x + padding}px, ${-bounds.y + padding}px) scale(1)`,
-        backgroundImage: 'none', backgroundColor: '#101114',
-      },
-    };
-
-    exportFn(viewportElement, exportConfig)
-      .then((dataUrl) => {
-        const a = document.createElement('a');
-        a.setAttribute('download', `factory-plan.${format}`);
-        a.setAttribute('href', dataUrl);
-        a.click();
-        setIsExporting(false);
-      })
-      .catch(() => {
-        exportFn(viewportElement, {
-          ...exportConfig,
-          filter: (node) => !(node instanceof HTMLElement && node.tagName === 'IMG'),
-        })
-          .then((dataUrl2) => {
-            const a = document.createElement('a');
-            a.setAttribute('download', `factory-plan-fallback.${format}`);
-            a.setAttribute('href', dataUrl2);
-            a.click();
-            setIsExporting(false);
-          })
-          .catch(() => {
-            alert('Export failed. Try taking a screenshot instead.');
-            setIsExporting(false);
-          });
-      });
-  };
 
   const handleGroup = () => {
     if (selectedNodes.length < 2) return;
@@ -166,8 +120,35 @@ function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand
       {(selectedNodes.length <= 1 && selectedGroups.length === 0) && (
         <div className="flex gap-1">
           <button disabled={isExporting} className="flex items-center gap-1.5 bg-[#4B2F83] hover:bg-[#5a3a9e] border border-[#6d4cb8] transition-all text-white px-3 py-1.5 rounded-lg text-xs font-semibold mr-2" onClick={onLayout} title="Auto-group & layout"><WandSparkles className="w-4 h-4 text-[#e0d6f6]" /> AI Design Layout</button>
-          <button disabled={isExporting} className="flex items-center gap-1.5 bg-[#1c1e22] hover:bg-[#243142] border border-[#2a2d33] hover:border-[#415a78] transition-all text-[#8E9299] hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium disabled:opacity-50" onClick={() => onExport('png')}><Download className="w-4 h-4" /> PNG</button>
-          <button disabled={isExporting} className="flex items-center gap-1.5 bg-[#1c1e22] hover:bg-[#243142] border border-[#2a2d33] hover:border-[#415a78] transition-all text-[#8E9299] hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium disabled:opacity-50" onClick={() => onExport('svg')}><Download className="w-4 h-4" /> SVG</button>
+          <button
+            disabled={isExporting}
+            className="flex items-center gap-1.5 bg-[#1c1e22] hover:bg-[#243142] border border-[#2a2d33] hover:border-[#415a78] transition-all text-[#8E9299] hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium disabled:opacity-50"
+            onClick={async () => {
+              setIsExporting(true);
+              try {
+                await onExportPng();
+              } finally {
+                setIsExporting(false);
+              }
+            }}
+          >
+            <Download className="w-4 h-4" /> PNG
+          </button>
+
+          <button
+            disabled={isExporting}
+            className="flex items-center gap-1.5 bg-[#1c1e22] hover:bg-[#243142] border border-[#2a2d33] hover:border-[#415a78] transition-all text-[#8E9299] hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium disabled:opacity-50"
+            onClick={async () => {
+              setIsExporting(true);
+              try {
+                await onExportSvg();
+              } finally {
+                setIsExporting(false);
+              }
+            }}
+          >
+            <Download className="w-4 h-4" /> SVG
+          </button>
         </div>
       )}
     </Panel>
@@ -192,6 +173,7 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectionMode, setSelectionMode] = useState(false);
+  const graphRootRef = React.useRef<HTMLDivElement | null>(null);
 
   const beltCapacity = beltId === 'mk1' ? 60 : beltId === 'mk2' ? 120 : beltId === 'mk3' ? 270 : beltId === 'mk4' ? 480 : 780;
 
@@ -461,8 +443,38 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
     });
   }, [selectedNodeId, setNodes, setEdges]);
 
+  const handleExportPng = useCallback(async () => {
+    const root = graphRootRef.current;
+    if (!root) return;
+
+    const exportRoot = root.querySelector('.react-flow') as HTMLElement | null;
+    if (!exportRoot) return;
+
+    try {
+      await exportGraphAsImage(exportRoot);
+    } catch (error) {
+      console.error('PNG export failed:', error);
+      alert('PNG export failed. Please try again after moving the graph into view.');
+    }
+  }, []);
+
+  const handleExportSvg = useCallback(async () => {
+    const viewportElement = document.querySelector('.react-flow__viewport') as HTMLElement | null;
+    if (!viewportElement) return;
+
+    const dataUrl = await toSvg(viewportElement, {
+      cacheBust: true,
+      backgroundColor: '#101114',
+    });
+
+    const link = document.createElement('a');
+    link.download = 'factory-plan.svg';
+    link.href = dataUrl;
+    link.click();
+  }, []);
+
   return (
-    <div className="w-full h-full bg-[#101114] overflow-hidden">
+    <div ref={graphRootRef} className="w-full h-full bg-[#101114] overflow-hidden">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -476,7 +488,7 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
         colorMode="dark"
         panOnDrag={!selectionMode}
         selectionOnDrag={selectionMode}
-        selectionMode={selectionMode ? 'partial' : 'full'}
+        selectionMode={selectionMode ? SelectionMode.Partial : SelectionMode.Full}
         onlyRenderVisibleElements
       >
         <Background variant={BackgroundVariant.Lines} gap={40} color="rgba(255,255,255,0.15)" />
@@ -491,6 +503,8 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
             if (selected) handleExpandNode(selected.id);
           }}
           onLayout={applyAILayout}
+          onExportPng={handleExportPng}
+          onExportSvg={handleExportSvg}
         />
       </ReactFlow>
     </div>
