@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings2, Zap, Play, ChevronDown, ChevronRight } from 'lucide-react';
+import { Settings2, Zap, Play, ChevronDown, ChevronRight, RotateCcw } from 'lucide-react';
 import { AppImage } from './AppImage';
 import { items, belts, machines, BeltId, MachineId, RecipeId } from '../engine/data';
 import { ItemModal } from './ItemModal';
@@ -131,22 +131,40 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
       </div>
 
       <div className="border-t border-[#2a2d33] pt-4 flex flex-col gap-3">
-        <button 
-          type="button" 
-          onClick={() => setShowAltRecipes(!showAltRecipes)} 
-          className="flex items-center justify-between w-full text-left group focus:outline-none"
-        >
-          <div>
-            <h3 className="text-xs font-mono tracking-widest text-[#8E9299] group-hover:text-white uppercase transition-colors">Alternate Recipes</h3>
-            <p className="text-[11px] text-[#6f7681] mt-1">Choose recipes for items used in this production chain.</p>
-          </div>
-          <div className="text-[#8E9299] group-hover:text-white transition-colors">
-            {showAltRecipes ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-          </div>
-        </button>
+        <div className="flex items-center justify-between w-full">
+          <button 
+            type="button" 
+            onClick={() => setShowAltRecipes(!showAltRecipes)} 
+            className="flex-1 flex items-center justify-between text-left group focus:outline-none pr-2"
+          >
+            <div>
+              <h3 className="text-xs font-mono tracking-widest text-[#8E9299] group-hover:text-white uppercase transition-colors">Alternate Recipes</h3>
+              <p className="text-[11px] text-[#6f7681] mt-1">Choose recipes for items used in this production chain.</p>
+            </div>
+            <div className="text-[#8E9299] group-hover:text-white transition-colors">
+              {showAltRecipes ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+            </div>
+          </button>
+          
+          {Object.keys(recipeSelections).length > 0 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setRecipeSelections({});
+                onCalculate(selectedItem, rate, minerId, beltId, {});
+              }}
+              title="Reset all alternate recipes"
+              className="p-1.5 text-[#8E9299] hover:text-white hover:bg-[#2a2d33] rounded transition-colors ml-2"
+            >
+              <RotateCcw size={16} />
+            </button>
+          )}
+        </div>
 
         {showAltRecipes && (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 max-h-64 overflow-y-auto pr-1">
             {alternateRecipeCandidates.length === 0 ? (
               <div className="text-xs text-[#8E9299] bg-[#1c1e22] border border-[#2a2d33] rounded-lg px-3 py-2">
                 No alternate recipes available for this goal.
@@ -160,10 +178,13 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                   <CustomSelect
                     value={candidate.selectedRecipeId}
                     onChange={(value) => handleAlternateRecipeChange(candidate.itemId, value)}
-                    options={candidate.recipes.map((recipe) => ({
-                      value: recipe.id,
-                      label: `${formatRecipeLabel(recipe.id)} (${recipe.outputRate}/min)`,
-                    }))}
+                    options={candidate.recipes.map((recipe) => {
+                      const inputNames = recipe.inputs.map(i => items[i.itemId]?.name || i.itemId).join(', ');
+                      return {
+                        value: recipe.id,
+                        label: `${formatRecipeLabel(recipe.id)} (${recipe.outputRate}/m) [Uses: ${inputNames}]`,
+                      };
+                    })}
                   />
                 </div>
               ))

@@ -61,6 +61,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
         ratePerMachine: bp.rate,
       })),
       powerPerMachine: machineInfo?.powerUsage || 0,
+      isAlternate: recipe?.isAlternate || false,
     };
   }
 
