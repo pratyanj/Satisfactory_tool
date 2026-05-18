@@ -12,18 +12,16 @@
   background: linear-gradient(180deg, #2a2c2e 0%, #151618 100%);
   border-radius: 4px;
   position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255,255,255,0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.2);
   /* The outermost frame has small chamfers */
-  clip-path: polygon(
-    8px 0, 
-    calc(100% - 8px) 0, 
-    100% 8px, 
-    100% calc(100% - 8px), 
-    calc(100% - 8px) 100%, 
-    8px 100%, 
-    0 calc(100% - 8px), 
-    0 8px
-  );
+  clip-path: polygon(8px 0,
+      calc(100% - 8px) 0,
+      100% 8px,
+      100% calc(100% - 8px),
+      calc(100% - 8px) 100%,
+      8px 100%,
+      0 calc(100% - 8px),
+      0 8px);
   overflow: hidden;
 }
 
@@ -33,16 +31,14 @@
   position: absolute;
   inset: 1px;
   background: #111214;
-  clip-path: polygon(
-    8px 0, 
-    calc(100% - 8px) 0, 
-    100% 8px, 
-    100% calc(100% - 8px), 
-    calc(100% - 8px) 100%, 
-    8px 100%, 
-    0 calc(100% - 8px), 
-    0 8px
-  );
+  clip-path: polygon(8px 0,
+      calc(100% - 8px) 0,
+      100% 8px,
+      100% calc(100% - 8px),
+      calc(100% - 8px) 100%,
+      8px 100%,
+      0 calc(100% - 8px),
+      0 8px);
   z-index: -1;
 }
 
@@ -55,7 +51,7 @@
   display: flex;
   align-items: center;
   padding-left: 20px;
-  box-shadow: inset -5px 0 20px rgba(0,0,0,0.6);
+  box-shadow: inset -5px 0 20px rgba(0, 0, 0, 0.6);
   z-index: 2;
   /* Angled cut on the right */
   clip-path: polygon(0 0, 100% 0, calc(100% - 25px) 100%, 0 100%);
@@ -64,8 +60,11 @@
 .sf-header-orange-block::after {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px);
   background-size: 4px 4px;
   opacity: 0.5;
   pointer-events: none;
@@ -81,20 +80,30 @@
   align-items: center;
   justify-content: center;
   border: 3px solid #fff;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   position: relative;
 }
 
 /* Screws in the corners of the hexagon */
-.sf-hex-icon::before, .sf-hex-icon::after {
+.sf-hex-icon::before,
+.sf-hex-icon::after {
   content: '';
   position: absolute;
-  width: 4px; height: 4px;
+  width: 4px;
+  height: 4px;
   background: #333;
   border-radius: 50%;
 }
-.sf-hex-icon::before { top: 8px; left: 26px; }
-.sf-hex-icon::after { bottom: 8px; left: 26px; }
+
+.sf-hex-icon::before {
+  top: 8px;
+  left: 26px;
+}
+
+.sf-hex-icon::after {
+  bottom: 8px;
+  left: 26px;
+}
 
 .sf-wrench-svg {
   width: 30px;
@@ -109,12 +118,13 @@
   left: 12px;
   top: 10px;
   bottom: 10px;
-  width: 280px; /* extends out of the orange box */
+  width: 280px;
+  /* extends out of the orange box */
   background: linear-gradient(to bottom, #2b2e31, #1a1c1f);
   border: 1px solid #000;
   border-radius: 6px;
   padding: 10px 15px;
-  box-shadow: 2px 5px 15px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.1);
+  box-shadow: 2px 5px 15px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -128,12 +138,28 @@
   height: 6px;
   background: #111;
   border-radius: 50%;
-  box-shadow: inset 1px 1px 1px rgba(255,255,255,0.2), 1px 1px 1px rgba(0,0,0,0.5);
+  box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.2), 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
-.sf-screw-tl { top: 6px; left: 6px; }
-.sf-screw-tr { top: 6px; right: 6px; }
-.sf-screw-bl { bottom: 6px; left: 6px; }
-.sf-screw-br { bottom: 6px; right: 6px; }
+
+.sf-screw-tl {
+  top: 6px;
+  left: 6px;
+}
+
+.sf-screw-tr {
+  top: 6px;
+  right: 6px;
+}
+
+.sf-screw-bl {
+  bottom: 6px;
+  left: 6px;
+}
+
+.sf-screw-br {
+  bottom: 6px;
+  right: 6px;
+}
 
 .sf-title-main {
   font-family: 'Arial Black', Impact, sans-serif;
@@ -143,6 +169,7 @@
   letter-spacing: 1px;
   text-shadow: 1px 1px 2px #000;
 }
+
 .sf-title-sub {
   font-family: 'Arial Black', Impact, sans-serif;
   color: #f48721;
@@ -151,6 +178,7 @@
   letter-spacing: 1px;
   text-shadow: 1px 1px 2px #000;
 }
+
 .sf-title-micro {
   font-size: 9px;
   color: #a0a0a0;
@@ -159,18 +187,17 @@
   letter-spacing: 0.5px;
 }
 
-/* Middle White Nav Cutout */
+/* Middle Dark Nav Cutout */
 .sf-header-nav-cutout {
   flex: 1;
-  margin: 10px 10px 10px 60px; /* space from the title plate and right side */
-  background: #ffffff;
+  margin: 10px 10px 10px 60px;
+  /* space from the title plate and right side */
+  background: #111315;
   position: relative;
   /* Octagon clip path */
-  clip-path: polygon(
-    20px 0, calc(100% - 20px) 0, 100% 20px, 100% calc(100% - 20px), 
-    calc(100% - 20px) 100%, 20px 100%, 0 calc(100% - 20px), 0 20px
-  );
-  box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
+  clip-path: polygon(20px 0, calc(100% - 20px) 0, 100% 20px, 100% calc(100% - 20px),
+      calc(100% - 20px) 100%, 20px 100%, 0 calc(100% - 20px), 0 20px);
+  box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255,255,255,0.05);
   display: flex;
   align-items: center;
   padding: 0 10px;
@@ -180,13 +207,13 @@
 /* A dark border around the cutout for depth */
 .sf-nav-cutout-border {
   position: absolute;
-  top: 8px; bottom: 8px;
-  left: 380px; right: 140px;
+  top: 8px;
+  bottom: 8px;
+  left: 380px;
+  right: 140px;
   background: #000;
-  clip-path: polygon(
-    22px 0, calc(100% - 22px) 0, 100% 22px, 100% calc(100% - 22px), 
-    calc(100% - 22px) 100%, 22px 100%, 0 calc(100% - 22px), 0 22px
-  );
+  clip-path: polygon(22px 0, calc(100% - 22px) 0, 100% 22px, 100% calc(100% - 22px),
+      calc(100% - 22px) 100%, 22px 100%, 0 calc(100% - 22px), 0 22px);
   z-index: 0;
 }
 
@@ -206,9 +233,9 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: #f0f0f0;
-  border: 1px solid #ccc;
-  color: #333;
+  background: #1a1c1f;
+  border: 1px solid #2a2d33;
+  color: #8E9299;
   font-weight: 700;
   font-size: 14px;
   text-transform: uppercase;
@@ -219,17 +246,16 @@
 }
 
 .sf-nav-btn:hover {
-  background: #fff;
+  background: #23262a;
   border-color: #f48721;
-  color: #f48721;
-  box-shadow: 0 4px 10px rgba(244, 135, 33, 0.2);
+  color: #e4e3e0;
 }
 
 .sf-nav-btn.active {
-  background: #f48721;
-  color: #fff;
-  border-color: #c45700;
-  box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+  background: #2a2d33;
+  color: #f48721;
+  border-color: #f48721;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 /* Right Section - FICSIT & Lights */
@@ -247,7 +273,7 @@
   font-family: 'Arial Black', Impact, sans-serif;
   color: #1a1c1f;
   font-size: 20px;
-  text-shadow: 1px 1px 0 rgba(255,255,255,0.1), -1px -1px 0 rgba(0,0,0,0.8);
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.1), -1px -1px 0 rgba(0, 0, 0, 0.8);
   text-align: right;
   letter-spacing: 2px;
 }
@@ -265,7 +291,7 @@
   height: 10px;
   background: #ffaa00;
   border-radius: 50%;
-  box-shadow: 0 0 10px #ffaa00, inset 1px 1px 3px rgba(255,255,255,0.8);
+  box-shadow: 0 0 10px #ffaa00, inset 1px 1px 3px rgba(255, 255, 255, 0.8);
   border: 1px solid #000;
 }
 
@@ -280,30 +306,30 @@
 /* Caution stripes */
 .sf-caution-stripes {
   position: absolute;
-  top: 0; right: 180px;
-  width: 80px; height: 10px;
-  background: repeating-linear-gradient(
-    45deg,
-    #f48721,
-    #f48721 10px,
-    #111 10px,
-    #111 20px
-  );
+  top: 0;
+  right: 180px;
+  width: 80px;
+  height: 10px;
+  background: repeating-linear-gradient(45deg,
+      #f48721,
+      #f48721 10px,
+      #111 10px,
+      #111 20px);
   clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
   border-bottom: 2px solid #000;
 }
 
 .sf-bottom-stripes {
   position: absolute;
-  bottom: 0; right: 120px;
-  width: 60px; height: 10px;
-  background: repeating-linear-gradient(
-    -45deg,
-    #333,
-    #333 8px,
-    #111 8px,
-    #111 16px
-  );
+  bottom: 0;
+  right: 120px;
+  width: 60px;
+  height: 10px;
+  background: repeating-linear-gradient(-45deg,
+      #333,
+      #333 8px,
+      #111 8px,
+      #111 16px);
   clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 10px 100%);
   border-top: 2px solid #000;
 }
