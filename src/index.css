@@ -656,30 +656,46 @@ input[type="number"] {
   /* Firefox */
 }
 
-/* ===== Custom Scrollbar ===== */
+/* ===== FICSIT-Style Custom Scrollbar ===== */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1b1e;
-  border-radius: 4px;
+  background: #111214;
+  border-left: 2px solid #2a2d33;
+  box-shadow: inset 2px 0 5px rgba(0,0,0,0.5);
+}
+
+/* Horizontal track */
+::-webkit-scrollbar-track:horizontal {
+  border-left: none;
+  border-top: 2px solid #2a2d33;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3b3d42;
-  border-radius: 4px;
+  background: linear-gradient(90deg, #f48721 0%, #c45700 100%);
+  border-radius: 2px;
+  border: 2px solid #111214;
+  box-shadow: inset 0 0 4px rgba(255,255,255,0.3);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #5c5f66;
+  background: linear-gradient(90deg, #ff9b3b 0%, #d96600 100%);
+  border-color: #2a2d33;
+}
+
+/* Corner where vertical and horizontal scrollbars meet */
+::-webkit-scrollbar-corner {
+  background: #111214;
 }
 
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #3b3d42 transparent;
+  scrollbar-color: #f48721 #111214;
 }
 
 /* ================================================================
