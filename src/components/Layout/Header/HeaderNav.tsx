@@ -24,12 +24,10 @@ interface NavItem {
  * ABOUT also routes to 'codex' as the closest equivalent.
  */
 const NAV_ITEMS: NavItem[] = [
-  { id: 'planner',   label: 'Home',        icon: <Home      size={20} strokeWidth={1.8} /> },
   { id: 'planner',   label: 'Production',  icon: <Factory   size={20} strokeWidth={1.8} /> },
   { id: 'save_map',  label: 'Save Map',    icon: <MapPin    size={20} strokeWidth={1.8} /> },
   { id: 'world_map', label: 'World Map',   icon: <Globe     size={20} strokeWidth={1.8} /> },
   { id: 'codex',     label: 'Item Codex',  icon: <BookOpen  size={20} strokeWidth={1.8} /> },
-  { id: 'codex',     label: 'About',       icon: <Info      size={20} strokeWidth={1.8} /> },
 ];
 
 interface HeaderNavProps {
