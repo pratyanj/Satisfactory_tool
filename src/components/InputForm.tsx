@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings2, Zap, Play } from 'lucide-react';
+import { Settings2, Zap, Play, ChevronDown, ChevronRight } from 'lucide-react';
 import { AppImage } from './AppImage';
 import { items, belts, machines, BeltId, MachineId, RecipeId } from '../engine/data';
 import { ItemModal } from './ItemModal';
@@ -25,6 +25,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   const [beltId, setBeltId] = useState<BeltId>(initialValues?.beltId || 'mk1');
   const [recipeSelections, setRecipeSelections] = useState<RecipeSelectionMap>(initialValues?.recipeSelections || {});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showAltRecipes, setShowAltRecipes] = useState(true);
 
   // Sync state if initialValues changes (e.g. from URL load)
   React.useEffect(() => {
@@ -130,31 +131,44 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
       </div>
 
       <div className="border-t border-[#2a2d33] pt-4 flex flex-col gap-3">
-        <div>
-          <h3 className="text-xs font-mono tracking-widest text-[#8E9299] uppercase">Alternate Recipes</h3>
-          <p className="text-[11px] text-[#6f7681] mt-1">Choose recipes for items used in this production chain.</p>
-        </div>
-
-        {alternateRecipeCandidates.length === 0 ? (
-          <div className="text-xs text-[#8E9299] bg-[#1c1e22] border border-[#2a2d33] rounded-lg px-3 py-2">
-            No alternate recipes available for this goal.
+        <button 
+          type="button" 
+          onClick={() => setShowAltRecipes(!showAltRecipes)} 
+          className="flex items-center justify-between w-full text-left group focus:outline-none"
+        >
+          <div>
+            <h3 className="text-xs font-mono tracking-widest text-[#8E9299] group-hover:text-white uppercase transition-colors">Alternate Recipes</h3>
+            <p className="text-[11px] text-[#6f7681] mt-1">Choose recipes for items used in this production chain.</p>
           </div>
-        ) : (
-          alternateRecipeCandidates.map((candidate) => (
-            <div key={candidate.itemId} className="flex flex-col gap-1.5">
-              <label className="text-[11px] text-[#b8bec9]">
-                {items[candidate.itemId]?.name || candidate.itemId}
-              </label>
-              <CustomSelect
-                value={candidate.selectedRecipeId}
-                onChange={(value) => handleAlternateRecipeChange(candidate.itemId, value)}
-                options={candidate.recipes.map((recipe) => ({
-                  value: recipe.id,
-                  label: `${formatRecipeLabel(recipe.id)} (${recipe.outputRate}/min)`,
-                }))}
-              />
-            </div>
-          ))
+          <div className="text-[#8E9299] group-hover:text-white transition-colors">
+            {showAltRecipes ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+          </div>
+        </button>
+
+        {showAltRecipes && (
+          <div className="flex flex-col gap-3">
+            {alternateRecipeCandidates.length === 0 ? (
+              <div className="text-xs text-[#8E9299] bg-[#1c1e22] border border-[#2a2d33] rounded-lg px-3 py-2">
+                No alternate recipes available for this goal.
+              </div>
+            ) : (
+              alternateRecipeCandidates.map((candidate) => (
+                <div key={candidate.itemId} className="flex flex-col gap-1.5">
+                  <label className="text-[11px] text-[#b8bec9]">
+                    {items[candidate.itemId]?.name || candidate.itemId}
+                  </label>
+                  <CustomSelect
+                    value={candidate.selectedRecipeId}
+                    onChange={(value) => handleAlternateRecipeChange(candidate.itemId, value)}
+                    options={candidate.recipes.map((recipe) => ({
+                      value: recipe.id,
+                      label: `${formatRecipeLabel(recipe.id)} (${recipe.outputRate}/min)`,
+                    }))}
+                  />
+                </div>
+              ))
+            )}
+          </div>
         )}
       </div>
 
