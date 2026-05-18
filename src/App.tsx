@@ -298,7 +298,7 @@ export default function App() {
           {topLevelTab === 'planner' ? (
             <main className="flex-1 w-full h-full grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 p-4 md:p-4 min-h-0">
               {/* Left Side: Main Area */}
-              <div className="flex flex-col h-full h-[600px] lg:h-auto min-h-0 relative rounded-2xl bg-[#0d0e11] overflow-hidden">
+              <div className="flex flex-col h-full h-[600px] lg:h-auto min-h-0 relative rounded-2xl sf-blueprint-bg overflow-hidden border border-[#2a2d33]">
                 {/* 4-Tab Navigation Bar */}
                 <div className="tab-bar">
                   {TAB_CONFIG.map((tab) => (
@@ -328,15 +328,15 @@ export default function App() {
               </div>
             </main>
           ) : topLevelTab === 'codex' ? (
-            <main className="flex flex-col w-full h-full relative bg-[#0d0e11] overflow-hidden">
+            <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
               <ItemBrowser />
             </main>
           ) : topLevelTab === 'save_map' ? (
-            <main className="flex flex-col w-full h-full relative bg-[#0d0e11] overflow-hidden">
+            <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
               <MapTab />
             </main>
           ) : (
-            <main className="flex flex-col w-full h-full relative bg-[#0d0e11] overflow-hidden">
+            <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
               <WorldMapTab />
             </main>
           )}

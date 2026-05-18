@@ -699,6 +699,21 @@ input[type="number"] {
 }
 
 /* ================================================================
+   FICSIT-STYLE BACKGROUNDS
+   ================================================================ */
+
+.sf-blueprint-bg {
+  background-color: #0d0e11;
+  background-image: 
+    linear-gradient(rgba(244, 135, 33, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 135, 33, 0.07) 1px, transparent 1px),
+    linear-gradient(rgba(244, 135, 33, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 135, 33, 0.03) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+  background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+}
+
+/* ================================================================
    FICSIT-STYLE INPUTS & BUTTONS
    ================================================================ */
 
