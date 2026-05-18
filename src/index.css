@@ -699,6 +699,155 @@ input[type="number"] {
 }
 
 /* ================================================================
+   FICSIT-STYLE INPUTS & BUTTONS
+   ================================================================ */
+
+.sf-input-container {
+  position: relative;
+  background: #111214;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  border: 1px solid #2a2d33;
+  transition: all 0.2s ease;
+}
+
+.sf-input-container:focus-within {
+  border-color: #f48721;
+  box-shadow: 0 0 10px rgba(244, 135, 33, 0.2);
+}
+
+.sf-input-container::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 0;
+  height: 0;
+  border-top: 8px solid #2a2d33;
+  border-right: 8px solid transparent;
+  pointer-events: none;
+}
+.sf-input-container:focus-within::before {
+  border-top-color: #f48721;
+}
+
+.sf-input-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 0;
+  height: 0;
+  border-bottom: 8px solid #2a2d33;
+  border-left: 8px solid transparent;
+  pointer-events: none;
+}
+.sf-input-container:focus-within::after {
+  border-bottom-color: #f48721;
+}
+
+.sf-primary-btn {
+  background: linear-gradient(135deg, #f38622 0%, #c45700 100%);
+  color: #fff;
+  border: none;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  position: relative;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  box-shadow: inset -2px -2px 10px rgba(0,0,0,0.3);
+}
+
+.sf-primary-btn:hover {
+  background: linear-gradient(135deg, #ff9b3b 0%, #d96600 100%);
+}
+
+.sf-primary-btn:active {
+  background: linear-gradient(135deg, #c45700 0%, #f38622 100%);
+  box-shadow: inset 2px 2px 10px rgba(0,0,0,0.5);
+}
+
+.sf-primary-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 0;
+  height: 0;
+  border-top: 12px solid rgba(255,255,255,0.4);
+  border-right: 12px solid transparent;
+  pointer-events: none;
+}
+
+.sf-primary-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 0;
+  height: 0;
+  border-bottom: 12px solid rgba(0,0,0,0.4);
+  border-left: 12px solid transparent;
+  pointer-events: none;
+}
+
+/* ================================================================
+   FICSIT-STYLE MODAL & CARDS
+   ================================================================ */
+
+.sf-modal-container {
+  background: #111214;
+  border: 2px solid #2a2d33;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 0 1px rgba(255,255,255,0.05);
+  position: relative;
+  /* Cut corners */
+  clip-path: polygon(15px 0, calc(100% - 15px) 0, 100% 15px, 100% calc(100% - 15px), calc(100% - 15px) 100%, 15px 100%, 0 calc(100% - 15px), 0 15px);
+}
+
+.sf-modal-container::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: repeating-linear-gradient(45deg, #f48721, #f48721 10px, #111 10px, #111 20px);
+  z-index: 10;
+}
+
+.sf-modal-header {
+  background: #1a1c1f;
+  border-bottom: 2px solid #2a2d33;
+  position: relative;
+}
+
+.sf-modal-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; width: 30%; height: 2px;
+  background: #f48721;
+}
+
+.sf-item-card {
+  background: #16181b;
+  border: 1px solid #2a2d33;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.sf-item-card:hover {
+  background: #1f2226;
+  border-color: #f48721;
+  box-shadow: inset 0 0 15px rgba(244,135,33,0.1);
+}
+
+.sf-item-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 0; height: 0;
+  border-bottom: 8px solid transparent;
+  border-left: 8px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.sf-item-card:hover::after {
+  border-bottom-color: #f48721;
+}
+
+/* ================================================================
    WORLD MAP TAB
    ================================================================ */
 

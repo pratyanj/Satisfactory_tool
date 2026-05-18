@@ -82,7 +82,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center justify-between w-full bg-[#1c1e22] border border-[#2a2d33] rounded-lg px-3 py-2 outline-none hover:border-orange-500 transition-colors group focus:border-orange-500"
+            className="sf-input-container flex items-center justify-between w-full px-3 py-2 outline-none group text-white"
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded shrink-0 overflow-hidden bg-[#242528] flex items-center justify-center p-0.5">
@@ -92,7 +92,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
               </div>
               <span className="text-sm font-medium">{selectedItemData?.name || 'Select Item'}</span>
             </div>
-            <div className="text-[#8E9299] group-hover:text-white transition-colors">
+            <div className="text-[#8E9299] group-hover:text-[#f48721] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
             </div>
           </button>
@@ -106,7 +106,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           min="1"
           value={rate}
           onChange={(e) => setRate(Number(e.target.value))}
-          className="bg-[#1c1e22] border border-[#2a2d33] rounded-lg px-3 py-2.5 outline-none focus:border-orange-500 transition-colors font-mono text-sm"
+          className="sf-input-container w-full text-white px-3 py-2.5 outline-none font-mono text-sm"
         />
       </div>
       
@@ -195,7 +195,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
 
       <button 
         type="submit"
-        className="mt-2 bg-orange-600 hover:bg-orange-500 text-white font-medium py-3 px-4 rounded-lg transition-colors active:scale-[0.98] transform flex justify-center items-center gap-2"
+        className="sf-primary-btn mt-2 font-bold py-3 px-4 transition-colors flex justify-center items-center gap-2 tracking-wide uppercase"
       >
         <span>Calculate Flow</span>
       </button>
