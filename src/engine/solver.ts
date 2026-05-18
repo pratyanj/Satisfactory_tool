@@ -1,7 +1,8 @@
-import { ItemId, MachineId, items, machines, recipes } from './data';
+import { ItemId, MachineId, Recipe, RecipeId, items, machines, recipes } from './data';
 
 export interface SolverNode {
   itemId: ItemId;
+  recipeId: RecipeId;
   rate: number;
   machines: number;
   machineId: MachineId;
@@ -9,12 +10,60 @@ export interface SolverNode {
   byproducts?: { itemId: ItemId; rate: number }[];
 }
 
-function getRecipeForItem(itemId: ItemId): typeof recipes[0] | undefined {
-  return recipes.find((r) => r.outputItemId === itemId);
+export type RecipeSelectionMap = Partial<Record<ItemId, RecipeId>>;
+
+interface AlternateRecipeCandidate {
+  itemId: ItemId;
+  recipes: Recipe[];
+  selectedRecipeId: RecipeId;
 }
 
-export function solve(itemId: ItemId, requiredRate: number, minerId: MachineId = "miner_mk1"): SolverNode {
-  const recipe = getRecipeForItem(itemId);
+function getRecipesForItem(itemId: ItemId): Recipe[] {
+  return recipes.filter((r) => r.outputItemId === itemId);
+}
+
+function getRecipeForItem(itemId: ItemId, recipeSelections: RecipeSelectionMap = {}): Recipe | undefined {
+  const candidates = getRecipesForItem(itemId);
+  if (candidates.length === 0) return undefined;
+
+  const selectedId = recipeSelections[itemId];
+  if (!selectedId) return candidates[0];
+
+  return candidates.find((r) => r.id === selectedId) || candidates[0];
+}
+
+export function getAlternateRecipeCandidates(rootItemId: ItemId, recipeSelections: RecipeSelectionMap = {}): AlternateRecipeCandidate[] {
+  const visited = new Set<ItemId>();
+  const result: AlternateRecipeCandidate[] = [];
+
+  const walk = (itemId: ItemId) => {
+    if (visited.has(itemId)) return;
+    visited.add(itemId);
+
+    const itemRecipes = getRecipesForItem(itemId);
+    if (itemRecipes.length === 0) return;
+
+    const selectedRecipe = getRecipeForItem(itemId, recipeSelections);
+    if (itemRecipes.length > 1 && selectedRecipe) {
+      result.push({
+        itemId,
+        recipes: itemRecipes,
+        selectedRecipeId: selectedRecipe.id,
+      });
+    }
+
+    if (!selectedRecipe) return;
+    for (const input of selectedRecipe.inputs) {
+      walk(input.itemId);
+    }
+  };
+
+  walk(rootItemId);
+  return result;
+}
+
+export function solve(itemId: ItemId, requiredRate: number, minerId: MachineId = "miner_mk1", recipeSelections: RecipeSelectionMap = {}): SolverNode {
+  const recipe = getRecipeForItem(itemId, recipeSelections);
   
   if (!recipe) {
     throw new Error(`No recipe found for item: ${items[itemId]?.name || itemId}`);
@@ -39,6 +88,7 @@ export function solve(itemId: ItemId, requiredRate: number, minerId: MachineId =
 
   const result: SolverNode = {
     itemId,
+    recipeId: recipe.id,
     rate: requiredRate,
     machines: machineCount,
     machineId: machineIdToUse,
@@ -51,7 +101,7 @@ export function solve(itemId: ItemId, requiredRate: number, minerId: MachineId =
 
   for (const input of recipe.inputs) {
     const requiredInputRate = input.rate * machineCount;
-    result.inputs.push(solve(input.itemId, requiredInputRate, minerId));
+    result.inputs.push(solve(input.itemId, requiredInputRate, minerId, recipeSelections));
   }
 
   return result;

@@ -13,7 +13,7 @@ import { BuildingsTab } from './components/BuildingsTab';
 import { MapTab } from './components/Map/MapTab';
 import { WorldMapTab } from './components/Map/WorldMapTab';
 import { ItemBrowser } from './components/ItemBrowser';
-import { solve, calculateSummary, SummaryData, SolverNode } from './engine/solver';
+import { solve, calculateSummary, SummaryData, SolverNode, RecipeSelectionMap } from './engine/solver';
 import { mapSolverResultToGraph, LayoutMode } from './engine/graphMapper';
 import { BeltId, MachineId, items, machines, belts } from './engine/data';
 import { Edge, Node } from '@xyflow/react';
@@ -69,6 +69,17 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
 
 type TopLevelTab = 'planner' | 'save_map' | 'world_map' | 'codex';
 
+function parseRecipeSelections(value: unknown): RecipeSelectionMap {
+  if (!value || typeof value !== 'object') return {};
+  const result: RecipeSelectionMap = {};
+  for (const [itemId, recipeId] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof recipeId === 'string') {
+      result[itemId] = recipeId;
+    }
+  }
+  return result;
+}
+
 export default function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
@@ -76,7 +87,7 @@ export default function App() {
   const [rootNode, setRootNode] = useState<SolverNode | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const [lastInput, setLastInput] = useState<{ itemId: string, rate: number, minerId: MachineId, beltId: BeltId }>({ itemId: 'reinforced_iron_plate', rate: 100, minerId: 'miner_mk1', beltId: 'mk1' });
+  const [lastInput, setLastInput] = useState<{ itemId: string, rate: number, minerId: MachineId, beltId: BeltId }>({ itemId: 'copper_sheet', rate: 120, minerId: 'miner_mk1', beltId: 'mk1' });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
   const [mainTab, setMainTab] = useState<MainTab>('network_graph');
   const [topLevelTab, setTopLevelTab] = useState<TopLevelTab>('planner');
@@ -110,7 +121,13 @@ export default function App() {
         const encoded = hash.replace('#plan=', '');
         const decoded = JSON.parse(atob(decodeURIComponent(encoded)));
         if (decoded.i && items[decoded.i] && typeof decoded.r === 'number' && decoded.m && machines[decoded.m] && decoded.b && belts[decoded.b] && (decoded.l === 'aggregated' || decoded.l === 'expanded')) {
-          setLastInput({ itemId: decoded.i, rate: decoded.r, minerId: decoded.m, beltId: decoded.b });
+          setLastInput({
+            itemId: decoded.i,
+            rate: decoded.r,
+            minerId: decoded.m,
+            beltId: decoded.b,
+            recipeSelections: parseRecipeSelections(decoded.ar),
+          });
           setLayoutMode(decoded.l);
           const top: TopLevelTab = decoded.t ?? 'planner';
           const sub: MainTab = decoded.s ?? 'network_graph';
@@ -148,6 +165,7 @@ export default function App() {
       r: lastInput.rate,
       m: lastInput.minerId,
       b: lastInput.beltId,
+      ar: lastInput.recipeSelections,
       l: layoutMode,
       t: topLevelTab,
       s: mainTab,
@@ -162,11 +180,11 @@ export default function App() {
     });
   }, [lastInput, layoutMode, topLevelTab, mainTab]);
 
-  const calculatePlan = (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, mode: LayoutMode) => {
-    setLastInput({ itemId, rate, minerId, beltId });
+  const calculatePlan = (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap, mode: LayoutMode) => {
+    setLastInput({ itemId, rate, minerId, beltId, recipeSelections });
     try {
       setError(null);
-      const solvedRoot = solve(itemId, rate, minerId);
+      const solvedRoot = solve(itemId, rate, minerId, recipeSelections);
       const newSummary = calculateSummary(solvedRoot);
       const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(solvedRoot, mode, beltId);
 
@@ -184,19 +202,21 @@ export default function App() {
   };
 
   // Run calculation strictly when requested
-  const handleCalculate = (itemId: string, rate: number, minerId: MachineId, beltId: BeltId) => {
-    calculatePlan(itemId, rate, minerId, beltId, layoutMode);
+  const handleCalculate = (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap) => {
+    calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode);
   };
+
+  const recipeSelectionSignature = JSON.stringify(lastInput.recipeSelections);
 
   // FIXED: Issue #3 - Added all dependencies to prevent stale closures
   useEffect(() => {
     // Show spinner first, then defer the heavy computation
     setIsRecalculating(true);
     requestAnimationFrame(() => {
-      calculatePlan(lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, layoutMode);
+      calculatePlan(lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.recipeSelections, layoutMode);
       setIsRecalculating(false);
     });
-  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId]);
+  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, recipeSelectionSignature]);
 
   const renderTabContent = () => {
     if (error) {

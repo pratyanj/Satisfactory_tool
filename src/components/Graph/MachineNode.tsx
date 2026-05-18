@@ -1,7 +1,7 @@
 import { Handle, Position, useReactFlow, NodeProps, useUpdateNodeInternals } from '@xyflow/react';
 import React, { useEffect } from 'react';
 import { machines } from '../../engine/data';
-import { FlipHorizontal } from 'lucide-react';
+import { FlipHorizontal, Star } from 'lucide-react';
 import { AppImage } from '../AppImage';
 
 export const MachineNode = React.memo(function MachineNode({ id, data }: NodeProps) {
@@ -61,10 +61,15 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
               </div>
             </div>
           </div>
-          <div className="px-3 flex items-center h-[30px] shrink-0 min-w-0">
-            <span className="font-mono text-[11px] text-green-400 truncate flex-1 leading-none" title={data.label as string}>
+          <div className="px-3 flex items-center justify-between h-[30px] shrink-0 min-w-0">
+            <span className="font-mono text-[11px] text-green-400 truncate flex-1 leading-none pr-1" title={data.label as string}>
               {data.label as string}
             </span>
+            {data.isAlternate && (
+              <div title="Alternate Recipe" className="flex items-center justify-center shrink-0">
+                <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
+              </div>
+            )}
           </div>
         </div>
       </div>
