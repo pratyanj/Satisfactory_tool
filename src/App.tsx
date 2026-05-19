@@ -14,6 +14,7 @@ import { MapTab } from './components/Map/MapTab';
 import { WorldMapTab } from './components/Map/WorldMapTab';
 import { ItemBrowser } from './components/ItemBrowser';
 import { HeaderNav } from './components/Layout/Header/HeaderNav';
+import { BodyFrame } from './components/Layout/BodyFrame/BodyFrame';
 import { solve, calculateSummary, SummaryData, SolverNode, RecipeSelectionMap } from './engine/solver';
 import { mapSolverResultToGraph, LayoutMode } from './engine/graphMapper';
 import { BeltId, MachineId, items, machines, belts } from './engine/data';
@@ -292,59 +293,55 @@ export default function App() {
         generateShareLink={generateShareLink}
         copied={copied}
       />
-      <br />  
-      {topLevelTab === 'planner' ? (
-        <main className="flex-1 max-w-[1600px] w-full mx-auto grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 64px)' }}>
-          {/* Left Side: Main Area */}
-          <div className="flex flex-col h-full h-[600px] lg:h-auto min-h-0 relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
-            {/* 4-Tab Navigation Bar */}
-            <div className="tab-bar">
-              {TAB_CONFIG.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => handleMainTab(tab.id as MainTab)}
-                  className={`tab-bar-btn ${mainTab === tab.id ? 'tab-bar-btn--active' : ''}`}
-                  aria-label={`View ${tab.label}`}
-                  aria-current={mainTab === tab.id ? 'page' : undefined}
-                >
-                  {tab.icon}
-                  <span>{tab.label}</span>
-                </button>
-              ))}
-            </div>
+      <div className="flex-1 overflow-hidden flex flex-col w-full h-full">
+        <BodyFrame>
+          {topLevelTab === 'planner' ? (
+            <main className="flex-1 w-full h-full grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 p-4 md:p-4 min-h-0">
+              {/* Left Side: Main Area */}
+              <div className="flex flex-col h-full h-[600px] lg:h-auto min-h-0 relative rounded-2xl sf-blueprint-bg overflow-hidden border border-[#2a2d33]">
+                {/* 4-Tab Navigation Bar */}
+                <div className="tab-bar">
+                  {TAB_CONFIG.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => handleMainTab(tab.id as MainTab)}
+                      className={`tab-bar-btn ${mainTab === tab.id ? 'tab-bar-btn--active' : ''}`}
+                      aria-label={`View ${tab.label}`}
+                      aria-current={mainTab === tab.id ? 'page' : undefined}
+                    >
+                      {tab.icon}
+                      <span>{tab.label}</span>
+                    </button>
+                  ))}
+                </div>
 
-            {/* Tab Content */}
-            <div className="flex-1 min-h-0 relative overflow-hidden">
-              {renderTabContent()}
-            </div>
-          </div>
+                {/* Tab Content */}
+                <div className="flex-1 min-h-0 relative overflow-hidden">
+                  {renderTabContent()}
+                </div>
+              </div>
 
-          {/* Right Side: Sidebar */}
-          <div className="flex flex-col gap-6 overflow-y-auto min-h-0 pb-10">
-            <InputForm onCalculate={handleCalculate} initialValues={lastInput} />
-            {summary && <Summary summary={summary} />}
-          </div>
-        </main>
-      ) : topLevelTab === 'codex' ? (
-        <div className="px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 64px)' }}>
-          <main className="flex flex-col w-full h-full relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
-            <ItemBrowser />
-          </main>
-        </div>
-      ) : topLevelTab === 'save_map' ? (
-        <div className="px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 64px)' }}>
-          <main className="flex flex-col w-full h-full relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
-            <MapTab />
-          </main>
-        </div>
-      ) : (
-        <div className="px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 64px)' }}>
-          <main className="flex flex-col w-full h-full relative rounded-2xl bg-[#0d0e11] border border-[#2a2d33] overflow-hidden">
-            <WorldMapTab />
-          </main>
-        </div>
-      )}
-
+              {/* Right Side: Sidebar */}
+              <div className="flex flex-col gap-6 overflow-y-auto min-h-0 pr-2">
+                <InputForm onCalculate={handleCalculate} initialValues={lastInput} />
+                {summary && <Summary summary={summary} />}
+              </div>
+            </main>
+          ) : topLevelTab === 'codex' ? (
+            <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
+              <ItemBrowser />
+            </main>
+          ) : topLevelTab === 'save_map' ? (
+            <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
+              <MapTab />
+            </main>
+          ) : (
+            <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
+              <WorldMapTab />
+            </main>
+          )}
+        </BodyFrame>
+      </div>
     </div>
   );
 }

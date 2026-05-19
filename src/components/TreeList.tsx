@@ -56,8 +56,8 @@ function TreeNodeRow({ node, depth }: { node: SolverNode; depth: number }) {
           </button>
         )}
 
-        {/* Machine icon */}
-        <div className="tree-icon">
+        {/* Machine icon with Tooltip */}
+        <div className="tree-icon group sf-tooltip-wrapper">
           {machine?.imageUrl && (
             <AppImage
               idKey={node.machineId}
@@ -65,17 +65,39 @@ function TreeNodeRow({ node, depth }: { node: SolverNode; depth: number }) {
               alt={machine.name}
             />
           )}
+          <div className="sf-tooltip whitespace-nowrap min-w-max">
+            <span className="block font-black text-[#f48721] tracking-wider uppercase mb-1 text-[10px] border-b border-[#2a2d33] pb-1">{machine?.name}</span>
+            <div className="flex justify-between gap-4 font-mono mt-1">
+              <span className="text-[#8E9299]">Count:</span>
+              <span className="text-[#e4e3e0]">{machineCount}x</span>
+            </div>
+            <div className="flex justify-between gap-4 font-mono mt-1">
+              <span className="text-[#8E9299]">Power:</span>
+              <span className="text-yellow-500">{(machine?.powerUsage || 0) * machineCount} MW</span>
+            </div>
+          </div>
         </div>
 
         {/* Machine info */}
-        <div className="tree-info">
+        <div className="tree-info flex gap-2">
           <span className="tree-machine-name">
             {machine?.name || node.machineId}
             <span className="tree-machine-count"> (x{machineCount})</span>
           </span>
-          <span className="tree-item-name">
+          <span className="tree-item-name group sf-tooltip-wrapper cursor-help">
             {item?.name || node.itemId}
             <span className="tree-item-rate"> ({node.rate.toLocaleString(undefined, { maximumFractionDigits: 1 })} units/min)</span>
+            <div className="sf-tooltip whitespace-nowrap min-w-max left-0 transform-none ml-4">
+              <span className="block font-black text-[#f48721] tracking-wider uppercase mb-1 text-[10px] border-b border-[#2a2d33] pb-1">Item Details</span>
+              <div className="flex justify-between gap-4 font-mono mt-1 text-[11px]">
+                <span className="text-[#8E9299]">Name:</span>
+                <span className="text-[#e4e3e0]">{item?.name || node.itemId}</span>
+              </div>
+              <div className="flex justify-between gap-4 font-mono mt-1 text-[11px]">
+                <span className="text-[#8E9299]">Target Rate:</span>
+                <span className="text-orange-400">{node.rate.toLocaleString()} / min</span>
+              </div>
+            </div>
           </span>
         </div>
       </div>

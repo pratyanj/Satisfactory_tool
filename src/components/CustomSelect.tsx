@@ -33,14 +33,14 @@ export function CustomSelect({ value, onChange, options }: CustomSelectProps) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center justify-between w-full bg-[#1c1e22] border rounded-lg px-3 py-2 outline-none transition-colors text-xs ${isOpen ? 'border-orange-500 text-white' : 'border-[#2a2d33] text-[#e4e3e0] hover:border-orange-500 focus:border-orange-500'}`}
+        className={`sf-input-container flex items-center justify-between w-full px-3 py-2 outline-none transition-colors text-xs ${isOpen ? 'text-white border-[#f48721]' : 'text-[#e4e3e0]'}`}
       >
         <span className="truncate font-medium">{selectedOption?.label}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-[#8E9299] transition-transform ${isOpen ? 'rotate-180 text-orange-500' : ''}`} />
+        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isOpen ? 'rotate-180 text-[#f48721]' : 'text-[#8E9299]'}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-[#242528] border border-[#3b3d42] rounded-lg shadow-2xl overflow-hidden py-1">
+        <div className="absolute z-50 w-full mt-1 bg-[#111214] border border-[#2a2d33] rounded shadow-2xl overflow-hidden py-1">
           {options.map((option) => (
             <button
               key={option.value}

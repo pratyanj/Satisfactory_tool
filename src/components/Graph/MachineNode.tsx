@@ -78,44 +78,44 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
       </div>
 
       {/* Hover Floating Card for Recipe details */}
-      <div className="absolute top-full left-0 mt-2 w-full hidden group-hover:block border border-[#2a2d33] rounded-xl px-3 py-2 bg-[#151619] shadow-2xl z-[100] space-y-1.5 pointer-events-none text-white font-sans">
+      <div className="sf-tooltip whitespace-nowrap min-w-max">
         {/* Inputs */}
         {inputDetails.length > 0 && inputDetails.map((inp: any, idx: number) => (
-          <div key={idx} className="flex items-center gap-1.5 text-[10px]">
-            <span className="text-blue-400 font-bold w-4 text-center shrink-0">IN</span>
+          <div key={idx} className="flex items-center gap-2 font-mono text-[11px] mb-1">
+            <span className="text-blue-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">IN</span>
             {inp.imageUrl && (
               <AppImage idKey={inp.itemId} fallbackUrl={inp.imageUrl} className="w-3.5 h-3.5 object-contain shrink-0" alt={inp.name} />
             )}
-            <span className="text-[#a0a4ab] truncate flex-1">{inp.name}</span>
-            <span className="font-mono text-[#cbd5e1] shrink-0">{inp.ratePerMachine}/m</span>
+            <span className="text-[#a0a4ab] flex-1">{inp.name}</span>
+            <span className="text-[#e4e3e0] shrink-0 text-right min-w-[50px]">{inp.ratePerMachine}/m</span>
           </div>
         ))}
         {/* Output */}
         {outputRatePerMachine > 0 && (
-          <div className="flex items-center gap-1.5 text-[10px]">
-            <span className="text-orange-400 font-bold w-4 text-center shrink-0">OUT</span>
+          <div className="flex items-center gap-2 font-mono text-[11px] mb-1">
+            <span className="text-orange-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">OUT</span>
             {data.itemImageUrl && (
               <AppImage idKey={data.itemId as string} fallbackUrl={data.itemImageUrl as string} className="w-3.5 h-3.5 object-contain shrink-0" alt={data.item as string} />
             )}
-            <span className="text-[#a0a4ab] truncate flex-1">{data.item as string}</span>
-            <span className="font-mono text-[#cbd5e1] shrink-0">{outputRatePerMachine}/m</span>
+            <span className="text-[#a0a4ab] flex-1">{data.item as string}</span>
+            <span className="text-[#e4e3e0] shrink-0 text-right min-w-[50px]">{outputRatePerMachine}/m</span>
           </div>
         )}
         {/* Byproducts */}
         {(data.byproductDetails as any[] || []).length > 0 && (data.byproductDetails as any[]).map((bp: any, idx: number) => (
-          <div key={`bp-${idx}`} className="flex items-center gap-1.5 text-[10px]">
-            <span className="text-orange-400 font-bold w-4 text-center shrink-0">OUT</span>
+          <div key={`bp-${idx}`} className="flex items-center gap-2 font-mono text-[11px] mb-1">
+            <span className="text-orange-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">OUT</span>
             {bp.imageUrl && (
               <AppImage idKey={bp.itemId} fallbackUrl={bp.imageUrl} className="w-3.5 h-3.5 object-contain shrink-0" alt={bp.name} />
             )}
-            <span className="text-[#a0a4ab] truncate flex-1">{bp.name}</span>
-            <span className="font-mono text-[#cbd5e1] shrink-0">{bp.ratePerMachine}/m</span>
+            <span className="text-[#a0a4ab] flex-1">{bp.name}</span>
+            <span className="text-[#e4e3e0] shrink-0 text-right min-w-[50px]">{bp.ratePerMachine}/m</span>
           </div>
         ))}
         {/* Power per machine */}
         {powerPerMachine > 0 && (
-          <div className="flex items-center gap-1.5 text-[10px] pt-1 mt-1 border-t border-[#2a2d33]">
-            <span className="text-yellow-500">⚡</span>
+          <div className="flex items-center gap-2 font-mono text-[11px] pt-1 mt-2 border-t border-[#2a2d33]">
+            <span className="text-yellow-500 w-6 text-center">⚡</span>
             <span className="text-[#8E9299]">{powerPerMachine} MW/machine</span>
           </div>
         )}
