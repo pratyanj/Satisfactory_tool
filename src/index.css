@@ -190,19 +190,62 @@
   }
 }
 
-.graph-loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid #2a2d33;
-  border-top-color: #f97316;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+.sf-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.sf-loader {
+  width: 60px;
+  height: 60px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sf-loader-hex {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 4px solid #f48721;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  animation: sfSpin 2s linear infinite;
+}
+
+.sf-loader-hex-inner {
+  position: absolute;
+  width: 60%;
+  height: 60%;
+  background: repeating-linear-gradient(45deg, #f48721, #f48721 8px, #111 8px, #111 16px);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  animation: sfSpinReverse 4s linear infinite;
+}
+
+.sf-loader-text {
+  font-family: 'Arial Black', Impact, sans-serif;
+  color: #f48721;
+  font-size: 14px;
+  letter-spacing: 3px;
+  animation: sfPulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes sfSpin {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes sfSpinReverse {
+  100% { transform: rotate(-360deg); }
+}
+
+@keyframes sfPulse {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; text-shadow: 0 0 8px rgba(244, 135, 33, 0.8); }
 }
 
 /* ===== Tab Bar Navigation ===== */
@@ -789,6 +832,15 @@ input[type="number"] {
   pointer-events: none;
 }
 
+.sf-btn-scanner {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: translateX(-150%) skewX(-15deg);
+}
+
+.sf-primary-btn:hover .sf-btn-scanner {
+  animation: sfScannerSweep 0.5s ease-out;
+}
+
 .sf-primary-btn::after {
   content: '';
   position: absolute;
@@ -888,12 +940,32 @@ input[type="number"] {
   clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
   transition: all 0.2s ease;
   position: relative;
+  overflow: hidden;
 }
 
 .sf-item-card:hover {
   background: #1f2226;
   border-color: #f48721;
   box-shadow: inset 0 0 15px rgba(244,135,33,0.1);
+}
+
+.sf-item-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 40%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(244, 135, 33, 0.2), transparent);
+  transform: translateX(-150%) skewX(-15deg);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.sf-item-card:hover::before {
+  animation: sfScannerSweep 0.5s ease-out;
+}
+
+@keyframes sfScannerSweep {
+  0% { transform: translateX(-150%) skewX(-15deg); }
+  100% { transform: translateX(300%) skewX(-15deg); }
 }
 
 .sf-item-card::after {

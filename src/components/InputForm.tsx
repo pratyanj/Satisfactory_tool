@@ -197,7 +197,8 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
         type="submit"
         className="sf-primary-btn mt-2 font-bold py-3 px-4 transition-colors flex justify-center items-center gap-2 tracking-wide uppercase"
       >
-        <span>Calculate Flow</span>
+        <span className="sf-btn-scanner absolute inset-0 pointer-events-none z-10" />
+        <span className="relative z-20">Calculate Flow</span>
       </button>
     </form>
     
