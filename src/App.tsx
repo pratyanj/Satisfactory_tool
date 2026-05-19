@@ -13,6 +13,7 @@ import { BuildingsTab } from './components/BuildingsTab';
 import { MapTab } from './components/Map/MapTab';
 import { WorldMapTab } from './components/Map/WorldMapTab';
 import { ItemBrowser } from './components/ItemBrowser';
+import { HeaderNav } from './components/Layout/Header/HeaderNav';
 import { solve, calculateSummary, SummaryData, SolverNode, RecipeSelectionMap } from './engine/solver';
 import { mapSolverResultToGraph, LayoutMode } from './engine/graphMapper';
 import { BeltId, MachineId, items, machines, belts } from './engine/data';
@@ -285,72 +286,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans">
-
-      <header className="app-header">
-        {/* Brand */}
-        <div className="app-header-brand">
-          <img src="public/logo/satisfactory_tool_logo.png" alt="factory" draggable={false} style={{ height: '80px', width: 'auto', objectFit: 'cover' }} />
-          {/* <div>
-            <div className="app-header-title">FACTORY VISUAL PLANNER</div>
-            <div className="app-header-title-underline" />
-          </div> */}
-        </div>
-
-        {/* Top Level Navigation */}
-        <nav className="app-header-nav">
-          <button
-            onClick={() => handleTopLevelTab('planner')}
-            className={`app-header-nav-btn ${topLevelTab === 'planner' ? 'app-header-nav-btn--active' : ''}`}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Production Planner
-          </button>
-          <button
-            onClick={() => handleTopLevelTab('save_map')}
-            className={`app-header-nav-btn ${topLevelTab === 'save_map' ? 'app-header-nav-btn--active' : ''}`}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            Save Game Map
-          </button>
-          <button
-            onClick={() => handleTopLevelTab('world_map')}
-            className={`app-header-nav-btn ${topLevelTab === 'world_map' ? 'app-header-nav-btn--active' : ''}`}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
-            World Map
-          </button>
-          <button
-            onClick={() => handleTopLevelTab('codex')}
-            className={`app-header-nav-btn ${topLevelTab === 'codex' ? 'app-header-nav-btn--active' : ''}`}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-            Item Codex
-          </button>
-        </nav>
-
-        {/* Share */}
-        <div className="app-header-actions">
-          {topLevelTab === 'planner' && (
-            <button
-              onClick={generateShareLink}
-              className={`app-header-share-btn ${copied ? 'app-header-share-btn--copied' : ''}`}
-              aria-label={copied ? 'Plan copied to clipboard' : 'Copy plan to clipboard'}
-            >
-              {copied ? (
-                <>
-                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                  Share Plan
-                </>
-              )}
-            </button>
-          )}
-        </div>
-      </header>
+      <HeaderNav
+        topLevelTab={topLevelTab}
+        handleTopLevelTab={handleTopLevelTab}
+        generateShareLink={generateShareLink}
+        copied={copied}
+      />
       <br />  
       {topLevelTab === 'planner' ? (
         <main className="flex-1 max-w-[1600px] w-full mx-auto grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 px-4 md:px-8 pb-4" style={{ height: 'calc(100vh - 64px)' }}>
