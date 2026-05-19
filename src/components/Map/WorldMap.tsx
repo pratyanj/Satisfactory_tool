@@ -172,13 +172,18 @@ function MapImageLoader({ url, onLoaded }: { url: string; onLoaded: () => void }
 
   return (
     <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#0d1117] transition-opacity duration-300">
-      <div className="w-16 h-16 border-4 border-[#2a2d33] border-t-[#f97316] rounded-full animate-spin mb-4" />
-      <div className="text-[#c4c7cd] font-semibold text-lg animate-pulse mb-2">Downloading High-Res Map...</div>
-      <div className="text-[#8E9299] text-sm mb-6 max-w-sm text-center">
+      <div className="sf-loader-container mb-6">
+        <div className="sf-loader">
+          <div className="sf-loader-hex"></div>
+          <div className="sf-loader-hex-inner"></div>
+        </div>
+        <div className="sf-loader-text">FICSIT CARTOGRAPHY IN PROGRESS...</div>
+      </div>
+      <div className="text-[#8E9299] text-xs font-mono mb-4 max-w-sm text-center">
         The map image is around 45MB and might take a moment to load depending on your network.
       </div>
-      <div className="w-64 h-2 bg-[#1a1b1e] rounded overflow-hidden">
-        <div className="h-full bg-orange-500 transition-all duration-300" style={{ width: `${pct}%` }} />
+      <div className="w-64 h-2 bg-[#1a1b1e] rounded overflow-hidden border border-[#2a2d33]">
+        <div className="h-full transition-all duration-300" style={{ width: `${pct}%`, background: 'repeating-linear-gradient(45deg, #f48721, #f48721 8px, #111 8px, #111 16px)' }} />
       </div>
     </div>
   );
@@ -226,7 +231,11 @@ export function WorldMap({
   }, [bgUrl]);
 
   return (
-    <div className="world-map-root flex flex-col flex-1">
+    <div className="world-map-root flex flex-col flex-1 w-full h-full relative">
+      {bgUrl && !bgLoaded && (
+        <MapImageLoader url={bgUrl} onLoaded={handleBgLoaded} />
+      )}
+      
       {buildings.length > 0 && (
         <div className="world-map-search-overlay">
           <MapSearch buildings={buildings} mapRef={combinedRef} />
@@ -246,7 +255,7 @@ export function WorldMap({
         crs={CRS} center={center} zoom={-2} minZoom={-4} maxZoom={2}
         maxBounds={[[-200, -200], [MAP_IMAGE_SIZE + 200, MAP_IMAGE_SIZE + 200]]}
         maxBoundsViscosity={0.8}
-        style={{ width: '100%', height: '100%', background: '#0d1117' }}
+        style={{ width: '100%', height: '100%', minHeight: 0, background: '#0d1117', flex: 1 }}
         zoomControl={true}
       >
         <MapController mapRef={combinedRef} onZoomChange={setZoom} />
