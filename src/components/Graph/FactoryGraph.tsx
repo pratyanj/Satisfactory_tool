@@ -65,30 +65,114 @@ function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand
 
     const bounds = getNodesBounds(currentNodes);
     const padding = 100;
-    const imageWidth = bounds.width + padding * 2;
-    const imageHeight = bounds.height + padding * 2;
+    const innerWidth = bounds.width + padding * 2;
+    const innerHeight = bounds.height + padding * 2;
     const exportFn = format === 'svg' ? toSvg : toPng;
-    const exportConfig = {
-      width: imageWidth, height: imageHeight, pixelRatio: 3, cacheBust: true,
+    
+    // Pass 1: Export the bare graph (transparent background)
+    const graphExportConfig = {
+      width: innerWidth, height: innerHeight, pixelRatio: 2, cacheBust: true,
       style: {
-        width: `${imageWidth}px`, height: `${imageHeight}px`,
+        width: `${innerWidth}px`, height: `${innerHeight}px`,
         transform: `translate(${-bounds.x + padding}px, ${-bounds.y + padding}px) scale(1)`,
-        backgroundImage: 'none', backgroundColor: '#101114',
+        backgroundImage: 'none', backgroundColor: 'transparent',
       },
     };
 
-    exportFn(viewportElement, exportConfig)
+    exportFn(viewportElement, graphExportConfig)
       .then((dataUrl) => {
-        const a = document.createElement('a');
-        a.setAttribute('download', `factory-plan.${format}`);
-        a.setAttribute('href', dataUrl);
-        a.click();
-        setIsExporting(false);
+        // Pass 2: Wrap the graph in the FICSIT frame
+        const baseFrameWidth = 1600;
+        const paddingInsideFrame = 60; 
+        const graphAspect = innerWidth / innerHeight;
+        
+        const availableWidth = baseFrameWidth - (paddingInsideFrame * 2);
+        const availableHeight = availableWidth / graphAspect;
+        const baseFrameHeight = availableHeight + (paddingInsideFrame * 2);
+        
+        // Scale the final output so the inner graph retains its high resolution
+        const finalPixelRatio = Math.max(2, (innerWidth * 2) / baseFrameWidth);
+
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'fixed';
+        wrapper.style.left = '-9999px';
+        wrapper.style.top = '-9999px';
+        wrapper.style.width = `${baseFrameWidth}px`;
+        wrapper.style.height = `${baseFrameHeight}px`;
+        wrapper.style.backgroundColor = '#050505';
+        
+        // Use the exact classes from BodyFrame to recreate the UI
+        wrapper.innerHTML = `
+          <div class="sf-body-frame-wrapper" style="width: 100%; height: 100%; padding: 20px; box-sizing: border-box; background: #050505;">
+            <div class="sf-body-frame-container" style="background: #0d0e11; width: 100%; height: 100%; position: relative;">
+              
+              <div class="sf-frame-caution sf-frame-caution-top"></div>
+              <div class="sf-frame-caution sf-frame-caution-bottom"></div>
+
+              <div class="sf-frame-edge-light sf-frame-edge-light-top"></div>
+              <div class="sf-frame-edge-light sf-frame-edge-light-top-right"></div>
+              <div class="sf-frame-edge-light sf-frame-edge-light-bottom"></div>
+              <div class="sf-frame-edge-light sf-frame-edge-light-bottom-right"></div>
+              <div class="sf-frame-edge-light sf-frame-edge-light-left"></div>
+              <div class="sf-frame-edge-light sf-frame-edge-light-left-bottom"></div>
+              <div class="sf-frame-edge-light sf-frame-edge-light-right"></div>
+              <div class="sf-frame-edge-light sf-frame-edge-light-right-bottom"></div>
+
+              <div class="sf-frame-corner sf-frame-corner-tl"><div class="sf-frame-screw"></div></div>
+              <div class="sf-frame-corner sf-frame-corner-tr"><div class="sf-frame-screw"></div></div>
+              <div class="sf-frame-corner sf-frame-corner-bl"><div class="sf-frame-screw"></div></div>
+              <div class="sf-frame-corner sf-frame-corner-br"><div class="sf-frame-screw"></div></div>
+
+              <div class="sf-frame-logo" style="position: absolute; bottom: 20px; right: 30px; z-index: 50;">
+                <div class="sf-frame-logo-main">SATISFACTORY <span>TOOL</span></div>
+                <div class="sf-frame-logo-sub">made by pratyanj</div>
+              </div>
+
+              <div class="sf-body-frame-content" style="width: 100%; height: 100%; padding: ${paddingInsideFrame}px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at center, #151619 0%, #0d0e11 100%);">
+                <img id="export-inner-img" src="${dataUrl}" style="width: 100%; height: 100%; object-fit: contain; display: block; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));" />
+              </div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(wrapper);
+
+        const img = wrapper.querySelector('#export-inner-img') as HTMLImageElement;
+        img.onload = () => {
+          const finalNode = wrapper.querySelector('.sf-body-frame-wrapper') as HTMLElement;
+          exportFn(finalNode, {
+            width: baseFrameWidth,
+            height: baseFrameHeight,
+            pixelRatio: finalPixelRatio,
+            cacheBust: true,
+            style: { margin: '0', padding: '0' }
+          }).then((finalDataUrl) => {
+            const a = document.createElement('a');
+            a.setAttribute('download', `ficsit-blueprint.${format}`);
+            a.setAttribute('href', finalDataUrl);
+            a.click();
+            document.body.removeChild(wrapper);
+            setIsExporting(false);
+          }).catch((err) => {
+            console.error("Frame export failed", err);
+            const a = document.createElement('a');
+            a.setAttribute('download', `factory-plan.${format}`);
+            a.setAttribute('href', dataUrl);
+            a.click();
+            document.body.removeChild(wrapper);
+            setIsExporting(false);
+          });
+        };
+        img.onerror = () => {
+           document.body.removeChild(wrapper);
+           setIsExporting(false);
+        };
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("Graph export failed", err);
         exportFn(viewportElement, {
-          ...exportConfig,
+          ...graphExportConfig,
           filter: (node) => !(node instanceof HTMLElement && node.tagName === 'IMG'),
+          style: { ...graphExportConfig.style, backgroundColor: '#101114' }
         })
           .then((dataUrl2) => {
             const a = document.createElement('a');
