@@ -411,7 +411,14 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
   useEffect(() => {
     setNodes(initialNodes);
     setEdges(initialEdges);
-  }, [initialNodes, initialEdges, setNodes, setEdges]);
+    
+    // Auto-center the graph after nodes are updated
+    setTimeout(() => {
+      window.requestAnimationFrame(() => {
+        fitView({ duration: 800, padding: 0.2 });
+      });
+    }, 50);
+  }, [initialNodes, initialEdges, setNodes, setEdges, fitView]);
 
   // ── Click-to-highlight logic ──
   const onNodeClick = useCallback((_: React.MouseEvent, node: Node) => {
