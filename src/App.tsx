@@ -89,13 +89,14 @@ export default function App() {
   const [rootNode, setRootNode] = useState<SolverNode | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const [lastInput, setLastInput] = useState<{ itemId: string, rate: number, minerId: MachineId, beltId: BeltId }>({ itemId: 'copper_sheet', rate: 120, minerId: 'miner_mk1', beltId: 'mk1' });
+  const [lastInput, setLastInput] = useState<{ itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap }>({ itemId: 'copper_sheet', rate: 120, minerId: 'miner_mk1', beltId: 'mk1', recipeSelections: {} });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
   const [mainTab, setMainTab] = useState<MainTab>('network_graph');
   const [topLevelTab, setTopLevelTab] = useState<TopLevelTab>('planner');
 
   const [copied, setCopied] = useState(false);
   const [isRecalculating, setIsRecalculating] = useState(false);
+  const [controlsCollapsed, setControlsCollapsed] = useState(false);
 
   // Sync URL hash whenever navigation state changes
   const updateHash = useCallback((top: TopLevelTab, sub: MainTab) => {
@@ -246,7 +247,7 @@ export default function App() {
     switch (mainTab) {
       case 'network_graph':
         return (
-          <div className="w-full h-full">
+          <div className="absolute inset-0">
             <div className="absolute top-4 right-4 z-10 flex bg-[#1c1e22] rounded-lg border border-[#2a2d33] p-1 shadow-xl">
               <button
                 onClick={() => setLayoutMode('aggregated')}
@@ -286,20 +287,56 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans">
+    <div className="h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans overflow-hidden">
       <HeaderNav
         topLevelTab={topLevelTab}
         handleTopLevelTab={handleTopLevelTab}
         generateShareLink={generateShareLink}
         copied={copied}
       />
-      <div className="flex-1 overflow-hidden flex flex-col w-full h-full">
+      <div className="flex-1 min-h-0 flex flex-col w-full overflow-hidden">
         <BodyFrame>
           {topLevelTab === 'planner' ? (
-            <main className="flex-1 w-full h-full grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 p-4 md:p-4 min-h-0">
-              {/* Left Side: Main Area */}
-              <div className="flex flex-col h-full h-[600px] lg:h-auto min-h-0 relative rounded-2xl sf-blueprint-bg overflow-hidden border border-[#2a2d33]">
-                {/* 4-Tab Navigation Bar */}
+            <main className="w-full flex flex-col gap-2 p-2 min-h-0 flex-1 overflow-hidden">
+              
+              {/* Top Side: Settings & Summary — collapsible */}
+              <div
+                className="relative flex flex-col xl:flex-row gap-2 shrink-0 z-20 w-full transition-all duration-300"
+                style={{
+                  maxHeight: controlsCollapsed ? '0px' : '500px',
+                  opacity: controlsCollapsed ? 0 : 1,
+                  overflow: controlsCollapsed ? 'hidden' : 'visible'
+                }}
+              >
+                <div className="flex-1 min-w-[50%]">
+                  <InputForm onCalculate={handleCalculate} initialValues={lastInput} />
+                </div>
+                {summary && (
+                  <div className="flex-1 min-w-[30%]">
+                    <Summary summary={summary} />
+                  </div>
+                )}
+              </div>
+
+              {/* Bottom Side: Main Area */}
+              <div
+                className="flex flex-col flex-1 relative sf-blueprint-bg overflow-hidden text-white"
+                style={{
+                  minHeight: '1000px',
+                  border: '1px solid #2a2d33',
+                  clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)',
+                  boxShadow: '0 8px 40px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.04)',
+                }}
+              >
+                {/* Corner accent – top-left chamfer highlight */}
+                <div style={{
+                  position: 'absolute', top: 0, left: 0, width: 0, height: 0,
+                  borderTop: '16px solid #f48721', borderRight: '16px solid transparent',
+                  zIndex: 30,
+                  pointerEvents: 'none',
+                }} />
+
+                {/* 4-Tab Navigation Bar with collapse toggle */}
                 <div className="tab-bar">
                   {TAB_CONFIG.map((tab) => (
                     <button
@@ -313,18 +350,42 @@ export default function App() {
                       <span>{tab.label}</span>
                     </button>
                   ))}
+                  {/* Collapse toggle — lives at the far right of the tab bar */}
+                  <button
+                    onClick={() => setControlsCollapsed(v => !v)}
+                    className="ml-auto px-3 py-1 text-[#8E9299] hover:text-white transition-colors flex items-center gap-1 text-xs font-mono shrink-0"
+                    title={controlsCollapsed ? 'Show controls' : 'Hide controls'}
+                  >
+                    <svg
+                      width="14" height="14" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                      style={{ transform: controlsCollapsed ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}
+                    >
+                      <polyline points="18 15 12 9 6 15" />
+                    </svg>
+                    {controlsCollapsed ? 'Controls' : 'Hide'}
+                  </button>
                 </div>
 
-                {/* Tab Content */}
-                <div className="flex-1 min-h-0 relative overflow-hidden">
+                {/* Tab Content — fixed 500px height so ReactFlow always has a defined size */}
+                <div className="relative overflow-hidden" style={{ height: '500px' }}>
                   {renderTabContent()}
                 </div>
-              </div>
 
-              {/* Right Side: Sidebar */}
-              <div className="flex flex-col gap-6 overflow-y-auto min-h-0 pr-2">
-                <InputForm onCalculate={handleCalculate} initialValues={lastInput} />
-                {summary && <Summary summary={summary} />}
+                {/* Bottom edge accent */}
+                <div style={{
+                  position: 'absolute', bottom: 0, right: 16, left: 0, height: '1px',
+                  background: 'linear-gradient(90deg, transparent, #2a2d33 40%)',
+                  pointerEvents: 'none',
+                  zIndex: 30,
+                }} />
+                {/* Bottom-right chamfer highlight */}
+                <div style={{
+                  position: 'absolute', bottom: 0, right: 0, width: 0, height: 0,
+                  borderBottom: '16px solid #f4872120', borderLeft: '16px solid transparent',
+                  pointerEvents: 'none',
+                  zIndex: 30,
+                }} />
               </div>
             </main>
           ) : topLevelTab === 'codex' ? (

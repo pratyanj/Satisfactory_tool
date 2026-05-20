@@ -1,4 +1,4 @@
-import { Background, BackgroundVariant, Controls, ReactFlow, useEdgesState, useNodesState, Panel, useReactFlow, ReactFlowProvider } from '@xyflow/react';
+import { Background, BackgroundVariant, Controls, ReactFlow, useEdgesState, useNodesState, Panel, useReactFlow, ReactFlowProvider, SelectionMode } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import React, { useEffect, useCallback, useState } from 'react';
 import { Edge, Node } from '@xyflow/react';
@@ -553,7 +553,7 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
   }, [selectedNodeId, setNodes, setEdges]);
 
   return (
-    <div className="w-full h-full bg-[#101114] overflow-hidden">
+    <div className="w-full h-full bg-[#101114]">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -567,8 +567,7 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
         colorMode="dark"
         panOnDrag={!selectionMode}
         selectionOnDrag={selectionMode}
-        selectionMode={selectionMode ? 'partial' : 'full'}
-        onlyRenderVisibleElements
+        selectionMode={selectionMode ? SelectionMode.Partial : SelectionMode.Full}
       >
         <Background variant={BackgroundVariant.Lines} gap={40} color="rgba(255,255,255,0.15)" />
         <Controls className="bg-[#151619] fill-current text-[#8E9299] border-none shadow-md" />

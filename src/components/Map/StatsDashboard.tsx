@@ -74,8 +74,6 @@ function PowerBar({ produced, consumed }: { produced: number; consumed: number }
           {surplus >= 0 ? '+' : ''}{surplus.toLocaleString()} MW
         </span>
       </div>
-
-      {save => null /* not used here */}
     </div>
   );
 }
