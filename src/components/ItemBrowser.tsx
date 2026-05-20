@@ -43,6 +43,22 @@ export function ItemBrowser() {
 
   return (
     <div className="ib-root">
+      {/* FICSIT Telemetry Header */}
+      <div className="relative z-10 flex items-center gap-3 px-5 pt-3 pb-2 border-b border-[#2a2d33] bg-[#121316]/60 shrink-0">
+        <div style={{
+          width: 3, height: 14,
+          background: 'linear-gradient(180deg, #f48721, #c45700)',
+          borderRadius: 2,
+        }} />
+        <span className="text-[9px] font-mono tracking-[0.25em] text-[#f48721] uppercase font-bold">
+          FICSIT // Item Codex
+        </span>
+        <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, #f4872130, transparent)' }} />
+        <span className="text-[8px] font-mono text-[#6b7280] tracking-widest uppercase">
+          DATABASE STATUS: ACTIVE
+        </span>
+      </div>
+
       {/* Toolbar */}
       <div className="ib-toolbar">
         <div className="ib-search-wrap">

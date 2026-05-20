@@ -113,16 +113,15 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
         </div>
 
         {/* Controls row */}
-        <div className="relative z-10 flex flex-row items-end gap-0 flex-wrap">
+        <div className="relative z-10 flex flex-row items-end gap-3.5 flex-wrap p-3.5">
 
           {/* ── Target Item ── */}
-          <div className="flex flex-col gap-1 px-3 py-2.5" style={{ minWidth: 200, borderRight: '1px solid #2a2d33' }}>
+          <div className="flex flex-col gap-1 flex-[2] min-w-[180px]">
             <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Target Item</label>
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
               className="sf-input-container flex items-center justify-between w-full px-2.5 py-1.5 outline-none group text-white"
-              style={{ minWidth: 180 }}
             >
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded shrink-0 overflow-hidden flex items-center justify-center"
@@ -138,8 +137,8 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           </div>
 
           {/* ── Rate ── */}
-          <div className="flex flex-col gap-1 px-3 py-2.5" style={{ width: 100, borderRight: '1px solid #2a2d33' }}>
-            <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Rate / min</label>
+          <div className="flex flex-col gap-1 w-20 flex-shrink-0">
+            <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Rate / m</label>
             <input
               type="number"
               step="1"
@@ -151,7 +150,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           </div>
 
           {/* ── Miner Tier ── */}
-          <div className="flex flex-col gap-1 px-3 py-2.5" style={{ width: 130, borderRight: '1px solid #2a2d33' }}>
+          <div className="flex flex-col gap-1 flex-1 min-w-[120px]">
             <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Miner Tier</label>
             <CustomSelect
               value={minerId}
@@ -161,7 +160,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           </div>
 
           {/* ── Belt Tier ── */}
-          <div className="flex flex-col gap-1 px-3 py-2.5" style={{ width: 130, borderRight: '1px solid #2a2d33' }}>
+          <div className="flex flex-col gap-1 flex-1 min-w-[120px]">
             <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Belt Tier</label>
             <CustomSelect
               value={beltId}
@@ -171,14 +170,13 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           </div>
 
           {/* ── Alt Recipes ── */}
-          <div className="relative flex flex-col gap-1 px-3 py-2.5 z-20" style={{ borderRight: '1px solid #2a2d33' }}>
+          <div className="relative flex flex-col gap-1 flex-1 min-w-[130px] z-20">
             <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Alt Recipes</label>
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => setShowAltRecipes(!showAltRecipes)}
-                className="sf-input-container px-2.5 py-1.5 flex items-center gap-2 outline-none text-[#8E9299] hover:text-white font-mono text-xs transition-colors"
-                style={{ minWidth: 110 }}
+                className="sf-input-container px-2.5 py-1.5 flex items-center gap-2 outline-none text-[#8E9299] hover:text-white font-mono text-xs transition-colors w-full"
               >
                 {altCount > 0 && (
                   <span style={{
@@ -216,7 +214,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                 className="absolute shadow-2xl z-50"
                 style={{
                   top: '100%',
-                  left: 0,
+                  right: 0,
                   marginTop: '6px',
                   width: 340,
                   background: 'linear-gradient(180deg, #1a1c20 0%, #111315 100%)',
@@ -263,9 +261,8 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
             )}
           </div>
 
-          {/* ── Spacer + Calculate button ── */}
-          <div className="flex-1" />
-          <div className="px-3 py-2.5 flex items-end">
+          {/* ── Calculate button ── */}
+          <div className="ml-auto px-1 py-1.5 flex items-end flex-shrink-0">
             <button
               type="submit"
               className="sf-primary-btn font-bold tracking-[0.15em] uppercase relative overflow-hidden"

@@ -322,7 +322,7 @@ export default function App() {
               <div
                 className="flex flex-col flex-1 relative sf-blueprint-bg overflow-hidden text-white"
                 style={{
-                  minHeight: '1000px',
+                  minHeight: '0px',
                   border: '1px solid #2a2d33',
                   clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)',
                   boxShadow: '0 8px 40px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.04)',
@@ -367,8 +367,8 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* Tab Content — fixed 500px height so ReactFlow always has a defined size */}
-                <div className="relative overflow-hidden" style={{ height: '500px' }}>
+                {/* Tab Content — occupies all available vertical height so ReactFlow expands dynamically */}
+                <div className="relative overflow-hidden flex-1 min-h-0">
                   {renderTabContent()}
                 </div>
 

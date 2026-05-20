@@ -33,6 +33,22 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
 
   return (
     <div className="id-root">
+      {/* FICSIT Telemetry Header */}
+      <div className="relative z-10 flex items-center gap-3 px-5 pt-3 pb-2 border-b border-[#2a2d33] bg-[#121316]/60 shrink-0">
+        <div style={{
+          width: 3, height: 14,
+          background: 'linear-gradient(180deg, #f48721, #c45700)',
+          borderRadius: 2,
+        }} />
+        <span className="text-[9px] font-mono tracking-[0.25em] text-[#f48721] uppercase font-bold">
+          FICSIT // Item Specification
+        </span>
+        <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, #f4872130, transparent)' }} />
+        <span className="text-[8px] font-mono text-[#6b7280] tracking-widest uppercase">
+          {isRadioactive ? 'HAZARD STATUS: CRITICAL' : 'SCHEMA STATUS: COMPLIANT'}
+        </span>
+      </div>
+
       {/* Back bar */}
       <div className="id-topbar">
         <button className="id-back-btn" onClick={onBack}>
@@ -46,7 +62,7 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
         {/* Left column */}
         <div className="id-col">
           {/* Hero card */}
-          <div className="id-section">
+          <div className={`id-section ${isRadioactive ? 'id-section--radioactive' : ''}`}>
             <h2 className="id-section-title">{item.name}</h2>
             <div className="id-hero">
               <AppImage idKey={item.id} fallbackUrl={item.imageUrl} alt={item.name} className="id-hero-img" />
