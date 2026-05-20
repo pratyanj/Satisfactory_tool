@@ -4095,3 +4095,63 @@ input[type="number"] {
   padding: 10px 0 !important;
   vertical-align: middle !important;
 }
+
+/* ===== AAA DIAGNOSTICS HUD, EKG & APPROVED DESIGN ===== */
+@keyframes ekg-pulse {
+  0% {
+    stroke-dashoffset: 400;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-ekg {
+  animation: ekg-pulse 4s linear infinite;
+}
+
+@keyframes ficsit-glow {
+  0%, 100% {
+    text-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  50% {
+    text-shadow: 0 0 12px rgba(16, 185, 129, 0.8), 0 0 3px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+}
+
+.animate-ficsit-glow {
+  animation: ficsit-glow 2.5s infinite ease-in-out;
+}
+
+.ficsit-hud-card {
+  background: rgba(13, 14, 17, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(42, 45, 51, 0.85);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+.ficsit-approved-banner {
+  background: linear-gradient(180deg, rgba(244, 135, 33, 0.18) 0%, rgba(13, 14, 17, 0.98) 100%);
+  border-top: 2px solid #f48721;
+  clip-path: polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+  box-shadow: 0 -4px 20px rgba(244, 135, 33, 0.15);
+  text-shadow: 0 0 8px rgba(244, 135, 33, 0.5);
+}
+
+.ficsit-legend-card {
+  background: rgba(13, 14, 17, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(42, 45, 51, 0.9);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+
+.ficsit-hud-item-row {
+  border-bottom: 1px dashed rgba(42, 45, 51, 0.5);
+}
+.ficsit-hud-item-row:last-child {
+  border-bottom: none;
+}
+

@@ -288,11 +288,22 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           <div className="ml-auto px-1 py-1.5 flex items-end flex-shrink-0">
             <button
               type="submit"
-              className="sf-primary-btn font-bold tracking-[0.15em] uppercase relative overflow-hidden"
-              style={{ padding: '8px 22px', fontSize: 11 }}
+              className="font-bold tracking-[0.15em] uppercase relative overflow-hidden flex items-center gap-3 bg-[#f48721] text-black hover:bg-[#ff9a3c] transition-all cursor-pointer shadow-[0_0_15px_rgba(244,135,33,0.3)] hover:shadow-[0_0_20px_rgba(244,135,33,0.5)] h-8 font-mono"
+              style={{
+                padding: '4px 10px 4px 16px',
+                fontSize: 10,
+                clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)',
+              }}
             >
-              <span className="sf-btn-scanner absolute inset-0 pointer-events-none z-10" />
-              <span className="relative z-20">Calculate Flow</span>
+              <span>Calculate Flow</span>
+              <div 
+                className="w-5 h-5 flex items-center justify-center bg-[#8b3e00] text-white shrink-0"
+                style={{
+                  clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)',
+                }}
+              >
+                <span className="text-[8px] leading-none select-none">▶</span>
+              </div>
             </button>
           </div>
         </div>

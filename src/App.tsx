@@ -248,24 +248,6 @@ export default function App() {
       case 'network_graph':
         return (
           <div className="absolute inset-0">
-            <div className="absolute top-4 right-4 z-10 flex bg-[#1c1e22] rounded-lg border border-[#2a2d33] p-1 shadow-xl">
-              <button
-                onClick={() => setLayoutMode('aggregated')}
-                disabled={isRecalculating}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'aggregated' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#242528]'} disabled:opacity-50`}
-                aria-label="Switch to aggregated view"
-              >
-                Aggregated View
-              </button>
-              <button
-                onClick={() => setLayoutMode('expanded')}
-                disabled={isRecalculating}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'expanded' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#242528]'} disabled:opacity-50`}
-                aria-label="Switch to machine view"
-              >
-                Machine View
-              </button>
-            </div>
             {isRecalculating && (
               <div className="graph-loading-overlay">
                 <div className="graph-loading-spinner" />
@@ -350,21 +332,54 @@ export default function App() {
                       <span>{tab.label}</span>
                     </button>
                   ))}
-                  {/* Collapse toggle — lives at the far right of the tab bar */}
-                  <button
-                    onClick={() => setControlsCollapsed(v => !v)}
-                    className="ml-auto px-3 py-1 text-[#8E9299] hover:text-white transition-colors flex items-center gap-1 text-xs font-mono shrink-0"
-                    title={controlsCollapsed ? 'Show controls' : 'Hide controls'}
-                  >
-                    <svg
-                      width="14" height="14" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                      style={{ transform: controlsCollapsed ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}
+                  {/* Right side controls: view toggle + collapse toggle */}
+                  <div className="ml-auto flex items-center gap-3">
+                    {mainTab === 'network_graph' && (
+                      <div className="flex bg-[#101114] p-0.5 rounded-lg border border-[#2a2d33] my-1 shrink-0 shadow-inner">
+                        <button
+                          type="button"
+                          onClick={() => setLayoutMode('aggregated')}
+                          disabled={isRecalculating}
+                          className={`px-3 py-1 rounded text-[10px] uppercase font-mono font-bold transition-all duration-200 ${
+                            layoutMode === 'aggregated'
+                              ? 'bg-[#f48721] text-[#000] shadow-[0_0_10px_rgba(244,135,33,0.4)]'
+                              : 'text-[#8e9299] hover:text-[#e4e3e0] hover:bg-[#1a1c20]'
+                          }`}
+                        >
+                          Aggregated View
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setLayoutMode('expanded')}
+                          disabled={isRecalculating}
+                          className={`px-3 py-1 rounded text-[10px] uppercase font-mono font-bold transition-all duration-200 ${
+                            layoutMode === 'expanded'
+                              ? 'bg-[#f48721] text-[#000] shadow-[0_0_10px_rgba(244,135,33,0.4)]'
+                              : 'text-[#8e9299] hover:text-[#e4e3e0] hover:bg-[#1a1c20]'
+                          }`}
+                        >
+                          Machine View
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Collapse toggle */}
+                    <button
+                      type="button"
+                      onClick={() => setControlsCollapsed(v => !v)}
+                      className="px-3 py-1 text-[#8E9299] hover:text-white transition-colors flex items-center gap-1 text-xs font-mono shrink-0 mr-1"
+                      title={controlsCollapsed ? 'Show controls' : 'Hide controls'}
                     >
-                      <polyline points="18 15 12 9 6 15" />
-                    </svg>
-                    {controlsCollapsed ? 'Controls' : 'Hide'}
-                  </button>
+                      <svg
+                        width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                        style={{ transform: controlsCollapsed ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}
+                      >
+                        <polyline points="18 15 12 9 6 15" />
+                      </svg>
+                      {controlsCollapsed ? 'Controls' : 'Hide'}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Tab Content — occupies all available vertical height so ReactFlow expands dynamically */}

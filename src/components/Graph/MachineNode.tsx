@@ -26,55 +26,61 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
 
   return (
     <div className="relative group">
-      <div className={`bg-[#151619] border border-[#2a2d33] rounded-xl shadow-xl w-[240px] text-white font-sans overflow-hidden group-hover:border-[#4a4d53] transition-colors cursor-pointer flex flex-col relative`}>
-        <Handle key={`target-${isFlipped}`} type="target" position={isFlipped ? Position.Right : Position.Left} className="w-3 h-3 bg-blue-500 border-none opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div 
+        className={`bg-[#151619] border border-[#2a2d33] shadow-2xl w-[220px] text-white font-sans overflow-hidden group-hover:border-[#f48721]/60 transition-all duration-300 cursor-pointer flex flex-row relative h-[72px]`}
+        style={{
+          background: 'linear-gradient(135deg, #1e2024 0%, #13151a 100%)',
+          clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
+        }}
+      >
+        <Handle key={`target-${isFlipped}`} type="target" position={isFlipped ? Position.Right : Position.Left} className="w-2.5 h-2.5 bg-[#06b6d4] border-none opacity-0 group-hover:opacity-100 transition-opacity" />
 
-      {/* Top section: image + item name + rate + machine label */}
-      <div className={`flex ${isFlipped ? 'flex-row-reverse' : ''}`}>
-        {/* Machine image */}
-        <div className={`w-[100px] bg-[#101114] flex items-center justify-center shrink-0 overflow-hidden relative ${isFlipped ? 'border-l border-[#2a2d33]' : 'border-r border-[#2a2d33]'}`} style={{ minHeight: 72 }}>
-          {machineInfo?.imageUrl ? (
-            <AppImage idKey={data.machineId as string} fallbackUrl={machineInfo.imageUrl} className="w-full h-full object-cover" alt={machineInfo.name} />
-          ) : (
-            <div className="w-full h-full bg-[#1c1e22]" />
-          )}
-          <button onClick={toggleFlip} className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity" title="Flip Machine">
-            <FlipHorizontal className="w-5 h-5 text-white" />
-          </button>
-        </div>
-
-        {/* Item name, rate, machine label */}
-        <div className="flex-1 flex flex-col justify-between min-w-0">
-          <div className="bg-[#1c1e22] px-3 py-2 border-b border-[#2a2d33] flex-1">
-            <div className="flex justify-between items-start gap-2">
-              <div className="text-[10px] font-mono tracking-widest text-[#8E9299] uppercase mb-0.5 truncate flex-1" title={data.item as string}>
-                {data.item as string}
-              </div>
-              <div className="font-mono text-[10px] text-orange-400 shrink-0">{totalPower.toFixed(1)} MW</div>
-            </div>
-            <div className="flex items-center gap-2 mt-0.5">
-              {data.itemImageUrl && (
-                <AppImage idKey={data.itemId as string} fallbackUrl={data.itemImageUrl as string} className="w-8 h-8 object-contain shrink-0" alt={data.item as string} />
-              )}
-              <div className="font-semibold text-sm leading-tight truncate">
-                {(data.rate as number).toFixed(1)}/min
-              </div>
-            </div>
-          </div>
-          <div className="px-3 flex items-center justify-between h-[30px] shrink-0 min-w-0">
-            <span className="font-mono text-[11px] text-green-400 truncate flex-1 leading-none pr-1" title={data.label as string}>
-              {data.label as string}
-            </span>
-            {data.isAlternate && (
-              <div title="Alternate Recipe" className="flex items-center justify-center shrink-0">
-                <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
-              </div>
+        {/* Slanted graphite card body */}
+        <div className={`flex flex-1 ${isFlipped ? 'flex-row-reverse' : 'flex-row'}`}>
+          {/* Left section: Item Image with dark background */}
+          <div 
+            className={`w-[64px] bg-[#0c0d10] flex items-center justify-center shrink-0 overflow-hidden relative ${isFlipped ? 'border-l border-[#2a2d33]/60' : 'border-r border-[#2a2d33]/60'}`}
+          >
+            {data.itemImageUrl ? (
+              <AppImage idKey={data.itemId as string} fallbackUrl={data.itemImageUrl as string} className="w-11 h-11 object-contain" alt={data.item as string} />
+            ) : (
+              <div className="w-full h-full bg-[#1c1e22]" />
             )}
+            <button onClick={toggleFlip} className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity" title="Flip Node direction">
+              <FlipHorizontal className="w-4 h-4 text-[#f48721]" />
+            </button>
+          </div>
+
+          {/* Right section: Item details + rate + machine label */}
+          <div className="flex-1 flex flex-col justify-between py-1.5 px-3.5 min-w-0 select-none">
+            {/* Row 1: Item Name (uppercase) & Power */}
+            <div className="flex justify-between items-center gap-1.5">
+              <span className="text-[9px] font-mono font-bold tracking-wider text-[#8e9299] uppercase truncate flex-1" title={data.item as string}>
+                {data.item as string}
+              </span>
+              <span className="font-mono text-[9px] text-[#f48721] shrink-0 font-medium">{totalPower.toFixed(1)} MW</span>
+            </div>
+
+            {/* Row 2: Flow Rate */}
+            <div className="font-mono text-[13px] font-black text-[#06b6d4] leading-none tracking-tight">
+              {(data.rate as number).toFixed(1)}/m
+            </div>
+
+            {/* Row 3: Machine & Count */}
+            <div className="flex items-center justify-between gap-1.5 min-w-0">
+              <span className="font-mono text-[9px] text-[#10b981] font-medium truncate flex-1" title={data.label as string}>
+                {data.label as string}
+              </span>
+              {data.isAlternate && (
+                <div title="Alternate Recipe" className="flex items-center shrink-0">
+                  <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-        <Handle key={`source-${isFlipped}`} type="source" position={isFlipped ? Position.Left : Position.Right} className="w-3 h-3 bg-orange-500 border-none opacity-0 group-hover:opacity-100 transition-opacity" />
+        <Handle key={`source-${isFlipped}`} type="source" position={isFlipped ? Position.Left : Position.Right} className="w-2.5 h-2.5 bg-[#f48721] border-none opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
 
       {/* Hover Floating Card for Recipe details */}

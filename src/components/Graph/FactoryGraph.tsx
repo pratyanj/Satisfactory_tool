@@ -227,31 +227,80 @@ function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand
   };
 
   return (
-    <Panel position="top-left" className="flex items-center gap-2 bg-[#151619]/90 backdrop-blur-md p-1.5 rounded-xl shadow-lg border border-[#2a2d33] pointer-events-auto">
-      <div className="flex bg-[#101114] p-0.5 rounded-lg border border-[#2a2d33]">
-        <button onClick={() => setSelectionMode(false)} className={`p-2 rounded-md transition-colors ${!selectionMode ? 'bg-[#243142] text-blue-400' : 'text-[#8E9299] hover:text-white hover:bg-[#1c1e22]'}`} title="Pan & Move"><Hand className="w-4 h-4" /></button>
-        <button onClick={() => setSelectionMode(true)} className={`p-2 rounded-md transition-colors ${selectionMode ? 'bg-[#243142] text-blue-400' : 'text-[#8E9299] hover:text-white hover:bg-[#1c1e22]'}`} title="Select Multiple"><MousePointer2 className="w-4 h-4" /></button>
+    <Panel 
+      position="top-left" 
+      className="flex items-center gap-2 bg-[#0d0e11]/95 backdrop-blur-md p-1.5 px-4 shadow-2xl border border-[#2a2d33] pointer-events-auto mt-2 ml-2"
+      style={{
+        clipPath: 'polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)'
+      }}
+    >
+      <div className="flex bg-[#08090a] p-0.5 border border-[#2a2d33]/80" style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}>
+        <button onClick={() => setSelectionMode(false)} className={`p-1.5 transition-colors ${!selectionMode ? 'bg-[#243142]/80 text-[#06b6d4]' : 'text-[#8E9299] hover:text-white hover:bg-[#1c1e22]'}`} title="Pan & Move"><Hand className="w-3.5 h-3.5" /></button>
+        <button onClick={() => setSelectionMode(true)} className={`p-1.5 transition-colors ${selectionMode ? 'bg-[#243142]/80 text-[#06b6d4]' : 'text-[#8E9299] hover:text-white hover:bg-[#1c1e22]'}`} title="Select Multiple"><MousePointer2 className="w-3.5 h-3.5" /></button>
       </div>
 
-      <div className="w-[1px] h-6 bg-[#2a2d33] mx-1" />
+      <div className="w-[1px] h-5 bg-[#2a2d33] mx-1" />
 
       {selectedNodes.length === 1 && selectedNodes[0].type === 'machine' && (selectedNodes[0].data.machines as number) > 1 && (
-        <button onClick={onExpand} className="flex items-center gap-1.5 bg-[#4B2F83] hover:bg-[#5a3a9e] border border-[#6d4cb8] transition-all text-white px-3 py-1.5 rounded-lg text-xs font-semibold mr-1" title="Expand Array"><SplitSquareHorizontal className="w-4 h-4" /> Expand Array</button>
+        <button 
+          onClick={onExpand} 
+          className="flex items-center gap-1.5 bg-[#4B2F83] hover:bg-[#5a3a9e] border border-[#6d4cb8] transition-all text-white px-3.5 py-1.5 text-[9px] font-mono font-bold uppercase"
+          style={{ clipPath: 'polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%)' }}
+          title="Expand Array"
+        >
+          <SplitSquareHorizontal className="w-3.5 h-3.5" /> Expand Array
+        </button>
       )}
 
       {selectedNodes.length > 1 && (
-        <button onClick={handleGroup} className="flex items-center gap-1.5 bg-[#243142] hover:bg-[#324559] border border-[#415a78] transition-all text-white px-3 py-1.5 rounded-lg text-xs font-semibold" title="Group Selected"><Plus className="w-4 h-4" /> Group</button>
+        <button 
+          onClick={handleGroup} 
+          className="flex items-center gap-1.5 bg-[#243142] hover:bg-[#324559] border border-[#415a78] transition-all text-white px-3.5 py-1.5 text-[9px] font-mono font-bold uppercase"
+          style={{ clipPath: 'polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%)' }}
+          title="Group Selected"
+        >
+          <Plus className="w-3.5 h-3.5" /> Group
+        </button>
       )}
 
       {selectedGroups.length > 0 && (
-        <button onClick={handleUngroup} className="flex items-center gap-1.5 bg-[#422424] hover:bg-[#593232] border border-[#784141] transition-all text-red-100 px-3 py-1.5 rounded-lg text-xs font-semibold" title="Ungroup Selected"><Ungroup className="w-4 h-4" /> Ungroup</button>
+        <button 
+          onClick={handleUngroup} 
+          className="flex items-center gap-1.5 bg-[#422424] hover:bg-[#593232] border border-[#784141] transition-all text-red-100 px-3.5 py-1.5 text-[9px] font-mono font-bold uppercase"
+          style={{ clipPath: 'polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%)' }}
+          title="Ungroup Selected"
+        >
+          <Ungroup className="w-3.5 h-3.5" /> Ungroup
+        </button>
       )}
 
       {(selectedNodes.length <= 1 && selectedGroups.length === 0) && (
-        <div className="flex gap-1">
-          <button disabled={isExporting} className="flex items-center gap-1.5 bg-[#4B2F83] hover:bg-[#5a3a9e] border border-[#6d4cb8] transition-all text-white px-3 py-1.5 rounded-lg text-xs font-semibold mr-2" onClick={onLayout} title="Auto-group & layout"><WandSparkles className="w-4 h-4 text-[#e0d6f6]" /> AI Design Layout</button>
-          <button disabled={isExporting} className="flex items-center gap-1.5 bg-[#1c1e22] hover:bg-[#243142] border border-[#2a2d33] hover:border-[#415a78] transition-all text-[#8E9299] hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium disabled:opacity-50" onClick={() => onExport('png')}><Download className="w-4 h-4" /> PNG</button>
-          <button disabled={isExporting} className="flex items-center gap-1.5 bg-[#1c1e22] hover:bg-[#243142] border border-[#2a2d33] hover:border-[#415a78] transition-all text-[#8E9299] hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium disabled:opacity-50" onClick={() => onExport('svg')}><Download className="w-4 h-4" /> SVG</button>
+        <div className="flex gap-1.5 items-center">
+          <button 
+            disabled={isExporting} 
+            className="flex items-center gap-1.5 bg-gradient-to-r from-[#6d28d9] to-[#4c1d95] hover:from-[#7c3aed] hover:to-[#5b21b6] border border-[#8b5cf6]/50 transition-all text-white px-4 py-1.5 text-[9px] font-mono font-black uppercase tracking-wider shadow-[0_0_15px_rgba(109,40,217,0.3)] shrink-0" 
+            onClick={onLayout} 
+            style={{ clipPath: 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)' }}
+            title="Auto-group & layout"
+          >
+            <WandSparkles className="w-3.5 h-3.5 text-[#d8b4fe] shrink-0" /> AI Design Layout
+          </button>
+          <button 
+            disabled={isExporting} 
+            className="flex items-center gap-1.5 bg-[#1c1e22] hover:bg-[#243142] border border-[#2a2d33] hover:border-[#415a78] transition-all text-[#8E9299] hover:text-white px-3 py-1.5 text-[9px] font-mono font-bold uppercase disabled:opacity-50" 
+            onClick={() => onExport('png')}
+            style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
+          >
+            <Download className="w-3.5 h-3.5" /> PNG
+          </button>
+          <button 
+            disabled={isExporting} 
+            className="flex items-center gap-1.5 bg-[#1c1e22] hover:bg-[#243142] border border-[#2a2d33] hover:border-[#415a78] transition-all text-[#8E9299] hover:text-white px-3 py-1.5 text-[9px] font-mono font-bold uppercase disabled:opacity-50" 
+            onClick={() => onExport('svg')}
+            style={{ clipPath: 'polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%)' }}
+          >
+            <Download className="w-3.5 h-3.5" /> SVG
+          </button>
         </div>
       )}
     </Panel>
@@ -554,6 +603,8 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
 
   const machineCount = nodes.filter(n => n.type === 'machine').length;
   const logisticsCount = nodes.filter(n => n.type === 'logistics').length;
+  const overloadedCount = edges.filter(e => e.data?.isOverloaded).length;
+  const stablePipelinesCount = edges.filter(e => !e.data?.isOverloaded).length;
 
   return (
     <div className="w-full h-full bg-[#101114]">
@@ -586,24 +637,153 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
           onLayout={applyAILayout}
         />
         
-        {/* Immersive FICSIT Diagnostics Live Terminal Ticker */}
-        <Panel position="bottom-left" className="pointer-events-none select-none">
+        {/* HUD Diagnostics Live Sidebar */}
+        <Panel position="bottom-left" className="pointer-events-auto select-none ml-4 mb-4">
           <div 
-            className="bg-[#0d0e11]/85 backdrop-blur-md border border-[#2a2d33] p-2.5 font-mono text-[9px] text-[#8e9299] w-72 flex flex-col gap-1 shadow-2xl"
+            className="ficsit-hud-card border border-[#2a2d33] p-4 font-mono text-[10px] text-[#8e9299] w-[230px] flex flex-col gap-3 shadow-2xl relative"
             style={{ 
-              clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)'
+              clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)'
             }}
           >
-            <div className="flex items-center gap-1.5 text-[#f48721] font-black uppercase tracking-[0.15em] border-b border-[#2a2d33] pb-1.5">
-              <span className="w-1.5 h-1.5 bg-[#f48721] rounded-full animate-ping shrink-0" />
-              <span>FICSIT // Diagnostics Live</span>
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-[#2a2d33]/80 pb-2">
+              <div className="flex items-center gap-1.5 text-[#f48721] font-black uppercase tracking-[0.12em]">
+                <span className="w-1.5 h-1.5 bg-[#f48721] rounded-full animate-ping shrink-0" />
+                <span>FICSIT // DIAGNOSTICS LIVE</span>
+              </div>
             </div>
-            <div className="space-y-0.5 max-h-16 overflow-hidden leading-tight">
-              <div className="text-green-500/80">&gt; INITIALIZING SOLVER ENGINE... SUCCESS</div>
-              <div>&gt; COMPILED {machineCount} MACHINES | {logisticsCount} LOGISTICS</div>
-              <div>&gt; STABLE PIPELINE DETECTED WITH {edges.length} LINKS</div>
-              <div className="text-yellow-500/80">&gt; COMPLIANCE LEVEL: 100% FICSIT APPROVED</div>
-              <div className="text-[#64748b] animate-pulse">&gt; SCANNING TELEMETRY... STABLE</div>
+
+            {/* EKG Monitor Area */}
+            <div 
+              className="bg-[#08090a]/90 border border-[#2a2d33]/60 p-2 flex items-center justify-between gap-1"
+              style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
+            >
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[7.5px] text-[#8e9299]/60 font-bold uppercase tracking-wider">SYSTEM STATUS</span>
+                <span className="text-[9.5px] text-[#10b981] font-bold uppercase tracking-wider flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-[#10b981] rounded-full shrink-0" />
+                  SYSTEM ONLINE
+                </span>
+              </div>
+              <svg className="w-[90px] h-[22px] text-[#10b981]" viewBox="0 0 120 30" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path 
+                  d="M0 15 h40 l4 -10 l4 25 l5 -30 l4 20 l3 -5 h60" 
+                  strokeDasharray="200" 
+                  strokeDashoffset="200"
+                  className="animate-ekg"
+                  style={{
+                    stroke: '#10b981',
+                    filter: 'drop-shadow(0 0 3px rgba(16, 185, 129, 0.5))'
+                  }}
+                />
+              </svg>
+            </div>
+
+            {/* Stats Monospace Rows */}
+            <div className="flex flex-col text-[9.5px]">
+              {/* SOLVER STATUS */}
+              <div className="flex flex-col gap-0.5 ficsit-hud-item-row py-1.5">
+                <span className="text-[7.5px] text-[#8e9299]/50 font-bold tracking-wider uppercase">SOLVER STATUS</span>
+                <span className="text-[#10b981] font-black uppercase tracking-wider">
+                  {nodes.length > 0 ? 'OPTIMAL SOLUTION FOUND' : 'SOLVER IDLE'}
+                </span>
+              </div>
+
+              {/* MACHINES */}
+              <div className="flex items-center justify-between ficsit-hud-item-row py-1.5">
+                <span className="text-[7.5px] text-[#8e9299]/70 font-bold tracking-wider uppercase">MACHINES</span>
+                <span className="text-[#06b6d4] font-black">{machineCount}</span>
+              </div>
+
+              {/* LOGISTIC LINKS */}
+              <div className="flex items-center justify-between ficsit-hud-item-row py-1.5">
+                <span className="text-[7.5px] text-[#8e9299]/70 font-bold tracking-wider uppercase">LOGISTIC LINKS</span>
+                <span className="text-[#06b6d4] font-black">{edges.length}</span>
+              </div>
+
+              {/* STABLE PIPELINES */}
+              <div className="flex items-center justify-between ficsit-hud-item-row py-1.5">
+                <span className="text-[7.5px] text-[#8e9299]/70 font-bold tracking-wider uppercase">STABLE PIPELINES</span>
+                <span className="text-[#10b981] font-black">{stablePipelinesCount}</span>
+              </div>
+
+              {/* OVERLOADED LINKS */}
+              <div className="flex items-center justify-between ficsit-hud-item-row py-1.5">
+                <span className="text-[7.5px] text-[#8e9299]/70 font-bold tracking-wider uppercase">OVERLOADED LINKS</span>
+                <span className={`font-black ${overloadedCount > 0 ? 'text-[#ef4444] animate-pulse' : 'text-[#8e9299]/40'}`}>
+                  {overloadedCount}
+                </span>
+              </div>
+
+              {/* COMPLIANCE */}
+              <div className="flex flex-col gap-0.5 ficsit-hud-item-row py-1.5">
+                <span className="text-[7.5px] text-[#8e9299]/50 font-bold tracking-wider uppercase">COMPLIANCE</span>
+                <span className="text-[#10b981] font-black uppercase tracking-wider">
+                  100% FICSIT APPROVED
+                </span>
+              </div>
+            </div>
+
+            {/* Footer Banner Inside Sidebar */}
+            <div 
+              className="ficsit-approved-btn animate-ficsit-glow flex items-center justify-center gap-1.5 p-2 mt-1 text-[#10b981] font-bold text-[8.5px] uppercase tracking-widest text-center cursor-default"
+              style={{
+                clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)'
+              }}
+            >
+              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <span>ALL SYSTEMS OPERATIONAL</span>
+            </div>
+          </div>
+        </Panel>
+
+        {/* Slanted center FICSIT APPROVED DESIGN banner */}
+        <Panel position="bottom-center" className="pointer-events-none select-none mb-4">
+          <div 
+            className="ficsit-approved-banner px-8 py-1.5 font-mono text-[9px] font-black text-[#f48721] uppercase tracking-[0.25em] flex items-center justify-center shadow-lg"
+            style={{
+              clipPath: 'polygon(12px 0, calc(100% - 12px) 0, 100% 100%, 0 100%)'
+            }}
+          >
+            FICSIT APPROVED DESIGN
+          </div>
+        </Panel>
+
+        {/* Floating Flow Legend */}
+        <Panel position="bottom-right" className="pointer-events-auto select-none mr-4 mb-4">
+          <div 
+            className="ficsit-legend-card p-3.5 font-mono text-[9px] text-[#8e9299] w-[150px] flex flex-col gap-2.5 shadow-2xl relative"
+          >
+            <div className="text-[#f48721] font-black uppercase tracking-[0.1em] border-b border-[#2a2d33]/80 pb-1.5 mb-0.5 text-[8.5px]">
+              LOGISTICS FLOW
+            </div>
+            
+            {/* Standard Flow */}
+            <div className="flex items-center gap-2">
+              <span className="w-7 h-[2.5px] bg-[#f48721] relative flex items-center justify-center shrink-0">
+                <span className="absolute w-[3px] h-[3px] bg-white rounded-full animate-ping" />
+              </span>
+              <span className="uppercase font-bold text-[#e4e3e0]/80 tracking-wide text-[7.5px]">STANDARD FLOW</span>
+            </div>
+
+            {/* Overloaded Flow */}
+            <div className="flex items-center gap-2">
+              <span className="w-7 h-[3px] bg-[#ef4444] relative flex items-center justify-center shrink-0">
+                <span className="absolute w-[4px] h-[4px] bg-[#fecaca] rounded-full animate-ping" />
+              </span>
+              <span className="uppercase font-bold text-[#ef4444] tracking-wide text-[7.5px] flex items-center gap-1">
+                OVERLOADED <span className="text-[9px]">⚠</span>
+              </span>
+            </div>
+
+            {/* Fluid Flow */}
+            <div className="flex items-center gap-2">
+              <span className="w-7 h-[2.5px] bg-[#06b6d4] relative flex items-center justify-center shrink-0">
+                <span className="absolute w-[3px] h-[3px] bg-[#a5f3fc] rounded-full animate-ping" />
+              </span>
+              <span className="uppercase font-bold text-[#06b6d4] tracking-wide text-[7.5px]">FLUID FLOW</span>
             </div>
           </div>
         </Panel>

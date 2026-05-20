@@ -1,6 +1,8 @@
 import React from 'react';
 import { SummaryData } from '../engine/solver';
 import { items, machines } from '../engine/data';
+import { AppImage } from './AppImage';
+import { Zap } from 'lucide-react';
 
 interface SummaryProps {
   summary: SummaryData;
@@ -12,7 +14,6 @@ export function Summary({ summary }: SummaryProps) {
   const maxRawRate = rawEntries.length > 0 ? Math.max(...rawEntries.map(([_, rate]) => rate)) : 1;
 
   const machineEntries = Object.entries(summary.machineCounts);
-  const maxMachineCount = machineEntries.length > 0 ? Math.max(...machineEntries.map(([_, count]) => count)) : 1;
 
   return (
     <div
@@ -51,43 +52,66 @@ export function Summary({ summary }: SummaryProps) {
       </div>
 
       {/* Content */}
-      <div className="flex flex-row flex-wrap gap-5 items-stretch p-3.5 flex-1 select-none">
+      <div className="flex flex-row flex-wrap gap-4 items-stretch p-3 flex-1 select-none">
         
-        {/* Power Required */}
-        <div className="flex flex-col gap-1 min-w-[120px] justify-center">
-          <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Power Required</label>
-          <div className="text-3xl font-black text-[#f48721] font-mono flex items-baseline gap-1" style={{ textShadow: '0 0 10px rgba(244,135,33,0.15)' }}>
-            {Math.ceil(summary.totalPower)}
-            <span className="text-[10px] font-bold text-[#8E9299] tracking-wider uppercase">MW</span>
+        {/* Power Required: Concentric Holographic Emitter platform */}
+        <div className="flex flex-col gap-1 min-w-[120px] items-center justify-center relative overflow-hidden px-2 border-r border-[#2a2d33]/30">
+          <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase z-10 select-none">Power Required</label>
+          
+          <div className="relative flex items-center justify-center w-full h-18 mt-1.5 select-none">
+            {/* Concentric glow rings */}
+            <div className="absolute bottom-0 w-24 h-4 bg-[#f48721]/5 rounded-[50%] border border-[#f48721]/20 blur-[0.5px] animate-pulse" />
+            <div className="absolute bottom-1 w-16 h-3 bg-[#f48721]/10 rounded-[50%] border border-[#f48721]/30 blur-[1px] animate-ping" style={{ animationDuration: '4s' }} />
+            <div className="absolute bottom-2 w-8 h-2 bg-[#f48721]/25 rounded-[50%] blur-[2px]" />
+            {/* Hologram vertical beam */}
+            <div className="absolute bottom-2 w-16 h-12 bg-gradient-to-t from-[#f48721]/15 to-transparent blur-md pointer-events-none" style={{ clipPath: 'polygon(15% 0, 85% 0, 100% 100%, 0% 100%)' }} />
+            
+            {/* Hologram Icon - Zap */}
+            <div className="absolute bottom-3.5 flex flex-col items-center">
+              <Zap size={20} className="text-[#f48721] drop-shadow-[0_0_8px_rgba(244,135,33,0.8)] animate-bounce" style={{ animationDuration: '3s' }} />
+            </div>
+
+            {/* Giant Monospace Power Number */}
+            <div className="absolute top-0 text-xl font-black text-[#f48721] font-mono tracking-tight text-center drop-shadow-[0_0_10px_rgba(244,135,33,0.25)]">
+              {Math.ceil(summary.totalPower)}
+            </div>
+            
+            {/* MW Label */}
+            <div className="absolute bottom-0 text-[8px] font-bold text-[#8e9299] tracking-widest font-mono uppercase">
+              MW
+            </div>
           </div>
         </div>
 
         {/* Raw Inputs */}
-        <div className="flex flex-col flex-1 min-w-[200px] border-l border-[#2a2d33]/50 pl-4">
-          <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase mb-2">Raw Inputs</label>
-          <ul className="space-y-2 max-h-[110px] overflow-y-auto pr-1">
+        <div className="flex flex-col flex-1 min-w-[180px] pl-1">
+          <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase mb-1.5">Raw Inputs</label>
+          <ul className="space-y-1.5 max-h-[105px] overflow-y-auto pr-1">
             {rawEntries.map(([itemId, rate]) => {
               const pct = maxRawRate > 0 ? (rate / maxRawRate) * 100 : 0;
               return (
                 <li
                   key={itemId}
-                  className="flex flex-col bg-[#17191d] p-2 border border-[#2a2d33] transition-colors hover:border-[#f4872130]"
+                  className="flex flex-col bg-[#17191d]/60 p-1.5 border border-[#2a2d33]/50 transition-colors hover:border-[#f4872130]"
                   style={{
-                    clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)'
+                    clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)'
                   }}
                 >
                   <div className="flex justify-between items-center w-full">
-                    <span className="font-bold text-[11px] text-[#e4e3e0] tracking-wide">{items[itemId]?.name || itemId}</span>
-                    <span className="font-mono text-[11px] text-blue-400 font-bold">{rate.toFixed(1)}/m</span>
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      {items[itemId]?.imageUrl && (
+                        <AppImage idKey={itemId} fallbackUrl={items[itemId].imageUrl} className="w-4 h-4 object-contain shrink-0" alt={items[itemId].name} />
+                      )}
+                      <span className="font-bold text-[10px] text-[#e4e3e0] tracking-wide truncate">{items[itemId]?.name || itemId}</span>
+                    </div>
+                    <span className="font-mono text-[10px] text-[#06b6d4] font-bold shrink-0">{rate.toFixed(1)} /m</span>
                   </div>
-                  <div className="w-full bg-[#0d0e11] h-1 border border-[#2a2d33]/60 overflow-hidden mt-1 relative rounded-sm">
+                  <div className="w-full bg-[#0d0e11] h-1 border border-[#2a2d33]/30 overflow-hidden mt-1 relative rounded-[1px]">
                     <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-500 relative"
+                      className="h-full bg-gradient-to-r from-[#0891b2] to-[#06b6d4] transition-all duration-500 relative"
                       style={{
                         width: `${pct}%`,
-                        boxShadow: '0 0 6px rgba(59, 130, 246, 0.4)',
-                        backgroundImage: 'linear-gradient(45deg, rgba(0,0,0,0.15) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.15) 75%, transparent 75%, transparent)',
-                        backgroundSize: '8px 8px'
+                        boxShadow: '0 0 4px rgba(6, 182, 212, 0.4)',
                       }}
                     />
                   </div>
@@ -101,35 +125,26 @@ export function Summary({ summary }: SummaryProps) {
         </div>
 
         {/* Buildings */}
-        <div className="flex flex-col flex-1 min-w-[200px] border-l border-[#2a2d33]/50 pl-4">
-          <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase mb-2">Buildings</label>
-          <ul className="space-y-2 max-h-[110px] overflow-y-auto pr-1">
+        <div className="flex flex-col flex-1 min-w-[180px] border-l border-[#2a2d33]/30 pl-3">
+          <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase mb-1.5">Buildings</label>
+          <ul className="space-y-1.5 max-h-[105px] overflow-y-auto pr-1">
             {machineEntries.map(([machineId, count]) => {
-              const pct = maxMachineCount > 0 ? (count / maxMachineCount) * 100 : 0;
               const countVal = isFinite(count) ? Math.ceil(count * 10) / 10 : Math.ceil(count);
               return (
                 <li
                   key={machineId}
-                  className="flex flex-col bg-[#17191d] p-2 border border-[#2a2d33] transition-colors hover:border-[#f4872130]"
+                  className="flex items-center justify-between bg-[#17191d]/60 px-2 py-1 border border-[#2a2d33]/40 transition-colors hover:border-[#f4872120] min-h-[26px]"
                   style={{
-                    clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)'
+                    clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)'
                   }}
                 >
-                  <div className="flex justify-between items-center w-full">
-                    <span className="text-[#e4e3e0] text-[11px] tracking-wide font-bold">{machines[machineId]?.name || machineId}</span>
-                    <span className="font-mono text-[#f48721] font-bold text-[11px]">x{countVal}</span>
+                  <div className="flex items-center gap-2 min-w-0">
+                    {machines[machineId]?.imageUrl && (
+                      <AppImage idKey={machineId} fallbackUrl={machines[machineId].imageUrl} className="w-4 h-4 object-contain shrink-0" alt={machines[machineId].name} />
+                    )}
+                    <span className="text-[#e4e3e0] text-[10px] tracking-wide font-medium truncate">{machines[machineId]?.name || machineId}</span>
                   </div>
-                  <div className="w-full bg-[#0d0e11] h-1 border border-[#2a2d33]/60 overflow-hidden mt-1 relative rounded-sm">
-                    <div
-                      className="h-full bg-gradient-to-r from-[#f48721] to-[#e66c00] transition-all duration-500 relative"
-                      style={{
-                        width: `${pct}%`,
-                        boxShadow: '0 0 6px rgba(244, 135, 33, 0.4)',
-                        backgroundImage: 'linear-gradient(45deg, rgba(0,0,0,0.15) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.15) 75%, transparent 75%, transparent)',
-                        backgroundSize: '8px 8px'
-                      }}
-                    />
-                  </div>
+                  <span className="font-mono text-[#f48721] font-bold text-[10px] shrink-0 ml-2">x{countVal}</span>
                 </li>
               );
             })}

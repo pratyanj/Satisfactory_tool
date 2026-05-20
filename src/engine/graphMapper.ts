@@ -27,7 +27,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
     const item = itemId ? items[itemId] : null;
     return {
       id, source, target, label, type: 'satisfactory',
-      data: { rate, isOverloaded, itemImageUrl: item?.imageUrl },
+      data: { rate, isOverloaded, itemImageUrl: item?.imageUrl, itemId },
       animated: true,
     };
   }
