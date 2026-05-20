@@ -552,6 +552,9 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
     });
   }, [selectedNodeId, setNodes, setEdges]);
 
+  const machineCount = nodes.filter(n => n.type === 'machine').length;
+  const logisticsCount = nodes.filter(n => n.type === 'logistics').length;
+
   return (
     <div className="w-full h-full bg-[#101114]">
       <ReactFlow
@@ -582,6 +585,28 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
           }}
           onLayout={applyAILayout}
         />
+        
+        {/* Immersive FICSIT Diagnostics Live Terminal Ticker */}
+        <Panel position="bottom-left" className="pointer-events-none select-none">
+          <div 
+            className="bg-[#0d0e11]/85 backdrop-blur-md border border-[#2a2d33] p-2.5 font-mono text-[9px] text-[#8e9299] w-72 flex flex-col gap-1 shadow-2xl"
+            style={{ 
+              clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)'
+            }}
+          >
+            <div className="flex items-center gap-1.5 text-[#f48721] font-black uppercase tracking-[0.15em] border-b border-[#2a2d33] pb-1.5">
+              <span className="w-1.5 h-1.5 bg-[#f48721] rounded-full animate-ping shrink-0" />
+              <span>FICSIT // Diagnostics Live</span>
+            </div>
+            <div className="space-y-0.5 max-h-16 overflow-hidden leading-tight">
+              <div className="text-green-500/80">&gt; INITIALIZING SOLVER ENGINE... SUCCESS</div>
+              <div>&gt; COMPILED {machineCount} MACHINES | {logisticsCount} LOGISTICS</div>
+              <div>&gt; STABLE PIPELINE DETECTED WITH {edges.length} LINKS</div>
+              <div className="text-yellow-500/80">&gt; COMPLIANCE LEVEL: 100% FICSIT APPROVED</div>
+              <div className="text-[#64748b] animate-pulse">&gt; SCANNING TELEMETRY... STABLE</div>
+            </div>
+          </div>
+        </Panel>
       </ReactFlow>
     </div>
   );

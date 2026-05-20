@@ -18,6 +18,23 @@ function formatRecipeLabel(recipeId: RecipeId): string {
     .replace(/\b\w/g, (match) => match.toUpperCase());
 }
 
+const StepperButton = ({ value, onClick }: { value: number; onClick: () => void }) => {
+  const isPos = value > 0;
+  const label = isPos ? `+${value}` : `${value}`;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="px-2 py-1 text-[9px] font-mono font-black border transition-all select-none hover:text-[#f48721] bg-[#1a1c20] text-[#8e9299] border-[#2a2d33] hover:border-[#f48721]/50 cursor-pointer h-7 flex items-center justify-center"
+      style={{
+        clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)',
+      }}
+    >
+      {label}
+    </button>
+  );
+};
+
 export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   const [selectedItem, setSelectedItem] = useState<string>(initialValues?.itemId || 'copper_sheet');
   const [rate, setRate] = useState<number>(initialValues?.rate || 120);
@@ -137,16 +154,22 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           </div>
 
           {/* ── Rate ── */}
-          <div className="flex flex-col gap-1 w-20 flex-shrink-0">
+          <div className="flex flex-col gap-1 flex-shrink-0 min-w-[200px]">
             <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Rate / m</label>
-            <input
-              type="number"
-              step="1"
-              min="1"
-              value={rate}
-              onChange={(e) => setRate(Number(e.target.value))}
-              className="sf-input-container w-full text-white px-2.5 py-1.5 outline-none font-mono text-xs"
-            />
+            <div className="flex items-center gap-1">
+              <StepperButton value={-50} onClick={() => setRate(prev => Math.max(1, prev - 50))} />
+              <StepperButton value={-10} onClick={() => setRate(prev => Math.max(1, prev - 10))} />
+              <input
+                type="number"
+                step="1"
+                min="1"
+                value={rate}
+                onChange={(e) => setRate(Number(e.target.value))}
+                className="sf-input-container text-center text-white px-2 py-1 outline-none font-mono text-xs w-16 h-7"
+              />
+              <StepperButton value={10} onClick={() => setRate(prev => prev + 10)} />
+              <StepperButton value={50} onClick={() => setRate(prev => prev + 50)} />
+            </div>
           </div>
 
           {/* ── Miner Tier ── */}
