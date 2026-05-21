@@ -4093,3 +4093,156 @@ input[type="number"] {
   padding: 10px 0 !important;
   vertical-align: middle !important;
 }
+
+/* ================================================================
+   SF PREMIUM MACHINE CARD Redesign
+   ================================================================ */
+
+.sf-machine-card-frame {
+  position: relative;
+  width: 340px;
+  height: 160px;
+  background: #0d0e11;
+  border: 4px solid #1c1d20;
+  border-radius: 12px;
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.8), 0 8px 20px rgba(0,0,0,0.6);
+  display: flex;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.sf-machine-card-frame:hover {
+  transform: translateY(-2px);
+  border-color: #2b2e34;
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.8), 0 12px 25px rgba(244,135,33,0.18);
+}
+
+/* Inner metal highlight border */
+.sf-machine-card-frame::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 2px solid #36393e;
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Corner Screws/Rivets */
+.sf-card-screw {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #111;
+  border-radius: 50%;
+  box-shadow: inset 1px 1px 1px rgba(255,255,255,0.2), 1px 1px 1px rgba(0,0,0,0.5);
+  z-index: 15;
+}
+.sf-card-screw-tl { top: 6px; left: 6px; }
+.sf-card-screw-tr { top: 6px; right: 6px; }
+.sf-card-screw-bl { bottom: 6px; left: 6px; }
+.sf-card-screw-br { bottom: 6px; right: 6px; }
+
+/* Glowing Orange Edge Lights */
+.sf-card-light-top {
+  position: absolute;
+  top: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 3px;
+  background: #f48721;
+  box-shadow: 0 0 6px #f48721, inset 0 0 1.5px #fff;
+  border: 1px solid #111;
+  border-radius: 0 0 2px 2px;
+  z-index: 15;
+}
+.sf-card-light-bottom {
+  position: absolute;
+  bottom: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 3px;
+  background: #f48721;
+  box-shadow: 0 0 6px #f48721, inset 0 0 1.5px #fff;
+  border: 1px solid #111;
+  border-radius: 2px 2px 0 0;
+  z-index: 15;
+}
+
+/* Diagonal industrial stripes on the outer bezel corners */
+.sf-card-stripes-tl {
+  position: absolute;
+  top: 4px;
+  left: 14px;
+  width: 24px;
+  height: 8px;
+  background: repeating-linear-gradient(-45deg, #111, #111 3px, #444 3px, #444 6px);
+  opacity: 0.5;
+  z-index: 12;
+}
+
+.sf-card-stripes-tr {
+  position: absolute;
+  top: 4px;
+  right: 14px;
+  width: 24px;
+  height: 8px;
+  background: repeating-linear-gradient(45deg, #111, #111 3px, #444 3px, #444 6px);
+  opacity: 0.5;
+  z-index: 12;
+}
+
+/* Left Half Image Panel (Dark grid) */
+.sf-card-left-panel {
+  width: 120px;
+  height: 100%;
+  background-color: #0c0d0f;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 10px 10px;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 2px solid #1c1d20;
+  box-sizing: border-box;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Caution stripes tape overlays on machine panel feet corners */
+.sf-card-caution-corner-l {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 20px;
+  height: 4px;
+  background: repeating-linear-gradient(45deg, #f48721, #f48721 3px, #111 3px, #111 6px);
+  border-top: 1px solid #000;
+  z-index: 15;
+}
+
+.sf-card-caution-corner-r {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 20px;
+  height: 4px;
+  background: repeating-linear-gradient(-45deg, #f48721, #f48721 3px, #111 3px, #111 6px);
+  border-top: 1px solid #000;
+  z-index: 15;
+}
+
+/* Octagon Badges (for orange header and green bottom machine category) */
+.sf-octagon-badge {
+  clip-path: polygon(25% 0%, 75% 0%, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0% 75%, 0% 25%);
+}
+

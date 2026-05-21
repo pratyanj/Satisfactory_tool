@@ -433,7 +433,7 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
     newGroups.forEach(g => childrenMap.set(g.id, []));
 
     currentNodes.forEach(n => {
-      let w = 320, h = 160;
+      let w = 340, h = 160;
       if (n.type === 'logistics') { w = 48; h = 48; }
       else if (n.type === 'customGroup') { w = 100; h = 100; }
       const elkNode = { id: n.id, width: w, height: h, layoutOptions: n.type === 'customGroup' ? { 'elk.padding': '[top=40,left=20,bottom=20,right=20]' } : undefined };

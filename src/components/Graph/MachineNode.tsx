@@ -13,11 +13,17 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
   const isFlipped = !!data.isFlipped;
   const updateNodeInternals = useUpdateNodeInternals();
 
-  useEffect(() => { updateNodeInternals(id); }, [isFlipped, id, updateNodeInternals]);
+  useEffect(() => {
+    updateNodeInternals(id);
+  }, [isFlipped, id, updateNodeInternals]);
 
   const toggleFlip = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setNodes((nodes) => nodes.map(n => n.id === id ? { ...n, data: { ...n.data, isFlipped: !isFlipped } } : n));
+    setNodes((nodes) =>
+      nodes.map((n) =>
+        n.id === id ? { ...n, data: { ...n.data, isFlipped: !isFlipped } } : n
+      )
+    );
   };
 
   const inputDetails = (data.inputDetails as any[]) || [];
@@ -26,92 +32,239 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
 
   return (
     <div className="relative group">
-      <div className={`bg-[#151619] border border-[#2a2d33] rounded-xl shadow-xl w-[240px] text-white font-sans overflow-hidden group-hover:border-[#4a4d53] transition-colors cursor-pointer flex flex-col relative`}>
-        <Handle key={`target-${isFlipped}`} type="target" position={isFlipped ? Position.Right : Position.Left} className="w-3 h-3 bg-blue-500 border-none opacity-0 group-hover:opacity-100 transition-opacity" />
+      {/* React Flow Connection Handles (swapped when node is flipped) */}
+      <Handle
+        key={`target-${isFlipped}`}
+        type="target"
+        position={isFlipped ? Position.Right : Position.Left}
+        className="w-3 h-3 bg-blue-500 border-none opacity-0 group-hover:opacity-100 transition-opacity z-30"
+      />
 
-      {/* Top section: image + item name + rate + machine label */}
-      <div className={`flex ${isFlipped ? 'flex-row-reverse' : ''}`}>
-        {/* Machine image */}
-        <div className={`w-[100px] bg-[#101114] flex items-center justify-center shrink-0 overflow-hidden relative ${isFlipped ? 'border-l border-[#2a2d33]' : 'border-r border-[#2a2d33]'}`} style={{ minHeight: 72 }}>
-          {machineInfo?.imageUrl ? (
-            <AppImage idKey={data.machineId as string} fallbackUrl={machineInfo.imageUrl} className="w-full h-full object-cover" alt={machineInfo.name} />
-          ) : (
-            <div className="w-full h-full bg-[#1c1e22]" />
-          )}
-          <button onClick={toggleFlip} className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity" title="Flip Machine">
-            <FlipHorizontal className="w-5 h-5 text-white" />
-          </button>
-        </div>
+      {/* Main Premium Beveled Card */}
+      <div className="sf-machine-card-frame">
+        {/* Bezel Corner Screws/Rivets */}
+        <div className="sf-card-screw sf-card-screw-tl" />
+        <div className="sf-card-screw sf-card-screw-tr" />
+        <div className="sf-card-screw sf-card-screw-bl" />
+        <div className="sf-card-screw sf-card-screw-br" />
 
-        {/* Item name, rate, machine label */}
-        <div className="flex-1 flex flex-col justify-between min-w-0">
-          <div className="bg-[#1c1e22] px-3 py-2 border-b border-[#2a2d33] flex-1">
-            <div className="flex justify-between items-start gap-2">
-              <div className="text-[10px] font-mono tracking-widest text-[#8E9299] uppercase mb-0.5 truncate flex-1" title={data.item as string}>
+        {/* Orange Bezel Edge Lights */}
+        <div className="sf-card-light-top" />
+        <div className="sf-card-light-bottom" />
+
+        {/* Outer Bezel Hazard Stripes */}
+        <div className="sf-card-stripes-tl" />
+        <div className="sf-card-stripes-tr" />
+
+        {/* Left/Right Flex Layout (mirrored when flipped) */}
+        <div className={`flex w-full h-full ${isFlipped ? 'flex-row-reverse' : ''}`}>
+          
+          {/* LEFT HALF: Machine Image + Caution Tape */}
+          <div className="sf-card-left-panel">
+            {machineInfo?.imageUrl ? (
+              <AppImage
+                idKey={data.machineId as string}
+                fallbackUrl={machineInfo.imageUrl}
+                className="w-[85%] h-[85%] object-contain select-none pointer-events-none z-10"
+                alt={machineInfo.name}
+              />
+            ) : (
+              <div className="w-full h-full bg-[#1c1e22]/20" />
+            )}
+
+            {/* Alternate Recipe Star Indicator */}
+            {data.isAlternate && (
+              <div
+                title="Alternate Recipe"
+                className="absolute top-2 left-2 z-20 flex items-center justify-center bg-[#1a1c1f]/85 p-0.5 rounded border border-yellow-500/30"
+              >
+                <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+              </div>
+            )}
+
+            {/* Caution Stripes Overlay on Base Feet */}
+            <div className="sf-card-caution-corner-l" />
+            <div className="sf-card-caution-corner-r" />
+
+            {/* Hover-to-Flip Button */}
+            <button
+              onClick={toggleFlip}
+              className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer z-20"
+              title="Flip Machine Direction"
+            >
+              <FlipHorizontal className="w-5 h-5 text-white" />
+            </button>
+          </div>
+
+          {/* RIGHT HALF: Item details, rates, machine arrays */}
+          <div className="flex-1 p-2 py-[10px] flex flex-col justify-between h-full bg-[#08090a] box-border relative">
+            
+            {/* Header: Octagon Machine Icon + Item Produced + Power Stats */}
+            <div className="flex items-center justify-between bg-[#121316]/95 border border-[#23252a] rounded-lg p-1 h-9 box-border relative overflow-hidden">
+              {/* Octagon orange machine badge */}
+              <div className="w-6 h-6 flex items-center justify-center bg-[#f48721] sf-octagon-badge shrink-0">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 20h18" />
+                  <path d="M5 20v-5h6v5" />
+                  <rect x="13" y="8" width="6" height="12" />
+                  <path d="M8 15h.01" />
+                </svg>
+              </div>
+
+              {/* Item Name */}
+              <div
+                className="font-bold tracking-wider text-white text-[10px] truncate uppercase ml-1.5 flex-1 select-none pr-1"
+                title={data.item as string}
+              >
                 {data.item as string}
               </div>
-              <div className="font-mono text-[10px] text-orange-400 shrink-0">{totalPower.toFixed(1)} MW</div>
-            </div>
-            <div className="flex items-center gap-2 mt-0.5">
-              {data.itemImageUrl && (
-                <AppImage idKey={data.itemId as string} fallbackUrl={data.itemImageUrl as string} className="w-8 h-8 object-contain shrink-0" alt={data.item as string} />
-              )}
-              <div className="font-semibold text-sm leading-tight truncate">
-                {(data.rate as number).toFixed(1)}/min
+
+              {/* Total Power Usage badge */}
+              <div
+                className="text-[#f48721] font-mono font-bold text-[8px] tracking-tight bg-[#191a1e] border border-[#2d2f36] px-1.5 py-0.5 rounded shrink-0 flex items-center gap-0.5 select-none"
+                title="Total Power Consumption"
+              >
+                <span className="text-[7.5px]">⚡</span> {totalPower.toFixed(1)} MW
               </div>
             </div>
-          </div>
-          <div className="px-3 flex items-center justify-between h-[30px] shrink-0 min-w-0">
-            <span className="font-mono text-[11px] text-green-400 truncate flex-1 leading-none pr-1" title={data.label as string}>
-              {data.label as string}
-            </span>
-            {data.isAlternate && (
-              <div title="Alternate Recipe" className="flex items-center justify-center shrink-0">
-                <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
+
+            {/* Middle: Item Produced Icon + Production Rate Value */}
+            <div className="flex items-center gap-2 w-full my-1">
+              {/* Item Icon Frame */}
+              <div className="w-[52px] h-[52px] bg-[#121316]/95 border border-[#23252a] rounded-lg p-1 flex items-center justify-center shrink-0 shadow-inner overflow-hidden relative">
+                {data.itemImageUrl && (
+                  <AppImage
+                    idKey={data.itemId as string}
+                    fallbackUrl={data.itemImageUrl as string}
+                    className="w-full h-full object-contain filter drop-shadow(0 2px 4px rgba(0,0,0,0.5))"
+                    alt={data.item as string}
+                  />
+                )}
               </div>
-            )}
+
+              {/* Rate counters */}
+              <div className="flex-1 min-w-0 flex flex-col justify-center">
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-[7.5px] font-extrabold tracking-widest text-[#7e828a] uppercase select-none">
+                    PRODUCTION RATE
+                  </span>
+                  {/* Decorative industrial line-flow */}
+                  <div className="h-[1px] flex-1 bg-gradient-to-r from-[#23252a] via-[#3a3d45] to-transparent ml-1.5 relative flex items-center">
+                    <div className="w-[3px] h-[3px] rounded-full bg-[#f48721] absolute left-1/2 -translate-y-1/2" />
+                  </div>
+                </div>
+                <div className="flex items-baseline mt-0">
+                  <span className="text-xl font-extrabold font-mono tracking-tight text-white select-none">
+                    {(data.rate as number).toFixed(1)}
+                  </span>
+                  <span className="text-[#f48721] font-bold text-xs ml-0.5 select-none">
+                    /min
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom: Machine Category + Array size count */}
+            <div className="flex items-center gap-2 bg-[#0d0e11] border border-[#1c1d20] rounded-lg p-1 h-9 w-full box-border">
+              {/* Green octagon constructor badge */}
+              <div className="w-6 h-6 flex items-center justify-center bg-[#00e676]/10 border border-[#00e676]/30 sf-octagon-badge shrink-0">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#00e676" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 20h18" />
+                  <path d="M5 20v-5h6v5" />
+                  <rect x="13" y="8" width="6" height="12" />
+                  <path d="M8 15h.01" />
+                </svg>
+              </div>
+
+              {/* Machine label & Count */}
+              <div className="flex-1 min-w-0 flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-[7.5px] font-extrabold tracking-widest text-[#7e828a] uppercase select-none truncate">
+                    {machineInfo?.name || (data.label as string) || 'CONSTRUCTOR'}
+                  </span>
+                </div>
+                <div className="text-[#00e676] font-mono font-black text-sm leading-none select-none flex items-center gap-0.5">
+                  x <span className="text-base">{Math.ceil(machineCount * 10) / 10}</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
+
       </div>
 
-        <Handle key={`source-${isFlipped}`} type="source" position={isFlipped ? Position.Left : Position.Right} className="w-3 h-3 bg-orange-500 border-none opacity-0 group-hover:opacity-100 transition-opacity" />
-      </div>
+      <Handle
+        key={`source-${isFlipped}`}
+        type="source"
+        position={isFlipped ? Position.Left : Position.Right}
+        className="w-3 h-3 bg-orange-500 border-none opacity-0 group-hover:opacity-100 transition-opacity z-30"
+      />
 
-      {/* Hover Floating Card for Recipe details */}
-      <div className="sf-tooltip whitespace-nowrap min-w-max">
+      {/* Floating Detailed Hover Tooltip for Recipe Inputs/Outputs */}
+      <div className="sf-tooltip whitespace-nowrap min-w-max z-50">
         {/* Inputs */}
-        {inputDetails.length > 0 && inputDetails.map((inp: any, idx: number) => (
-          <div key={idx} className="flex items-center gap-2 font-mono text-[11px] mb-1">
-            <span className="text-blue-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">IN</span>
-            {inp.imageUrl && (
-              <AppImage idKey={inp.itemId} fallbackUrl={inp.imageUrl} className="w-3.5 h-3.5 object-contain shrink-0" alt={inp.name} />
-            )}
-            <span className="text-[#a0a4ab] flex-1">{inp.name}</span>
-            <span className="text-[#e4e3e0] shrink-0 text-right min-w-[50px]">{inp.ratePerMachine}/m</span>
-          </div>
-        ))}
+        {inputDetails.length > 0 &&
+          inputDetails.map((inp: any, idx: number) => (
+            <div key={idx} className="flex items-center gap-2 font-mono text-[11px] mb-1">
+              <span className="text-blue-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">
+                IN
+              </span>
+              {inp.imageUrl && (
+                <AppImage
+                  idKey={inp.itemId}
+                  fallbackUrl={inp.imageUrl}
+                  className="w-3.5 h-3.5 object-contain shrink-0"
+                  alt={inp.name}
+                />
+              )}
+              <span className="text-[#a0a4ab] flex-1">{inp.name}</span>
+              <span className="text-[#e4e3e0] shrink-0 text-right min-w-[50px]">
+                {inp.ratePerMachine}/m
+              </span>
+            </div>
+          ))}
         {/* Output */}
         {outputRatePerMachine > 0 && (
           <div className="flex items-center gap-2 font-mono text-[11px] mb-1">
-            <span className="text-orange-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">OUT</span>
+            <span className="text-orange-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">
+              OUT
+            </span>
             {data.itemImageUrl && (
-              <AppImage idKey={data.itemId as string} fallbackUrl={data.itemImageUrl as string} className="w-3.5 h-3.5 object-contain shrink-0" alt={data.item as string} />
+              <AppImage
+                idKey={data.itemId as string}
+                fallbackUrl={data.itemImageUrl as string}
+                className="w-3.5 h-3.5 object-contain shrink-0"
+                alt={data.item as string}
+              />
             )}
             <span className="text-[#a0a4ab] flex-1">{data.item as string}</span>
-            <span className="text-[#e4e3e0] shrink-0 text-right min-w-[50px]">{outputRatePerMachine}/m</span>
+            <span className="text-[#e4e3e0] shrink-0 text-right min-w-[50px]">
+              {outputRatePerMachine}/m
+            </span>
           </div>
         )}
         {/* Byproducts */}
-        {(data.byproductDetails as any[] || []).length > 0 && (data.byproductDetails as any[]).map((bp: any, idx: number) => (
-          <div key={`bp-${idx}`} className="flex items-center gap-2 font-mono text-[11px] mb-1">
-            <span className="text-orange-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">OUT</span>
-            {bp.imageUrl && (
-              <AppImage idKey={bp.itemId} fallbackUrl={bp.imageUrl} className="w-3.5 h-3.5 object-contain shrink-0" alt={bp.name} />
-            )}
-            <span className="text-[#a0a4ab] flex-1">{bp.name}</span>
-            <span className="text-[#e4e3e0] shrink-0 text-right min-w-[50px]">{bp.ratePerMachine}/m</span>
-          </div>
-        ))}
+        {((data.byproductDetails as any[]) || []).length > 0 &&
+          (data.byproductDetails as any[]).map((bp: any, idx: number) => (
+            <div key={`bp-${idx}`} className="flex items-center gap-2 font-mono text-[11px] mb-1">
+              <span className="text-orange-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">
+                OUT
+              </span>
+              {bp.imageUrl && (
+                <AppImage
+                  idKey={bp.itemId}
+                  fallbackUrl={bp.imageUrl}
+                  className="w-3.5 h-3.5 object-contain shrink-0"
+                  alt={bp.name}
+                />
+              )}
+              <span className="text-[#a0a4ab] flex-1">{bp.name}</span>
+              <span className="text-[#e4e3e0] shrink-0 text-right min-w-[50px]">
+                {bp.ratePerMachine}/m
+              </span>
+            </div>
+          ))}
         {/* Power per machine */}
         {powerPerMachine > 0 && (
           <div className="flex items-center gap-2 font-mono text-[11px] pt-1 mt-2 border-t border-[#2a2d33]">
