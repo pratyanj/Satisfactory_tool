@@ -98,10 +98,13 @@ export default function App() {
   const [isRecalculating, setIsRecalculating] = useState(false);
   const [controlsCollapsed, setControlsCollapsed] = useState(false);
 
-  // Sync URL hash whenever navigation state changes
+  // Sync URL hash whenever navigation state changes (supports browser history navigation!)
   const updateHash = useCallback((top: TopLevelTab, sub: MainTab) => {
-    const hash = `#tab=${top}&sub=${sub}`;
-    window.history.replaceState(null, '', hash);
+    const hash = top === 'planner' ? `#/planner/${sub}` : `#/${top}`;
+    // Only push to history if hash is different to avoid duplicate history states
+    if (window.location.hash !== hash) {
+      window.history.pushState(null, '', hash);
+    }
     sessionStorage.setItem('sf_tab', top);
     sessionStorage.setItem('sf_sub', sub);
   }, []);
@@ -116,8 +119,8 @@ export default function App() {
     updateHash(topLevelTab, tab);
   }, [topLevelTab, updateHash]);
 
-  // Parse URL Hash on mount
-  useEffect(() => {
+  // Parse hash and sync application state
+  const parseAndApplyHash = useCallback(() => {
     const hash = window.location.hash;
     try {
       if (hash.startsWith('#plan=')) {
@@ -140,27 +143,58 @@ export default function App() {
         return;
       }
 
+      // Backwards compatibility for old hash structure #tab=...
       if (hash.startsWith('#tab=')) {
         const params = new URLSearchParams(hash.slice(1));
         const top = (params.get('tab') ?? '') as TopLevelTab;
         const sub = (params.get('sub') ?? '') as MainTab;
-        if (['planner', 'save_map', 'world_map'].includes(top)) setTopLevelTab(top);
+        if (['planner', 'save_map', 'world_map', 'codex'].includes(top)) setTopLevelTab(top);
         if (['network_graph', 'tree_list', 'items', 'buildings'].includes(sub)) setMainTab(sub);
         return;
       }
 
-      // No hash — restore from session
+      // Parse the new simple slash route pattern, e.g. #/planner/network_graph or #/codex
+      if (hash.startsWith('#/')) {
+        const parts = hash.slice(2).split('/');
+        const top = parts[0] as TopLevelTab;
+        if (['planner', 'save_map', 'world_map', 'codex'].includes(top)) {
+          setTopLevelTab(top);
+          if (top === 'planner' && parts[1]) {
+            const sub = parts[1] as MainTab;
+            if (['network_graph', 'tree_list', 'items', 'buildings'].includes(sub)) {
+              setMainTab(sub);
+            }
+          }
+          return;
+        }
+      }
+
+      // No hash or unrecognized hash — restore from session or use defaults
       const storedTop = sessionStorage.getItem('sf_tab') as TopLevelTab | null;
       const storedSub = sessionStorage.getItem('sf_sub') as MainTab | null;
       const resolvedTop = (storedTop && ['planner', 'save_map', 'world_map', 'codex'].includes(storedTop)) ? storedTop : 'planner';
       const resolvedSub = (storedSub && ['network_graph', 'tree_list', 'items', 'buildings'].includes(storedSub)) ? storedSub : 'network_graph';
+      
       setTopLevelTab(resolvedTop);
       setMainTab(resolvedSub);
-      window.history.replaceState(null, '', `tab=${resolvedTop}&sub=${resolvedSub}`);
+      
+      // Update hash in address bar using replaceState on initial mount so we don't pollute history
+      const initialHash = resolvedTop === 'planner' ? `#/planner/${resolvedSub}` : `#/${resolvedTop}`;
+      window.history.replaceState(null, '', initialHash);
     } catch (err) {
       console.warn('Failed to parse navigation from URL', err);
     }
   }, []);
+
+  // Sync state with URL on mount and listen to popstate (browser back/forward navigation)
+  useEffect(() => {
+    parseAndApplyHash();
+
+    window.addEventListener('popstate', parseAndApplyHash);
+    return () => {
+      window.removeEventListener('popstate', parseAndApplyHash);
+    };
+  }, [parseAndApplyHash]);
 
   const generateShareLink = useCallback(() => {
     const payload = {
