@@ -33,120 +33,134 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
 
   return (
     <div className="id-root">
-      {/* FICSIT Telemetry Header */}
-      <div className="relative z-10 flex items-center gap-3 px-5 pt-3 pb-2 border-b border-[#2a2d33] bg-[#121316]/60 shrink-0">
-        <div style={{
-          width: 3, height: 14,
-          background: 'linear-gradient(180deg, #f48721, #c45700)',
-          borderRadius: 2,
-        }} />
-        <span className="text-[9px] font-mono tracking-[0.25em] text-[#f48721] uppercase font-bold">
-          FICSIT // Item Specification
-        </span>
-        <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, #f4872130, transparent)' }} />
-        <span className="text-[8px] font-mono text-[#6b7280] tracking-widest uppercase">
-          {isRadioactive ? 'HAZARD STATUS: CRITICAL' : 'SCHEMA STATUS: COMPLIANT'}
-        </span>
-      </div>
-
-      {/* Back bar */}
-      <div className="id-topbar">
+      {/* Top system bar */}
+      <div className="id-sysbar">
+        <div className="id-sysbar-stripe" />
         <button className="id-back-btn" onClick={onBack}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-          Item Browser
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          CODEX
         </button>
-        <span className="id-breadcrumb">/ {item.name}</span>
+        <div className="id-sysbar-sep" />
+        <span className="id-sysbar-path">
+          <span className="id-sysbar-path-dim">ITEM</span>
+          <span className="id-sysbar-path-sep"> / </span>
+          <span className="id-sysbar-path-cur">{item.name.toUpperCase()}</span>
+        </span>
+        <div style={{ flex: 1 }} />
+        <span className="id-sysbar-status" style={{ color: isRadioactive ? '#ef4444' : '#22c55e' }}>
+          <span className="id-sysbar-dot" style={{ background: isRadioactive ? '#ef4444' : '#22c55e' }} />
+          {isRadioactive ? 'HAZARD: RADIOACTIVE' : 'SCHEMA: COMPLIANT'}
+        </span>
       </div>
 
+      {/* Scrollable body */}
       <div className="id-body">
-        {/* Left column */}
-        <div className="id-col">
-          {/* Hero card */}
-          <div className={`id-section ${isRadioactive ? 'id-section--radioactive' : ''}`}>
-            <h2 className="id-section-title">{item.name}</h2>
-            <div className="id-hero">
-              <AppImage idKey={item.id} fallbackUrl={item.imageUrl} alt={item.name} className="id-hero-img" />
-              <div className="id-hero-meta">
-                <span className="id-hero-cat">{item.category}</span>
-                <span className="id-hero-form">{form}</span>
-                {isRadioactive && <span className="id-hero-radio">☢ Radioactive</span>}
+
+        {/* ── ROW 1: Hero + Details side by side ─────────────────── */}
+        <div className="id-top-row">
+
+          {/* Hero panel */}
+          <div className={`id-panel id-hero-panel${isRadioactive ? ' id-panel--danger' : ''}`}>
+            <div className="id-panel-header">
+              <span className="id-panel-title">{item.name.toUpperCase()}</span>
+              {isRadioactive && (
+                <span className="id-badge id-badge--danger">☢ RADIOACTIVE</span>
+              )}
+            </div>
+            <div className="id-hero-body">
+              <div className="id-hero-img-wrap">
+                <div className="id-hero-img-grid" />
+                <AppImage idKey={item.id} fallbackUrl={item.imageUrl} alt={item.name} className="id-hero-img" />
+                <div className="id-hero-caution-l" />
+                <div className="id-hero-caution-r" />
+              </div>
+              <div className="id-hero-info">
+                <div className="id-info-row">
+                  <span className="id-info-label">CATEGORY</span>
+                  <span className="id-info-val">{item.category}</span>
+                </div>
+                <div className="id-info-row">
+                  <span className="id-info-label">FORM</span>
+                  <span className="id-info-val">{form}</span>
+                </div>
+                <div className="id-info-row">
+                  <span className="id-info-label">RADIOACTIVE</span>
+                  <span className="id-info-val" style={{ color: isRadioactive ? '#ef4444' : '#22c55e' }}>
+                    {isRadioactive ? 'YES' : 'NO'}
+                  </span>
+                </div>
+                <div className="id-info-row">
+                  <span className="id-info-label">USED IN RECIPES</span>
+                  <span className="id-info-val id-info-val--accent">{usedAsIngredient.length}</span>
+                </div>
+                <div className="id-info-row">
+                  <span className="id-info-label">PRODUCED BY RECIPES</span>
+                  <span className="id-info-val id-info-val--accent">{producingRecipes.length}</span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Recipes */}
-          {producingRecipes.length > 0 && (
-            <div className="id-section">
-              <h3 className="id-section-title">Recipes</h3>
-              <div className="id-recipe-table-wrap">
-                <table className="id-table">
-                  <thead>
-                    <tr>
-                      <th>Recipe name</th>
-                      <th>Ingredients</th>
-                      <th className="id-math-op-col"></th>
-                      <th>Products</th>
-                      <th>Machine</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {producingRecipes.map(r => (
-                      <RecipeRow key={r.id} recipe={r} highlightId={itemId} onNavigate={onNavigate} />
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Right column */}
-        <div className="id-col">
-          {/* Details card */}
-          <div className="id-section">
-            <h3 className="id-section-title">{item.name} details</h3>
-            <table className="id-details-table">
-              <tbody>
-                <tr><td>Form</td><td>{form}</td></tr>
-                <tr><td>Category</td><td>{item.category}</td></tr>
-                <tr><td>Radioactive</td><td>{isRadioactive ? 'Yes' : 'No'}</td></tr>
-                <tr>
-                  <td>Used in recipes</td>
-                  <td>{usedAsIngredient.length}</td>
-                </tr>
-                <tr>
-                  <td>Produced by recipes</td>
-                  <td>{producingRecipes.length}</td>
-                </tr>
-              </tbody>
-            </table>
+        {/* ── ROW 2: Recipes ─────────────────────────────────────── */}
+        {producingRecipes.length > 0 && (
+          <div className="id-panel">
+            <div className="id-panel-header">
+              <span className="id-panel-title">RECIPES</span>
+              <span className="id-panel-count">{producingRecipes.length}</span>
+            </div>
+            <div className="id-recipe-table-wrap">
+              <table className="id-table">
+                <thead>
+                  <tr>
+                    <th>RECIPE NAME</th>
+                    <th>INGREDIENTS</th>
+                    <th className="id-math-op-col" />
+                    <th>PRODUCTS</th>
+                    <th>MACHINE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {producingRecipes.map(r => (
+                    <RecipeRow key={r.id} recipe={r} highlightId={itemId} onNavigate={onNavigate} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
+        )}
 
-          {/* Used as ingredient */}
-          {usedAsIngredient.length > 0 && (
-            <div className="id-section">
-              <h3 className="id-section-title">Usages as ingredient</h3>
-              <div className="id-recipe-table-wrap">
-                <table className="id-table">
-                  <thead>
-                    <tr>
-                      <th>Recipe name</th>
-                      <th>Ingredients</th>
-                      <th className="id-math-op-col"></th>
-                      <th>Products</th>
-                      <th>Machine</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {usedAsIngredient.map(r => (
-                      <RecipeRow key={r.id} recipe={r} highlightId={itemId} onNavigate={onNavigate} />
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+        {/* ── ROW 3: Used As Ingredient ──────────────────────────── */}
+        {usedAsIngredient.length > 0 && (
+          <div className="id-panel">
+            <div className="id-panel-header">
+              <span className="id-panel-title">USAGES AS INGREDIENT</span>
+              <span className="id-panel-count">{usedAsIngredient.length}</span>
             </div>
-          )}
-        </div>
+            <div className="id-recipe-table-wrap">
+              <table className="id-table">
+                <thead>
+                  <tr>
+                    <th>RECIPE NAME</th>
+                    <th>INGREDIENTS</th>
+                    <th className="id-math-op-col" />
+                    <th>PRODUCTS</th>
+                    <th>MACHINE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {usedAsIngredient.map(r => (
+                    <RecipeRow key={r.id} recipe={r} highlightId={itemId} onNavigate={onNavigate} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );
@@ -154,15 +168,19 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
 
 function RecipeRow({ recipe, highlightId, onNavigate }: { recipe: Recipe; highlightId: string; onNavigate: (id: string) => void }) {
   const machine = machines[recipe.machineId];
+  const isAlternate = recipe.id.startsWith('recipe_alternate_');
   const recipeName = recipe.name ?? recipe.id
-    .replace(/^recipe_alternate_/, 'Alternate: ')
+    .replace(/^recipe_alternate_/, '')
     .replace(/^recipe_/, '')
     .replace(/_/g, ' ')
     .replace(/\b\w/g, c => c.toUpperCase());
 
   return (
-    <tr>
-      <td className="id-recipe-name">{recipeName}</td>
+    <tr className="id-recipe-row">
+      <td className="id-recipe-name-cell">
+        {isAlternate && <span className="id-alt-badge">ALT</span>}
+        <span className="id-recipe-name">{recipeName}</span>
+      </td>
       <td>
         <div className="id-item-chips">
           {recipe.inputs.map((inp, idx) => (
@@ -174,7 +192,7 @@ function RecipeRow({ recipe, highlightId, onNavigate }: { recipe: Recipe; highli
         </div>
       </td>
       <td className="id-math-op-col">
-        <span className="id-math-op">=</span>
+        <span className="id-math-op id-math-arrow">→</span>
       </td>
       <td>
         <div className="id-item-chips">
@@ -188,11 +206,11 @@ function RecipeRow({ recipe, highlightId, onNavigate }: { recipe: Recipe; highli
         </div>
       </td>
       <td>
-        <div className="id-chip" style={{ cursor: 'default' }} title={machine?.name ?? recipe.machineId}>
+        <div className="id-machine-chip" title={machine?.name ?? recipe.machineId}>
           {machine?.imageUrl && (
-            <img src={machine.imageUrl} alt={machine.name} className="id-chip-img" />
+            <img src={machine.imageUrl} alt={machine.name} className="id-machine-img" />
           )}
-          <span className="id-chip-rate">{machine?.name ?? recipe.machineId}</span>
+          <span className="id-machine-name">{machine?.name ?? recipe.machineId}</span>
         </div>
       </td>
     </tr>
@@ -203,12 +221,12 @@ function ItemChip({ itemId, rate, highlight, onNavigate }: { itemId: string; rat
   const item = items[itemId];
   return (
     <button
-      className={`id-chip ${highlight ? 'id-chip--highlight' : ''}`}
+      className={`id-chip${highlight ? ' id-chip--highlight' : ''}`}
       onClick={() => onNavigate(itemId)}
       title={item?.name ?? itemId}
     >
       <AppImage idKey={itemId} fallbackUrl={item?.imageUrl} alt={item?.name ?? itemId} className="id-chip-img" />
-      <span className="id-chip-rate">{fmtRate(rate)}/min</span>
+      <span className="id-chip-rate">{fmtRate(rate)}<span className="id-chip-unit">/min</span></span>
     </button>
   );
 }
