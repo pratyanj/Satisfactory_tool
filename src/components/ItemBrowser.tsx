@@ -10,10 +10,14 @@ const CATEGORY_ORDER = [
   'Ammos', 'Consumed', 'Waste', 'Special',
 ];
 
-export function ItemBrowser() {
+interface ItemBrowserProps {
+  selectedItemId: string | null;
+  setSelectedItemId: (itemId: string | null) => void;
+}
+
+export function ItemBrowser({ selectedItemId, setSelectedItemId }: ItemBrowserProps) {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const allItems = useMemo(() => Object.values(items).sort((a, b) => a.name.localeCompare(b.name)), []);
 

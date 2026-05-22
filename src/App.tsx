@@ -93,31 +93,42 @@ export default function App() {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
   const [mainTab, setMainTab] = useState<MainTab>('network_graph');
   const [topLevelTab, setTopLevelTab] = useState<TopLevelTab>('planner');
+  const [selectedCodexItemId, setSelectedCodexItemId] = useState<string | null>(null);
 
   const [copied, setCopied] = useState(false);
   const [isRecalculating, setIsRecalculating] = useState(false);
   const [controlsCollapsed, setControlsCollapsed] = useState(false);
 
   // Sync URL path whenever navigation state changes (supports browser history navigation!)
-  const updatePath = useCallback((top: TopLevelTab, sub: MainTab) => {
-    const path = top === 'planner' ? `/planner/${sub}` : `/${top}`;
+  const updatePath = useCallback((top: TopLevelTab, sub: MainTab, codexItemId?: string | null) => {
+    let path = '';
+    if (top === 'planner') {
+      path = `/planner/${sub}`;
+    } else if (top === 'codex') {
+      path = codexItemId ? `/codex/${codexItemId}` : '/codex';
+    } else {
+      path = `/${top}`;
+    }
     // Only push to history if pathname is different to avoid duplicate history states
     if (window.location.pathname !== path) {
       window.history.pushState(null, '', path);
     }
     sessionStorage.setItem('sf_tab', top);
     sessionStorage.setItem('sf_sub', sub);
+    if (top === 'codex') {
+      sessionStorage.setItem('sf_codex_item', codexItemId || '');
+    }
   }, []);
 
   const handleTopLevelTab = useCallback((tab: TopLevelTab) => {
     setTopLevelTab(tab);
-    updatePath(tab, mainTab);
-  }, [mainTab, updatePath]);
+    updatePath(tab, mainTab, tab === 'codex' ? selectedCodexItemId : null);
+  }, [mainTab, selectedCodexItemId, updatePath]);
 
   const handleMainTab = useCallback((tab: MainTab) => {
     setMainTab(tab);
-    updatePath(topLevelTab, tab);
-  }, [topLevelTab, updatePath]);
+    updatePath(topLevelTab, tab, topLevelTab === 'codex' ? selectedCodexItemId : null);
+  }, [topLevelTab, selectedCodexItemId, updatePath]);
 
   // Parse path and hash, and sync application state
   const parseAndApplyRoute = useCallback(() => {
@@ -142,6 +153,7 @@ export default function App() {
           const sub: MainTab = decoded.s ?? 'network_graph';
           setTopLevelTab(top);
           setMainTab(sub);
+          setSelectedCodexItemId(null);
           
           // Clear hash plan after applying it to clean the URL bar
           const path = top === 'planner' ? `/planner/${sub}` : `/${top}`;
@@ -158,16 +170,20 @@ export default function App() {
         if (['planner', 'save_map', 'world_map', 'codex'].includes(top)) {
           setTopLevelTab(top);
           let sub: MainTab = 'network_graph';
+          let itemId: string | null = null;
           if (top === 'planner' && parts[1]) {
             const parsedSub = parts[1] as MainTab;
             if (['network_graph', 'tree_list', 'items', 'buildings'].includes(parsedSub)) {
               sub = parsedSub;
               setMainTab(parsedSub);
             }
+          } else if (top === 'codex') {
+            itemId = parts[1] || null;
+            setSelectedCodexItemId(itemId);
           }
           
           // Clean the URL bar by replacing the hash with the clean pathname
-          const cleanPath = top === 'planner' ? `/planner/${sub}` : `/${top}`;
+          const cleanPath = top === 'planner' ? `/planner/${sub}` : (itemId ? `/codex/${itemId}` : `/${top}`);
           window.history.replaceState(null, '', cleanPath);
           return;
         }
@@ -184,6 +200,9 @@ export default function App() {
             if (['network_graph', 'tree_list', 'items', 'buildings'].includes(sub)) {
               setMainTab(sub);
             }
+          } else if (top === 'codex') {
+            const itemId = parts[1] || null;
+            setSelectedCodexItemId(itemId);
           }
           return;
         }
@@ -196,6 +215,7 @@ export default function App() {
         const sub = (params.get('sub') ?? '') as MainTab;
         if (['planner', 'save_map', 'world_map', 'codex'].includes(top)) setTopLevelTab(top);
         if (['network_graph', 'tree_list', 'items', 'buildings'].includes(sub)) setMainTab(sub);
+        setSelectedCodexItemId(null);
         
         // Sync URL to clean pathname
         const path = top === 'planner' ? `/planner/${sub}` : `/${top}`;
@@ -206,14 +226,18 @@ export default function App() {
       // 5. Default / Fallback — restore from session or use defaults
       const storedTop = sessionStorage.getItem('sf_tab') as TopLevelTab | null;
       const storedSub = sessionStorage.getItem('sf_sub') as MainTab | null;
+      const storedCodexItem = sessionStorage.getItem('sf_codex_item');
+      
       const resolvedTop = (storedTop && ['planner', 'save_map', 'world_map', 'codex'].includes(storedTop)) ? storedTop : 'planner';
       const resolvedSub = (storedSub && ['network_graph', 'tree_list', 'items', 'buildings'].includes(storedSub)) ? storedSub : 'network_graph';
+      const resolvedCodexItem = resolvedTop === 'codex' ? (storedCodexItem || null) : null;
       
       setTopLevelTab(resolvedTop);
       setMainTab(resolvedSub);
+      setSelectedCodexItemId(resolvedCodexItem);
       
       // Update pathname in address bar on initial load
-      const initialPath = resolvedTop === 'planner' ? `/planner/${resolvedSub}` : `/${resolvedTop}`;
+      const initialPath = resolvedTop === 'planner' ? `/planner/${resolvedSub}` : (resolvedCodexItem ? `/codex/${resolvedCodexItem}` : `/${resolvedTop}`);
       window.history.replaceState(null, '', initialPath);
     } catch (err) {
       console.warn('Failed to parse navigation from URL', err);
@@ -458,7 +482,13 @@ export default function App() {
             </main>
           ) : topLevelTab === 'codex' ? (
             <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
-              <ItemBrowser />
+              <ItemBrowser
+                selectedItemId={selectedCodexItemId}
+                setSelectedItemId={(itemId) => {
+                  setSelectedCodexItemId(itemId);
+                  updatePath('codex', mainTab, itemId);
+                }}
+              />
             </main>
           ) : topLevelTab === 'save_map' ? (
             <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
