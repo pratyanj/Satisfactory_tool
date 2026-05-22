@@ -98,12 +98,12 @@ export default function App() {
   const [isRecalculating, setIsRecalculating] = useState(false);
   const [controlsCollapsed, setControlsCollapsed] = useState(false);
 
-  // Sync URL hash whenever navigation state changes (supports browser history navigation!)
-  const updateHash = useCallback((top: TopLevelTab, sub: MainTab) => {
-    const hash = top === 'planner' ? `#/planner/${sub}` : `#/${top}`;
-    // Only push to history if hash is different to avoid duplicate history states
-    if (window.location.hash !== hash) {
-      window.history.pushState(null, '', hash);
+  // Sync URL path whenever navigation state changes (supports browser history navigation!)
+  const updatePath = useCallback((top: TopLevelTab, sub: MainTab) => {
+    const path = top === 'planner' ? `/planner/${sub}` : `/${top}`;
+    // Only push to history if pathname is different to avoid duplicate history states
+    if (window.location.pathname !== path) {
+      window.history.pushState(null, '', path);
     }
     sessionStorage.setItem('sf_tab', top);
     sessionStorage.setItem('sf_sub', sub);
@@ -111,18 +111,21 @@ export default function App() {
 
   const handleTopLevelTab = useCallback((tab: TopLevelTab) => {
     setTopLevelTab(tab);
-    updateHash(tab, mainTab);
-  }, [mainTab, updateHash]);
+    updatePath(tab, mainTab);
+  }, [mainTab, updatePath]);
 
   const handleMainTab = useCallback((tab: MainTab) => {
     setMainTab(tab);
-    updateHash(topLevelTab, tab);
-  }, [topLevelTab, updateHash]);
+    updatePath(topLevelTab, tab);
+  }, [topLevelTab, updatePath]);
 
-  // Parse hash and sync application state
-  const parseAndApplyHash = useCallback(() => {
+  // Parse path and hash, and sync application state
+  const parseAndApplyRoute = useCallback(() => {
+    const pathname = window.location.pathname;
     const hash = window.location.hash;
+
     try {
+      // 1. Check for shared plan first (which is in the hash)
       if (hash.startsWith('#plan=')) {
         const encoded = hash.replace('#plan=', '');
         const decoded = JSON.parse(atob(decodeURIComponent(encoded)));
@@ -139,23 +142,40 @@ export default function App() {
           const sub: MainTab = decoded.s ?? 'network_graph';
           setTopLevelTab(top);
           setMainTab(sub);
+          
+          // Clear hash plan after applying it to clean the URL bar
+          const path = top === 'planner' ? `/planner/${sub}` : `/${top}`;
+          window.history.replaceState(null, '', path);
         }
         return;
       }
 
-      // Backwards compatibility for old hash structure #tab=...
-      if (hash.startsWith('#tab=')) {
-        const params = new URLSearchParams(hash.slice(1));
-        const top = (params.get('tab') ?? '') as TopLevelTab;
-        const sub = (params.get('sub') ?? '') as MainTab;
-        if (['planner', 'save_map', 'world_map', 'codex'].includes(top)) setTopLevelTab(top);
-        if (['network_graph', 'tree_list', 'items', 'buildings'].includes(sub)) setMainTab(sub);
-        return;
+      // 2. Check for hash-router fallback paths like #/codex, #/planner/network_graph, #codex, etc.
+      const cleanHash = hash.replace(/^#\/?/, '');
+      if (cleanHash && !cleanHash.startsWith('plan=') && !cleanHash.startsWith('tab=')) {
+        const parts = cleanHash.split('/');
+        const top = parts[0] as TopLevelTab;
+        if (['planner', 'save_map', 'world_map', 'codex'].includes(top)) {
+          setTopLevelTab(top);
+          let sub: MainTab = 'network_graph';
+          if (top === 'planner' && parts[1]) {
+            const parsedSub = parts[1] as MainTab;
+            if (['network_graph', 'tree_list', 'items', 'buildings'].includes(parsedSub)) {
+              sub = parsedSub;
+              setMainTab(parsedSub);
+            }
+          }
+          
+          // Clean the URL bar by replacing the hash with the clean pathname
+          const cleanPath = top === 'planner' ? `/planner/${sub}` : `/${top}`;
+          window.history.replaceState(null, '', cleanPath);
+          return;
+        }
       }
 
-      // Parse the new simple slash route pattern, e.g. #/planner/network_graph or #/codex
-      if (hash.startsWith('#/')) {
-        const parts = hash.slice(2).split('/');
+      // 3. Parse standard pathnames, e.g. /planner/network_graph or /codex
+      if (pathname && pathname !== '/') {
+        const parts = pathname.slice(1).split('/');
         const top = parts[0] as TopLevelTab;
         if (['planner', 'save_map', 'world_map', 'codex'].includes(top)) {
           setTopLevelTab(top);
@@ -169,7 +189,21 @@ export default function App() {
         }
       }
 
-      // No hash or unrecognized hash — restore from session or use defaults
+      // 4. Backwards compatibility for old hash structure #tab=...
+      if (hash.startsWith('#tab=')) {
+        const params = new URLSearchParams(hash.slice(1));
+        const top = (params.get('tab') ?? '') as TopLevelTab;
+        const sub = (params.get('sub') ?? '') as MainTab;
+        if (['planner', 'save_map', 'world_map', 'codex'].includes(top)) setTopLevelTab(top);
+        if (['network_graph', 'tree_list', 'items', 'buildings'].includes(sub)) setMainTab(sub);
+        
+        // Sync URL to clean pathname
+        const path = top === 'planner' ? `/planner/${sub}` : `/${top}`;
+        window.history.replaceState(null, '', path);
+        return;
+      }
+
+      // 5. Default / Fallback — restore from session or use defaults
       const storedTop = sessionStorage.getItem('sf_tab') as TopLevelTab | null;
       const storedSub = sessionStorage.getItem('sf_sub') as MainTab | null;
       const resolvedTop = (storedTop && ['planner', 'save_map', 'world_map', 'codex'].includes(storedTop)) ? storedTop : 'planner';
@@ -178,9 +212,9 @@ export default function App() {
       setTopLevelTab(resolvedTop);
       setMainTab(resolvedSub);
       
-      // Update hash in address bar using replaceState on initial mount so we don't pollute history
-      const initialHash = resolvedTop === 'planner' ? `#/planner/${resolvedSub}` : `#/${resolvedTop}`;
-      window.history.replaceState(null, '', initialHash);
+      // Update pathname in address bar on initial load
+      const initialPath = resolvedTop === 'planner' ? `/planner/${resolvedSub}` : `/${resolvedTop}`;
+      window.history.replaceState(null, '', initialPath);
     } catch (err) {
       console.warn('Failed to parse navigation from URL', err);
     }
@@ -188,13 +222,13 @@ export default function App() {
 
   // Sync state with URL on mount and listen to popstate (browser back/forward navigation)
   useEffect(() => {
-    parseAndApplyHash();
+    parseAndApplyRoute();
 
-    window.addEventListener('popstate', parseAndApplyHash);
+    window.addEventListener('popstate', parseAndApplyRoute);
     return () => {
-      window.removeEventListener('popstate', parseAndApplyHash);
+      window.removeEventListener('popstate', parseAndApplyRoute);
     };
-  }, [parseAndApplyHash]);
+  }, [parseAndApplyRoute]);
 
   const generateShareLink = useCallback(() => {
     const payload = {
