@@ -4246,3 +4246,936 @@ input[type="number"] {
   clip-path: polygon(25% 0%, 75% 0%, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0% 75%, 0% 25%);
 }
 
+/* ================================================================
+   FICSIT PRESET: ITEM HERO SPECIFICATION CARD
+   Easy to remove - simply delete this entire block
+   ================================================================ */
+
+.sf-item-hero-card {
+  background: linear-gradient(180deg, #16181b 0%, #0e0f12 100%);
+  border: 2px solid #202228;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.6);
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 16px;
+}
+
+.sf-item-hero-card::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  border-radius: 7px;
+  pointer-events: none;
+}
+
+/* Radioactive hazard top tape */
+.sf-item-hero-card--radioactive {
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.sf-item-hero-card--radioactive::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: repeating-linear-gradient(-45deg, #f48721, #f48721 6px, #111 6px, #111 12px);
+  opacity: 0.85;
+  z-index: 10;
+}
+
+/* Header strip */
+.sf-item-hero-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(10, 11, 13, 0.7);
+  border-bottom: 1px solid #202228;
+  position: relative;
+}
+
+.sf-item-hero-header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 25%;
+  height: 50%;
+  width: 3px;
+  background: #f48721;
+}
+
+.sf-item-hero-title {
+  font-size: 11px;
+  font-family: monospace;
+  font-weight: 800;
+  color: #f48721;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  padding-left: 6px;
+}
+
+.sf-item-hero-hazard {
+  font-size: 8px;
+  font-family: monospace;
+  font-weight: 900;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 1px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.08em;
+  animation: sf-hero-pulse 2s infinite ease-in-out;
+}
+
+@keyframes sf-hero-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Body layout */
+.sf-item-hero-body {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 600px) {
+  .sf-item-hero-body {
+    flex-direction: column;
+  }
+}
+
+/* Left image viewport */
+.sf-item-hero-img-wrap {
+  width: 140px;
+  background: #090a0c;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 10px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #202228;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .sf-item-hero-img-wrap {
+    width: 100%;
+    height: 140px;
+    border-right: none;
+    border-bottom: 1px solid #202228;
+  }
+}
+
+.sf-item-hero-img-grid {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.6) 100%);
+}
+
+.sf-item-hero-img {
+  width: 76px !important;
+  height: 76px !important;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 12px rgba(244, 135, 33, 0.25));
+}
+
+/* Caution tape on corners */
+.sf-item-hero-caution-l {
+  position: absolute;
+  bottom: 0px; left: 0px;
+  width: 24px; height: 4px;
+  background: repeating-linear-gradient(45deg, #f48721, #f48721 3px, #090a0c 3px, #090a0c 6px);
+  z-index: 5;
+}
+
+.sf-item-hero-caution-r {
+  position: absolute;
+  bottom: 0px; right: 0px;
+  width: 24px; height: 4px;
+  background: repeating-linear-gradient(-45deg, #f48721, #f48721 3px, #090a0c 3px, #090a0c 6px);
+  z-index: 5;
+}
+
+/* Right side info panel */
+.sf-item-hero-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sf-item-hero-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid rgba(32, 34, 40, 0.6);
+}
+
+.sf-item-hero-row:last-child {
+  border-bottom: none;
+}
+
+.sf-item-hero-row:hover {
+  background: rgba(244, 135, 33, 0.015);
+}
+
+.sf-item-hero-label {
+  font-size: 9px;
+  font-family: monospace;
+  font-weight: 700;
+  color: #555b66;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sf-item-hero-val {
+  font-size: 11px;
+  font-family: monospace;
+  font-weight: 700;
+  color: #c4c3c0;
+  letter-spacing: 0.02em;
+}
+
+.sf-item-hero-val--accent {
+  color: #f48721;
+}
+
+/* ================================================================
+   END OF FICSIT PRESET
+   ================================================================ */
+
+/* ================================================================
+   FICSIT PRESET: RECIPE VISUAL FLOW CARD
+   Easy to remove - simply delete this entire block
+   ================================================================ */
+
+.sf-recipes-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sf-recipes-sec-title {
+  font-size: 10px;
+  font-family: monospace;
+  font-weight: 800;
+  color: #8e9299;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding-left: 8px;
+  border-left: 3px solid #f48721;
+  line-height: 1;
+  margin: 4px 0;
+}
+
+.sf-recipes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sf-recipe-card {
+  position: relative;
+  background: rgba(18, 20, 24, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 22px 26px;
+  box-shadow: 
+    0 16px 40px rgba(0, 0, 0, 0.65), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-image: 
+    radial-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.sf-recipe-card:hover {
+  background: rgba(22, 25, 30, 0.75);
+  border-color: rgba(244, 135, 33, 0.35);
+  box-shadow: 
+    0 24px 56px rgba(0, 0, 0, 0.8), 
+    0 0 32px rgba(244, 135, 33, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Inner highlight */
+.sf-recipe-card::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.015);
+  border-radius: 11px;
+  pointer-events: none;
+}
+
+/* Left Edge Highlight Stripe */
+.sf-recipe-card-edge-stripe {
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 3px;
+  background: #f48721;
+  border-radius: 0 2px 2px 0;
+  opacity: 0.85;
+}
+
+/* Corner Screws/Rivets */
+.sf-recipe-card-screw {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: #090a0c;
+  border-radius: 50%;
+  box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.15), 1px 1px 1px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+.sf-recipe-card-screw-tl { top: 8px; left: 8px; }
+.sf-recipe-card-screw-tr { top: 8px; right: 8px; }
+.sf-recipe-card-screw-bl { bottom: 8px; left: 8px; }
+.sf-recipe-card-screw-br { bottom: 8px; right: 8px; }
+
+/* Header Bar Layout */
+.sf-recipe-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sf-recipe-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sf-recipe-card-alt-badge {
+  font-size: 8px;
+  font-family: monospace;
+  font-weight: 800;
+  color: #f48721;
+  background: rgba(244, 135, 33, 0.1);
+  border: 1px solid rgba(244, 135, 33, 0.3);
+  padding: 2px 5px;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+}
+
+.sf-recipe-card-name {
+  font-size: 12px;
+  font-family: monospace;
+  font-weight: 700;
+  color: #e4e3e0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Machine Badge */
+.sf-recipe-card-machine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(9, 10, 12, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.sf-recipe-card-machine-img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  opacity: 0.85;
+}
+
+.sf-recipe-card-machine-name {
+  font-size: 8px;
+  font-family: monospace;
+  font-weight: 700;
+  color: #c4c3c0;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Plain machine name text replacing the old badge card */
+.sf-recipe-card-machine-label {
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  color: #8e9299;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* Flow Diagram Body Layout — height is set dynamically via inline style in React (based on item count) */
+.sf-recipe-card-flow {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 12px;
+  position: relative;
+  /* height comes from React inline style: LABEL_H + maxItems * CHIP_H + gaps */
+  min-height: 140px;
+  padding-top: 28px;
+  box-sizing: border-box;
+}
+
+.sf-recipe-card-block {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  /* height 100% fills the fixed flow height, minus the 28px padding-top */
+  height: 100%;
+}
+
+.sf-recipe-card-block-label {
+  position: absolute;
+  top: -22px;
+  font-size: 9px;
+  font-family: monospace;
+  font-weight: 700;
+  color: #555c6d;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.sf-recipe-card-block--inputs .sf-recipe-card-block-label {
+  left: 4px;
+  text-align: left;
+}
+
+.sf-recipe-card-block--outputs .sf-recipe-card-block-label {
+  right: 4px;
+  text-align: right;
+}
+
+.sf-recipe-card-items {
+  display: flex;
+  flex-direction: column;
+  /* space-evenly distributes chips so their vertical centers match the SVG positions */
+  justify-content: space-evenly;
+  height: 100%;
+}
+
+/* SVG Thread Connectors — height 100% of the fixed flow row */
+.sf-recipe-flow-connector {
+  width: 80px;
+  height: 100%;
+  position: relative;
+  flex-shrink: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* SVG absolutely fills its container so coordinates map 1:1 to chip positions */
+.sf-recipe-flow-connector svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Pulsing energy animation on active highlighted threads */
+@keyframes sf-laser-flow {
+  to { stroke-dashoffset: -12; }
+}
+
+/* Central Machine Node wrap — stretches to full flow height so it centers the node at y=50% */
+.sf-recipe-flow-machine-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  /* MUST be height:100% so position:absolute children are relative to flow height */
+  height: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+/* ===== Transparent Glassmorphic Machine Card (centered in flow) ===== */
+.sf-recipe-flow-machine-node {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* TRANSPARENT GLASS CARD */
+  background: rgba(244, 135, 33, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(244, 135, 33, 0.3);
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(244, 135, 33, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 24px rgba(244, 135, 33, 0.04);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+/* Corner accent lines on the transparent card */
+.sf-recipe-flow-machine-node::before {
+  content: '';
+  position: absolute;
+  top: 6px; left: 6px; right: 6px; bottom: 6px;
+  border: 1px solid rgba(244, 135, 33, 0.08);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.sf-recipe-card:hover .sf-recipe-flow-machine-node {
+  background: rgba(244, 135, 33, 0.08);
+  border-color: rgba(244, 135, 33, 0.65);
+  box-shadow: 
+    0 0 40px rgba(244, 135, 33, 0.3),
+    0 12px 40px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 32px rgba(244, 135, 33, 0.08);
+  transform: scale(1.05);
+}
+
+/* Inner machine image container — transparent */
+.sf-recipe-flow-machine-core {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+
+.sf-recipe-flow-machine-img {
+  width: 78px !important;
+  height: 78px !important;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 8px rgba(244, 135, 33, 0.2));
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3;
+  position: relative;
+}
+
+.sf-recipe-card:hover .sf-recipe-flow-machine-img {
+  transform: scale(1.08);
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 14px rgba(244, 135, 33, 0.5));
+}
+
+.sf-recipe-flow-machine-placeholder {
+  font-size: 36px;
+  color: rgba(244, 135, 33, 0.5);
+  z-index: 3;
+}
+
+/* Rotating orbital ring outside the glass card */
+.sf-recipe-flow-machine-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 22px;
+  border: 1px dashed rgba(244, 135, 33, 0.25);
+  pointer-events: none;
+  z-index: 0;
+  animation: sf-machine-spin-slow 30s linear infinite;
+  transition: all 0.4s ease;
+}
+
+.sf-recipe-card:hover .sf-recipe-flow-machine-glow {
+  inset: -10px;
+  border-color: rgba(244, 135, 33, 0.6);
+  border-width: 1.5px;
+  animation: sf-machine-spin-fast 10s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(244, 135, 33, 0.4));
+}
+
+@keyframes sf-machine-spin-slow {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes sf-machine-spin-fast {
+  100% { transform: rotate(360deg); }
+}
+
+/* Interactive Clickable Item Chips (Large, Transparent) */
+.sf-recipe-item-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  background: rgba(9, 10, 12, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  width: 100%;
+  height: 52px;
+  box-sizing: border-box;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+  font-family: inherit;
+  color: inherit;
+}
+
+.sf-recipe-item-chip:hover {
+  background: rgba(21, 23, 27, 0.75);
+  border-color: rgba(244, 135, 33, 0.45);
+  box-shadow: 
+    inset 0 1px 2px rgba(0, 0, 0, 0.4), 
+    0 0 12px rgba(244, 135, 33, 0.12);
+  transform: translateX(2px);
+}
+
+.sf-recipe-item-chip--highlight {
+  background: rgba(244, 135, 33, 0.06);
+  border-color: #f48721;
+  box-shadow: 
+    inset 0 1px 2px rgba(244, 135, 33, 0.03), 
+    0 0 14px rgba(244, 135, 33, 0.18);
+}
+
+.sf-recipe-item-chip--highlight:hover {
+  background: rgba(244, 135, 33, 0.09);
+  border-color: #f48721;
+  box-shadow: 
+    inset 0 1px 2px rgba(244, 135, 33, 0.03), 
+    0 0 18px rgba(244, 135, 33, 0.25);
+  transform: translateX(2px);
+}
+
+.sf-recipe-item-img {
+  width: 32px !important;
+  height: 32px !important;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+.sf-recipe-item-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+
+.sf-recipe-item-name {
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  color: #8e9299;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+}
+
+.sf-recipe-item-chip:hover .sf-recipe-item-name {
+  color: #fff;
+}
+
+.sf-recipe-item-chip--highlight .sf-recipe-item-name {
+  color: #f48721;
+  font-weight: 700;
+}
+
+.sf-recipe-item-rate {
+  font-size: 10px;
+  font-family: monospace;
+  font-weight: 700;
+  color: #e4e3e0;
+  font-variant-numeric: tabular-nums;
+}
+
+.sf-recipe-item-chip--highlight .sf-recipe-item-rate {
+  color: #fff;
+}
+
+.sf-recipe-item-unit {
+  font-size: 9px;
+  color: #6b7280;
+  font-weight: normal;
+}
+
+/* Responsive Viewports */
+@media (max-width: 768px) {
+  .sf-recipe-card-flow {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    height: auto;
+    min-height: 0;
+    padding-top: 0;
+  }
+  .sf-recipe-card-block {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sf-recipe-card-block-label {
+    position: static;
+    display: block;
+    margin-bottom: 8px;
+    text-align: center !important;
+  }
+  .sf-recipe-flow-connector {
+    display: none;
+  }
+  .sf-recipe-flow-machine-wrap {
+    height: auto;
+    margin: 12px 0;
+  }
+}
+
+/* ================================================================
+   END OF RECIPE VISUAL FLOW CARD PRESET
+   ================================================================ */
+
+/* ================================================================
+   RECIPE SECTION HEADER + VIEW TOGGLE
+   ================================================================ */
+
+/* Section header row: title on left, toggle buttons on right */
+.sf-recipes-sec-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* View toggle button group */
+.sf-view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(9, 10, 12, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 6px;
+  padding: 3px;
+}
+
+.sf-view-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: #555c6d;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.sf-view-toggle-btn:hover {
+  color: #c4c7cd;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sf-view-toggle-btn--active {
+  color: #f48721;
+  background: rgba(244, 135, 33, 0.12);
+}
+
+/* ================================================================
+   RECIPE TABLE VIEW
+   ================================================================ */
+
+.sf-rt {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(9, 10, 12, 0.5);
+}
+
+/* Table header row */
+.sf-rt-header {
+  display: grid;
+  grid-template-columns: 1.6fr 2.5fr 1.8fr 1.2fr;
+  align-items: center;
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.sf-rt-th {
+  font-size: 9px;
+  font-family: monospace;
+  font-weight: 700;
+  color: #555c6d;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Data row */
+.sf-rt-row {
+  display: grid;
+  grid-template-columns: 1.6fr 2.5fr 1.8fr 1.2fr;
+  align-items: center;
+  padding: 12px 16px;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease;
+}
+
+.sf-rt-row:last-child {
+  border-bottom: none;
+}
+
+.sf-rt-row:hover {
+  background: rgba(244, 135, 33, 0.03);
+}
+
+/* Column cells */
+.sf-rt-td {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sf-rt-td--name {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.sf-rt-td--ingredients,
+.sf-rt-td--products {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sf-rt-td--machine {
+  gap: 8px;
+}
+
+/* Recipe name text */
+.sf-rt-recipe-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e4e3e0;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.3;
+}
+
+/* Operator: + and = */
+.sf-rt-op {
+  font-size: 14px;
+  font-weight: 700;
+  color: #555c6d;
+  font-family: monospace;
+  flex-shrink: 0;
+}
+
+.sf-rt-op--eq {
+  color: #f48721;
+  font-size: 16px;
+  margin-right: 2px;
+}
+
+/* Item chip in table view — vertical icon + rate */
+.sf-rt-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  color: inherit;
+  min-width: 52px;
+}
+
+.sf-rt-chip:hover {
+  background: rgba(244, 135, 33, 0.06);
+  border-color: rgba(244, 135, 33, 0.3);
+}
+
+.sf-rt-chip--highlight {
+  background: rgba(244, 135, 33, 0.08);
+  border-color: #f48721;
+  box-shadow: 0 0 10px rgba(244, 135, 33, 0.15);
+}
+
+.sf-rt-chip-img {
+  width: 36px !important;
+  height: 36px !important;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+}
+
+.sf-rt-chip-rate {
+  font-size: 11px;
+  font-family: monospace;
+  font-weight: 700;
+  color: #e4e3e0;
+  white-space: nowrap;
+}
+
+.sf-rt-chip--highlight .sf-rt-chip-rate {
+  color: #f48721;
+}
+
+.sf-rt-chip-unit {
+  font-size: 9px;
+  color: #6b7280;
+  font-weight: normal;
+}
+
+/* Machine column */
+.sf-rt-machine-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+.sf-rt-machine-name {
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  color: #8e9299;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ================================================================
+   END OF TABLE VIEW STYLES
+   ================================================================ */
+
+
