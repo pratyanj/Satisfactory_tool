@@ -21,6 +21,9 @@ import { TrainNetworkLayer } from './TrainNetworkLayer';
 import { VehicleLayer } from './VehicleLayer';
 import { DroneLayer } from './DroneLayer';
 import type { AltitudeRange } from './AltitudeFilter';
+import { aggregateDiagnosticsFlowB } from '../../engine/diagnostics/diagnosticsAggregator';
+import type { ParsedSave } from '../../types/save';
+
 
 // Fix Leaflet default icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -57,12 +60,14 @@ function MapController({
 
 // ─── Building Markers ─────────────────────────────────────────────────────────
 function BuildingMarkersLayer({
-  buildings, layers, zoom, altitudeRange, onPlanProduction,
+  buildings, layers, zoom, altitudeRange, faultyMachineIds, active, onPlanProduction,
 }: {
   buildings: SaveBuilding[];
   layers: LayerState;
   zoom: number;
   altitudeRange: AltitudeRange | null;
+  faultyMachineIds: Map<string, 'idle' | 'starved' | 'clogged'>;
+  active: boolean;
   onPlanProduction?: (itemId: string, rate: number) => void;
 }) {
   console.log('[BuildingMarkersLayer] Render. Buildings count:', buildings.length);
@@ -85,7 +90,12 @@ function BuildingMarkersLayer({
     <>
       {visible.map(b => (
         <React.Fragment key={b.instanceName}>
-          <BuildingMarker building={b} zoom={zoom} onPlanProduction={onPlanProduction} />
+          <BuildingMarker 
+            building={b} 
+            zoom={zoom} 
+            diagnosticsStatus={active ? faultyMachineIds.get(b.instanceName) : undefined}
+            onPlanProduction={onPlanProduction} 
+          />
         </React.Fragment>
       ))}
     </>
@@ -93,26 +103,43 @@ function BuildingMarkersLayer({
 }
 
 // ─── Conveyor Layer ───────────────────────────────────────────────────────────
-function ConveyorLayer({ conveyors }: { conveyors: SaveConveyor[] }) {
+function ConveyorLayer({ conveyors, overloadedBeltIds, active }: { conveyors: SaveConveyor[]; overloadedBeltIds: Set<string>; active: boolean }) {
   return <>
-    {conveyors.map(c => (
-      <Polyline key={c.instanceName}
-        positions={[gameToLatLng(c.startPosition.x, c.startPosition.y), gameToLatLng(c.endPosition.x, c.endPosition.y)]}
-        pathOptions={{ color: getBeltColor(c.typePath), weight: getBeltWeight(c.typePath), opacity: 0.75 }} />
-    ))}
+    {conveyors.map(c => {
+      const isOverloaded = active && overloadedBeltIds.has(c.instanceName);
+      return (
+        <Polyline key={c.instanceName}
+          positions={[gameToLatLng(c.startPosition.x, c.startPosition.y), gameToLatLng(c.endPosition.x, c.endPosition.y)]}
+          pathOptions={{ 
+            color: isOverloaded ? '#ff1744' : getBeltColor(c.typePath), 
+            weight: isOverloaded ? getBeltWeight(c.typePath) * 2.5 : getBeltWeight(c.typePath), 
+            opacity: isOverloaded ? 1.0 : 0.75,
+            dashArray: isOverloaded ? '5 5' : undefined
+          }} />
+      );
+    })}
   </>;
 }
 
 // ─── Pipe Layer ───────────────────────────────────────────────────────────────
-function PipeLayer({ pipes }: { pipes: SavePipe[] }) {
+function PipeLayer({ pipes, unstablePipeIds, active }: { pipes: SavePipe[]; unstablePipeIds: Set<string>; active: boolean }) {
   return <>
-    {pipes.map(p => (
-      <Polyline key={p.instanceName}
-        positions={[gameToLatLng(p.startPosition.x, p.startPosition.y), gameToLatLng(p.endPosition.x, p.endPosition.y)]}
-        pathOptions={{ color: getPipeColor(p.typePath), weight: p.typePath.includes('Mk2') ? 3 : 2, opacity: 0.7, dashArray: '5 4' }} />
-    ))}
+    {pipes.map(p => {
+      const isUnstable = active && unstablePipeIds.has(p.instanceName);
+      return (
+        <Polyline key={p.instanceName}
+          positions={[gameToLatLng(p.startPosition.x, p.startPosition.y), gameToLatLng(p.endPosition.x, p.endPosition.y)]}
+          pathOptions={{ 
+            color: isUnstable ? '#00e6ff' : getPipeColor(p.typePath), 
+            weight: isUnstable ? 5 : p.typePath.includes('Mk2') ? 3 : 2, 
+            opacity: isUnstable ? 1.0 : 0.7, 
+            dashArray: isUnstable ? '3 5' : '5 4' 
+          }} />
+      );
+    })}
   </>;
 }
+
 
 // ─── Power Line Layer ─────────────────────────────────────────────────────────
 function PowerLineLayer({ powerLines }: { powerLines: SavePowerLine[] }) {
@@ -205,7 +232,37 @@ export function WorldMap({
   const combinedRef = (mapRef as React.MutableRefObject<L.Map | null>) ?? internalRef;
   const [zoom, setZoom] = useState(-2);
 
+  const diagnostics = useMemo(() => {
+    if (!layers.diagnostics || buildings.length === 0) {
+      return {
+        overloadedBeltIds: new Set<string>(),
+        unstablePipeIds: new Set<string>(),
+        faultyMachineIds: new Map<string, 'idle' | 'starved' | 'clogged'>(),
+      };
+    }
+
+    const mockSave: ParsedSave = {
+      saveName: saveName || 'Real Save',
+      buildings,
+      conveyors,
+      pipes,
+      powerLines,
+      players,
+      totalObjectCount: buildings.length + conveyors.length + pipes.length,
+      parsedAt: Date.now(),
+      powerData: {
+        totalProduction: 2400,
+        totalConsumption: 1850,
+        batteryCount: 8,
+        generatorCount: 16,
+      }
+    };
+
+    return aggregateDiagnosticsFlowB(mockSave);
+  }, [layers.diagnostics, buildings, conveyors, pipes, powerLines, players, saveName]);
+
   const center: L.LatLngExpression = [MAP_IMAGE_SIZE / 2, MAP_IMAGE_SIZE / 2];
+
   const layerConfig = MAP_LAYERS.find(l => l.id === mapLayer);
   const bgUrl = layerConfig?.url ?? '/map/maprz5.png';
   console.log('[WorldMap] Background URL resolved to:', bgUrl);
@@ -271,7 +328,10 @@ export function WorldMap({
         {/* Building markers from save */}
         <BuildingMarkersLayer
           buildings={buildings} layers={layers} zoom={zoom}
-          altitudeRange={altitudeRange} onPlanProduction={onPlanProduction} />
+          altitudeRange={altitudeRange}
+          faultyMachineIds={diagnostics.faultyMachineIds}
+          active={layers.diagnostics}
+          onPlanProduction={onPlanProduction} />
 
         {/* Player markers */}
         {layers.players && players.map((p, i) => (
@@ -281,8 +341,9 @@ export function WorldMap({
         ))}
 
         {/* Infrastructure */}
-        {layers.conveyors  && <ConveyorLayer conveyors={conveyors} />}
-        {layers.pipes      && <PipeLayer pipes={pipes} />}
+        {layers.conveyors  && <ConveyorLayer conveyors={conveyors} overloadedBeltIds={diagnostics.overloadedBeltIds} active={layers.diagnostics} />}
+        {layers.pipes      && <PipeLayer pipes={pipes} unstablePipeIds={diagnostics.unstablePipeIds} active={layers.diagnostics} />}
+
         {layers.powerLines && <PowerLineLayer powerLines={powerLines} />}
 
         {/* Sprint 4 overlay layers */}

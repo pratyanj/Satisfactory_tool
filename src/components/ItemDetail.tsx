@@ -53,12 +53,18 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
       </div>
 
       {/* Back bar */}
-      <div className="id-topbar">
-        <button className="id-back-btn" onClick={onBack}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-          Item Browser
-        </button>
-        <span className="id-breadcrumb">/ {item.name}</span>
+      <div className="id-topbar flex justify-between items-center pr-6">
+        <div className="flex items-center gap-3">
+          <button className="id-back-btn" onClick={onBack}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            Item Browser
+          </button>
+          <span className="id-breadcrumb">/ {item.name}</span>
+        </div>
+        
+        {(producingRecipes.length > 0 || usedAsIngredient.length > 0) && (
+          <ViewToggle viewMode={viewMode} onChange={setViewMode} />
+        )}
       </div>
 
       <div className="id-body">
@@ -109,7 +115,6 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
             <div className="sf-recipes-section">
               <div className="sf-recipes-sec-header">
                 <h3 className="sf-recipes-sec-title">PRODUCING RECIPES</h3>
-                <ViewToggle viewMode={viewMode} onChange={setViewMode} />
               </div>
               {viewMode === 'flow' ? (
                 <div className="sf-recipes-list">
@@ -131,7 +136,6 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
             <div className="sf-recipes-section">
               <div className="sf-recipes-sec-header">
                 <h3 className="sf-recipes-sec-title">USED AS INGREDIENT</h3>
-                <ViewToggle viewMode={viewMode} onChange={setViewMode} />
               </div>
               {viewMode === 'flow' ? (
                 <div className="sf-recipes-list">

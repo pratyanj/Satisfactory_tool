@@ -68,9 +68,13 @@ function getIconUrl(typePath: string): string | null {
 }
 
 // ─── Create Leaflet DivIcon ───────────────────────────────────────────────────
-function createBuildingIcon(info: BuildingInfo, typePath: string, zoom: number): L.DivIcon {
+function createBuildingIcon(info: BuildingInfo, typePath: string, zoom: number, diagnosticsStatus?: 'idle' | 'starved' | 'clogged'): L.DivIcon {
   const iconUrl = getIconUrl(typePath);
   const size = zoom >= 0 ? 36 : zoom >= -1 ? 28 : zoom >= -2 ? 22 : 16;
+
+  const glowColor = diagnosticsStatus === 'idle' ? '#ff1744' : diagnosticsStatus === 'starved' ? '#ff9100' : info.color;
+  const pulseClass = diagnosticsStatus ? 'bm-root bm-pulse animate-pulse' : 'bm-root';
+  const customBorder = diagnosticsStatus ? `border-width: 2px !important; border-color: ${glowColor} !important;` : `border-color:${info.color};`;
 
   const innerHtml = iconUrl
     ? `<img
@@ -89,10 +93,10 @@ function createBuildingIcon(info: BuildingInfo, typePath: string, zoom: number):
     iconAnchor: [size / 2, size / 2],
     popupAnchor: [0, -(size / 2 + 4)],
     html: `
-      <div class="bm-root" style="
+      <div class="${pulseClass}" style="
         width:${size}px;height:${size}px;
-        border-color:${info.color};
-        box-shadow:0 0 6px ${info.color}88;
+        ${customBorder}
+        box-shadow:0 0 10px ${glowColor}ff;
       ">
         ${innerHtml}
       </div>
@@ -104,14 +108,15 @@ function createBuildingIcon(info: BuildingInfo, typePath: string, zoom: number):
 interface BuildingMarkerProps {
   building: SaveBuilding;
   zoom: number;
+  diagnosticsStatus?: 'idle' | 'starved' | 'clogged';
   onPlanProduction?: (itemId: string, rate: number) => void;
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
-export function BuildingMarker({ building, zoom, onPlanProduction }: BuildingMarkerProps) {
+export function BuildingMarker({ building, zoom, diagnosticsStatus, onPlanProduction }: BuildingMarkerProps) {
   const info = classifyBuilding(building.typePath);
   const latlng = gameToLatLng(building.position.x, building.position.y);
-  const icon = createBuildingIcon(info, building.typePath, zoom);
+  const icon = createBuildingIcon(info, building.typePath, zoom, diagnosticsStatus);
 
   const eventHandlers = useCallback(() => ({}), []);
 
@@ -131,3 +136,4 @@ export function BuildingMarker({ building, zoom, onPlanProduction }: BuildingMar
     </Marker>
   );
 }
+

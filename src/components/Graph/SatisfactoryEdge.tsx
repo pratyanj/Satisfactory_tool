@@ -17,12 +17,25 @@ export const SatisfactoryEdge = React.memo(function SatisfactoryEdge({
   labelBgStyle,
   data,
 }: EdgeProps) {
+  let sY = sourceY;
+  let tY = targetY;
+
+  const totalSplits = data?.totalSplits as number | undefined;
+  const splitIndex = data?.splitIndex as number | undefined;
+
+  if (totalSplits && totalSplits > 1 && typeof splitIndex === 'number') {
+    const offsetDistance = 24; // Elegant 24px vertical spacing between parallel belts
+    const offset = (splitIndex - (totalSplits - 1) / 2) * offsetDistance;
+    sY += offset;
+    tY += offset;
+  }
+
   const [edgePath, labelX, labelY] = getSmoothStepPath({
     sourceX,
-    sourceY,
+    sourceY: sY,
     sourcePosition,
     targetX,
-    targetY,
+    targetY: tY,
     targetPosition,
     borderRadius: 0,
   });

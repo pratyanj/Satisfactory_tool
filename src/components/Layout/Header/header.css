@@ -233,29 +233,25 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: #1a1c1f;
-  border: 1px solid #2a2d33;
+  background: transparent;
+  border: none;
   color: #8E9299;
   font-weight: 700;
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 1px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  transition: all 0.3s ease;
 }
 
 .sf-nav-btn:hover {
-  background: #23262a;
-  border-color: #f48721;
-  color: #e4e3e0;
+  color: #fff;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
 .sf-nav-btn.active {
-  background: #2a2d33;
   color: #f48721;
-  border-color: #f48721;
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 12px rgba(244, 135, 33, 0.8), 0 0 4px rgba(244, 135, 33, 0.4);
 }
 
 /* Right Section - FICSIT & Lights */
