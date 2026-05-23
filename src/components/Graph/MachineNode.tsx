@@ -13,6 +13,16 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
   const isFlipped = !!data.isFlipped;
   const updateNodeInternals = useUpdateNodeInternals();
 
+  const diagnosticsStatus = data.diagnosticsStatus as 'idle' | 'starved' | 'clogged' | undefined;
+  const diagnosticsSeverity = data.diagnosticsSeverity as 'critical' | 'warning' | 'info' | undefined;
+
+  const glowStyle = diagnosticsSeverity === 'critical'
+    ? { boxShadow: '0 0 25px rgba(255, 23, 68, 0.85)', borderColor: '#ff1744' }
+    : diagnosticsSeverity === 'warning'
+    ? { boxShadow: '0 0 20px rgba(255, 145, 0, 0.7)', borderColor: '#ff9100' }
+    : {};
+
+
   useEffect(() => {
     updateNodeInternals(id);
   }, [isFlipped, id, updateNodeInternals]);
@@ -41,7 +51,7 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
       />
 
       {/* Main Premium Beveled Card */}
-      <div className="sf-machine-card-frame">
+      <div className="sf-machine-card-frame" style={glowStyle}>
         {/* Bezel Corner Screws/Rivets */}
         <div className="sf-card-screw sf-card-screw-tl" />
         <div className="sf-card-screw sf-card-screw-tr" />
@@ -113,10 +123,17 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
 
               {/* Item Name */}
               <div
-                className="font-bold tracking-wider text-white text-[10px] truncate uppercase ml-1.5 flex-1 select-none pr-1"
+                className="font-bold tracking-wider text-white text-[10px] truncate uppercase ml-1.5 flex-1 select-none pr-1 flex items-center gap-1"
                 title={data.item as string}
               >
-                {data.item as string}
+                <span className="truncate">{data.item as string}</span>
+                {diagnosticsStatus && (
+                  <span className={`text-[6px] font-black tracking-tighter uppercase px-1 rounded animate-pulse shrink-0 ${
+                    diagnosticsStatus === 'starved' ? 'bg-[#ff9100] text-black animate-pulse' : 'bg-[#ff1744] text-white animate-bounce'
+                  }`}>
+                    {diagnosticsStatus}
+                  </span>
+                )}
               </div>
 
               {/* Total Power Usage badge */}
@@ -127,6 +144,7 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
                 <span className="text-[7.5px]">⚡</span> {totalPower.toFixed(1)} MW
               </div>
             </div>
+
 
             {/* Middle: Item Produced Icon + Production Rate Value */}
             <div className="flex items-center gap-2 w-full my-1">
@@ -202,11 +220,22 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
       />
 
       {/* Floating Detailed Hover Tooltip for Recipe Inputs/Outputs */}
-      <div className="sf-tooltip whitespace-nowrap min-w-max z-50">
-        {/* Inputs */}
-        {inputDetails.length > 0 &&
-          inputDetails.map((inp: any, idx: number) => (
-            <div key={idx} className="flex items-center gap-2 font-mono text-[11px] mb-1">
+      <div className="sf-machine-tooltip whitespace-nowrap min-w-max z-50">
+        {/* Bezel Corner Screws/Rivets */}
+        <div className="sf-card-screw sf-card-screw-tl" />
+        <div className="sf-card-screw sf-card-screw-tr" />
+        <div className="sf-card-screw sf-card-screw-bl" />
+        <div className="sf-card-screw sf-card-screw-br" />
+
+        {/* Orange Bezel Edge Lights */}
+        <div className="sf-card-light-top" />
+        <div className="sf-card-light-bottom" />
+
+        <div className="relative z-20 flex flex-col pt-1">
+          {/* Inputs */}
+          {inputDetails.length > 0 &&
+            inputDetails.map((inp: any, idx: number) => (
+              <div key={idx} className="flex items-center gap-2 font-mono text-[11px] mb-1">
               <span className="text-blue-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">
                 IN
               </span>
@@ -272,6 +301,7 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
             <span className="text-[#8E9299]">{powerPerMachine} MW/machine</span>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

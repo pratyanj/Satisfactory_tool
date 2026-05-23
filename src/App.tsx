@@ -15,12 +15,16 @@ import { WorldMapTab } from './components/Map/WorldMapTab';
 import { ItemBrowser } from './components/ItemBrowser';
 import { HeaderNav } from './components/Layout/Header/HeaderNav';
 import { BodyFrame } from './components/Layout/BodyFrame/BodyFrame';
+import { ParsedSave } from './types/save';
+import { aggregateDiagnosticsFlowA, aggregateDiagnosticsFlowB } from './engine/diagnostics/diagnosticsAggregator';
+import { DiagnosticsTab } from './components/DiagnosticsTab';
+
 import { solve, calculateSummary, SummaryData, SolverNode, RecipeSelectionMap } from './engine/solver';
 import { mapSolverResultToGraph, LayoutMode } from './engine/graphMapper';
 import { BeltId, MachineId, items, machines, belts } from './engine/data';
 import { Edge, Node } from '@xyflow/react';
 
-type MainTab = 'network_graph' | 'tree_list' | 'items' | 'buildings' | 'world_map';
+type MainTab = 'network_graph' | 'tree_list' | 'items' | 'buildings' | 'world_map' | 'diagnostics';
 
 const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
   {
@@ -67,7 +71,17 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
       </svg>
     ),
   },
+  {
+    id: 'diagnostics',
+    label: 'Diagnostics',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+      </svg>
+    ),
+  },
 ];
+
 
 type TopLevelTab = 'planner' | 'save_map' | 'world_map' | 'codex';
 
@@ -88,6 +102,8 @@ export default function App() {
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [rootNode, setRootNode] = useState<SolverNode | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [parsedSave, setParsedSave] = useState<ParsedSave | null>(null);
+
 
   const [lastInput, setLastInput] = useState<{ itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap }>({ itemId: 'copper_sheet', rate: 120, minerId: 'miner_mk1', beltId: 'mk1', recipeSelections: {} });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
@@ -283,10 +299,28 @@ export default function App() {
       const newSummary = calculateSummary(solvedRoot);
       const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(solvedRoot, mode, beltId);
 
+      // Integrate Diagnostics overlay directly on the ReactFlow graph
+      const diag = aggregateDiagnosticsFlowA(solvedRoot, newSummary, beltId);
+      const enrichedNodes = newNodes.map(node => {
+        const item = node.data.itemId as string;
+        if (item && diag.faultyMachineIds.has(item)) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              diagnosticsStatus: diag.faultyMachineIds.get(item),
+              diagnosticsSeverity: 'warning',
+            }
+          };
+        }
+        return node;
+      });
+
       setRootNode(solvedRoot);
       setSummary(newSummary);
-      setNodes(newNodes);
+      setNodes(enrichedNodes);
       setEdges(newEdges);
+
     } catch (err: any) {
       setError(err.message || 'An error occurred during calculation.');
       setRootNode(null);
@@ -300,6 +334,16 @@ export default function App() {
   const handleCalculate = (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap) => {
     calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode);
   };
+
+  const handleResolveAction = useCallback((actionType: string, payload: any) => {
+    if (actionType === 'upgrade_belt') {
+      const { targetBeltId } = payload;
+      setLastInput(prev => ({
+        ...prev,
+        beltId: targetBeltId,
+      }));
+    }
+  }, []);
 
   const recipeSelectionSignature = JSON.stringify(lastInput.recipeSelections);
 
@@ -340,22 +384,24 @@ export default function App() {
       case 'network_graph':
         return (
           <div className="absolute inset-0">
-            <div className="absolute top-4 right-4 z-10 flex bg-[#1c1e22] rounded-lg border border-[#2a2d33] p-1 shadow-xl">
+            <div className="absolute top-4 right-4 z-10 flex gap-2">
               <button
                 onClick={() => setLayoutMode('aggregated')}
                 disabled={isRecalculating}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'aggregated' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#242528]'} disabled:opacity-50`}
+                className={`${layoutMode === 'aggregated' ? 'sf-primary-btn' : 'sf-secondary-btn'} px-4 py-2 text-[10px] font-bold tracking-widest uppercase disabled:opacity-50`}
                 aria-label="Switch to aggregated view"
               >
-                Aggregated View
+                {layoutMode === 'aggregated' && <span className="sf-btn-scanner absolute inset-0 pointer-events-none z-10" />}
+                <span className="relative z-20">Aggregated View</span>
               </button>
               <button
                 onClick={() => setLayoutMode('expanded')}
                 disabled={isRecalculating}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${layoutMode === 'expanded' ? 'bg-[#2a2d33] text-white shadow-sm' : 'text-[#8E9299] hover:text-white hover:bg-[#242528]'} disabled:opacity-50`}
+                className={`${layoutMode === 'expanded' ? 'sf-primary-btn' : 'sf-secondary-btn'} px-4 py-2 text-[10px] font-bold tracking-widest uppercase disabled:opacity-50`}
                 aria-label="Switch to machine view"
               >
-                Machine View
+                {layoutMode === 'expanded' && <span className="sf-btn-scanner absolute inset-0 pointer-events-none z-10" />}
+                <span className="relative z-20">Machine View</span>
               </button>
             </div>
             {isRecalculating && (
@@ -373,6 +419,18 @@ export default function App() {
         return <ItemsTab summary={summary} />;
       case 'buildings':
         return <BuildingsTab summary={summary} />;
+      case 'diagnostics':
+        return (
+          <DiagnosticsTab
+            rootNode={rootNode}
+            summary={summary}
+            activeBeltTier={lastInput.beltId}
+            parsedSave={parsedSave}
+            onSaveUploaded={(save) => setParsedSave(save)}
+            onResolveAction={handleResolveAction}
+          />
+        );
+
       default:
         return null;
     }
@@ -492,8 +550,13 @@ export default function App() {
             </main>
           ) : topLevelTab === 'save_map' ? (
             <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
-              <MapTab />
+              <MapTab
+                parsedSave={parsedSave}
+                onParsed={(save) => setParsedSave(save)}
+                onClearSave={() => setParsedSave(null)}
+              />
             </main>
+
           ) : (
             <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
               <WorldMapTab />

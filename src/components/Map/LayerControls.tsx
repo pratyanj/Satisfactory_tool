@@ -22,6 +22,7 @@ export interface LayerState {
   vehicles: boolean;
   drones: boolean;
   powerCircuits: boolean;
+  diagnostics: boolean;
 }
 
 interface LayerControlsProps {
@@ -154,6 +155,13 @@ export function LayerControls({
             onChange={() => onChange({ ...layers, powerCircuits: !layers.powerCircuits })}
             className="map-layer-check" />
         </label>
+        <label className="map-layer-item">
+          <span className="map-layer-dot" style={{ background: '#ff1744' }} />
+          <span className="map-layer-name">Diagnostics Overlay</span>
+          <input type="checkbox" checked={layers.diagnostics}
+            onChange={() => onChange({ ...layers, diagnostics: !layers.diagnostics })}
+            className="map-layer-check" />
+        </label>
       </div>
     </div>
   );
@@ -173,5 +181,6 @@ export function defaultLayerState(): LayerState {
     vehicles:     true,
     drones:       true,
     powerCircuits: false,
+    diagnostics:  true,
   };
 }

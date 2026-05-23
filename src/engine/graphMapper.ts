@@ -21,13 +21,27 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
     return `${rate.toFixed(1)}/min (${beltsNeeded}x ${beltName})`;
   }
 
-  function createEdge(id: string, source: string, target: string, label?: string, itemId?: string): Edge {
+  function createEdge(
+    id: string,
+    source: string,
+    target: string,
+    label?: string,
+    itemId?: string,
+    splitIndex?: number,
+    totalSplits?: number
+  ): Edge {
     const rate = label ? parseFloat(label) : 0;
     const isOverloaded = rate > beltCapacity;
     const item = itemId ? items[itemId] : null;
     return {
       id, source, target, label, type: 'satisfactory',
-      data: { rate, isOverloaded, itemImageUrl: item?.imageUrl },
+      data: { 
+        rate, 
+        isOverloaded, 
+        itemImageUrl: item?.imageUrl,
+        splitIndex,
+        totalSplits
+      },
       animated: true,
     };
   }
@@ -120,11 +134,26 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       const childChunks = traverseExpanded(child);
 
       if (childChunks.length === 1 && myChunks.length === 1) {
-        edgeList.push(createEdge(
-          `e-${childChunks[0].id}-${myChunks[0].id}`,
-          childChunks[0].id, myChunks[0].id,
-          getBeltLabel(child.rate), child.itemId
-        ));
+        if (child.rate > beltCapacity) {
+          const numBelts = Math.ceil(child.rate / beltCapacity);
+          const splitRate = child.rate / numBelts;
+          for (let i = 0; i < numBelts; i++) {
+            edgeList.push(createEdge(
+              `e-${childChunks[0].id}-${myChunks[0].id}-${i}`,
+              childChunks[0].id, myChunks[0].id,
+              `${splitRate.toFixed(1)}/min`,
+              child.itemId,
+              i,
+              numBelts
+            ));
+          }
+        } else {
+          edgeList.push(createEdge(
+            `e-${childChunks[0].id}-${myChunks[0].id}`,
+            childChunks[0].id, myChunks[0].id,
+            getBeltLabel(child.rate), child.itemId
+          ));
+        }
       } else {
         // Ensure EVERY chunk on both sides has at least one connection.
         // Iterate over the larger set and map proportionally to the smaller set.
@@ -136,11 +165,28 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
           const key = `${ci}-${pi}`;
           if (connected.has(key)) continue;
           connected.add(key);
-          edgeList.push(createEdge(
-            `e-${childChunks[ci].id}-${myChunks[pi].id}`,
-            childChunks[ci].id, myChunks[pi].id,
-            getBeltLabel(childChunks[ci].rate), child.itemId
-          ));
+
+          const edgeRate = childChunks[ci].rate;
+          if (edgeRate > beltCapacity) {
+            const numBelts = Math.ceil(edgeRate / beltCapacity);
+            const splitRate = edgeRate / numBelts;
+            for (let k = 0; k < numBelts; k++) {
+              edgeList.push(createEdge(
+                `e-${childChunks[ci].id}-${myChunks[pi].id}-${k}`,
+                childChunks[ci].id, myChunks[pi].id,
+                `${splitRate.toFixed(1)}/min`,
+                child.itemId,
+                k,
+                numBelts
+              ));
+            }
+          } else {
+            edgeList.push(createEdge(
+              `e-${childChunks[ci].id}-${myChunks[pi].id}`,
+              childChunks[ci].id, myChunks[pi].id,
+              getBeltLabel(edgeRate), child.itemId
+            ));
+          }
         }
       }
     }

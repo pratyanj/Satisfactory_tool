@@ -249,9 +249,9 @@ function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand
 
       {(selectedNodes.length <= 1 && selectedGroups.length === 0) && (
         <div className="flex gap-1">
-          <button disabled={isExporting} className="flex items-center gap-1.5 bg-[#4B2F83] hover:bg-[#5a3a9e] border border-[#6d4cb8] transition-all text-white px-3 py-1.5 rounded-lg text-xs font-semibold mr-2" onClick={onLayout} title="Auto-group & layout"><WandSparkles className="w-4 h-4 text-[#e0d6f6]" /> AI Design Layout</button>
-          <button disabled={isExporting} className="flex items-center gap-1.5 bg-[#1c1e22] hover:bg-[#243142] border border-[#2a2d33] hover:border-[#415a78] transition-all text-[#8E9299] hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium disabled:opacity-50" onClick={() => onExport('png')}><Download className="w-4 h-4" /> PNG</button>
-          <button disabled={isExporting} className="flex items-center gap-1.5 bg-[#1c1e22] hover:bg-[#243142] border border-[#2a2d33] hover:border-[#415a78] transition-all text-[#8E9299] hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium disabled:opacity-50" onClick={() => onExport('svg')}><Download className="w-4 h-4" /> SVG</button>
+          <button disabled={isExporting} className="flex items-center gap-1.5 sf-primary-btn px-4 py-2 text-xs font-bold tracking-widest uppercase mr-2 disabled:opacity-50" onClick={onLayout} title="Auto-group & layout"><span className="sf-btn-scanner absolute inset-0 pointer-events-none z-10" /><span className="relative z-20 flex items-center gap-1.5"><WandSparkles className="w-4 h-4 text-white" /> AI Design Layout</span></button>
+          <button disabled={isExporting} className="flex items-center gap-1.5 sf-secondary-btn px-3 py-2 text-[10px] font-bold tracking-widest uppercase disabled:opacity-50" onClick={() => onExport('png')}><span className="relative z-20 flex items-center gap-1.5"><Download className="w-3.5 h-3.5" /> PNG</span></button>
+          <button disabled={isExporting} className="flex items-center gap-1.5 sf-secondary-btn px-3 py-2 text-[10px] font-bold tracking-widest uppercase disabled:opacity-50" onClick={() => onExport('svg')}><span className="relative z-20 flex items-center gap-1.5"><Download className="w-3.5 h-3.5" /> SVG</span></button>
         </div>
       )}
     </Panel>
@@ -292,10 +292,24 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
     const ratePerMachine = (node.data.rate as number) / machinesCount;
     const itemImageUrl = node.data.itemImageUrl as string;
 
-    const groupId = `group-exp-${Date.now()}`;
-    const groupWidth = 600;
-    const groupHeight = Math.max(250, 100 + totalNodes * 120);
+    // Layout constants — sized to fit the actual node dimensions
+    // Machine card: ~340px wide, ~160px tall
+    // Logistics node: 48x48px
+    const PAD        = 24;   // group inner padding
+    const LOGI_W     = 48;   // splitter / merger width
+    const MACH_W     = 340;  // machine card width
+    const ROW_H      = 170;  // vertical spacing between rows
+    const LOGI_OFF   = (ROW_H - LOGI_W) / 2; // vertical centering offset for logistics nodes
 
+    // Column X positions (left edge of each node)
+    const COL_SPLT = PAD;                          // splitter column
+    const COL_MACH = COL_SPLT + LOGI_W + 16;      // machine column
+    const COL_MRG  = COL_MACH + MACH_W + 16;      // merger column
+
+    const groupWidth  = COL_MRG + LOGI_W + PAD;
+    const groupHeight = PAD * 2 + totalNodes * ROW_H;
+
+    const groupId = `group-exp-${Date.now()}`;
     const newGroupNode: Node = {
       id: groupId, type: 'customGroup',
       position: { x: node.position.x, y: node.position.y },
@@ -307,13 +321,14 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
     const newNodes: Node[] = [newGroupNode];
     const newEdges: Edge[] = [];
 
-    const createSatEdge = (id: string, source: string, target: string, rate: number, extras: any = {}) => ({
+    const createSatEdge = (id: string, source: string, target: string, rate: number, extras: Record<string, unknown> = {}) => ({
       id, source, target, type: 'satisfactory',
       label: `${rate.toFixed(1)}/min`,
       data: { rate, isOverloaded: rate > beltCapacity, itemImageUrl },
       ...extras,
     });
 
+    // ── Build machine nodes ──
     const createdMachines: string[] = [];
     for (let i = 0; i < totalNodes; i++) {
       const mNodeId = `${node.id}-m${i}`;
@@ -322,79 +337,143 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
       createdMachines.push(mNodeId);
       newNodes.push({
         id: mNodeId, type: 'machine', parentId: groupId, extent: 'parent',
-        position: { x: 150, y: 70 + i * 115 },
-        data: { ...node.data, label: node.data.label?.toString().replace(/ x\d+(\.\d+)?$/, '').trim() || 'Machine', machines: count, rate: ratePerMachine * count },
+        position: { x: COL_MACH, y: PAD + i * ROW_H },
+        data: {
+          ...node.data,
+          label: node.data.label?.toString().replace(/ x\d+(\.\d+)?$/, '').trim() || 'Machine',
+          machines: count,
+          rate: ratePerMachine * count,
+        },
       });
     }
 
     const currentEdges = getEdges();
-    const incomingEdges = currentEdges.filter(e => e.target === node.id);
-    const outgoingEdges = currentEdges.filter(e => e.source === node.id);
+    const incomingEdges = currentEdges.filter(e => e.target === targetNodeId);
+    const outgoingEdges = currentEdges.filter(e => e.source === targetNodeId);
 
-    // Build splitter chain for inputs
+    // ── Build splitter chain for inputs ──
+    // Splitter layout: left side, one splitter per machine except the last.
+    // The last machine is fed by the final splitter's 'bottom' output.
     let firstSplitterId: string | null = null;
     if (incomingEdges.length > 0) {
       if (totalNodes === 1) {
         firstSplitterId = createdMachines[0];
       } else {
-        let prevMainBelt: string | null = null;
-        const totalIncomingRate = incomingEdges.reduce((acc, e) => acc + (parseFloat(e.label?.toString() || '0') || 0), 0);
+        const totalIncomingRate = incomingEdges.reduce(
+          (acc, e) => acc + (parseFloat(e.label?.toString() || '0') || 0), 0
+        );
         let remainingRate = totalIncomingRate;
+        let prevSplitterId: string | null = null;
+
         for (let i = 0; i < totalNodes - 1; i++) {
           const splitterId = `${node.id}-splt-${i}`;
           if (i === 0) firstSplitterId = splitterId;
-          newNodes.push({ id: splitterId, type: 'logistics', parentId: groupId, extent: 'parent', position: { x: 40, y: 70 + i * 115 }, data: { type: 'splitter', rate: remainingRate } });
+
+          newNodes.push({
+            id: splitterId, type: 'logistics', parentId: groupId, extent: 'parent',
+            position: { x: COL_SPLT, y: PAD + i * ROW_H + LOGI_OFF },
+            data: { type: 'splitter', rate: remainingRate },
+          });
+
           const mId = createdMachines[i];
-          const mCount = newNodes.find(n => n.id === mId)?.data.machines as number || 1;
+          const mCount = (newNodes.find(n => n.id === mId)?.data.machines as number) || 1;
           const neededRate = ratePerMachine * mCount;
-          if (prevMainBelt) newEdges.push(createSatEdge(`e-${prevMainBelt}-${splitterId}`, prevMainBelt, splitterId, remainingRate));
-          newEdges.push(createSatEdge(`e-${splitterId}-${mId}`, splitterId, mId, neededRate, { sourceHandle: 'right' }));
-          prevMainBelt = splitterId;
+
+          // Chain splitters: prev splitter 'bottom' → this splitter
+          if (prevSplitterId) {
+            newEdges.push(createSatEdge(
+              `e-${prevSplitterId}-${splitterId}`,
+              prevSplitterId, splitterId, remainingRate,
+              { sourceHandle: 'bottom', targetHandle: 'top' }
+            ));
+          }
+
+          // Splitter right output → machine
+          newEdges.push(createSatEdge(
+            `e-${splitterId}-${mId}`,
+            splitterId, mId, neededRate,
+            { sourceHandle: 'right' }
+          ));
+
           remainingRate -= neededRate;
+          prevSplitterId = splitterId;
+
+          // Last splitter feeds the last machine via its bottom output
           if (i === totalNodes - 2) {
             const lastMId = createdMachines[totalNodes - 1];
-            const lastMCount = newNodes.find(n => n.id === lastMId)?.data.machines as number || 1;
-            newEdges.push(createSatEdge(`e-${splitterId}-${lastMId}`, splitterId, lastMId, ratePerMachine * lastMCount, { sourceHandle: 'bottom' }));
+            const lastMCount = (newNodes.find(n => n.id === lastMId)?.data.machines as number) || 1;
+            newEdges.push(createSatEdge(
+              `e-${splitterId}-${lastMId}`,
+              splitterId, lastMId, ratePerMachine * lastMCount,
+              { sourceHandle: 'bottom' }
+            ));
           }
         }
       }
     }
 
-    // Build merger chain for outputs
+    // ── Build merger chain for outputs ──
+    // Merger layout: right side, one merger per machine (upward flowing manifold)
+    // Each Machine[i] connects to Merger[i]'s left input handle.
+    // Merger[i] connects to Merger[i-1]'s bottom input handle via its right output handle.
+    // Merger[0]'s right output is the final output of the array.
     let lastMergerId: string | null = null;
     if (outgoingEdges.length > 0) {
       if (totalNodes === 1) {
         lastMergerId = createdMachines[0];
       } else {
-        let prevMainBelt: string | null = null;
-        let accumulatedRate = 0;
-        for (let i = 0; i < totalNodes - 1; i++) {
+        // Create mergers, one per machine
+        const mergerIds: string[] = [];
+        for (let i = 0; i < totalNodes; i++) {
           const mergerId = `${node.id}-mrg-${i}`;
-          const m2Id = createdMachines[i + 1];
-          const count2 = newNodes.find(n => n.id === m2Id)?.data.machines as number || 1;
-          const rate2 = ratePerMachine * count2;
-          if (i === 0) {
-            const m1Id = createdMachines[0];
-            const count1 = newNodes.find(n => n.id === m1Id)?.data.machines as number || 1;
-            accumulatedRate = ratePerMachine * count1 + rate2;
-            newNodes.push({ id: mergerId, type: 'logistics', parentId: groupId, extent: 'parent', position: { x: 480, y: 70 + 115 }, data: { type: 'merger', rate: accumulatedRate, isFlipped: true } });
-            newEdges.push(createSatEdge(`e-${m1Id}-${mergerId}`, m1Id, mergerId, ratePerMachine * count1, { targetHandle: 'top' }));
-          } else {
-            accumulatedRate += rate2;
-            newNodes.push({ id: mergerId, type: 'logistics', parentId: groupId, extent: 'parent', position: { x: 480, y: 70 + (i + 1) * 115 }, data: { type: 'merger', rate: accumulatedRate, isFlipped: true } });
-            if (prevMainBelt) newEdges.push(createSatEdge(`e-${prevMainBelt}-${mergerId}`, prevMainBelt, mergerId, accumulatedRate - rate2, { targetHandle: 'top' }));
-          }
-          newEdges.push(createSatEdge(`e-${m2Id}-${mergerId}`, m2Id, mergerId, rate2, { targetHandle: 'right' }));
-          prevMainBelt = mergerId;
-          if (i === totalNodes - 2) lastMergerId = mergerId;
+          mergerIds.push(mergerId);
+
+          newNodes.push({
+            id: mergerId, type: 'logistics', parentId: groupId, extent: 'parent',
+            position: { x: COL_MRG, y: PAD + i * ROW_H + LOGI_OFF },
+            data: { type: 'merger', rate: 0, isFlipped: false },
+          });
         }
+
+        // Connect machines to their respective mergers and chain mergers upwards
+        let currentAccumulatedRate = 0;
+        // Start from bottom and accumulate upwards
+        for (let i = totalNodes - 1; i >= 0; i--) {
+          const mergerId = mergerIds[i];
+          const mId = createdMachines[i];
+          const mCount = (newNodes.find(n => n.id === mId)?.data.machines as number) || 1;
+          const machineRate = ratePerMachine * mCount;
+
+          currentAccumulatedRate += machineRate;
+
+          // Machine output → Merger left input
+          newEdges.push(createSatEdge(`e-${mId}-${mergerId}`, mId, mergerId, machineRate, { targetHandle: 'left' }));
+
+          // If not the top merger, connect to the merger above it
+          if (i > 0) {
+            const nextMergerId = mergerIds[i - 1]; // the merger above
+            newEdges.push(createSatEdge(
+              `e-${mergerId}-${nextMergerId}`,
+              mergerId, nextMergerId, currentAccumulatedRate,
+              { sourceHandle: 'top', targetHandle: 'bottom' }
+            ));
+          }
+
+          // Update the merger rate
+          const mergerNode = newNodes.find(n => n.id === mergerId);
+          if (mergerNode) mergerNode.data = { ...mergerNode.data, rate: currentAccumulatedRate };
+        }
+
+        // The top-most merger is the final output of the group
+        lastMergerId = mergerIds[0];
       }
     }
 
+    // Remove original node and add all new ones; rewire external edges
     setNodes(nds => [...nds.filter(n => n.id !== node.id), ...newNodes]);
     setEdges(eds => eds.map(e => {
-      if (e.target === node.id && firstSplitterId) return { ...e, target: firstSplitterId };
-      if (e.source === node.id && lastMergerId) return { ...e, source: lastMergerId };
+      if (e.target === targetNodeId && firstSplitterId) return { ...e, target: firstSplitterId };
+      if (e.source === targetNodeId && lastMergerId) return { ...e, source: lastMergerId, sourceHandle: 'right' };
       return e;
     }).concat(newEdges));
   }, [getNodes, getEdges, setNodes, setEdges, beltCapacity]);

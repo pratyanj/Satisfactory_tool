@@ -7,3 +7,14 @@ coverage/
 .env*
 !.env.example
 doc/
+# Added by code-review-graph
+.code-review-graph/
+
+# Python/UV local files
+.python-version
+main.py
+pyproject.toml
+uv.lock
+
+# VS Code settings
+.vscode/

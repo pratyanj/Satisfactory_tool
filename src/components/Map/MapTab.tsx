@@ -14,13 +14,18 @@ import type { MapLayerType } from './MapLayerSwitcher';
 import type { ParsedSave } from '../../types/save';
 import type { BuildingCategory } from '../../engine/buildingClassifier';
 
-export function MapTab() {
-  const [parsedSave, setParsedSave]   = useState<ParsedSave | null>(null);
+export interface MapTabProps {
+  parsedSave: ParsedSave | null;
+  onParsed: (save: ParsedSave) => void;
+  onClearSave: () => void;
+}
+
+export function MapTab({ parsedSave, onParsed, onClearSave }: MapTabProps) {
   const [layers, setLayers]           = useState<LayerState>(defaultLayerState());
   const [mapLayer, setMapLayer]       = useState<MapLayerType>('realistic');
   const [focusedCat, setFocusedCat]   = useState<BuildingCategory | null>(null);
   const mapRef = useRef<L.Map | null>(null);
-
+  
   // Altitude range derived from save
   const { altMin, altMax } = useMemo(() => {
     if (!parsedSave || parsedSave.buildings.length === 0) return { altMin: -200, altMax: 500 };
@@ -37,13 +42,13 @@ export function MapTab() {
   const effectiveAlt: AltitudeRange = altitudeRange ?? { low: altMin, high: altMax };
 
   const handleParsed = useCallback((save: ParsedSave) => {
-    setParsedSave(save);
+    onParsed(save);
     setAltitudeRange(null);
     setFocusedCat(null);
-  }, []);
+  }, [onParsed]);
 
   const handleClearSave = () => {
-    setParsedSave(null);
+    onClearSave();
     setLayers(defaultLayerState());
     setAltitudeRange(null);
     setFocusedCat(null);
