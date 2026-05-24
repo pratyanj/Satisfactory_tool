@@ -13,6 +13,7 @@ import { BuildingsTab } from './components/BuildingsTab';
 import { MapTab } from './components/Map/MapTab';
 import { WorldMapTab } from './components/Map/WorldMapTab';
 import { ItemBrowser } from './components/ItemBrowser';
+import { PowerPlannerTab } from './components/PowerPlanner/PowerPlannerTab';
 import { HeaderNav } from './components/Layout/Header/HeaderNav';
 import { BodyFrame } from './components/Layout/BodyFrame/BodyFrame';
 import { ParsedSave } from './types/save';
@@ -74,7 +75,7 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
 ];
 
 
-type TopLevelTab = 'planner' | 'save_map' | 'world_map' | 'codex';
+type TopLevelTab = 'planner' | 'power_planner' | 'save_map' | 'world_map' | 'codex';
 
 function parseRecipeSelections(value: unknown): RecipeSelectionMap {
   if (!value || typeof value !== 'object') return {};
@@ -197,7 +198,7 @@ export default function App() {
       if (cleanHash && !cleanHash.startsWith('plan=') && !cleanHash.startsWith('tab=')) {
         const parts = cleanHash.split('/');
         const top = parts[0] as TopLevelTab;
-        if (['planner', 'save_map', 'world_map', 'codex'].includes(top)) {
+        if (['planner', 'power_planner', 'save_map', 'world_map', 'codex'].includes(top)) {
           setTopLevelTab(top);
           let sub: MainTab = 'network_graph';
           let itemId: string | null = null;
@@ -223,7 +224,7 @@ export default function App() {
       if (pathname && pathname !== '/') {
         const parts = pathname.slice(1).split('/');
         const top = parts[0] as TopLevelTab;
-        if (['planner', 'save_map', 'world_map', 'codex'].includes(top)) {
+        if (['planner', 'power_planner', 'save_map', 'world_map', 'codex'].includes(top)) {
           setTopLevelTab(top);
           if (top === 'planner' && parts[1]) {
             const sub = parts[1] as MainTab;
@@ -243,7 +244,7 @@ export default function App() {
         const params = new URLSearchParams(hash.slice(1));
         const top = (params.get('tab') ?? '') as TopLevelTab;
         const sub = (params.get('sub') ?? '') as MainTab;
-        if (['planner', 'save_map', 'world_map', 'codex'].includes(top)) setTopLevelTab(top);
+        if (['planner', 'power_planner', 'save_map', 'world_map', 'codex'].includes(top)) setTopLevelTab(top);
         if (['network_graph', 'tree_list', 'items', 'buildings'].includes(sub)) setMainTab(sub);
         setSelectedCodexItemId(null);
         
@@ -258,7 +259,7 @@ export default function App() {
       const storedSub = sessionStorage.getItem('sf_sub') as MainTab | null;
       const storedCodexItem = sessionStorage.getItem('sf_codex_item');
       
-      const resolvedTop = (storedTop && ['planner', 'save_map', 'world_map', 'codex'].includes(storedTop)) ? storedTop : 'planner';
+      const resolvedTop = (storedTop && ['planner', 'power_planner', 'save_map', 'world_map', 'codex'].includes(storedTop)) ? storedTop : 'planner';
       const resolvedSub = (storedSub && ['network_graph', 'tree_list', 'items', 'buildings'].includes(storedSub)) ? storedSub : 'network_graph';
       const resolvedCodexItem = resolvedTop === 'codex' ? (storedCodexItem || null) : null;
       
@@ -593,6 +594,10 @@ export default function App() {
                   />
                 </div>
               )}
+            </main>
+          ) : topLevelTab === 'power_planner' ? (
+            <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
+              <PowerPlannerTab parsedSave={parsedSave} />
             </main>
           ) : topLevelTab === 'codex' ? (
             <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
