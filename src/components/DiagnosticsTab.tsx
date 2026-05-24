@@ -152,7 +152,7 @@ export function DiagnosticsTab({
   };
 
   return (
-    <div className="absolute inset-0 flex flex-col bg-[#0b0c0e] text-[#e4e3e0] overflow-y-auto p-4 box-border">
+    <div className="relative w-full flex flex-col bg-[#0b0c0e] text-[#e4e3e0] p-4 box-border">
       {/* Component Styles */}
       <style>{`
         .ficsit-hazard-bar {
@@ -459,7 +459,7 @@ export function DiagnosticsTab({
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 min-h-0 flex-1">
             
             {/* LEFT SIDE: Warning Cards List */}
-            <div className="xl:col-span-2 flex flex-col bg-[#101216] border border-[#22252c] rounded-xl p-4 h-[450px]">
+            <div className="xl:col-span-2 flex flex-col bg-[#101216] border border-[#22252c] rounded-xl p-4">
               
               {/* Header filters */}
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-[#252831] pb-3 mb-3 gap-3">
@@ -502,7 +502,7 @@ export function DiagnosticsTab({
               </div>
 
               {/* Warnings loop */}
-              <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-2.5">
+              <div className="flex flex-col gap-2.5 pr-1">
                 {filteredIssues.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-[#8E9299]">
                     <CheckCircle className="w-10 h-10 text-[#00E676] mb-3" />
@@ -578,7 +578,7 @@ export function DiagnosticsTab({
             </div>
 
             {/* RIGHT SIDE: Actionable Suggested Fixes */}
-            <div className="flex flex-col bg-[#101216] border border-[#22252c] rounded-xl p-4 h-[450px]">
+            <div className="flex flex-col bg-[#101216] border border-[#22252c] rounded-xl p-4">
               <div className="border-b border-[#252831] pb-3 mb-3">
                 <span className="text-xs font-black tracking-widest text-[#f48721] uppercase ficsit-terminal-title">
                   Actionable Fix Directive
@@ -586,7 +586,7 @@ export function DiagnosticsTab({
                 <p className="text-[10px] text-[#8E9299] mt-0.5">Click to toggle directives resolution.</p>
               </div>
 
-              <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-2">
+              <div className="flex flex-col gap-2 pr-1">
                 {diagnostics.suggestedFixes.map((fix) => {
                   const isResolved = resolvedFixes.has(fix.id);
                   return (

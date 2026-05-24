@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* ── Global resets for dark theme overscroll and bounce ── */
+html, body {
+  background-color: #050505 !important;
+  color: #e4e3e0;
+  margin: 0;
+  padding: 0;
+}
+
 /* ================================================================
    APP HEADER — Neon Accent Gradient
    ================================================================ */

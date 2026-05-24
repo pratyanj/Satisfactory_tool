@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { InputForm } from './components/InputForm';
 import { Summary } from './components/Summary';
 import { FactoryGraph } from './components/Graph/FactoryGraph';
@@ -71,15 +71,6 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
       </svg>
     ),
   },
-  {
-    id: 'diagnostics',
-    label: 'Diagnostics',
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-      </svg>
-    ),
-  },
 ];
 
 
@@ -114,6 +105,29 @@ export default function App() {
   const [copied, setCopied] = useState(false);
   const [isRecalculating, setIsRecalculating] = useState(false);
   const [controlsCollapsed, setControlsCollapsed] = useState(false);
+  const [isGraphFullscreen, setIsGraphFullscreen] = useState(false);
+  const graphContainerRef = useRef<HTMLDivElement>(null);
+
+  const toggleFullscreen = useCallback(() => {
+    if (!graphContainerRef.current) return;
+    if (!document.fullscreenElement) {
+      graphContainerRef.current.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsGraphFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
 
   // Sync URL path whenever navigation state changes (supports browser history navigation!)
   const updatePath = useCallback((top: TopLevelTab, sub: MainTab, codexItemId?: string | null) => {
@@ -383,7 +397,12 @@ export default function App() {
     switch (mainTab) {
       case 'network_graph':
         return (
-          <div className="absolute inset-0">
+          <div
+            ref={graphContainerRef}
+            className={`w-full h-full bg-[#101114] text-white relative ${
+              isGraphFullscreen ? 'fixed inset-0 z-50 w-screen h-screen' : ''
+            }`}
+          >
             <div className="absolute top-4 right-4 z-10 flex gap-2">
               <button
                 onClick={() => setLayoutMode('aggregated')}
@@ -403,6 +422,22 @@ export default function App() {
                 {layoutMode === 'expanded' && <span className="sf-btn-scanner absolute inset-0 pointer-events-none z-10" />}
                 <span className="relative z-20">Machine View</span>
               </button>
+              <button
+                onClick={toggleFullscreen}
+                className="sf-secondary-btn px-4 py-2 text-[10px] font-bold tracking-widest uppercase flex items-center gap-1.5"
+                aria-label={isGraphFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+              >
+                <span className="relative z-20 flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    {isGraphFullscreen ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 9L3 3m0 0l6-6M3 3v6M15 9l6-6m0 0l-6-6m6 6v6M9 15l-6 6m0 0l6 6m-6-6v-6M15 15l6 6m0 0l-6 6m6-6v-6" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 9M20.25 20.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
+                    )}
+                  </svg>
+                  {isGraphFullscreen ? 'Exit' : 'Fullscreen'}
+                </span>
+              </button>
             </div>
             {isRecalculating && (
               <div className="graph-loading-overlay">
@@ -410,7 +445,9 @@ export default function App() {
                 <span className="text-sm text-[#8E9299] font-medium">Building graph layout…</span>
               </div>
             )}
-            <FactoryGraph initialNodes={nodes} initialEdges={edges} beltId={lastInput.beltId} />
+            <div className="w-full h-full">
+              <FactoryGraph initialNodes={nodes} initialEdges={edges} beltId={lastInput.beltId} />
+            </div>
           </div>
         );
       case 'tree_list':
@@ -437,17 +474,17 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans overflow-hidden">
+    <div className="min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans overflow-y-auto">
       <HeaderNav
         topLevelTab={topLevelTab}
         handleTopLevelTab={handleTopLevelTab}
         generateShareLink={generateShareLink}
         copied={copied}
       />
-      <div className="flex-1 min-h-0 flex flex-col w-full overflow-hidden">
+      <div className="flex-grow flex flex-col w-full">
         <BodyFrame>
           {topLevelTab === 'planner' ? (
-            <main className="w-full flex flex-col gap-2 p-2 min-h-0 flex-1 overflow-hidden">
+            <main className="w-full flex flex-col gap-4 p-4">
               
               {/* Top Side: Settings & Summary — collapsible */}
               <div
@@ -470,9 +507,8 @@ export default function App() {
 
               {/* Bottom Side: Main Area */}
               <div
-                className="flex flex-col flex-1 relative sf-blueprint-bg overflow-hidden text-white"
+                className="flex flex-col h-[600px] shrink-0 relative sf-blueprint-bg overflow-hidden text-white"
                 style={{
-                  minHeight: '0px',
                   border: '1px solid #2a2d33',
                   clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)',
                   boxShadow: '0 8px 40px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.04)',
@@ -537,6 +573,20 @@ export default function App() {
                   zIndex: 30,
                 }} />
               </div>
+
+              {/* Separate Diagnostics Dashboard below the blueprint main area */}
+              {mainTab === 'network_graph' && !isGraphFullscreen && (
+                <div className="w-full relative bg-[#0b0c0e] rounded-xl border border-[#2a2d33] overflow-hidden shadow-lg transition-all duration-300">
+                  <DiagnosticsTab
+                    rootNode={rootNode}
+                    summary={summary}
+                    activeBeltTier={lastInput.beltId}
+                    parsedSave={parsedSave}
+                    onSaveUploaded={(save) => setParsedSave(save)}
+                    onResolveAction={handleResolveAction}
+                  />
+                </div>
+              )}
             </main>
           ) : topLevelTab === 'codex' ? (
             <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
