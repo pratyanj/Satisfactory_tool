@@ -6,8 +6,12 @@ import { AppImage } from '../AppImage';
 
 export const MachineNode = React.memo(function MachineNode({ id, data }: NodeProps) {
   const machineInfo = machines[data.machineId as string];
+  const machineName = (machineInfo?.name || (data.machineName as string) || (data.label as string) || (data.machineId as string) || 'Machine');
+  const machineImageUrl = machineInfo?.imageUrl || (data.machineImageUrl as string | undefined);
+  const machineSecondaryImageUrl = data.machineSecondaryImageUrl as string | undefined;
+  const machinePowerPerMachine = machineInfo?.powerUsage ?? (data.powerPerMachine as number) ?? 0;
   const machineCount = data.machines as number;
-  const totalPower = (machineInfo?.powerUsage || 0) * machineCount;
+  const totalPower = machinePowerPerMachine * machineCount;
   const { setNodes } = useReactFlow();
 
   const isFlipped = !!data.isFlipped;
@@ -38,8 +42,7 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
 
   const inputDetails = (data.inputDetails as any[]) || [];
   const outputRatePerMachine = data.outputRatePerMachine as number || 0;
-  const powerPerMachine = data.powerPerMachine as number || 0;
-
+  
   return (
     <div className="relative group">
       {/* React Flow Connection Handles (swapped when node is flipped) */}
@@ -71,12 +74,13 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
           
           {/* LEFT HALF: Machine Image + Caution Tape */}
           <div className="sf-card-left-panel">
-            {machineInfo?.imageUrl ? (
+            {machineImageUrl ? (
               <AppImage
                 idKey={data.machineId as string}
-                fallbackUrl={machineInfo.imageUrl}
+                fallbackUrl={machineImageUrl}
+                secondaryFallbackUrl={machineSecondaryImageUrl}
                 className="w-[85%] h-[85%] object-contain select-none pointer-events-none z-10"
-                alt={machineInfo.name}
+                alt={machineName}
               />
             ) : (
               <div className="w-full h-full bg-[#1c1e22]/20" />
@@ -198,7 +202,7 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
               <div className="flex-1 min-w-0 flex items-center justify-between">
                 <div className="flex flex-col">
                   <span className="text-[7.5px] font-extrabold tracking-widest text-[#7e828a] uppercase select-none truncate">
-                    {machineInfo?.name || (data.label as string) || 'CONSTRUCTOR'}
+                    {machineName}
                   </span>
                 </div>
                 <div className="text-[#00e676] font-mono font-black text-sm leading-none select-none flex items-center gap-0.5">
@@ -295,10 +299,10 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
             </div>
           ))}
         {/* Power per machine */}
-        {powerPerMachine > 0 && (
+        {machinePowerPerMachine > 0 && (
           <div className="flex items-center gap-2 font-mono text-[11px] pt-1 mt-2 border-t border-[#2a2d33]">
             <span className="text-yellow-500 w-6 text-center">⚡</span>
-            <span className="text-[#8E9299]">{powerPerMachine} MW/machine</span>
+            <span className="text-[#8E9299]">{machinePowerPerMachine} MW/machine</span>
           </div>
         )}
         </div>
