@@ -49,19 +49,23 @@ export function HeaderNav({
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 Plan
               </div>
-              <div className="sf-nav-select-shell">
-                <select
-                  value={plannerValue}
-                  onChange={(e) => handleTopLevelTab(e.target.value)}
-                  className="sf-nav-select-control"
-                  aria-label="Select planner type"
+              <div className="sf-planner-segmented" role="tablist" aria-label="Planner Mode">
+                <button
+                  role="tab"
+                  aria-selected={plannerValue === 'planner'}
+                  onClick={() => handleTopLevelTab('planner')}
+                  className={`sf-planner-segment ${plannerValue === 'planner' ? 'is-active' : ''}`}
                 >
-                  <option value="planner">Production Planner</option>
-                  <option value="power_planner">Power Planner</option>
-                </select>
-                <svg className="sf-nav-select-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
+                  Production
+                </button>
+                <button
+                  role="tab"
+                  aria-selected={plannerValue === 'power_planner'}
+                  onClick={() => handleTopLevelTab('power_planner')}
+                  className={`sf-planner-segment ${plannerValue === 'power_planner' ? 'is-active' : ''}`}
+                >
+                  Power
+                </button>
               </div>
             </div>
             <button
