@@ -220,11 +220,91 @@
 /* Nav Links Container */
 .sf-nav-links {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   width: 100%;
   height: 100%;
   padding: 6px;
   box-sizing: border-box;
+}
+
+.sf-nav-select-wrap {
+  flex: 1.6;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #8E9299;
+  background: linear-gradient(180deg, #14161b 0%, #0d0f13 100%);
+  border: 1px solid #262a32;
+  border-radius: 8px;
+  padding: 5px 6px;
+  position: relative;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 6px 16px rgba(0, 0, 0, 0.45);
+}
+
+.sf-nav-select-wrap.active {
+  border-color: rgba(244, 135, 33, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 0 0 1px rgba(244, 135, 33, 0.2), 0 8px 18px rgba(0, 0, 0, 0.55);
+}
+
+.sf-nav-select-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  white-space: nowrap;
+  color: #f48721;
+  padding: 0 6px;
+  border-right: 1px solid #2a2d33;
+  min-height: 26px;
+}
+
+.sf-nav-select-shell {
+  flex: 1;
+  min-width: 150px;
+  position: relative;
+}
+
+.sf-nav-select-control {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: linear-gradient(180deg, #0f1116 0%, #0b0d11 100%);
+  color: #e4e3e0;
+  border: 1px solid #262a32;
+  border-radius: 6px;
+  padding: 7px 28px 7px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  outline: none;
+  line-height: 1.1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sf-nav-select-control:focus {
+  border-color: #f48721;
+  box-shadow: 0 0 0 1px rgba(244, 135, 33, 0.35), 0 0 12px rgba(244, 135, 33, 0.14);
+}
+
+.sf-nav-select-control:hover {
+  border-color: #3b4250;
+  color: #ffffff;
+}
+
+.sf-nav-select-chevron {
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #f48721;
+  pointer-events: none;
+  opacity: 0.95;
 }
 
 .sf-nav-btn {
@@ -232,12 +312,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   background: transparent;
   border: none;
   color: #8E9299;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
   cursor: pointer;
