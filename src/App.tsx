@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { InputForm } from './components/InputForm';
 import { Summary } from './components/Summary';
 import { FactoryGraph } from './components/Graph/FactoryGraph';
@@ -625,6 +626,7 @@ export default function App() {
           )}
         </BodyFrame>
       </div>
+      <Analytics />
     </div>
   );
 }
