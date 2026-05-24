@@ -79,20 +79,89 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
     };
   }
 
-  function traverseAggregated(node: SolverNode): string {
-    const nodeId = generateId();
-    nodeList.push({
-      id: nodeId, type: 'machine', position: { x: 0, y: 0 },
-      data: buildNodeData(
-        node, node.machines, node.rate,
-        `${machines[node.machineId].name} x${Math.ceil(node.machines * 10) / 10}`
-      ),
+  function traverseAggregated(rootNode: SolverNode) {
+    // 1. Group nodes by itemId and aggregate their properties to create a clean Directed Acyclic Graph (DAG)
+    const aggregatedNodes = new Map<string, {
+      node: SolverNode;
+      totalRate: number;
+      totalMachines: number;
+    }>();
+
+    const walk = (n: SolverNode) => {
+      const key = n.itemId;
+      const existing = aggregatedNodes.get(key);
+      if (existing) {
+        existing.totalRate += n.rate;
+        existing.totalMachines += n.machines;
+      } else {
+        aggregatedNodes.set(key, {
+          node: n,
+          totalRate: n.rate,
+          totalMachines: n.machines,
+        });
+      }
+      for (const input of n.inputs) {
+        walk(input);
+      }
+    };
+    walk(rootNode);
+
+    // 2. Generate unique Node IDs for each unique itemId
+    const itemIdToNodeId = new Map<string, string>();
+    aggregatedNodes.forEach((data, itemId) => {
+      const nodeId = generateId();
+      itemIdToNodeId.set(itemId, nodeId);
+
+      nodeList.push({
+        id: nodeId, type: 'machine', position: { x: 0, y: 0 },
+        data: buildNodeData(
+          data.node,
+          data.totalMachines,
+          data.totalRate,
+          `${machines[data.node.machineId].name} x${Math.ceil(data.totalMachines * 10) / 10}`
+        ),
+      });
     });
-    for (const child of node.inputs) {
-      const childId = traverseAggregated(child);
-      edgeList.push(createEdge(`e-${childId}-${nodeId}`, childId, nodeId, getBeltLabel(child.rate), child.itemId));
-    }
-    return nodeId;
+
+    // 3. Aggregate edge flows between itemIds to prevent duplicate edge lines
+    const edgeFlows = new Map<string, {
+      sourceItemId: string;
+      targetItemId: string;
+      totalRate: number;
+    }>();
+
+    const walkEdges = (n: SolverNode) => {
+      for (const input of n.inputs) {
+        const key = `${input.itemId}->${n.itemId}`;
+        const existing = edgeFlows.get(key);
+        if (existing) {
+          existing.totalRate += input.rate;
+        } else {
+          edgeFlows.set(key, {
+            sourceItemId: input.itemId,
+            targetItemId: n.itemId,
+            totalRate: input.rate,
+          });
+        }
+        walkEdges(input);
+      }
+    };
+    walkEdges(rootNode);
+
+    // 4. Create single aggregated edges
+    edgeFlows.forEach((flow) => {
+      const sourceNodeId = itemIdToNodeId.get(flow.sourceItemId);
+      const targetNodeId = itemIdToNodeId.get(flow.targetItemId);
+      if (sourceNodeId && targetNodeId) {
+        edgeList.push(createEdge(
+          `e-${sourceNodeId}-${targetNodeId}`,
+          sourceNodeId,
+          targetNodeId,
+          getBeltLabel(flow.totalRate),
+          flow.sourceItemId
+        ));
+      }
+    });
   }
 
   function traverseExpanded(node: SolverNode): { id: string; rate: number }[] {
@@ -109,23 +178,25 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
     if (maxInputRatePerMachine > 0) maxMachinesPerBelt = Math.min(maxMachinesPerBelt, Math.floor(beltCapacity / maxInputRatePerMachine));
 
     const chunkSize = Math.max(1, Math.min(12, maxMachinesPerBelt));
-    const numChunks = Math.ceil(totalMachines / chunkSize);
+    
+    // Capped at 16 visual parallel chunks max per recipe node to avoid browser memory blowout
+    const numChunks = Math.min(16, Math.ceil(totalMachines / chunkSize));
     const myChunks: { id: string; rate: number }[] = [];
+
+    const machinesPerChunk = totalMachines / numChunks;
+    const ratePerChunk = node.rate / numChunks;
 
     for (let i = 0; i < numChunks; i++) {
       const nodeId = generateId();
-      const isLast = i === numChunks - 1;
-      const machinesInChunk = isLast && (totalMachines % chunkSize !== 0) ? (totalMachines % chunkSize) : chunkSize;
-      const thisRate = outputRatePerMachine * machinesInChunk;
-      myChunks.push({ id: nodeId, rate: thisRate });
+      myChunks.push({ id: nodeId, rate: ratePerChunk });
 
-      const label = machinesInChunk === 1
+      const label = machinesPerChunk === 1
         ? machines[node.machineId].name
-        : `${machines[node.machineId].name} x${Math.ceil(machinesInChunk * 10) / 10}`;
+        : `${machines[node.machineId].name} x${Math.ceil(machinesPerChunk * 10) / 10}`;
 
       nodeList.push({
         id: nodeId, type: 'machine', position: { x: 0, y: 0 },
-        data: buildNodeData(node, machinesInChunk, thisRate, label),
+        data: buildNodeData(node, machinesPerChunk, ratePerChunk, label),
       });
     }
 

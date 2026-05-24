@@ -62,49 +62,65 @@ export function getAlternateRecipeCandidates(rootItemId: ItemId, recipeSelection
   return result;
 }
 
-export function solve(itemId: ItemId, requiredRate: number, minerId: MachineId = "miner_mk1", recipeSelections: RecipeSelectionMap = {}): SolverNode {
-  const recipe = getRecipeForItem(itemId, recipeSelections);
-  
-  if (!recipe) {
-    throw new Error(`No recipe found for item: ${items[itemId]?.name || itemId}`);
-  }
+export function solve(
+  itemId: ItemId,
+  requiredRate: number,
+  minerId: MachineId = "miner_mk1",
+  recipeSelections: RecipeSelectionMap = {}
+): SolverNode {
+  const activeStack = new Set<ItemId>();
 
-  let outputRate = recipe.outputRate;
-  let machineIdToUse = recipe.machineId;
-
-  // Adjust extraction rate for miners
-  if (recipe.inputs.length === 0) {
-    if (machineIdToUse.startsWith('miner')) {
-      machineIdToUse = minerId;
-      if (minerId === "miner_mk2") outputRate = 120;
-      else if (minerId === "miner_mk3") outputRate = 240;
-      else outputRate = 60; // Default Mk.1
+  function solveInternal(currentId: ItemId, rate: number): SolverNode {
+    if (activeStack.has(currentId)) {
+      throw new Error(`Circular dependency detected in recipe chain for item: ${items[currentId]?.name || currentId}`);
     }
-    // Non-miner extractors (water_extractor, resource_well_pressurizer, etc.) 
-    // will keep their original machineId and outputRate.
+    activeStack.add(currentId);
+
+    try {
+      const recipe = getRecipeForItem(currentId, recipeSelections);
+      if (!recipe) {
+        throw new Error(`No recipe found for item: ${items[currentId]?.name || currentId}`);
+      }
+
+      let outputRate = recipe.outputRate;
+      let machineIdToUse = recipe.machineId;
+
+      if (recipe.inputs.length === 0) {
+        if (machineIdToUse.startsWith('miner')) {
+          machineIdToUse = minerId;
+          if (minerId === "miner_mk2") outputRate = 120;
+          else if (minerId === "miner_mk3") outputRate = 240;
+          else outputRate = 60;
+        }
+      }
+
+      const machineCount = rate / outputRate;
+
+      const result: SolverNode = {
+        itemId: currentId,
+        recipeId: recipe.id,
+        rate,
+        machines: machineCount,
+        machineId: machineIdToUse,
+        inputs: [],
+        byproducts: (recipe.byproducts || []).map(bp => ({
+          itemId: bp.itemId,
+          rate: bp.rate * machineCount
+        }))
+      };
+
+      for (const input of recipe.inputs) {
+        const requiredInputRate = input.rate * machineCount;
+        result.inputs.push(solveInternal(input.itemId, requiredInputRate));
+      }
+
+      return result;
+    } finally {
+      activeStack.delete(currentId);
+    }
   }
 
-  const machineCount = requiredRate / outputRate;
-
-  const result: SolverNode = {
-    itemId,
-    recipeId: recipe.id,
-    rate: requiredRate,
-    machines: machineCount,
-    machineId: machineIdToUse,
-    inputs: [],
-    byproducts: (recipe.byproducts || []).map(bp => ({
-      itemId: bp.itemId,
-      rate: bp.rate * machineCount
-    }))
-  };
-
-  for (const input of recipe.inputs) {
-    const requiredInputRate = input.rate * machineCount;
-    result.inputs.push(solve(input.itemId, requiredInputRate, minerId, recipeSelections));
-  }
-
-  return result;
+  return solveInternal(itemId, requiredRate);
 }
 
 /** Details about what a specific building type produces */

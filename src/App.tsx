@@ -361,15 +361,21 @@ export default function App() {
 
   const recipeSelectionSignature = JSON.stringify(lastInput.recipeSelections);
 
-  // FIXED: Issue #3 - Added all dependencies to prevent stale closures
+  // Step 1: Immediately show the spinner when inputs or mode change
   useEffect(() => {
-    // Show spinner first, then defer the heavy computation
     setIsRecalculating(true);
-    requestAnimationFrame(() => {
+  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, recipeSelectionSignature]);
+
+  // Step 2: Defer heavy graph calculations to the next tick (80ms), allowing the spinner to render and animate smoothly first!
+  useEffect(() => {
+    if (!isRecalculating) return;
+    const timer = setTimeout(() => {
       calculatePlan(lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.recipeSelections, layoutMode);
       setIsRecalculating(false);
-    });
-  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, recipeSelectionSignature]);
+    }, 80);
+    return () => clearTimeout(timer);
+  }, [isRecalculating, layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, recipeSelectionSignature]);
+
 
   const renderTabContent = () => {
     if (error) {

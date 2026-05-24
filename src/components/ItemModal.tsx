@@ -1,12 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { items, ItemId } from '../engine/data';
+import { items, ItemId, recipes } from '../engine/data';
 import { AppImage } from './AppImage';
 
 interface ItemModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (itemId: ItemId) => void;
+}
+
+// Helper to dynamically analyze if an item has a valid, non-circular craftable production path
+function isItemSolvable(itemId: string): boolean {
+  const activeStack = new Set<string>();
+
+  function walk(currentId: string): boolean {
+    if (activeStack.has(currentId)) return false; // Cycle detected!
+    activeStack.add(currentId);
+
+    try {
+      // Find output recipes
+      const candidates = recipes.filter(r => r.outputItemId === currentId);
+      if (candidates.length === 0) return false;
+
+      // If any recipe is solvable, the item is solvable!
+      return candidates.some(recipe => {
+        if (recipe.inputs.length === 0) return true; // base miner/extractor step
+        return recipe.inputs.every(input => walk(input.itemId));
+      });
+    } finally {
+      activeStack.delete(currentId);
+    }
+  }
+
+  return walk(itemId);
 }
 
 export function ItemModal({ isOpen, onClose, onSelect }: ItemModalProps) {
@@ -18,9 +44,21 @@ export function ItemModal({ isOpen, onClose, onSelect }: ItemModalProps) {
     return () => setMounted(false);
   }, []);
 
+  // Dynamically calculate which items are fully solvable (excluding circular dependencies)
+  const solvableItemIds = React.useMemo(() => {
+    const solvable = new Set<string>();
+    Object.keys(items).forEach(itemId => {
+      if (isItemSolvable(itemId)) {
+        solvable.add(itemId);
+      }
+    });
+    return solvable;
+  }, []);
+
   if (!isOpen || !mounted) return null;
 
   const filteredItems = Object.values(items).filter(item => 
+    solvableItemIds.has(item.id) &&
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
