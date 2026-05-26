@@ -5270,4 +5270,940 @@ input[type="number"] {
    END OF TABLE VIEW STYLES
    ================================================================ */
 
+/* ================================================================
+   FICSIT SANDBOX
+   ================================================================ */
+
+/* ── Root Layout ─────────────────────────────────────────────────────────── */
+.sandbox-root {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: #0a0b0e;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.sandbox-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.sandbox-canvas-area {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+.sandbox-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: #0d0e11;
+  border-right: 1px solid #1e2228;
+  overflow: hidden;
+}
+
+.sandbox-sidebar-header {
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid #1e2228;
+  flex-shrink: 0;
+}
+
+.sandbox-sidebar-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #5a6070;
+  text-transform: uppercase;
+}
+
+/* Search */
+.sandbox-search {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border-bottom: 1px solid #1a1c21;
+  flex-shrink: 0;
+  color: #5a6070;
+}
+
+.sandbox-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 12px;
+  color: #c4c7cd;
+  font-family: inherit;
+}
+
+.sandbox-search-input::placeholder {
+  color: #3e4452;
+}
+
+.sandbox-search-clear {
+  background: none;
+  border: none;
+  color: #5a6070;
+  cursor: pointer;
+  padding: 0 2px;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.sandbox-search-clear:hover { color: #e4e3e0; }
+
+/* Machine list */
+.sandbox-machine-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sandbox-category {}
+
+.sandbox-category-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: none;
+  border: none;
+  border-top: 1px solid #1a1c21;
+  color: #6b7280;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.15s;
+}
+
+.sandbox-category-header:hover { color: #9ca3af; }
+
+.sandbox-category-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sandbox-category-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1c21;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  color: #4b5563;
+  min-width: 18px;
+}
+
+.sandbox-category-items {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Machine button */
+.sandbox-machine-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 10px;
+  background: transparent;
+  border: none;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s, border-color 0.12s;
+  font-family: inherit;
+}
+
+.sandbox-machine-btn:hover {
+  background: rgba(244, 135, 33, 0.06);
+  border-left-color: #f48721;
+}
+
+.sandbox-machine-btn:active {
+  background: rgba(244, 135, 33, 0.12);
+}
+
+.sandbox-machine-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sandbox-machine-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.sandbox-machine-name {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #c4c7cd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sandbox-machine-meta {
+  font-size: 10px;
+  color: #4b5563;
+  font-family: monospace;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────────────────────── */
+.sandbox-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 10px;
+  background: #0d0e11;
+  border-bottom: 1px solid #1a1c21;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.sandbox-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.sandbox-toolbar-divider {
+  width: 1px;
+  height: 22px;
+  background: #1e2228;
+  margin: 0 6px;
+  flex-shrink: 0;
+}
+
+.sandbox-tool-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.12s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.sandbox-tool-btn:hover {
+  background: #15171c;
+  color: #c4c7cd;
+  border-color: #2a2d33;
+}
+
+.sandbox-tool-btn.is-active {
+  background: rgba(244, 135, 33, 0.12);
+  color: #f48721;
+  border-color: rgba(244, 135, 33, 0.35);
+}
+
+.sandbox-tool-btn--danger:hover {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.sandbox-toolbar-stats {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  color: #4b5563;
+  font-family: monospace;
+}
+
+.sandbox-toolbar-dot { color: #2a2d33; }
+
+/* ── Canvas ──────────────────────────────────────────────────────────────── */
+.sandbox-canvas-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #0a0b0e;
+}
+
+.sandbox-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+}
+
+/* Belt drawing HUD */
+.sandbox-belt-hud {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(13, 14, 17, 0.92);
+  border: 1px solid rgba(244, 135, 33, 0.4);
+  border-radius: 8px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: #c4c7cd;
+  backdrop-filter: blur(8px);
+  z-index: 10;
+  pointer-events: all;
+}
+
+.sandbox-belt-hud button {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #ef4444;
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.sandbox-belt-hud button:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+/* Zoom badge */
+.sandbox-zoom-badge {
+  position: absolute;
+  bottom: 40px;
+  right: 14px;
+  background: rgba(13, 14, 17, 0.8);
+  border: 1px solid #1e2228;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-family: monospace;
+  color: #4b5563;
+  pointer-events: none;
+}
+
+/* ── Inspector Panel ─────────────────────────────────────────────────────── */
+.sandbox-inspector-panel {
+  width: 0;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #0d0e11;
+  border-left: 1px solid #1e2228;
+}
+
+.sandbox-inspector-panel.is-open {
+  width: 260px;
+}
+
+.machine-inspector {
+  width: 260px;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Inspector header */
+.inspector-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid;
+  flex-shrink: 0;
+}
+
+.inspector-machine-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 7px;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.inspector-machine-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.inspector-machine-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e4e3e0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inspector-machine-sub {
+  font-size: 10px;
+  font-family: monospace;
+  margin-top: 1px;
+}
+
+.inspector-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.inspector-icon-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid #1e2228;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s;
+}
+
+.inspector-icon-btn:hover {
+  background: #15171c;
+  color: #c4c7cd;
+}
+
+.inspector-delete-btn:hover {
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* Inspector sections */
+.inspector-section {
+  padding: 12px 14px;
+  border-bottom: 1px solid #14161a;
+}
+
+.inspector-label {
+  display: block;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #4b5563;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.inspector-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.inspector-label-row .inspector-label {
+  margin-bottom: 0;
+}
+
+.inspector-value {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+/* Recipe selector */
+.inspector-select {
+  width: 100%;
+  padding: 7px 10px;
+  background: #111318;
+  border: 1px solid #1e2228;
+  border-radius: 5px;
+  color: #c4c7cd;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+}
+
+.inspector-select:focus {
+  border-color: rgba(244, 135, 33, 0.5);
+}
+
+.inspector-empty {
+  font-size: 11px;
+  color: #4b5563;
+  font-style: italic;
+}
+
+/* Overclock slider */
+.inspector-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: #1e2228;
+  outline: none;
+  cursor: pointer;
+  accent-color: var(--accent, #f48721);
+}
+
+.inspector-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent, #f48721);
+  cursor: pointer;
+  border: 2px solid #0d0e11;
+  box-shadow: 0 0 6px rgba(244, 135, 33, 0.4);
+}
+
+.inspector-slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: 9px;
+  color: #3e4452;
+  font-family: monospace;
+}
+
+/* Throughput */
+.inspector-rates {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.inspector-rate-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  background: #111318;
+}
+
+.inspector-rate-input { border-left: 2px solid #374151; }
+.inspector-rate-output { border-left: 2px solid #f48721; }
+.inspector-rate-byproduct { border-left: 2px solid #a78bfa; }
+
+.inspector-rate-icon {
+  font-size: 9px;
+  width: 12px;
+  text-align: center;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.inspector-rate-in { color: #6b7280; }
+.inspector-rate-out { }
+
+.inspector-rate-item {
+  flex: 1;
+  font-size: 11.5px;
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inspector-rate-val {
+  font-size: 11.5px;
+  font-weight: 700;
+  font-family: monospace;
+  color: #c4c7cd;
+  flex-shrink: 0;
+}
+
+.inspector-rate-unit {
+  font-size: 9px;
+  font-weight: 400;
+  color: #4b5563;
+}
+
+.inspector-empty-state {
+  padding: 16px 14px;
+  border-bottom: 1px solid #14161a;
+  font-size: 11px;
+  color: #4b5563;
+  font-style: italic;
+}
+
+/* Power display */
+.inspector-power {
+  background: rgba(245, 158, 11, 0.04);
+}
+
+.inspector-power-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.inspector-power-val {
+  font-size: 22px;
+  font-weight: 800;
+  font-family: monospace;
+  color: #f59e0b;
+}
+
+.inspector-power-unit {
+  font-size: 12px;
+  color: #78716c;
+  font-weight: 600;
+}
+
+.inspector-power-base {
+  font-size: 10px;
+  color: #4b5563;
+  font-family: monospace;
+  margin-left: 4px;
+}
+
+/* Position info */
+.inspector-position {
+  padding-bottom: 8px;
+}
+
+.inspector-pos-val {
+  font-size: 11px;
+  font-family: monospace;
+  color: #4b5563;
+}
+
+/* ── Status Bar ──────────────────────────────────────────────────────────── */
+.sandbox-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  background: #0d0e11;
+  border-top: 1px solid #1a1c21;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.status-stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.status-unit {
+  font-size: 9.5px;
+  color: #3e4452;
+  font-family: monospace;
+}
+
+.status-divider {
+  color: #1e2228;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.status-warning {
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.status-hints {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 9.5px;
+  color: #2a2d33;
+  font-family: monospace;
+}
+
+
+/* ================================================================
+   END OF SANDBOX STYLES
+   ================================================================ */
+
+/* ================================================================
+   FICSIT SANDBOX — PHASE 2
+   ================================================================ */
+
+/* ── Belt Animation ─────────────────────────────────────────────────────────── */
+
+@keyframes beltFlow {
+  from { stroke-dashoffset: 48; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* ── Belt Inspector Panel ───────────────────────────────────────────────────── */
+
+.belt-inspector {}
+
+/* Belt tier grid (2×3 layout) */
+.belt-tier-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+.belt-tier-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 7px 4px;
+  background: #111318;
+  border: 1px solid #1e2228;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.12s;
+  font-family: inherit;
+}
+
+.belt-tier-btn:hover {
+  background: #18191f;
+  border-color: #2e3240;
+}
+
+.belt-tier-btn.is-active {
+  background: #161820;
+}
+
+.belt-tier-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #9ca3af;
+  letter-spacing: 0.05em;
+}
+
+.belt-tier-btn.is-active .belt-tier-label {
+  color: inherit;
+}
+
+.belt-tier-cap {
+  font-size: 9px;
+  font-family: monospace;
+  color: #4b5563;
+}
+
+.belt-tier-btn.is-active .belt-tier-cap {
+  color: inherit;
+  opacity: 0.7;
+}
+
+/* ── Belt Load Bar ──────────────────────────────────────────────────────────── */
+
+.belt-load-track {
+  width: 100%;
+  height: 6px;
+  background: #1a1c21;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.belt-load-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease, background 0.3s ease;
+  min-width: 2px;
+}
+
+.belt-load-values {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-family: monospace;
+}
+
+.belt-load-status {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* ── Belt Routing Info ──────────────────────────────────────────────────────── */
+
+.belt-routing {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.belt-route-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: #111318;
+  border-radius: 5px;
+}
+
+.belt-route-icon {
+  font-size: 10px;
+  flex-shrink: 0;
+  width: 14px;
+  text-align: center;
+}
+
+.belt-route-from { color: #22c55e; }
+.belt-route-to   { color: #3b82f6; }
+
+.belt-route-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.belt-route-machine {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #c4c7cd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.belt-route-port {
+  font-size: 9px;
+  font-family: monospace;
+  color: #4b5563;
+}
+
+.belt-route-arrow {
+  font-size: 12px;
+  color: #2a2d33;
+  text-align: center;
+  padding-left: 10px;
+}
+
+/* ── Belt Upgrade Hint ──────────────────────────────────────────────────────── */
+
+.belt-upgrade-hint {
+  background: rgba(245, 158, 11, 0.04);
+  border-top: 1px solid rgba(245, 158, 11, 0.12) !important;
+}
+
+.belt-upgrade-msg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #f59e0b;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.belt-upgrade-btn {
+  width: 100%;
+  padding: 7px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 5px;
+  color: #f59e0b;
+  font-size: 11.5px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.12s;
+  letter-spacing: 0.04em;
+}
+
+.belt-upgrade-btn:hover {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: #f59e0b;
+}
+
+/* ── Logistics Machine Icons in Sidebar ─────────────────────────────────────── */
+
+/* Splitter/Merger get a distinctive diagonal pattern overlay */
+.sandbox-machine-btn[id*="conveyor"] .sandbox-machine-icon {
+  position: relative;
+}
+
+/* ── Canvas cursors for belt selection ──────────────────────────────────────── */
+
+.sandbox-svg path.belt-select-target {
+  cursor: pointer;
+}
+
+/* ── ESC key hint in belt draw HUD ─────────────────────────────────────────── */
+
+.sandbox-belt-hud .hud-esc-hint {
+  font-size: 10px;
+  color: #4b5563;
+  font-family: monospace;
+}
+
+/* ── Selected belt glow effect ──────────────────────────────────────────────── */
+
+/* Already applied inline via SVG path, but add a global animation for pulse */
+@keyframes beltSelectPulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.55; }
+}
+
+/* ── Status bar: belt count update ─────────────────────────────────────────── */
+
+.status-stat.status-selected {
+  color: #f48721;
+}
+
+/* ── Inspector transition improvement ──────────────────────────────────────── */
+
+.sandbox-inspector-panel {
+  transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Sidebar logistics category accent ─────────────────────────────────────── */
+
+.sandbox-machine-btn:has([id*="splitter"]) .sandbox-machine-icon,
+.sandbox-machine-btn:has([id*="merger"]) .sandbox-machine-icon {
+  border-style: dashed;
+}
+
+/* ================================================================
+   END OF PHASE 2 SANDBOX STYLES
+   ================================================================ */
 
