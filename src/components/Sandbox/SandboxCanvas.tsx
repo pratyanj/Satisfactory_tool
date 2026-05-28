@@ -29,10 +29,16 @@ import {
   getMachineFootprint,
   getMachinePorts,
   getMachineEntry,
+  getMachineName,
+  getMachinePowerUsage,
+  getMachinePowerProduction,
+  getMachineMaxConnections,
+  getAllMachines,
 } from '../../engine/sandbox/machineRegistry';
 import type {
   SandboxMachine,
   SandboxBelt,
+  SandboxPowerLine,
   GridPosition,
 } from '../../engine/sandbox/types';
 import { machines } from '../../engine/data';
@@ -40,7 +46,7 @@ import { getBeltTier } from './BeltInspector';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type ToolMode = 'select' | 'place' | 'belt' | 'delete' | 'pan';
+type ToolMode = 'select' | 'place' | 'belt' | 'power' | 'delete' | 'pan';
 
 interface PlacingState {
   machineId: string;
@@ -62,15 +68,23 @@ function generateId(): string {
 /** Build a footprint map for all machines (used by canPlace) */
 function buildFootprintMap() {
   const map = new Map<string, { width: number; height: number }>();
-  // We'll add all known machine IDs from machineRegistry
-  const machineIds = Object.keys(machines);
-  for (const id of machineIds) {
-    map.set(id, getMachineFootprint(id));
+  const registryMachines = getAllMachines();
+  for (const entry of registryMachines) {
+    map.set(entry.machineId, entry.footprint);
   }
   return map;
 }
 
 const FOOTPRINT_MAP = buildFootprintMap();
+
+// ─── Drag-Select Helper ────────────────────────────────────────────────────────
+
+interface DragSelectState {
+  startX: number;
+  startY: number;
+  currentX: number;
+  currentY: number;
+}
 
 // Belt flow direction keyframe is defined in CSS (@keyframes beltFlow)
 
@@ -85,8 +99,19 @@ export function SandboxCanvas() {
   const [toolMode, setToolMode] = useState<ToolMode>('select');
   const [placing, setPlacing]   = useState<PlacingState | null>(null);
   const [beltDraw, setBeltDraw] = useState<BeltDrawState | null>(null);
+  const [powerDraw, setPowerDraw] = useState<{ fromInstanceId: string } | null>(null);
+  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const panStart = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
+
+  // Phase 4: drag-select, Zoop array stamping, clipboard paste
+  const [dragSelect, setDragSelect] = useState<DragSelectState | null>(null);
+  const [isZooping, setIsZooping] = useState(false);   // Shift held during place = Zoop mode
+  const [zoopGhosts, setZoopGhosts] = useState<{ col: number; row: number; canDrop: boolean }[]>([]);
+  const [isPasteMode, setIsPasteMode] = useState(false);
+  const [pasteGhostAnchor, setPasteGhostAnchor] = useState<{ col: number; row: number } | null>(null);
+  // Track if drag just ended (avoids immediate deselect on mouse-up after drag)
+  const justDragSelected = useRef(false);
 
   // Listen for tool-mode changes from the Toolbar (CustomEvent approach avoids prop drilling)
   useEffect(() => {
@@ -99,6 +124,7 @@ export function SandboxCanvas() {
         setPlacing(null);
       }
       setBeltDraw(null);
+      setPowerDraw(null);
     };
     window.addEventListener('sandbox:tool', handler);
     return () => window.removeEventListener('sandbox:tool', handler);
@@ -111,13 +137,45 @@ export function SandboxCanvas() {
         setToolMode('select');
         setPlacing(null);
         setBeltDraw(null);
+        setPowerDraw(null);
+        setDragSelect(null);
+        setIsZooping(false);
+        setZoopGhosts([]);
+        setIsPasteMode(false);
+        setPasteGhostAnchor(null);
         dispatch({ type: 'SELECT_MACHINE', instanceId: null });
+        dispatch({ type: 'SELECT_MULTIPLE_MACHINES', instanceIds: [] });
         dispatch({ type: 'SELECT_BELT', beltId: null });
+        dispatch({ type: 'SELECT_POWER_LINE', lineId: null });
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [dispatch]);
+
+  // Ctrl+C / Ctrl+V / Ctrl+A keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (!e.ctrlKey && !e.metaKey) return;
+      if (e.key === 'c' || e.key === 'C') {
+        e.preventDefault();
+        dispatch({ type: 'COPY_SELECTION' });
+      } else if (e.key === 'v' || e.key === 'V') {
+        e.preventDefault();
+        if (state.clipboard && state.clipboard.length > 0) {
+          setIsPasteMode(true);
+        }
+      } else if (e.key === 'a' || e.key === 'A') {
+        e.preventDefault();
+        dispatch({
+          type: 'SELECT_MULTIPLE_MACHINES',
+          instanceIds: state.machines.map((m) => m.instanceId),
+        });
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [dispatch, state.clipboard, state.machines]);
 
   const { viewOffset, zoom, cellSize, showGrid, machines: placedMachines, belts: placedBelts } = state;
 
@@ -145,6 +203,9 @@ export function SandboxCanvas() {
     (e: React.MouseEvent) => {
       const { x, y } = getSVGPoint(e);
 
+      // Track mouse position for wire drawing preview and paste ghost
+      setMousePos({ x, y });
+
       // Panning
       if (isPanning && panStart.current) {
         const dx = x - panStart.current.x;
@@ -157,15 +218,47 @@ export function SandboxCanvas() {
         return;
       }
 
-      // Ghost placement preview
+      // Drag-select box update
+      if (dragSelect) {
+        setDragSelect((prev) => prev ? { ...prev, currentX: x, currentY: y } : null);
+        return;
+      }
+
+      // Ghost placement preview / Zoop
       if (placing) {
         const gridPos = pxToGrid(x, y);
         const fp = getMachineFootprint(placing.machineId);
         const ok = canPlace(state, placing.machineId, gridPos, fp, FOOTPRINT_MAP);
         setPlacing((prev) => prev ? { ...prev, ghostPos: gridPos, canDrop: ok } : null);
+
+        // Zoop: if Shift held, compute a line of ghosts from first click to current
+        if (isZooping && placing.ghostPos) {
+          const startPos = placing.ghostPos;
+          const dx = gridPos.col - startPos.col;
+          const dy = gridPos.row - startPos.row;
+          const isHorizontal = Math.abs(dx) >= Math.abs(dy);
+          const count = isHorizontal ? Math.abs(dx) + 1 : Math.abs(dy) + 1;
+          const stepCol = isHorizontal ? (dx >= 0 ? 1 : -1) : 0;
+          const stepRow = !isHorizontal ? (dy >= 0 ? 1 : -1) : 0;
+
+          const ghosts = Array.from({ length: count }, (_, i) => {
+            const col = startPos.col + i * stepCol;
+            const row = startPos.row + i * stepRow;
+            const testState = { ...state, machines: [...state.machines] };
+            const canDrop = canPlace(testState, placing.machineId, { col, row }, fp, FOOTPRINT_MAP);
+            return { col, row, canDrop };
+          });
+          setZoopGhosts(ghosts);
+        }
+      }
+
+      // Paste ghost: track anchor
+      if (isPasteMode) {
+        const gridPos = pxToGrid(x, y);
+        setPasteGhostAnchor(gridPos);
       }
     },
-    [isPanning, placing, pxToGrid, state, dispatch, zoom, getSVGPoint]
+    [isPanning, placing, pxToGrid, state, dispatch, zoom, getSVGPoint, dragSelect, isZooping, isPasteMode]
   );
 
   const handleMouseDown = useCallback(
@@ -177,22 +270,110 @@ export function SandboxCanvas() {
         panStart.current = { x, y, ox: viewOffset.x, oy: viewOffset.y };
         return;
       }
+      // Start drag-select in select mode when not clicking on a machine
+      if (e.button === 0 && toolMode === 'select' && !isPasteMode) {
+        const { x, y } = getSVGPoint(e);
+        setDragSelect({ startX: x, startY: y, currentX: x, currentY: y });
+        justDragSelected.current = false;
+      }
     },
-    [toolMode, viewOffset, getSVGPoint]
+    [toolMode, viewOffset, getSVGPoint, isPasteMode]
   );
 
-  const handleMouseUp = useCallback(() => {
-    setIsPanning(false);
-    panStart.current = null;
-  }, []);
+  const handleMouseUp = useCallback(
+    (e: React.MouseEvent) => {
+      setIsPanning(false);
+      panStart.current = null;
+
+      if (dragSelect) {
+        const minX = Math.min(dragSelect.startX, dragSelect.currentX);
+        const maxX = Math.max(dragSelect.startX, dragSelect.currentX);
+        const minY = Math.min(dragSelect.startY, dragSelect.currentY);
+        const maxY = Math.max(dragSelect.startY, dragSelect.currentY);
+        const dragThreshold = 8;
+
+        if (maxX - minX > dragThreshold || maxY - minY > dragThreshold) {
+          // Find all machines whose centre falls inside the selection box
+          const hits = placedMachines.filter((m) => {
+            const fp = getMachineFootprint(m.machineId);
+            const origin = gridToPx(m.position.col, m.position.row);
+            const cx = origin.x + (fp.width * cellSize * zoom) / 2;
+            const cy = origin.y + (fp.height * cellSize * zoom) / 2;
+            return cx >= minX && cx <= maxX && cy >= minY && cy <= maxY;
+          });
+          if (hits.length > 0) {
+            dispatch({ type: 'SELECT_MULTIPLE_MACHINES', instanceIds: hits.map((m) => m.instanceId) });
+            justDragSelected.current = true;
+          }
+        }
+        setDragSelect(null);
+      }
+    },
+    [dragSelect, placedMachines, gridToPx, cellSize, zoom, dispatch]
+  );
 
   const handleCanvasClick = useCallback(
     (e: React.MouseEvent) => {
       if (e.button !== 0 || isPanning) return;
+
+      // Don't deselect if drag-select just finished
+      if (justDragSelected.current) {
+        justDragSelected.current = false;
+        return;
+      }
+
       const { x, y } = getSVGPoint(e);
 
-      if (toolMode === 'place' && placing?.ghostPos && placing.canDrop) {
-        const machine: SandboxMachine = {
+      // ── Paste mode: stamp clipboard on click ───────────────────────────────
+      if (isPasteMode && state.clipboard && pasteGhostAnchor) {
+        const newMachines = state.clipboard.map((entry) => ({
+          instanceId: generateId(),
+          machineId: entry.machineId,
+          position: {
+            col: pasteGhostAnchor.col + entry.relCol,
+            row: pasteGhostAnchor.row + entry.relRow,
+          },
+          rotation: entry.rotation,
+          recipeId: entry.recipeId,
+          overclock: entry.overclock,
+          fuelId: entry.fuelId,
+          switchOn: entry.switchOn,
+        }));
+        dispatch({ type: 'PLACE_MACHINE_ARRAY', machines: newMachines });
+        setIsPasteMode(false);
+        setPasteGhostAnchor(null);
+        return;
+      }
+
+      // ── Zoop stamp: stamp array on click (Shift released) ─────────────────
+      if (isZooping && zoopGhosts.length > 1 && placing) {
+        const validGhosts = zoopGhosts.filter((g) => g.canDrop);
+        if (validGhosts.length > 0) {
+          const newMachines = validGhosts.map((g) => ({
+            instanceId: generateId(),
+            machineId: placing.machineId,
+            position: { col: g.col, row: g.row },
+            rotation: 0,
+            recipeId: null,
+            overclock: 100,
+          }));
+          dispatch({ type: 'PLACE_MACHINE_ARRAY', machines: newMachines });
+        }
+        setIsZooping(false);
+        setZoopGhosts([]);
+        return;
+      }
+
+      // ── Zoop: Shift held in place mode → set anchor ────────────────────────
+      if (toolMode === 'place' && e.shiftKey && placing?.ghostPos) {
+        setIsZooping(true);
+        setZoopGhosts([{ col: placing.ghostPos.col, row: placing.ghostPos.row, canDrop: placing.canDrop }]);
+        return;
+      }
+
+      // ── Normal single place ────────────────────────────────────────────────
+      if (toolMode === 'place' && placing?.ghostPos && placing.canDrop && !isZooping) {
+        const machine = {
           instanceId: generateId(),
           machineId:  placing.machineId,
           position:   placing.ghostPos,
@@ -201,17 +382,22 @@ export function SandboxCanvas() {
           overclock:  100,
         };
         dispatch({ type: 'PLACE_MACHINE', machine });
-        // Keep placing mode active so the user can stamp multiple
         return;
       }
 
+      // ── Deselect on empty canvas click ────────────────────────────────────
       if (toolMode === 'select') {
-        // Deselect both if clicking empty space
         dispatch({ type: 'SELECT_MACHINE', instanceId: null });
+        dispatch({ type: 'SELECT_MULTIPLE_MACHINES', instanceIds: [] });
         dispatch({ type: 'SELECT_BELT', beltId: null });
+        dispatch({ type: 'SELECT_POWER_LINE', lineId: null });
       }
     },
-    [toolMode, placing, isPanning, dispatch, getSVGPoint]
+    [
+      toolMode, placing, isPanning, dispatch, getSVGPoint,
+      isPasteMode, pasteGhostAnchor, state.clipboard,
+      isZooping, zoopGhosts,
+    ]
   );
 
   const handleWheelZoom = useCallback(
@@ -236,10 +422,57 @@ export function SandboxCanvas() {
         return;
       }
       if (toolMode === 'select') {
-        dispatch({ type: 'SELECT_MACHINE', instanceId: machine.instanceId });
+        if (e.shiftKey) {
+          // Shift+click toggles machine in/out of multi-selection
+          dispatch({ type: 'SELECT_ADD_MACHINE', instanceId: machine.instanceId });
+        } else {
+          dispatch({ type: 'SELECT_MACHINE', instanceId: machine.instanceId });
+        }
+        return;
+      }
+      if (toolMode === 'power') {
+        const currentConns = (state.powerLines ?? []).filter(
+          (pl) => pl.fromMachineId === machine.instanceId || pl.toMachineId === machine.instanceId
+        ).length;
+        const maxConns = getMachineMaxConnections(machine.machineId);
+
+        if (!powerDraw) {
+          if (maxConns > 0 && currentConns < maxConns) {
+            setPowerDraw({ fromInstanceId: machine.instanceId });
+          } else if (maxConns === 0) {
+            alert('This machine does not support power connections.');
+          } else {
+            alert(`Max connection limit reached! This machine allows up to ${maxConns} connections.`);
+          }
+        } else {
+          const alreadyConnected = (state.powerLines ?? []).some(
+            (pl) =>
+              (pl.fromMachineId === powerDraw.fromInstanceId && pl.toMachineId === machine.instanceId) ||
+              (pl.fromMachineId === machine.instanceId && pl.toMachineId === powerDraw.fromInstanceId)
+          );
+          if (alreadyConnected) {
+            alert('These machines are already connected.');
+            return;
+          }
+          if (machine.instanceId === powerDraw.fromInstanceId) {
+            setPowerDraw(null);
+            return;
+          }
+          if (currentConns >= maxConns) {
+            alert(`Target connection limit reached! This machine allows up to ${maxConns} connections.`);
+            return;
+          }
+          const line = {
+            lineId: generateId(),
+            fromMachineId: powerDraw.fromInstanceId,
+            toMachineId: machine.instanceId,
+          };
+          dispatch({ type: 'ADD_POWER_LINE', line });
+          setPowerDraw(null);
+        }
       }
     },
-    [toolMode, dispatch]
+    [toolMode, dispatch, powerDraw, state.powerLines]
   );
 
   // ── Port click for belt drawing ─────────────────────────────────────────────
@@ -311,12 +544,21 @@ export function SandboxCanvas() {
     const w       = fp.width  * cellSize * zoom;
     const h       = fp.height * cellSize * zoom;
     const isSelected = state.selectedMachineId === machine.instanceId;
+    const isMultiSelected = state.selectedMachineIds.includes(machine.instanceId);
     const accent  = entry?.accentColor ?? '#f48721';
-    const machineName = machines[machine.machineId]?.name ?? machine.machineId;
+    const machineName = getMachineName(machine.machineId);
     const tp      = stats.machineThroughputs[machine.instanceId];
 
-    // Status indicator color
-    const statusColor = !machine.recipeId ? '#6b7280' : tp ? accent : '#4b5563';
+    // Power validation
+    const pStatus = stats.machinePowerGridStatus?.[machine.instanceId];
+    const isUnpowered = pStatus && !pStatus.isPowered;
+
+    const isSwitch = machine.machineId === 'power_switch';
+    const switchOn = machine.switchOn !== false;
+    
+    // Status indicator color (red if unpowered/tripped, gray if unassigned, accent if active)
+    const statusColor = isUnpowered ? '#ef4444' : (!machine.recipeId ? '#6b7280' : accent);
+    const strokeColor = isSelected || isMultiSelected ? '#f48721' : (isUnpowered ? '#ef4444' : accent);
 
     return (
       <g
@@ -332,16 +574,17 @@ export function SandboxCanvas() {
         <rect
           x={0} y={0} width={w} height={h} rx={3}
           fill="#151820"
-          stroke={isSelected ? '#f48721' : accent}
+          stroke={strokeColor}
           strokeWidth={isSelected ? 2.5 : 1.5}
           opacity={0.96}
+          className={isUnpowered ? 'sandbox-machine-unpowered-pulse' : ''}
         />
 
         {/* Accent top bar */}
-        <rect x={0} y={0} width={w} height={Math.max(4, h * 0.06)} rx={3} fill={accent} opacity={0.85} />
+        <rect x={0} y={0} width={w} height={Math.max(4, h * 0.06)} rx={3} fill={isUnpowered ? '#ef4444' : accent} opacity={0.85} />
 
         {/* Status dot (top-right) */}
-        <circle cx={w - 8} cy={8} r={4} fill={statusColor} />
+        <circle cx={w - 8} cy={8} r={4} fill={isSwitch ? (switchOn ? '#10b981' : '#ef4444') : statusColor} className={isUnpowered ? 'sandbox-unpowered-dot-flash' : ''} />
 
         {/* Machine name label */}
         {w > 40 && (
@@ -358,24 +601,38 @@ export function SandboxCanvas() {
           </text>
         )}
 
-        {/* Output rate label */}
-        {tp && w > 50 && (
+        {/* Output rate / switch state label */}
+        {((tp && w > 50) || (isSwitch && w > 30)) && (
           <text
             x={w / 2} y={h - 8}
             textAnchor="middle"
             fontSize={Math.max(7, Math.min(9, w * 0.1))}
-            fill={accent}
+            fill={isSwitch ? (switchOn ? '#10b981' : '#ef4444') : (isUnpowered ? '#ef4444' : accent)}
             fontFamily="'Inter', monospace"
+            fontWeight={isSwitch ? "700" : "400"}
             style={{ pointerEvents: 'none', userSelect: 'none' }}
           >
-            {tp.outputRate.toFixed(1)}/min
+            {isSwitch
+              ? (switchOn ? 'CLOSED (ON)' : 'OPEN (OFF)')
+              : (isUnpowered ? 'No Power' : `${tp.outputRate.toFixed(1)}/min`)}
           </text>
         )}
 
         {/* Ports */}
         {renderPorts(machine, w, h)}
 
-        {/* Selection highlight ring */}
+        {/* Power connection point (pulsing node in power mode) */}
+        {toolMode === 'power' && getMachineMaxConnections(machine.machineId) > 0 && (
+          <circle
+            cx={w / 2} cy={h / 2} r={6}
+            className={`sandbox-power-node ${powerDraw?.fromInstanceId === machine.instanceId ? 'is-drawing' : ''}`}
+            fill="#f59e0b"
+            stroke="#ffffff"
+            strokeWidth={1.5}
+          />
+        )}
+
+        {/* Selection highlight ring (single) */}
         {isSelected && (
           <rect
             x={-2} y={-2} width={w + 4} height={h + 4} rx={5}
@@ -384,6 +641,19 @@ export function SandboxCanvas() {
             strokeWidth={1}
             strokeDasharray="4 3"
             opacity={0.6}
+          />
+        )}
+
+        {/* Multi-selection glow ring (cyan) */}
+        {isMultiSelected && !isSelected && (
+          <rect
+            x={-3} y={-3} width={w + 6} height={h + 6} rx={6}
+            fill="none"
+            stroke="#22d3ee"
+            strokeWidth={1.5}
+            strokeDasharray="5 3"
+            opacity={0.75}
+            className="sandbox-multi-select-ring"
           />
         )}
       </g>
@@ -551,6 +821,133 @@ export function SandboxCanvas() {
     );
   };
 
+  const renderPowerLine = (pl: SandboxPowerLine) => {
+    const fromMachine = placedMachines.find((m) => m.instanceId === pl.fromMachineId);
+    const toMachine   = placedMachines.find((m) => m.instanceId === pl.toMachineId);
+    if (!fromMachine || !toMachine) return null;
+
+    const fromFp = getMachineFootprint(fromMachine.machineId);
+    const toFp   = getMachineFootprint(toMachine.machineId);
+
+    const fromPos = gridToPx(fromMachine.position.col, fromMachine.position.row);
+    const toPos   = gridToPx(toMachine.position.col, toMachine.position.row);
+
+    // Center of the machines
+    const p1 = {
+      x: fromPos.x + (fromFp.width * cellSize * zoom) / 2,
+      y: fromPos.y + (fromFp.height * cellSize * zoom) / 2,
+    };
+    const p2 = {
+      x: toPos.x + (toFp.width * cellSize * zoom) / 2,
+      y: toPos.y + (toFp.height * cellSize * zoom) / 2,
+    };
+
+    // Sag math: quadratic bezier curve sagging down
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    // Sag amount proportional to distance
+    const sag = Math.max(15, dist / 8) * zoom;
+    const controlPoint = {
+      x: (p1.x + p2.x) / 2,
+      y: (p1.y + p2.y) / 2 + sag,
+    };
+
+    const path = `M ${p1.x} ${p1.y} Q ${controlPoint.x} ${controlPoint.y} ${p2.x} ${p2.y}`;
+
+    // Get power status of endpoints
+    const pStatus = stats.machinePowerGridStatus?.[pl.fromMachineId];
+    const isTripped = pStatus?.reason === 'fuse_tripped';
+    const isNoPower = pStatus?.reason === 'no_power';
+
+    const color = isTripped ? '#ef4444' : (isNoPower ? '#4b5563' : '#f59e0b');
+    const isSelected = state.selectedPowerLineId === pl.lineId;
+
+    return (
+      <g key={pl.lineId}>
+        {/* Wire shadow */}
+        <path d={path} stroke="rgba(0,0,0,0.5)" strokeWidth={3} fill="none" />
+        
+        {/* Main Wire line */}
+        <path
+          d={path}
+          stroke={color}
+          strokeWidth={isSelected ? 3.5 : 2}
+          fill="none"
+          className={!isTripped && !isNoPower ? 'sandbox-power-line-active' : ''}
+          opacity={isNoPower ? 0.6 : 0.95}
+        />
+
+        {/* Selection glow */}
+        {isSelected && (
+          <path
+            d={path}
+            stroke="#f48721"
+            strokeWidth={6}
+            fill="none"
+            opacity={0.3}
+          />
+        )}
+
+        {/* Hit target for delete/select */}
+        <path
+          d={path}
+          stroke="transparent"
+          strokeWidth={12}
+          fill="none"
+          style={{ cursor: toolMode === 'delete' ? 'crosshair' : 'pointer' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (toolMode === 'delete') {
+              dispatch({ type: 'DELETE_POWER_LINE', lineId: pl.lineId });
+            } else if (toolMode === 'select') {
+              dispatch({ type: 'SELECT_POWER_LINE', lineId: pl.lineId });
+              dispatch({ type: 'SELECT_MACHINE', instanceId: null });
+            }
+          }}
+        />
+      </g>
+    );
+  };
+
+  const renderPowerLinePreview = () => {
+    if (!powerDraw || toolMode !== 'power') return null;
+    const fromMachine = placedMachines.find((m) => m.instanceId === powerDraw.fromInstanceId);
+    if (!fromMachine) return null;
+
+    const fromFp = getMachineFootprint(fromMachine.machineId);
+    const fromPos = gridToPx(fromMachine.position.col, fromMachine.position.row);
+
+    const p1 = {
+      x: fromPos.x + (fromFp.width * cellSize * zoom) / 2,
+      y: fromPos.y + (fromFp.height * cellSize * zoom) / 2,
+    };
+    const p2 = mousePos;
+
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const sag = Math.max(15, dist / 8) * zoom;
+    const controlPoint = {
+      x: (p1.x + p2.x) / 2,
+      y: (p1.y + p2.y) / 2 + sag,
+    };
+
+    const path = `M ${p1.x} ${p1.y} Q ${controlPoint.x} ${controlPoint.y} ${p2.x} ${p2.y}`;
+
+    return (
+      <path
+        d={path}
+        stroke="#f59e0b"
+        strokeWidth={1.5}
+        strokeDasharray="4 4"
+        fill="none"
+        opacity={0.7}
+      />
+    );
+  };
+
   const renderGhost = () => {
     if (!placing?.ghostPos) return null;
     const fp     = getMachineFootprint(placing.machineId);
@@ -572,13 +969,107 @@ export function SandboxCanvas() {
     );
   };
 
-  // Cursor style
+  // ── Phase 4 render helpers ───────────────────────────────────────────────────────────
+
+  const renderDragSelectBox = () => {
+    if (!dragSelect) return null;
+    const x = Math.min(dragSelect.startX, dragSelect.currentX);
+    const y = Math.min(dragSelect.startY, dragSelect.currentY);
+    const w = Math.abs(dragSelect.currentX - dragSelect.startX);
+    const h = Math.abs(dragSelect.currentY - dragSelect.startY);
+    if (w < 4 || h < 4) return null;
+    return (
+      <rect
+        x={x} y={y} width={w} height={h}
+        fill="rgba(34,211,238,0.06)"
+        stroke="#22d3ee"
+        strokeWidth={1}
+        strokeDasharray="5 3"
+        style={{ pointerEvents: 'none' }}
+      />
+    );
+  };
+
+  const renderZoopGhosts = () => {
+    if (!isZooping || zoopGhosts.length === 0 || !placing) return null;
+    const fp = getMachineFootprint(placing.machineId);
+    return (
+      <>
+        {zoopGhosts.map((g, i) => {
+          const origin = gridToPx(g.col, g.row);
+          const w = fp.width  * cellSize * zoom;
+          const h = fp.height * cellSize * zoom;
+          return (
+            <rect
+              key={i}
+              x={origin.x} y={origin.y}
+              width={w} height={h}
+              rx={3}
+              fill={g.canDrop ? 'rgba(34,211,238,0.18)' : 'rgba(239,68,68,0.18)'}
+              stroke={g.canDrop ? '#22d3ee' : '#ef4444'}
+              strokeWidth={1.5}
+              strokeDasharray="4 2"
+              style={{ pointerEvents: 'none' }}
+            />
+          );
+        })}
+        {(() => {
+          const last = zoopGhosts[zoopGhosts.length - 1];
+          const origin = gridToPx(last.col, last.row);
+          const valid = zoopGhosts.filter((g) => g.canDrop).length;
+          return (
+            <text
+              x={origin.x + fp.width * cellSize * zoom + 4}
+              y={origin.y + 12}
+              fill="#22d3ee"
+              fontSize={11}
+              fontFamily="'Inter', monospace"
+              fontWeight="700"
+              style={{ pointerEvents: 'none' }}
+            >
+              ×{valid}
+            </text>
+          );
+        })()}
+      </>
+    );
+  };
+
+  const renderPasteGhosts = () => {
+    if (!isPasteMode || !state.clipboard || !pasteGhostAnchor) return null;
+    return (
+      <>
+        {state.clipboard.map((entry, i) => {
+          const fp = getMachineFootprint(entry.machineId);
+          const col = pasteGhostAnchor.col + entry.relCol;
+          const row = pasteGhostAnchor.row + entry.relRow;
+          const origin = gridToPx(col, row);
+          const w = fp.width  * cellSize * zoom;
+          const h = fp.height * cellSize * zoom;
+          return (
+            <rect
+              key={i}
+              x={origin.x} y={origin.y}
+              width={w} height={h}
+              rx={3}
+              fill="rgba(168,85,247,0.15)"
+              stroke="#a855f7"
+              strokeWidth={1.5}
+              strokeDasharray="4 2"
+              style={{ pointerEvents: 'none' }}
+            />
+          );
+        })}
+      </>
+    );
+  };
   const cursorStyle: React.CSSProperties = {
     cursor:
       isPanning     ? 'grabbing' :
       toolMode === 'pan'    ? 'grab' :
       toolMode === 'delete' ? 'crosshair' :
       toolMode === 'belt'   ? 'cell' :
+      toolMode === 'power'  ? 'cell' :
       toolMode === 'place'  ? 'copy' :
       'default',
   };
@@ -612,8 +1103,19 @@ export function SandboxCanvas() {
           {placedMachines.map(renderMachine)}
         </g>
 
+        {/* Power Wires (rendered above machines) */}
+        <g className="sandbox-power-lines">
+          {(state.powerLines ?? []).map(renderPowerLine)}
+          {renderPowerLinePreview()}
+        </g>
+
         {/* Ghost placement preview */}
         <g className="sandbox-ghost">{renderGhost()}</g>
+
+        {/* Phase 4: Zoop ghosts, paste ghosts, drag-select box */}
+        <g className="sandbox-zoop-layer">{renderZoopGhosts()}</g>
+        <g className="sandbox-paste-layer">{renderPasteGhosts()}</g>
+        <g className="sandbox-dragselect">{renderDragSelectBox()}</g>
 
         {/* Origin marker */}
         <circle
@@ -626,12 +1128,38 @@ export function SandboxCanvas() {
         />
       </svg>
 
+      {/* Zoop mode HUD */}
+      {isZooping && (
+        <div className="sandbox-belt-hud sandbox-zoop-hud">
+          <span>⊞ Move to set array direction &amp; length, then <strong>click to stamp</strong></span>
+          <span className="hud-esc-hint">ESC to cancel</span>
+        </div>
+      )}
+
+      {/* Paste mode HUD */}
+      {isPasteMode && (
+        <div className="sandbox-belt-hud sandbox-paste-hud">
+          <span>📋 Move to position, <strong>click to paste</strong></span>
+          <span className="hud-esc-hint">ESC to cancel</span>
+          <button onClick={() => setIsPasteMode(false)}>Cancel</button>
+        </div>
+      )}
+
       {/* Belt draw mode HUD */}
       {beltDraw && (
         <div className="sandbox-belt-hud">
           <span>🔗 Click an <strong>input port</strong> to complete belt</span>
           <span className="hud-esc-hint">ESC to cancel</span>
           <button onClick={() => setBeltDraw(null)}>Cancel</button>
+        </div>
+      )}
+
+      {/* Power wire draw mode HUD */}
+      {powerDraw && (
+        <div className="sandbox-belt-hud sandbox-power-hud">
+          <span>⚡ Click another <strong>machine or pole</strong> to connect wire</span>
+          <span className="hud-esc-hint">ESC to cancel</span>
+          <button onClick={() => setPowerDraw(null)}>Cancel</button>
         </div>
       )}
 
