@@ -16,6 +16,8 @@ import { SandboxCanvas } from './SandboxCanvas';
 import { SandboxSidebar } from './SandboxSidebar';
 import { MachineInspector } from './MachineInspector';
 import { BeltInspector } from './BeltInspector';
+import { PowerInspector } from './PowerInspector';
+import { ArrayInspector } from './ArrayInspector';
 import { SandboxToolbar } from './SandboxToolbar';
 import { SandboxStatusBar } from './SandboxStatusBar';
 import {
@@ -57,8 +59,8 @@ export function SandboxTab() {
     saveToLocalStorage(state);
   }, [state.machines, state.belts]);
 
-  // Derive factory stats (memoised — only recomputes when machines/belts change)
-  const stats = useMemo(() => computeFactoryStats(state), [state.machines, state.belts]);
+  // Derive factory stats (memoised — only recomputes when layout changes)
+  const stats = useMemo(() => computeFactoryStats(state), [state.machines, state.belts, state.powerLines]);
 
   const contextValue = useMemo(
     () => ({ state, dispatch, stats }),
@@ -75,7 +77,18 @@ export function SandboxTab() {
     [state.belts, state.selectedBeltId]
   );
 
-  const inspectorOpen = selectedMachine !== null || selectedBelt !== null;
+  const selectedPowerLine = useMemo(
+    () => state.powerLines?.find((pl) => pl.lineId === state.selectedPowerLineId) ?? null,
+    [state.powerLines, state.selectedPowerLineId]
+  );
+
+  const isMultiSelect = state.selectedMachineIds.length > 1;
+
+  const inspectorOpen =
+    isMultiSelect ||
+    selectedMachine !== null ||
+    selectedBelt !== null ||
+    selectedPowerLine !== null;
 
   return (
     <SandboxContext.Provider value={contextValue}>
@@ -92,15 +105,30 @@ export function SandboxTab() {
           <SandboxStatusBar stats={stats} />
         </div>
 
-        {/* Right — Inspector (machine OR belt) */}
+        {/* Right — Inspector (multi-machine OR machine OR belt OR power line) */}
         <div className={`sandbox-inspector-panel ${inspectorOpen ? 'is-open' : ''}`}>
-          {selectedMachine && (
+          {isMultiSelect && (
+            <ArrayInspector
+              selectedIds={state.selectedMachineIds}
+              machines={state.machines}
+              dispatch={dispatch}
+            />
+          )}
+          {!isMultiSelect && selectedMachine && (
             <MachineInspector machine={selectedMachine} dispatch={dispatch} stats={stats} />
           )}
-          {selectedBelt && (
+          {!isMultiSelect && selectedBelt && (
             <BeltInspector
               belt={selectedBelt}
               machines={state.machines}
+              stats={stats}
+              dispatch={dispatch}
+            />
+          )}
+          {!isMultiSelect && selectedPowerLine && (
+            <PowerInspector
+              line={selectedPowerLine}
+              state={state}
               stats={stats}
               dispatch={dispatch}
             />

@@ -11,6 +11,9 @@ import {
   CATEGORY_LABELS,
   CATEGORY_ORDER,
   type MachineCategory,
+  getMachineName,
+  getMachinePowerUsage,
+  getMachinePowerProduction,
 } from '../../engine/sandbox/machineRegistry';
 import { machines } from '../../engine/data';
 
@@ -81,7 +84,7 @@ export function SandboxSidebar() {
         {CATEGORY_ORDER.map((cat) => {
           const entries = getMachinesByCategory(cat).filter((entry) => {
             if (!query) return true;
-            const name = machines[entry.machineId]?.name ?? entry.machineId;
+            const name = getMachineName(entry.machineId);
             return name.toLowerCase().includes(query) || cat.includes(query);
           });
 
@@ -119,7 +122,10 @@ export function SandboxSidebar() {
               {!isCollapsed && (
                 <div className="sandbox-category-items">
                   {entries.map((entry) => {
-                    const machineData = machines[entry.machineId];
+                    const name = getMachineName(entry.machineId);
+                    const isGenerator = getMachinePowerProduction(entry.machineId) > 0;
+                    const powerVal = isGenerator ? getMachinePowerProduction(entry.machineId) : getMachinePowerUsage(entry.machineId);
+                    const powerText = isGenerator ? `+${powerVal}MW` : `${powerVal}MW`;
                     const { footprint } = entry;
 
                     return (
@@ -127,7 +133,7 @@ export function SandboxSidebar() {
                         key={entry.machineId}
                         className="sandbox-machine-btn"
                         onClick={() => handleMachineClick(entry.machineId)}
-                        title={`${machineData?.name} · ${footprint.width}×${footprint.height} foundations · ${machineData?.powerUsage}MW`}
+                        title={`${name} · ${footprint.width}×${footprint.height} foundations · ${powerText}`}
                         id={`sandbox-machine-${entry.machineId}`}
                       >
                         <span
@@ -137,9 +143,9 @@ export function SandboxSidebar() {
                           <MachineIcon machineId={entry.machineId} color={entry.accentColor} />
                         </span>
                         <span className="sandbox-machine-info">
-                          <span className="sandbox-machine-name">{machineData?.name ?? entry.machineId}</span>
+                          <span className="sandbox-machine-name">{name}</span>
                           <span className="sandbox-machine-meta">
-                            {footprint.width}×{footprint.height} · {machineData?.powerUsage}MW
+                            {footprint.width}×{footprint.height} · {powerText}
                           </span>
                         </span>
                       </button>
@@ -161,6 +167,13 @@ function MachineIcon({ machineId, color }: { machineId: string; color: string })
   const size = 18;
   const s = { stroke: color, fill: 'none', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
 
+  if (machineId.startsWith('power_pole') || machineId.includes('generator') || machineId.includes('nuclear') || machineId === 'biomass_burner') {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24">
+        <polygon {...s} points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      </svg>
+    );
+  }
   if (machineId.startsWith('miner')) {
     return (
       <svg width={size} height={size} viewBox="0 0 24 24">

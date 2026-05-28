@@ -7,7 +7,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useSandbox } from './SandboxTab';
 
-type ToolMode = 'select' | 'place' | 'belt' | 'delete' | 'pan';
+type ToolMode = 'select' | 'place' | 'belt' | 'power' | 'delete' | 'pan';
 
 const TOOLS: { mode: ToolMode; label: string; title: string; icon: React.ReactNode }[] = [
   {
@@ -43,6 +43,16 @@ const TOOLS: { mode: ToolMode; label: string; title: string; icon: React.ReactNo
     ),
   },
   {
+    mode: 'power',
+    label: 'Power',
+    title: 'Draw wire (W / P)',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      </svg>
+    ),
+  },
+  {
     mode: 'delete',
     label: 'Delete',
     title: 'Delete (Del)',
@@ -73,6 +83,8 @@ export function SandboxToolbar() {
       switch (e.key.toLowerCase()) {
         case 's': setTool('select');  break;
         case 'b': setTool('belt');    break;
+        case 'w':
+        case 'p': setTool('power');   break;
         case ' ': e.preventDefault(); setTool('pan'); break;
         case 'delete':
         case 'backspace': setTool('delete'); break;
@@ -172,11 +184,13 @@ export function SandboxToolbar() {
         <span>Clear</span>
       </button>
 
-      {/* Machine / belt count pill — shows selection state */}
+      {/* Machine / belt / wire count pill — shows selection state */}
       <div className="sandbox-toolbar-stats">
         <span>{state.machines.length} machines</span>
         <span className="sandbox-toolbar-dot">·</span>
         <span>{state.belts.length} belts</span>
+        <span className="sandbox-toolbar-dot">·</span>
+        <span>{state.powerLines?.length ?? 0} wires</span>
         {state.selectedMachineId && (
           <>
             <span className="sandbox-toolbar-dot">·</span>
@@ -187,6 +201,12 @@ export function SandboxToolbar() {
           <>
             <span className="sandbox-toolbar-dot">·</span>
             <span style={{ color: '#3b82f6' }}>belt selected</span>
+          </>
+        )}
+        {state.selectedPowerLineId && (
+          <>
+            <span className="sandbox-toolbar-dot">·</span>
+            <span style={{ color: '#f59e0b' }}>wire selected</span>
           </>
         )}
       </div>
