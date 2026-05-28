@@ -48,6 +48,27 @@ export interface SandboxMachine {
   recipeId: RecipeId | null;
   /** Overclock percentage: 1–250 */
   overclock: number;
+  /** For power switches: is the switch toggled ON? Defaults to true */
+  switchOn?: boolean;
+  /** For biomass burners: selected fuel ID */
+  fuelId?: string;
+}
+
+// ─── Clipboard Template ───────────────────────────────────────────────────────
+
+/**
+ * A lightweight template entry stored in the clipboard when machines are copied.
+ * Uses relative grid offsets from the top-left anchor machine.
+ */
+export interface ClipboardEntry {
+  machineId: string;
+  relCol: number;
+  relRow: number;
+  rotation: 0 | 90 | 180 | 270;
+  recipeId: RecipeId | null;
+  overclock: number;
+  fuelId?: string;
+  switchOn?: boolean;
 }
 
 export type SandboxBeltId = string; // UUID
@@ -65,15 +86,30 @@ export interface SandboxBelt {
   tier: string;
 }
 
+export type SandboxPowerLineId = string; // UUID
+
+export interface SandboxPowerLine {
+  lineId: SandboxPowerLineId;
+  fromMachineId: SandboxMachineId;
+  toMachineId: SandboxMachineId;
+}
+
 // ─── Full State ───────────────────────────────────────────────────────────────
 
 export interface SandboxState {
   machines: SandboxMachine[];
   belts: SandboxBelt[];
-  /** Which machine is currently selected */
+  powerLines: SandboxPowerLine[];
+  /** Which machine is currently selected (single) */
   selectedMachineId: SandboxMachineId | null;
-  /** Which belt is currently selected (mutually exclusive with machine selection) */
+  /** Which machines are part of a multi-selection */
+  selectedMachineIds: SandboxMachineId[];
+  /** Which belt is currently selected (mutually exclusive with other selections) */
   selectedBeltId: SandboxBeltId | null;
+  /** Which power line is currently selected (mutually exclusive with other selections) */
+  selectedPowerLineId: SandboxPowerLineId | null;
+  /** Clipboard for copy-paste of machine layouts */
+  clipboard: ClipboardEntry[] | null;
   /** Viewport offset in pixels */
   viewOffset: { x: number; y: number };
   /** Zoom level (1.0 = 100%) */
@@ -94,14 +130,39 @@ export type SandboxAction =
   | { type: 'SELECT_MACHINE'; instanceId: SandboxMachineId | null }
   | { type: 'SET_RECIPE'; instanceId: SandboxMachineId; recipeId: RecipeId }
   | { type: 'SET_OVERCLOCK'; instanceId: SandboxMachineId; overclock: number }
+  | { type: 'TOGGLE_SWITCH'; instanceId: SandboxMachineId }
+  | { type: 'SET_FUEL'; instanceId: SandboxMachineId; fuelId: string }
   | { type: 'ADD_BELT'; belt: SandboxBelt }
   | { type: 'DELETE_BELT'; beltId: SandboxBeltId }
   | { type: 'SELECT_BELT'; beltId: SandboxBeltId | null }
   | { type: 'SET_BELT_TIER'; beltId: SandboxBeltId; tier: string }
+  | { type: 'ADD_POWER_LINE'; line: SandboxPowerLine }
+  | { type: 'DELETE_POWER_LINE'; lineId: SandboxPowerLineId }
+  | { type: 'SELECT_POWER_LINE'; lineId: SandboxPowerLineId | null }
   | { type: 'SET_VIEWPORT'; offset: { x: number; y: number }; zoom: number }
   | { type: 'TOGGLE_GRID' }
   | { type: 'LOAD_STATE'; state: SandboxState }
-  | { type: 'CLEAR_ALL' };
+  | { type: 'CLEAR_ALL' }
+  // ── Phase 4: Multi-Selection & Arrays ────────────────────────────────────────
+  /** Replace entire multi-selection set */
+  | { type: 'SELECT_MULTIPLE_MACHINES'; instanceIds: SandboxMachineId[] }
+  /** Toggle a single machine's membership in the multi-selection (Shift+click) */
+  | { type: 'SELECT_ADD_MACHINE'; instanceId: SandboxMachineId }
+  /** Copy current multi-selection (or single selection) into clipboard */
+  | { type: 'COPY_SELECTION' }
+  /** Place an entire array of machines at once (Zoop / Paste) */
+  | { type: 'PLACE_MACHINE_ARRAY'; machines: SandboxMachine[] }
+  /** Sync clock speed across all selected machines */
+  | { type: 'BULK_SET_OVERCLOCK'; instanceIds: SandboxMachineId[]; overclock: number }
+  /** Delete all selected machines and their connected edges */
+  | { type: 'BULK_DELETE'; instanceIds: SandboxMachineId[] }
+  /** Auto-generate a splitter/merger manifold for the selected machines */
+  | {
+      type: 'GENERATE_MANIFOLD';
+      machineIds: SandboxMachineId[];
+      portType: 'input' | 'output';
+      beltTier: string;
+    };
 
 // ─── Simulation Results ───────────────────────────────────────────────────────
 
@@ -120,9 +181,19 @@ export interface BeltLoad {
   saturation: 'ok' | 'warn' | 'full';
 }
 
+export interface MachinePowerStatus {
+  isPowered: boolean;
+  reason?: 'no_power' | 'fuse_tripped';
+}
+
 export interface FactoryStats {
   totalMachines: number;
-  totalPowerMW: number;
+  totalPowerMW: number; // Deprecated or overall total consumption
+  totalPowerProductionMW: number;
+  totalPowerConsumptionMW: number;
+  trippedGridCount: number;
+  unpoweredMachineCount: number;
+  machinePowerGridStatus: Record<SandboxMachineId, MachinePowerStatus>;
   efficiencyPct: number;
   bottleneckCount: number;
   machineThroughputs: Record<SandboxMachineId, MachineThroughput>;

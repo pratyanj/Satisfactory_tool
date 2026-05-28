@@ -7,6 +7,7 @@
 
 import { recipes, machines } from '../data';
 import type { ItemId } from '../data';
+import { getMachinePowerUsage, getMachinePowerProduction } from './machineRegistry';
 import type {
   SandboxState,
   SandboxMachine,
@@ -14,6 +15,7 @@ import type {
   MachineThroughput,
   BeltLoad,
   FactoryStats,
+  MachinePowerStatus,
 } from './types';
 
 // ─── Overclock Math ───────────────────────────────────────────────────────────
@@ -103,18 +105,166 @@ export function computeBeltLoad(
  * Compute summary statistics for the entire placed factory.
  */
 export function computeFactoryStats(state: SandboxState): FactoryStats {
-  const machineThroughputs: Record<string, MachineThroughput> = {};
   const throughputMap = new Map<string, MachineThroughput | null>();
-  let totalPowerMW = 0;
+  const nominalThroughputs = new Map<string, MachineThroughput>();
   let activeMachines = 0;
 
   for (const machine of state.machines) {
     const tp = computeMachineThroughput(machine);
     throughputMap.set(machine.instanceId, tp);
     if (tp) {
-      machineThroughputs[machine.instanceId] = tp;
-      totalPowerMW += tp.powerMW;
-      activeMachines++;
+      nominalThroughputs.set(machine.instanceId, tp);
+    }
+  }
+
+  // 1. Build adjacency list for the power network
+  const adj = new Map<string, string[]>();
+  for (const m of state.machines) {
+    adj.set(m.instanceId, []);
+  }
+  const powerLines = state.powerLines ?? [];
+  for (const pl of powerLines) {
+    if (adj.has(pl.fromMachineId) && adj.has(pl.toMachineId)) {
+      const fromMach = state.machines.find(m => m.instanceId === pl.fromMachineId);
+      const toMach   = state.machines.find(m => m.instanceId === pl.toMachineId);
+      
+      const fromIsSwitchOff = fromMach?.machineId === 'power_switch' && fromMach?.switchOn === false;
+      const toIsSwitchOff   = toMach?.machineId === 'power_switch' && toMach?.switchOn === false;
+
+      if (!fromIsSwitchOff && !toIsSwitchOff) {
+        adj.get(pl.fromMachineId)!.push(pl.toMachineId);
+        adj.get(pl.toMachineId)!.push(pl.fromMachineId);
+      }
+    }
+  }
+
+  // 2. Traversal to find connected components (grids)
+  const visited = new Set<string>();
+  const grids: {
+    machineIds: string[];
+    totalCapacity: number;
+    totalLoad: number;
+    isTripped: boolean;
+  }[] = [];
+
+  for (const m of state.machines) {
+    if (visited.has(m.instanceId)) continue;
+
+    const componentMachineIds: string[] = [];
+    const queue = [m.instanceId];
+    visited.add(m.instanceId);
+
+    let idx = 0;
+    while (idx < queue.length) {
+      const currentId = queue[idx++];
+      componentMachineIds.push(currentId);
+
+      const neighbors = adj.get(currentId) ?? [];
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          queue.push(neighbor);
+        }
+      }
+    }
+
+    let gridCapacity = 0;
+    let gridLoad = 0;
+
+    for (const id of componentMachineIds) {
+      const mach = state.machines.find((x) => x.instanceId === id)!;
+      const prod = getMachinePowerProduction(mach.machineId, mach.fuelId);
+      if (prod > 0) {
+        gridCapacity += prod * (mach.overclock / 100);
+      }
+      const tp = nominalThroughputs.get(id);
+      if (tp) {
+        gridLoad += tp.powerMW;
+      }
+    }
+
+    // A grid is tripped if it has generators and load exceeds capacity
+    const isTripped = gridCapacity > 0 && gridLoad > gridCapacity;
+
+    grids.push({
+      machineIds: componentMachineIds,
+      totalCapacity: gridCapacity,
+      totalLoad: gridLoad,
+      isTripped,
+    });
+  }
+
+  // 3. Populate power statuses and check powered state
+  let totalPowerProductionMW = 0;
+  let totalPowerConsumptionMW = 0;
+  let trippedGridCount = 0;
+  let unpoweredMachineCount = 0;
+  const machinePowerGridStatus: Record<string, MachinePowerStatus> = {};
+
+  for (const grid of grids) {
+    totalPowerProductionMW += grid.totalCapacity;
+    totalPowerConsumptionMW += grid.totalLoad;
+    if (grid.isTripped) {
+      trippedGridCount++;
+    }
+
+    for (const id of grid.machineIds) {
+      const mach = state.machines.find((x) => x.instanceId === id)!;
+      const nominalCons = getMachinePowerUsage(mach.machineId);
+      const nominalProd = getMachinePowerProduction(mach.machineId, mach.fuelId);
+
+      const hasConnections = (adj.get(id) ?? []).length > 0;
+
+      if (nominalCons > 0) {
+        if (!hasConnections) {
+          machinePowerGridStatus[id] = { isPowered: false, reason: 'no_power' };
+          unpoweredMachineCount++;
+        } else if (grid.isTripped) {
+          machinePowerGridStatus[id] = { isPowered: false, reason: 'fuse_tripped' };
+          unpoweredMachineCount++;
+        } else if (grid.totalCapacity === 0) {
+          machinePowerGridStatus[id] = { isPowered: false, reason: 'no_power' };
+          unpoweredMachineCount++;
+        } else {
+          machinePowerGridStatus[id] = { isPowered: true };
+        }
+      } else if (nominalProd > 0) {
+        if (!hasConnections) {
+          // generator is healthy but disconnected
+          machinePowerGridStatus[id] = { isPowered: true };
+        } else if (grid.isTripped) {
+          machinePowerGridStatus[id] = { isPowered: false, reason: 'fuse_tripped' };
+        } else {
+          machinePowerGridStatus[id] = { isPowered: true };
+        }
+      } else {
+        machinePowerGridStatus[id] = { isPowered: true };
+      }
+    }
+  }
+
+  // 4. Adjust active machine throughputs based on power status
+  const machineThroughputs: Record<string, MachineThroughput> = {};
+
+  for (const machine of state.machines) {
+    const tp = nominalThroughputs.get(machine.instanceId);
+    if (tp) {
+      const pStatus = machinePowerGridStatus[machine.instanceId];
+      if (pStatus && !pStatus.isPowered) {
+        machineThroughputs[machine.instanceId] = {
+          inputRates: Object.keys(tp.inputRates).reduce((acc, k) => {
+            acc[k] = 0;
+            return acc;
+          }, {} as Record<string, number>),
+          outputRate: 0,
+          powerMW: tp.powerMW,
+          isStarved: false,
+          isOverloaded: false,
+        };
+      } else {
+        machineThroughputs[machine.instanceId] = tp;
+        activeMachines++;
+      }
     }
   }
 
@@ -127,14 +277,18 @@ export function computeFactoryStats(state: SandboxState): FactoryStats {
     if (load.saturation === 'full') bottleneckCount++;
   }
 
-  // Efficiency: ratio of machines that have a recipe assigned and are not bottlenecked
   const efficiencyPct = state.machines.length === 0
     ? 0
     : Math.round((activeMachines / state.machines.length) * 100);
 
   return {
     totalMachines: state.machines.length,
-    totalPowerMW,
+    totalPowerMW: totalPowerConsumptionMW,
+    totalPowerProductionMW,
+    totalPowerConsumptionMW,
+    trippedGridCount,
+    unpoweredMachineCount,
+    machinePowerGridStatus,
     efficiencyPct,
     bottleneckCount,
     machineThroughputs,
