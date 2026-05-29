@@ -39,6 +39,8 @@ export function ArrayInspector({ selectedIds, machines, dispatch }: ArrayInspect
   const [bulkClock, setBulkClock] = useState(avgClock);
   const [manifoldType, setManifoldType] = useState<'input' | 'output'>('input');
   const [manifoldTier, setManifoldTier] = useState('mk3');
+  const [splitterType, setSplitterType] = useState('conveyor_splitter');
+  const [poleTier, setPoleTier] = useState('power_pole_mk1');
 
   // Compute a summary of selected machine types
   const summary = useMemo(() => {
@@ -82,8 +84,17 @@ export function ArrayInspector({ selectedIds, machines, dispatch }: ArrayInspect
       machineIds: selectedIds,
       portType: manifoldType,
       beltTier: manifoldTier,
+      splitterMachineId: manifoldType === 'input' ? splitterType : undefined,
     });
-  }, [dispatch, selectedIds, manifoldType, manifoldTier]);
+  }, [dispatch, selectedIds, manifoldType, manifoldTier, splitterType]);
+
+  const handleAutoWire = useCallback(() => {
+    dispatch({
+      type: 'AUTO_WIRE_ARRAY',
+      machineIds: selectedIds,
+      poleMachineId: poleTier,
+    });
+  }, [dispatch, selectedIds, poleTier]);
 
   const selectedTier = BELT_TIERS.find((t) => t.id === manifoldTier)!;
 
@@ -192,6 +203,36 @@ export function ArrayInspector({ selectedIds, machines, dispatch }: ArrayInspect
           </button>
         </div>
 
+        {/* Splitter type selection */}
+        {manifoldType === 'input' && (
+          <>
+            <div className="inspector-label" style={{ marginTop: 12 }}>SPLITTER TYPE</div>
+            <select
+              value={splitterType}
+              onChange={(e) => setSplitterType(e.target.value)}
+              className="inspector-select"
+              style={{
+                width: '100%',
+                background: '#0a0b0e',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: 'white',
+                borderRadius: '6px',
+                padding: '6px 8px',
+                fontSize: '11.5px',
+                marginTop: '4px',
+                marginBottom: '4px',
+                fontFamily: 'inherit',
+                cursor: 'pointer',
+                outline: 'none',
+              }}
+            >
+              <option value="conveyor_splitter">Standard Splitter</option>
+              <option value="conveyor_smart_splitter">Smart Splitter</option>
+              <option value="conveyor_programmable_splitter">Programmable Splitter</option>
+            </select>
+          </>
+        )}
+
         {/* Belt tier selector */}
         <div className="inspector-label" style={{ marginTop: 12 }}>BELT TIER</div>
         <div className="array-tier-row">
@@ -227,6 +268,56 @@ export function ArrayInspector({ selectedIds, machines, dispatch }: ArrayInspect
           Places {manifoldType === 'input' ? 'splitters' : 'mergers'} adjacent to each machine's&nbsp;
           {manifoldType} port and connects them with {selectedTier.label} belts.
         </p>
+      </div>
+
+      {/* ── Auto-Wire Array ────────────────────────────────────────────────── */}
+      <div className="inspector-section array-manifold-panel" style={{ marginTop: 16 }}>
+        <div className="inspector-label">⚡ AUTO-WIRE ARRAY</div>
+        <p className="switch-help-text" style={{ margin: '4px 0 10px 0' }}>
+          Places power poles adjacent to each selected machine and daisy-chains them with wires.
+        </p>
+
+        {/* Pole tier selection */}
+        <div className="inspector-label">POWER POLE TIER</div>
+        <select
+          value={poleTier}
+          onChange={(e) => setPoleTier(e.target.value)}
+          className="inspector-select"
+          style={{
+            width: '100%',
+            background: '#0a0b0e',
+            border: '1px solid rgba(255,255,255,0.1)',
+            color: 'white',
+            borderRadius: '6px',
+            padding: '6px 8px',
+            fontSize: '11.5px',
+            marginTop: '4px',
+            marginBottom: '12px',
+            fontFamily: 'inherit',
+            cursor: 'pointer',
+            outline: 'none',
+          }}
+        >
+          <option value="power_pole_mk1">Power Pole Mk.1</option>
+          <option value="power_pole_mk2">Power Pole Mk.2</option>
+          <option value="power_pole_mk3">Power Pole Mk.3</option>
+        </select>
+
+        {/* Wire button */}
+        <button
+          onClick={handleAutoWire}
+          className="array-manifold-build-btn"
+          style={{
+            background: 'rgba(245,158,11,0.15)',
+            border: '1px solid rgba(245,158,11,0.4)',
+            color: '#f59e0b',
+          }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+          Wire Selected Array
+        </button>
       </div>
 
       {/* ── Machine List Preview ─────────────────────────────────────────────── */}
