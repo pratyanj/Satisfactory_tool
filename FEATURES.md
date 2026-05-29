@@ -109,6 +109,38 @@ Upgrades the sandbox into a high-throughput layout engine designed for bulk plan
 
 ---
 
+### ⚡ Phase 4.5: The Polish & Diagnostics Update
+Brings production-grade polish, persistent layout templates, real-time diagnostic heatmaps, and advanced manifold utilities to the factory floor.
+* **Dynamic Conveyor Flow Animations**:
+  * Carried cargo flows along conveyor belts using high-performance CSS SVG `stroke-dashoffset` line-animations.
+  * Flow speeds scale dynamically based on conveyor tiers (Mk.1 crawl through Mk.6 speed rush).
+  * Dash colors reflect material mediums: **amber** for solid belts, **cyan** for liquid pipes.
+  * Inactive/starved belts (flow rate = 0) and jammed/overloaded paths (100% saturation) **automatically pause** their flow animations and turn static, offering instantaneous visual diagnostics.
+* **Persistent Blueprint Library**:
+  * An integrated **Blueprint Shelf** inside the sidebar panel allows users to name, save, and manage custom modular factory block layouts (e.g. "4x Smelter Row") locally.
+  * Blueprints are backed by persistent `localStorage` and independent of individual save files.
+  * Each saved blueprint showcases name, machine-count, localized summary, and a **dynamic mini SVG footprint preview**.
+  * Single-click **Stamp** buttons load blueprint templates directly into paste-mode templates (Ctrl+V) for rapid factory staging.
+* **Grid Diagnostics Heatmap Mode**:
+  * Press `H` or toggle the toolbar's Heatmap button to switch the entire factory into diagnostic view.
+  * Swaps standard visual colors for simulation-state heatmaps:
+    * **Running (Vibrant Green)**: Running perfectly at 100% efficiency.
+    * **Starved (Amber)**: Powered but waiting for input resources.
+    * **tripped Grid (Pulsing Orange)**: Fuse blown on this power subnet.
+    * **Unpowered (Pulsing Red)**: Not connected to any electric grid.
+    * **Generator (Cyan)**: Active power producing generator.
+    * **Logistics/Infrastructure (Violet)**: Splitters, mergers, poles, and switches.
+    * **Idle (Grey)**: Powered but has no recipe assigned.
+  * Adds a floating **Heatmap Diagnostics Legend** overlay in the bottom-left corner of the canvas.
+* **Smart & Programmable Manifold Builder**:
+  * Auto-manifold splitters are fully customizable.
+  * Select Standard Splitter, Smart Splitter, or Programmable Splitter from a dropdown menu in the Array Inspector before generating.
+* **Auto-Power Pole Daisy-Chaining**:
+  * Direct one-click array cabling via the new **Wire Selected Array** button.
+  * Automatically detects power-compatible machines, places corresponding power poles (Mk.1–Mk.3) adjacent to each machine cell, draws individual wires, and daisy-chains the power poles together in a continuous sequence.
+
+---
+
 ## ⌨️ Keyboard Shortcuts Reference
 
 | Shortcut | Context | Action |
@@ -119,6 +151,7 @@ Upgrades the sandbox into a high-throughput layout engine designed for bulk plan
 | `Shift + Left-click` | Selection Mode | Toggle individual machine in or out of the current selection |
 | `Shift + Left-click` | Placement Mode | Establish anchor and begin **Zoop** linear array stamp |
 | `R` | Placement/Selected | Rotate building template in 90-degree clockwise steps |
+| `H` | Anywhere | Toggle Diagnostics Heatmap mode |
 | `ESC` | Anywhere | Cancel active Zoop/Paste mode, clear selections, or go back |
 
 ---
