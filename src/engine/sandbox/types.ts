@@ -71,6 +71,14 @@ export interface ClipboardEntry {
   switchOn?: boolean;
 }
 
+export interface BlueprintEntry {
+  id: string;
+  name: string;
+  createdAt: number;
+  layout: ClipboardEntry[];
+  machineCount: number;
+}
+
 export type SandboxBeltId = string; // UUID
 
 export interface SandboxPort {
@@ -150,6 +158,8 @@ export type SandboxAction =
   | { type: 'SELECT_ADD_MACHINE'; instanceId: SandboxMachineId }
   /** Copy current multi-selection (or single selection) into clipboard */
   | { type: 'COPY_SELECTION' }
+  /** Load a blueprint layout directly into the clipboard */
+  | { type: 'LOAD_CLIPBOARD'; clipboard: ClipboardEntry[] }
   /** Place an entire array of machines at once (Zoop / Paste) */
   | { type: 'PLACE_MACHINE_ARRAY'; machines: SandboxMachine[] }
   /** Sync clock speed across all selected machines */
@@ -162,6 +172,13 @@ export type SandboxAction =
       machineIds: SandboxMachineId[];
       portType: 'input' | 'output';
       beltTier: string;
+      splitterMachineId?: string;
+    }
+  /** Auto-wire a group of machines with daisy-chained power poles */
+  | {
+      type: 'AUTO_WIRE_ARRAY';
+      machineIds: SandboxMachineId[];
+      poleMachineId: string;
     };
 
 // ─── Simulation Results ───────────────────────────────────────────────────────

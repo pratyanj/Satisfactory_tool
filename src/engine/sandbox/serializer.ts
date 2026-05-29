@@ -4,11 +4,39 @@
  * Handles save/load of sandbox layouts to localStorage and URL share hashes.
  */
 
-import type { SandboxState, SandboxAction, SandboxMachine, ClipboardEntry } from './types';
-import { getMachineFootprint, getMachinePorts } from './machineRegistry';
+import type { SandboxState, SandboxAction, SandboxMachine, ClipboardEntry, BlueprintEntry, SandboxPowerLine } from './types';
+import { getMachineFootprint, getMachinePorts, getMachineMaxConnections } from './machineRegistry';
 import { canPlace } from './snapping';
 
 const STORAGE_KEY = 'ficsit_sandbox_v1';
+const BLUEPRINT_KEY = 'ficsit_blueprints_v1';
+
+export function loadBlueprints(): BlueprintEntry[] {
+  try {
+    return JSON.parse(localStorage.getItem(BLUEPRINT_KEY) ?? '[]');
+  } catch {
+    return [];
+  }
+}
+
+export function saveBlueprint(entry: BlueprintEntry): void {
+  try {
+    const list = loadBlueprints();
+    list.push(entry);
+    localStorage.setItem(BLUEPRINT_KEY, JSON.stringify(list));
+  } catch (e) {
+    console.warn('[Sandbox] Failed to save blueprint', e);
+  }
+}
+
+export function deleteBlueprint(id: string): void {
+  try {
+    const list = loadBlueprints().filter((b) => b.id !== id);
+    localStorage.setItem(BLUEPRINT_KEY, JSON.stringify(list));
+  } catch (e) {
+    console.warn('[Sandbox] Failed to delete blueprint', e);
+  }
+}
 
 // ─── ID Generator ─────────────────────────────────────────────────────────────
 
@@ -319,6 +347,13 @@ export function sandboxReducer(state: SandboxState, action: SandboxAction): Sand
       return { ...state, clipboard };
     }
 
+    case 'LOAD_CLIPBOARD': {
+      return {
+        ...state,
+        clipboard: action.clipboard,
+      };
+    }
+
     case 'PLACE_MACHINE_ARRAY': {
       return {
         ...state,
@@ -379,7 +414,7 @@ export function sandboxReducer(state: SandboxState, action: SandboxAction): Sand
       const fpMap = buildFootprintMap(allMachines);
 
       const manifoldMachineId =
-        portType === 'input' ? 'conveyor_splitter' : 'conveyor_merger';
+        portType === 'input' ? (action.splitterMachineId ?? 'conveyor_splitter') : 'conveyor_merger';
       const manifoldFp = getMachineFootprint(manifoldMachineId);
       fpMap.set(manifoldMachineId, manifoldFp);
 
@@ -463,6 +498,88 @@ export function sandboxReducer(state: SandboxState, action: SandboxAction): Sand
         ...state,
         machines: [...state.machines, ...newMachines],
         belts: [...state.belts, ...newBelts],
+      };
+    }
+
+    case 'AUTO_WIRE_ARRAY': {
+      const { machineIds, poleMachineId } = action;
+      const targetMachines = state.machines.filter((m) => machineIds.includes(m.instanceId));
+      if (targetMachines.length === 0) return state;
+
+      // Sort machines by position for consistent pole placing ordering
+      const sorted = [...targetMachines].sort((a, b) =>
+        a.position.col !== b.position.col
+          ? a.position.col - b.position.col
+          : a.position.row - b.position.row
+      );
+
+      const newMachines: SandboxMachine[] = [];
+      const newPowerLines: SandboxPowerLine[] = [];
+
+      const allMachines = [...state.machines];
+      const fpMap = buildFootprintMap(allMachines);
+
+      const poleFp = getMachineFootprint(poleMachineId);
+      fpMap.set(poleMachineId, poleFp);
+
+      for (const target of sorted) {
+        if (getMachineMaxConnections(target.machineId) === 0) continue;
+
+        const targetFp = getMachineFootprint(target.machineId);
+        
+        // Find a free cell adjacent to the target machine (prefer bottom-right or right)
+        const candidatePositions = [
+          { col: target.position.col + targetFp.width, row: target.position.row + targetFp.height - 1 }, // Right-bottom
+          { col: target.position.col + targetFp.width, row: target.position.row },                       // Right-top
+          { col: target.position.col, row: target.position.row + targetFp.height },                       // Bottom-left
+          { col: target.position.col + targetFp.width - 1, row: target.position.row + targetFp.height },   // Bottom-right
+          { col: target.position.col - 1, row: target.position.row },                                   // Left
+        ];
+
+        let polePos = null;
+        for (const pos of candidatePositions) {
+          const testState = { ...state, machines: [...allMachines, ...newMachines] };
+          if (canPlace(testState, poleMachineId, pos, poleFp, fpMap)) {
+            polePos = pos;
+            break;
+          }
+        }
+
+        if (!polePos) continue; // Skip if no adjacent space was found (Option A)
+
+        const poleInstance: SandboxMachine = {
+          instanceId: generateId(),
+          machineId: poleMachineId,
+          position: polePos,
+          rotation: 0,
+          recipeId: null,
+          overclock: 100,
+        };
+        newMachines.push(poleInstance);
+
+        // Add power wire from pole to target machine
+        newPowerLines.push({
+          lineId: generateId(),
+          fromMachineId: poleInstance.instanceId,
+          toMachineId: target.instanceId,
+        });
+      }
+
+      // Daisy-chain consecutive poles together
+      for (let i = 0; i < newMachines.length - 1; i++) {
+        const p1 = newMachines[i];
+        const p2 = newMachines[i + 1];
+        newPowerLines.push({
+          lineId: generateId(),
+          fromMachineId: p1.instanceId,
+          toMachineId: p2.instanceId,
+        });
+      }
+
+      return {
+        ...state,
+        machines: [...state.machines, ...newMachines],
+        powerLines: [...(state.powerLines ?? []), ...newPowerLines],
       };
     }
 

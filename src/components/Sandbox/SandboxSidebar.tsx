@@ -16,10 +16,15 @@ import {
   getMachinePowerProduction,
 } from '../../engine/sandbox/machineRegistry';
 import { machines } from '../../engine/data';
+import { BlueprintShelf } from './BlueprintShelf';
+
+interface SandboxSidebarProps {
+  selectedMachineIds: string[];
+}
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function SandboxSidebar() {
+export function SandboxSidebar({ selectedMachineIds }: SandboxSidebarProps) {
   const [search, setSearch] = useState('');
   const [collapsed, setCollapsed] = useState<Set<MachineCategory>>(new Set());
 
@@ -157,6 +162,7 @@ export function SandboxSidebar() {
           );
         })}
       </div>
+      <BlueprintShelf selectedMachineIds={selectedMachineIds} />
     </aside>
   );
 }

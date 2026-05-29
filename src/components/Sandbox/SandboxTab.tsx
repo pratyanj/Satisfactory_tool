@@ -94,7 +94,7 @@ export function SandboxTab() {
     <SandboxContext.Provider value={contextValue}>
       <div className="sandbox-root">
         {/* Left — Machine Browser */}
-        <SandboxSidebar />
+        <SandboxSidebar selectedMachineIds={state.selectedMachineIds} />
 
         {/* Centre — Canvas + Toolbar */}
         <div className="sandbox-center">
