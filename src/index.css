@@ -6817,3 +6817,67 @@ input[type="number"] {
   font-size: 9px;
   letter-spacing: 0.05em;
 }
+
+/* ================================================================
+   FICSIT SANDBOX — PHASE 4.5
+   ================================================================ */
+
+/* Heatmap active variant for toolbar button */
+.sandbox-tool-btn.is-active--amber {
+  background: rgba(234, 179, 8, 0.15);
+  border-color: rgba(234, 179, 8, 0.4);
+  color: #eab308;
+}
+
+/* Heatmap machine pulse animation */
+@keyframes heatmapPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+.sandbox-heatmap-pulse {
+  animation: heatmapPulse 1s ease-in-out infinite;
+}
+
+/* Heatmap legend strip */
+.sandbox-heatmap-legend {
+  position: absolute;
+  bottom: 48px;
+  left: 16px;
+  background: rgba(10,11,14,0.92);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  z-index: 20;
+}
+.heatmap-legend-title {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #6b7280;
+  margin-bottom: 3px;
+}
+.heatmap-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  color: #c4c7cd;
+}
+.heatmap-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Belt flow keyframe */
+@keyframes beltFlow {
+  from { stroke-dashoffset: 24; }
+  to   { stroke-dashoffset: 0; }
+}
+

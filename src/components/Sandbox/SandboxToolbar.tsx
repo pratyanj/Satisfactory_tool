@@ -4,7 +4,7 @@
  * Tool mode switcher, grid toggle, undo/redo, and layout utilities.
  */
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useSandbox } from './SandboxTab';
 
 type ToolMode = 'select' | 'place' | 'belt' | 'power' | 'delete' | 'pan';
@@ -70,6 +70,8 @@ const TOOLS: { mode: ToolMode; label: string; title: string; icon: React.ReactNo
 export function SandboxToolbar() {
   const { state, dispatch } = useSandbox();
   const [activeMode, setActiveMode] = useState<ToolMode>('select');
+  const [heatmapMode, setHeatmapMode] = useState(false);
+  const heatmapRef = useRef(false);
 
   const setTool = useCallback((mode: ToolMode) => {
     setActiveMode(mode);
@@ -90,6 +92,13 @@ export function SandboxToolbar() {
         case 'backspace': setTool('delete'); break;
         case 'escape': setTool('select'); break;
         case 'g': dispatch({ type: 'TOGGLE_GRID' }); break;
+        case 'h': {
+          const next = !heatmapRef.current;
+          heatmapRef.current = next;
+          setHeatmapMode(next);
+          window.dispatchEvent(new CustomEvent('sandbox:heatmap', { detail: { active: next } }));
+          break;
+        }
       }
     };
     window.addEventListener('keydown', handler);
@@ -153,6 +162,27 @@ export function SandboxToolbar() {
           <line x1="15" y1="3" x2="15" y2="21" />
         </svg>
         <span>Grid</span>
+      </button>
+
+      <div className="sandbox-toolbar-divider" />
+
+      {/* Heatmap diagnostic toggle */}
+      <button
+        className={`sandbox-tool-btn ${heatmapMode ? 'is-active is-active--amber' : ''}`}
+        onClick={() => {
+          const next = !heatmapMode;
+          heatmapRef.current = next;
+          setHeatmapMode(next);
+          window.dispatchEvent(new CustomEvent('sandbox:heatmap', { detail: { active: next } }));
+        }}
+        title="Diagnostics heatmap (H)"
+        id="sandbox-tool-heatmap"
+        aria-pressed={heatmapMode}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
+        </svg>
+        <span>Heatmap</span>
       </button>
 
       <div className="sandbox-toolbar-divider" />

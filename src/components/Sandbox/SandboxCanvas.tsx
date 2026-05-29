@@ -97,6 +97,7 @@ export function SandboxCanvas() {
 
   // Tool mode — lifted from toolbar via a CustomEvent for simplicity
   const [toolMode, setToolMode] = useState<ToolMode>('select');
+  const [heatmapMode, setHeatmapMode] = useState(false);
   const [placing, setPlacing]   = useState<PlacingState | null>(null);
   const [beltDraw, setBeltDraw] = useState<BeltDrawState | null>(null);
   const [powerDraw, setPowerDraw] = useState<{ fromInstanceId: string } | null>(null);
@@ -128,6 +129,25 @@ export function SandboxCanvas() {
     };
     window.addEventListener('sandbox:tool', handler);
     return () => window.removeEventListener('sandbox:tool', handler);
+  }, []);
+
+  // Listen for heatmap diagnostics toggles from the Toolbar
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const ce = e as CustomEvent<{ active: boolean }>;
+      setHeatmapMode(ce.detail.active);
+    };
+    window.addEventListener('sandbox:heatmap', handler);
+    return () => window.removeEventListener('sandbox:heatmap', handler);
+  }, []);
+
+  // Listen for blueprint stamp events from the BlueprintShelf
+  useEffect(() => {
+    const handler = () => {
+      setIsPasteMode(true);
+    };
+    window.addEventListener('sandbox:stamp-blueprint', handler);
+    return () => window.removeEventListener('sandbox:stamp-blueprint', handler);
   }, []);
 
   // ESC cancels any active tool/selection
@@ -556,9 +576,36 @@ export function SandboxCanvas() {
     const isSwitch = machine.machineId === 'power_switch';
     const switchOn = machine.switchOn !== false;
     
+    // Diagnostics Heatmap calculations
+    const powerProd = getMachinePowerProduction(machine.machineId);
+    const isGenerator = powerProd > 0;
+    const isLogistics = [
+      'conveyor_splitter',
+      'conveyor_merger',
+      'conveyor_smart_splitter',
+      'conveyor_programmable_splitter',
+      'power_pole_mk1',
+      'power_pole_mk2',
+      'power_pole_mk3',
+      'power_switch'
+    ].includes(machine.machineId);
+
+    const heatmapColor = heatmapMode ? (
+      isLogistics ? '#8b5cf6' :
+      isGenerator ? '#22d3ee' :
+      (pStatus && !pStatus.isPowered && pStatus.reason === 'fuse_tripped') ? '#f97316' :
+      (pStatus && !pStatus.isPowered) ? '#ef4444' :
+      !machine.recipeId ? '#6b7280' :
+      tp?.isStarved ? '#eab308' :
+      '#22c55e'
+    ) : null;
+
+    const effectiveAccent = heatmapColor ?? accent;
+    const effectiveStroke = isSelected || isMultiSelected ? '#f48721' : (heatmapColor ?? (isUnpowered ? '#ef4444' : accent));
+    const heatmapPulseClass = heatmapMode && pStatus && !pStatus.isPowered ? 'sandbox-heatmap-pulse' : '';
+
     // Status indicator color (red if unpowered/tripped, gray if unassigned, accent if active)
     const statusColor = isUnpowered ? '#ef4444' : (!machine.recipeId ? '#6b7280' : accent);
-    const strokeColor = isSelected || isMultiSelected ? '#f48721' : (isUnpowered ? '#ef4444' : accent);
 
     return (
       <g
@@ -574,17 +621,17 @@ export function SandboxCanvas() {
         <rect
           x={0} y={0} width={w} height={h} rx={3}
           fill="#151820"
-          stroke={strokeColor}
+          stroke={effectiveStroke}
           strokeWidth={isSelected ? 2.5 : 1.5}
           opacity={0.96}
-          className={isUnpowered ? 'sandbox-machine-unpowered-pulse' : ''}
+          className={`${isUnpowered ? 'sandbox-machine-unpowered-pulse' : ''} ${heatmapPulseClass}`.trim()}
         />
 
         {/* Accent top bar */}
-        <rect x={0} y={0} width={w} height={Math.max(4, h * 0.06)} rx={3} fill={isUnpowered ? '#ef4444' : accent} opacity={0.85} />
+        <rect x={0} y={0} width={w} height={Math.max(4, h * 0.06)} rx={3} fill={isUnpowered ? '#ef4444' : effectiveAccent} opacity={0.85} />
 
         {/* Status dot (top-right) */}
-        <circle cx={w - 8} cy={8} r={4} fill={isSwitch ? (switchOn ? '#10b981' : '#ef4444') : statusColor} className={isUnpowered ? 'sandbox-unpowered-dot-flash' : ''} />
+        <circle cx={w - 8} cy={8} r={4} fill={isSwitch ? (switchOn ? '#10b981' : '#ef4444') : (heatmapColor ?? statusColor)} className={isUnpowered ? 'sandbox-unpowered-dot-flash' : ''} />
 
         {/* Machine name label */}
         {w > 40 && (
@@ -767,13 +814,14 @@ export function SandboxCanvas() {
         {/* Animated item flow */}
         <path
           d={path}
-          stroke={color}
+          stroke={fromPort.medium === 'pipe' ? '#22d3ee' : color}
           strokeWidth={2.5}
           fill="none"
           strokeDasharray="10 6"
           opacity={0.92}
           style={{
             animation: `beltFlow ${animDuration}s linear infinite`,
+            animationPlayState: ((load?.actualLoad ?? 0) === 0 || satPct >= 100) ? 'paused' : 'running',
           }}
         />
         {/* Selection highlight */}
@@ -1167,6 +1215,27 @@ export function SandboxCanvas() {
       <div className="sandbox-zoom-badge">
         {Math.round(zoom * 100)}%
       </div>
+
+      {/* Heatmap diagnostics legend */}
+      {heatmapMode && (
+        <div className="sandbox-heatmap-legend">
+          <span className="heatmap-legend-title">DIAGNOSTICS</span>
+          {[
+            { color: '#22c55e', label: 'Running' },
+            { color: '#eab308', label: 'Starved' },
+            { color: '#ef4444', label: 'No Power' },
+            { color: '#f97316', label: 'Fuse Trip' },
+            { color: '#6b7280', label: 'Idle' },
+            { color: '#22d3ee', label: 'Generator' },
+            { color: '#8b5cf6', label: 'Logistics' },
+          ].map(item => (
+            <div key={item.label} className="heatmap-legend-row">
+              <span className="heatmap-legend-dot" style={{ background: item.color }} />
+              <span>{item.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
