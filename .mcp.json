@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "code-review-graph": {
+      "command": "uvx",
+      "args": [
+        "code-review-graph",
+        "serve"
+      ],
+      "cwd": "P:\\React native\\satisfactory\\Satisfactory_tool",
+      "type": "stdio"
+    }
+  }
+}
