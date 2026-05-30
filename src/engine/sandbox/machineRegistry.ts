@@ -420,6 +420,42 @@ const _byId = new Map<MachineId, MachineRegistryEntry>(
   REGISTRY.map((e) => [e.machineId, e])
 );
 
+const WIKI_FILE_BASE = 'https://satisfactory.wiki.gg/wiki/Special:FilePath';
+
+/**
+ * Remote image fallbacks for sandbox-only machines that are NOT in the main
+ * `machines` dataset (logistics, power poles/generators, storage, etc.).
+ * Local assets at /images/{machineId}.png take priority at render time; these
+ * URLs are the fallback. Single source of truth — UI reads via getMachineImageUrl.
+ */
+const SANDBOX_MACHINE_IMAGE_URLS: Record<string, string> = {
+  conveyor_splitter:              `${WIKI_FILE_BASE}/Conveyor_Splitter.png`,
+  conveyor_merger:                `${WIKI_FILE_BASE}/Conveyor_Merger.png`,
+  conveyor_smart_splitter:        `${WIKI_FILE_BASE}/Smart_Splitter.png`,
+  conveyor_programmable_splitter: `${WIKI_FILE_BASE}/Programmable_Splitter.png`,
+  industrial_storage_container:   `${WIKI_FILE_BASE}/Industrial_Storage_Container.png`,
+  fluid_buffer:                   `${WIKI_FILE_BASE}/Fluid_Buffer.png`,
+  biomass_burner:                 `${WIKI_FILE_BASE}/Biomass_Burner.png`,
+  power_pole_mk1:                 `${WIKI_FILE_BASE}/Power_Pole_Mk.1.png`,
+  power_pole_mk2:                 `${WIKI_FILE_BASE}/Power_Pole_Mk.2.png`,
+  power_pole_mk3:                 `${WIKI_FILE_BASE}/Power_Pole_Mk.3.png`,
+  power_switch:                   `${WIKI_FILE_BASE}/Power_Switch.png`,
+  coal_generator:                 `${WIKI_FILE_BASE}/Coal-Powered_Generator.png`,
+  fuel_generator:                 `${WIKI_FILE_BASE}/Fuel-Powered_Generator.png`,
+  nuclear_power_plant:            `${WIKI_FILE_BASE}/Nuclear_Power_Plant.png`,
+  resource_well_pressurizer:      `${WIKI_FILE_BASE}/Resource_Well_Pressurizer.png`,
+};
+
+/**
+ * Resolve the best image URL for any machine. Prefers the main `machines`
+ * dataset, then sandbox-only fallbacks. Returns undefined when no photo exists
+ * (callers should fall back to a glyph). Note: render components still try the
+ * local /images/{machineId}.png asset first regardless of this URL.
+ */
+export function getMachineImageUrl(machineId: string): string | undefined {
+  return machines[machineId]?.imageUrl ?? SANDBOX_MACHINE_IMAGE_URLS[machineId];
+}
+
 export interface BiomassFuelEntry {
   fuelId: string;
   name: string;
