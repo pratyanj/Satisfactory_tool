@@ -276,6 +276,9 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectionMode, setSelectionMode] = useState(false);
+  // Scroll-to-zoom only after the user clicks into the canvas. Until then the
+  // page scrolls normally instead of the graph hijacking the wheel.
+  const [scrollZoomActive, setScrollZoomActive] = useState(false);
 
   const beltCapacity = beltId === 'mk1' ? 60 : beltId === 'mk2' ? 120 : beltId === 'mk3' ? 270 : beltId === 'mk4' ? 480 : 780;
 
@@ -632,7 +635,11 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
   }, [selectedNodeId, setNodes, setEdges]);
 
   return (
-    <div className="w-full h-full bg-[#101114]">
+    <div
+      className="w-full h-full bg-[#101114] relative"
+      onMouseDown={() => setScrollZoomActive(true)}
+      onMouseLeave={() => setScrollZoomActive(false)}
+    >
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -647,6 +654,10 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
         panOnDrag={!selectionMode}
         selectionOnDrag={selectionMode}
         selectionMode={selectionMode ? SelectionMode.Partial : SelectionMode.Full}
+        zoomOnScroll={scrollZoomActive}
+        zoomOnPinch={scrollZoomActive}
+        panOnScroll={false}
+        preventScrolling={scrollZoomActive}
       >
         <Background variant={BackgroundVariant.Lines} gap={40} color="rgba(255,255,255,0.15)" />
         <Controls className="bg-[#151619] fill-current text-[#8E9299] border-none shadow-md" />
@@ -662,6 +673,13 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
           onLayout={applyAILayout}
         />
       </ReactFlow>
+
+      {/* Hint: page scroll stays free until the canvas is clicked */}
+      {!scrollZoomActive && (
+        <div className="absolute bottom-3 right-3 z-10 pointer-events-none select-none rounded-md bg-[#151619]/85 border border-[#23252a] px-2.5 py-1 text-[10px] font-medium text-[#8E9299] shadow-md">
+          Click to interact · scroll to zoom
+        </div>
+      )}
     </div>
   );
 }
