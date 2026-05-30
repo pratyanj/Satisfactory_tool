@@ -11,15 +11,25 @@ import {
   CATEGORY_LABELS,
   CATEGORY_ORDER,
   type MachineCategory,
+  type MachineRegistryEntry,
   getMachineName,
   getMachinePowerUsage,
   getMachinePowerProduction,
+  getMachineImageUrl,
 } from '../../engine/sandbox/machineRegistry';
-import { machines } from '../../engine/data';
+import { AppImage } from '../AppImage';
 import { BlueprintShelf } from './BlueprintShelf';
 
 interface SandboxSidebarProps {
   selectedMachineIds: string[];
+}
+
+type ViewMode = 'list' | 'card';
+const VIEW_STORAGE_KEY = 'sandbox-sidebar-view';
+
+function loadViewMode(): ViewMode {
+  if (typeof window === 'undefined') return 'list';
+  return window.localStorage.getItem(VIEW_STORAGE_KEY) === 'card' ? 'card' : 'list';
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -27,6 +37,12 @@ interface SandboxSidebarProps {
 export function SandboxSidebar({ selectedMachineIds }: SandboxSidebarProps) {
   const [search, setSearch] = useState('');
   const [collapsed, setCollapsed] = useState<Set<MachineCategory>>(new Set());
+  const [viewMode, setViewMode] = useState<ViewMode>(loadViewMode);
+
+  const changeView = useCallback((mode: ViewMode) => {
+    setViewMode(mode);
+    if (typeof window !== 'undefined') window.localStorage.setItem(VIEW_STORAGE_KEY, mode);
+  }, []);
 
   const toggleCategory = useCallback((cat: MachineCategory) => {
     setCollapsed((prev) => {
@@ -58,6 +74,39 @@ export function SandboxSidebar({ selectedMachineIds }: SandboxSidebarProps) {
           </svg>
           MACHINES
         </span>
+
+        <div className="sandbox-view-toggle" role="group" aria-label="View mode">
+          <button
+            type="button"
+            className={`sandbox-view-btn${viewMode === 'card' ? ' is-active' : ''}`}
+            onClick={() => changeView('card')}
+            aria-pressed={viewMode === 'card'}
+            title="Card view"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="3" width="8" height="8" rx="1.5" />
+              <rect x="13" y="3" width="8" height="8" rx="1.5" />
+              <rect x="3" y="13" width="8" height="8" rx="1.5" />
+              <rect x="13" y="13" width="8" height="8" rx="1.5" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className={`sandbox-view-btn${viewMode === 'list' ? ' is-active' : ''}`}
+            onClick={() => changeView('list')}
+            aria-pressed={viewMode === 'list'}
+            title="List view"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="8" y1="6" x2="20" y2="6" />
+              <line x1="8" y1="12" x2="20" y2="12" />
+              <line x1="8" y1="18" x2="20" y2="18" />
+              <line x1="3.5" y1="6" x2="3.6" y2="6" />
+              <line x1="3.5" y1="12" x2="3.6" y2="12" />
+              <line x1="3.5" y1="18" x2="3.6" y2="18" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Search */}
@@ -125,38 +174,19 @@ export function SandboxSidebar({ selectedMachineIds }: SandboxSidebarProps) {
               </button>
 
               {!isCollapsed && (
-                <div className="sandbox-category-items">
-                  {entries.map((entry) => {
-                    const name = getMachineName(entry.machineId);
-                    const isGenerator = getMachinePowerProduction(entry.machineId) > 0;
-                    const powerVal = isGenerator ? getMachinePowerProduction(entry.machineId) : getMachinePowerUsage(entry.machineId);
-                    const powerText = isGenerator ? `+${powerVal}MW` : `${powerVal}MW`;
-                    const { footprint } = entry;
-
-                    return (
-                      <button
-                        key={entry.machineId}
-                        className="sandbox-machine-btn"
-                        onClick={() => handleMachineClick(entry.machineId)}
-                        title={`${name} · ${footprint.width}×${footprint.height} foundations · ${powerText}`}
-                        id={`sandbox-machine-${entry.machineId}`}
-                      >
-                        <span
-                          className="sandbox-machine-icon"
-                          style={{ background: entry.accentColor + '22', borderColor: entry.accentColor + '55' }}
-                        >
-                          <MachineIcon machineId={entry.machineId} color={entry.accentColor} />
-                        </span>
-                        <span className="sandbox-machine-info">
-                          <span className="sandbox-machine-name">{name}</span>
-                          <span className="sandbox-machine-meta">
-                            {footprint.width}×{footprint.height} · {powerText}
-                          </span>
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
+                viewMode === 'card' ? (
+                  <div className="sandbox-machine-grid">
+                    {entries.map((entry) => (
+                      <MachineCard key={entry.machineId} entry={entry} onPlace={handleMachineClick} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="sandbox-category-items">
+                    {entries.map((entry) => (
+                      <MachineListItem key={entry.machineId} entry={entry} onPlace={handleMachineClick} />
+                    ))}
+                  </div>
+                )
               )}
             </div>
           );
@@ -164,6 +194,100 @@ export function SandboxSidebar({ selectedMachineIds }: SandboxSidebarProps) {
       </div>
       <BlueprintShelf selectedMachineIds={selectedMachineIds} />
     </aside>
+  );
+}
+
+// ─── Shared machine presentation (list + card share this) ─────────────────────
+
+function machineMeta(entry: MachineRegistryEntry) {
+  const name = getMachineName(entry.machineId);
+  const isGenerator = getMachinePowerProduction(entry.machineId) > 0;
+  const powerVal = isGenerator
+    ? getMachinePowerProduction(entry.machineId)
+    : getMachinePowerUsage(entry.machineId);
+  const powerText = isGenerator ? `+${powerVal}MW` : `${powerVal}MW`;
+  return { name, powerText, imageUrl: getMachineImageUrl(entry.machineId), footprint: entry.footprint };
+}
+
+/** Machine photo (local-first) or category glyph fallback. */
+function MachineThumb({
+  entry,
+  name,
+  imageUrl,
+  className,
+}: {
+  entry: MachineRegistryEntry;
+  name: string;
+  imageUrl?: string;
+  className?: string;
+}) {
+  return imageUrl ? (
+    <AppImage
+      idKey={entry.machineId}
+      fallbackUrl={imageUrl}
+      alt={name}
+      className={className ?? 'w-full h-full object-contain p-0.5 select-none pointer-events-none'}
+    />
+  ) : (
+    <MachineIcon machineId={entry.machineId} color={entry.accentColor} />
+  );
+}
+
+interface MachineItemProps {
+  entry: MachineRegistryEntry;
+  onPlace: (machineId: string) => void;
+}
+
+function MachineListItem({ entry, onPlace }: MachineItemProps) {
+  const { name, powerText, imageUrl, footprint } = machineMeta(entry);
+  return (
+    <button
+      className="sandbox-machine-btn"
+      onClick={() => onPlace(entry.machineId)}
+      title={`${name} · ${footprint.width}×${footprint.height} foundations · ${powerText}`}
+      id={`sandbox-machine-${entry.machineId}`}
+    >
+      <span
+        className="sandbox-machine-icon"
+        style={{ background: entry.accentColor + '22', borderColor: entry.accentColor + '55' }}
+      >
+        <MachineThumb entry={entry} name={name} imageUrl={imageUrl} />
+      </span>
+      <span className="sandbox-machine-info">
+        <span className="sandbox-machine-name">{name}</span>
+        <span className="sandbox-machine-meta">
+          {footprint.width}×{footprint.height} · {powerText}
+        </span>
+      </span>
+    </button>
+  );
+}
+
+function MachineCard({ entry, onPlace }: MachineItemProps) {
+  const { name, powerText, imageUrl, footprint } = machineMeta(entry);
+  return (
+    <button
+      className="sandbox-machine-card"
+      onClick={() => onPlace(entry.machineId)}
+      title={`${name} · ${footprint.width}×${footprint.height} foundations · ${powerText}`}
+      id={`sandbox-machine-${entry.machineId}`}
+    >
+      <span
+        className="sandbox-machine-card-thumb"
+        style={{ background: entry.accentColor + '14', borderColor: entry.accentColor + '40' }}
+      >
+        <MachineThumb
+          entry={entry}
+          name={name}
+          imageUrl={imageUrl}
+          className="w-full h-full object-contain p-1.5 select-none pointer-events-none"
+        />
+      </span>
+      <span className="sandbox-machine-card-name">{name}</span>
+      <span className="sandbox-machine-card-meta">
+        {footprint.width}×{footprint.height} · {powerText}
+      </span>
+    </button>
   );
 }
 

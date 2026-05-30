@@ -13,7 +13,7 @@ const TOOLS: { mode: ToolMode; label: string; title: string; icon: React.ReactNo
   {
     mode: 'select',
     label: 'Select',
-    title: 'Select / Move (S)',
+    title: 'Select / area-select (A)',
     icon: (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
         <path d="M5 3l14 9-7 1-4 7z" />
@@ -23,7 +23,7 @@ const TOOLS: { mode: ToolMode; label: string; title: string; icon: React.ReactNo
   {
     mode: 'pan',
     label: 'Pan',
-    title: 'Pan canvas (Space)',
+    title: 'Pan canvas (H / Space)',
     icon: (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
         <path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2" />
@@ -45,7 +45,7 @@ const TOOLS: { mode: ToolMode; label: string; title: string; icon: React.ReactNo
   {
     mode: 'power',
     label: 'Power',
-    title: 'Draw wire (W / P)',
+    title: 'Draw wire (P / W)',
     icon: (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
         <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
@@ -55,7 +55,7 @@ const TOOLS: { mode: ToolMode; label: string; title: string; icon: React.ReactNo
   {
     mode: 'delete',
     label: 'Delete',
-    title: 'Delete (Del)',
+    title: 'Delete (D / Del)',
     icon: (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
         <polyline points="3 6 5 6 21 6" />
@@ -78,38 +78,45 @@ export function SandboxToolbar() {
     window.dispatchEvent(new CustomEvent('sandbox:tool', { detail: { mode } }));
   }, []);
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      switch (e.key.toLowerCase()) {
-        case 's': setTool('select');  break;
-        case 'b': setTool('belt');    break;
-        case 'w':
-        case 'p': setTool('power');   break;
-        case ' ': e.preventDefault(); setTool('pan'); break;
-        case 'delete':
-        case 'backspace': setTool('delete'); break;
-        case 'escape': setTool('select'); break;
-        case 'g': dispatch({ type: 'TOGGLE_GRID' }); break;
-        case 'h': {
-          const next = !heatmapRef.current;
-          heatmapRef.current = next;
-          setHeatmapMode(next);
-          window.dispatchEvent(new CustomEvent('sandbox:heatmap', { detail: { active: next } }));
-          break;
-        }
-      }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [setTool, dispatch]);
+  const toggleHeatmap = useCallback(() => {
+    const next = !heatmapRef.current;
+    heatmapRef.current = next;
+    setHeatmapMode(next);
+    window.dispatchEvent(new CustomEvent('sandbox:heatmap', { detail: { active: next } }));
+  }, []);
 
   const handleClearAll = useCallback(() => {
     if (window.confirm('Clear all machines and belts?')) {
       dispatch({ type: 'CLEAR_ALL' });
     }
   }, [dispatch]);
+
+  // Keyboard shortcuts — skip while typing or using Ctrl/Cmd/Alt combos
+  // (e.g. Ctrl+A "select all" is handled separately on the canvas).
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      switch (e.key.toLowerCase()) {
+        case 'a':                                // Arrow / select-area
+        case 's': setTool('select'); break;
+        case 'h': setTool('pan');    break;      // Hand / pan
+        case 'b': setTool('belt');   break;
+        case 'w':
+        case 'p': setTool('power');  break;
+        case 'd': setTool('delete'); break;
+        case ' ': e.preventDefault(); setTool('pan'); break;
+        case 'delete':
+        case 'backspace': setTool('delete'); break;
+        case 'escape': setTool('select'); break;
+        case 'g': dispatch({ type: 'TOGGLE_GRID' }); break;
+        case 'm': toggleHeatmap(); break;        // Heatmap (moved off H)
+        case 'x': handleClearAll(); break;       // Clear all
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [setTool, dispatch, toggleHeatmap, handleClearAll]);
 
   const handleExportImage = useCallback(() => {
     // Use html-to-image on the SVG canvas area
@@ -169,13 +176,8 @@ export function SandboxToolbar() {
       {/* Heatmap diagnostic toggle */}
       <button
         className={`sandbox-tool-btn ${heatmapMode ? 'is-active is-active--amber' : ''}`}
-        onClick={() => {
-          const next = !heatmapMode;
-          heatmapRef.current = next;
-          setHeatmapMode(next);
-          window.dispatchEvent(new CustomEvent('sandbox:heatmap', { detail: { active: next } }));
-        }}
-        title="Diagnostics heatmap (H)"
+        onClick={toggleHeatmap}
+        title="Diagnostics heatmap (M)"
         id="sandbox-tool-heatmap"
         aria-pressed={heatmapMode}
       >
@@ -205,7 +207,7 @@ export function SandboxToolbar() {
       <button
         className="sandbox-tool-btn sandbox-tool-btn--danger"
         onClick={handleClearAll}
-        title="Clear all machines and belts"
+        title="Clear all machines and belts (X)"
         id="sandbox-clear-all"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

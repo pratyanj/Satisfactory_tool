@@ -33,6 +33,7 @@ import {
   getMachinePowerUsage,
   getMachinePowerProduction,
   getMachineMaxConnections,
+  getMachineImageUrl,
   getAllMachines,
 } from '../../engine/sandbox/machineRegistry';
 import type {
@@ -41,7 +42,7 @@ import type {
   SandboxPowerLine,
   GridPosition,
 } from '../../engine/sandbox/types';
-import { machines } from '../../engine/data';
+import { MachineSvgImage } from './MachineSvgImage';
 import { getBeltTier } from './BeltInspector';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -105,6 +106,15 @@ export function SandboxCanvas() {
   const [isPanning, setIsPanning] = useState(false);
   const panStart = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
 
+  // Click-to-focus: the canvas only captures the scroll wheel (zoom) once the
+  // user clicks into it. Until then, scrolling over it scrolls the page.
+  const [isFocused, setIsFocused] = useState(false);
+  const isFocusedRef = useRef(false);
+  const setFocus = useCallback((v: boolean) => {
+    isFocusedRef.current = v;
+    setIsFocused(v);
+  }, []);
+
   // Phase 4: drag-select, Zoop array stamping, clipboard paste
   const [dragSelect, setDragSelect] = useState<DragSelectState | null>(null);
   const [isZooping, setIsZooping] = useState(false);   // Shift held during place = Zoop mode
@@ -113,6 +123,25 @@ export function SandboxCanvas() {
   const [pasteGhostAnchor, setPasteGhostAnchor] = useState<{ col: number; row: number } | null>(null);
   // Track if drag just ended (avoids immediate deselect on mouse-up after drag)
   const justDragSelected = useRef(false);
+
+  // Drag-to-move a placed machine (select mode). State drives the ghost preview;
+  // the ref holds live values read synchronously by the mouse handlers.
+  const [dragMachine, setDragMachine] = useState<
+    { instanceId: string; machineId: string; ghostCol: number; ghostRow: number; canDrop: boolean } | null
+  >(null);
+  const dragMachineRef = useRef<{
+    instanceId: string;
+    machineId: string;
+    startCol: number;
+    startRow: number;
+    pointerStartCol: number;
+    pointerStartRow: number;
+    ghostCol: number;
+    ghostRow: number;
+    canDrop: boolean;
+    moved: boolean;
+  } | null>(null);
+  const justDraggedMachine = useRef(false);
 
   // Listen for tool-mode changes from the Toolbar (CustomEvent approach avoids prop drilling)
   useEffect(() => {
@@ -226,6 +255,24 @@ export function SandboxCanvas() {
       // Track mouse position for wire drawing preview and paste ghost
       setMousePos({ x, y });
 
+      // Drag-to-move a placed machine (select mode)
+      if (dragMachineRef.current) {
+        const d = dragMachineRef.current;
+        const ptr = pxToGrid(x, y);
+        const newCol = d.startCol + (ptr.col - d.pointerStartCol);
+        const newRow = d.startRow + (ptr.row - d.pointerStartRow);
+        const fp = getMachineFootprint(d.machineId);
+        // Validate against every OTHER machine (ignore the one being dragged)
+        const without = { ...state, machines: state.machines.filter((m) => m.instanceId !== d.instanceId) };
+        const ok = canPlace(without, d.machineId, { col: newCol, row: newRow }, fp, FOOTPRINT_MAP);
+        d.ghostCol = newCol;
+        d.ghostRow = newRow;
+        d.canDrop = ok;
+        if (newCol !== d.startCol || newRow !== d.startRow) d.moved = true;
+        setDragMachine({ instanceId: d.instanceId, machineId: d.machineId, ghostCol: newCol, ghostRow: newRow, canDrop: ok });
+        return;
+      }
+
       // Panning
       if (isPanning && panStart.current) {
         const dx = x - panStart.current.x;
@@ -304,6 +351,19 @@ export function SandboxCanvas() {
     (e: React.MouseEvent) => {
       setIsPanning(false);
       panStart.current = null;
+
+      // Finish a machine drag-to-move: commit the new position if it moved to a
+      // valid spot, then suppress the click that follows so it doesn't reselect.
+      if (dragMachineRef.current) {
+        const d = dragMachineRef.current;
+        dragMachineRef.current = null;
+        setDragMachine(null);
+        if (d.moved && d.canDrop && (d.ghostCol !== d.startCol || d.ghostRow !== d.startRow)) {
+          dispatch({ type: 'MOVE_MACHINE', instanceId: d.instanceId, position: { col: d.ghostCol, row: d.ghostRow } });
+        }
+        justDraggedMachine.current = d.moved;
+        return;
+      }
 
       if (dragSelect) {
         const minX = Math.min(dragSelect.startX, dragSelect.currentX);
@@ -432,11 +492,80 @@ export function SandboxCanvas() {
     [zoom, viewOffset, dispatch, getSVGPoint]
   );
 
+  // Stable ref to the latest wheel-zoom handler for the native listener below.
+  const handleWheelZoomRef = useRef(handleWheelZoom);
+  useEffect(() => {
+    handleWheelZoomRef.current = handleWheelZoom;
+  }, [handleWheelZoom]);
+
+  // Release focus when the user clicks anywhere outside the canvas.
+  useEffect(() => {
+    const onDocPointerDown = (e: PointerEvent) => {
+      if (outerRef.current && !outerRef.current.contains(e.target as Node)) {
+        setFocus(false);
+      }
+    };
+    document.addEventListener('pointerdown', onDocPointerDown);
+    return () => document.removeEventListener('pointerdown', onDocPointerDown);
+  }, [setFocus]);
+
+  // Native, non-passive wheel listener. React's onWheel is registered as a
+  // passive listener, so e.preventDefault() there is ignored and the page
+  // scrolls anyway. Binding manually lets us block page scroll — but only once
+  // the canvas is focused (clicked into). Unfocused → the page scrolls normally.
+  useEffect(() => {
+    const el = outerRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      if (!isFocusedRef.current) return;
+      handleWheelZoomRef.current(e as unknown as React.WheelEvent);
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
+
   // ── Machine interaction ─────────────────────────────────────────────────────
+
+  // Begin a drag-to-move in select mode. Shift+click is reserved for
+  // multi-select (handled on click), so it never starts a drag.
+  const handleMachineMouseDown = useCallback(
+    (e: React.MouseEvent, machine: SandboxMachine) => {
+      if (e.button !== 0 || toolMode !== 'select' || e.shiftKey) return;
+      e.stopPropagation(); // stop the wrapper from starting a drag-select box
+      const { x, y } = getSVGPoint(e);
+      const ptr = pxToGrid(x, y);
+      dispatch({ type: 'SELECT_MACHINE', instanceId: machine.instanceId });
+      dragMachineRef.current = {
+        instanceId: machine.instanceId,
+        machineId: machine.machineId,
+        startCol: machine.position.col,
+        startRow: machine.position.row,
+        pointerStartCol: ptr.col,
+        pointerStartRow: ptr.row,
+        ghostCol: machine.position.col,
+        ghostRow: machine.position.row,
+        canDrop: true,
+        moved: false,
+      };
+      setDragMachine({
+        instanceId: machine.instanceId,
+        machineId: machine.machineId,
+        ghostCol: machine.position.col,
+        ghostRow: machine.position.row,
+        canDrop: true,
+      });
+    },
+    [toolMode, getSVGPoint, pxToGrid, dispatch]
+  );
 
   const handleMachineClick = useCallback(
     (e: React.MouseEvent, machine: SandboxMachine) => {
       e.stopPropagation();
+      // Swallow the click that immediately follows a drag-to-move
+      if (justDraggedMachine.current) {
+        justDraggedMachine.current = false;
+        return;
+      }
       if (toolMode === 'delete') {
         dispatch({ type: 'DELETE_MACHINE', instanceId: machine.instanceId });
         return;
@@ -567,6 +696,7 @@ export function SandboxCanvas() {
     const isMultiSelected = state.selectedMachineIds.includes(machine.instanceId);
     const accent  = entry?.accentColor ?? '#f48721';
     const machineName = getMachineName(machine.machineId);
+    const machineImageUrl = getMachineImageUrl(machine.machineId);
     const tp      = stats.machineThroughputs[machine.instanceId];
 
     // Power validation
@@ -611,8 +741,9 @@ export function SandboxCanvas() {
       <g
         key={machine.instanceId}
         transform={`translate(${origin.x}, ${origin.y})`}
+        onMouseDown={(e) => handleMachineMouseDown(e, machine)}
         onClick={(e) => handleMachineClick(e, machine)}
-        style={{ cursor: toolMode === 'delete' ? 'crosshair' : 'pointer' }}
+        style={{ cursor: toolMode === 'delete' ? 'crosshair' : toolMode === 'select' ? 'move' : 'pointer' }}
       >
         {/* Shadow */}
         <rect x={3} y={3} width={w} height={h} rx={3} fill="rgba(0,0,0,0.4)" />
@@ -633,19 +764,38 @@ export function SandboxCanvas() {
         {/* Status dot (top-right) */}
         <circle cx={w - 8} cy={8} r={4} fill={isSwitch ? (switchOn ? '#10b981' : '#ef4444') : (heatmapColor ?? statusColor)} className={isUnpowered ? 'sandbox-unpowered-dot-flash' : ''} />
 
-        {/* Machine name label */}
-        {w > 40 && (
-          <text
-            x={w / 2} y={h / 2 + 4}
-            textAnchor="middle" dominantBaseline="middle"
-            fontSize={Math.max(8, Math.min(12, w * 0.14))}
-            fill="#e4e3e0"
-            fontFamily="'Inter', 'Segoe UI', sans-serif"
-            fontWeight="600"
-            style={{ pointerEvents: 'none', userSelect: 'none' }}
-          >
-            {machineName.replace(' ', '\n')}
-          </text>
+        {/* Machine photo (local-first, remote fallback) — falls back to the
+            name label below for sandbox-only machines without an image. */}
+        {machineImageUrl ? (
+          (() => {
+            const topBar = Math.max(4, h * 0.06);
+            const imgSize = Math.min(w * 0.78, (h - topBar) * 0.74);
+            return (
+              <MachineSvgImage
+                machineId={machine.machineId}
+                fallbackUrl={machineImageUrl}
+                x={(w - imgSize) / 2}
+                y={topBar + ((h - topBar) - imgSize) / 2 - h * 0.04}
+                width={imgSize}
+                height={imgSize}
+                alt={machineName}
+              />
+            );
+          })()
+        ) : (
+          w > 40 && (
+            <text
+              x={w / 2} y={h / 2 + 4}
+              textAnchor="middle" dominantBaseline="middle"
+              fontSize={Math.max(8, Math.min(12, w * 0.14))}
+              fill="#e4e3e0"
+              fontFamily="'Inter', 'Segoe UI', sans-serif"
+              fontWeight="600"
+              style={{ pointerEvents: 'none', userSelect: 'none' }}
+            >
+              {machineName.replace(' ', '\n')}
+            </text>
+          )
         )}
 
         {/* Output rate / switch state label */}
@@ -1017,6 +1167,27 @@ export function SandboxCanvas() {
     );
   };
 
+  const renderMachineDragGhost = () => {
+    if (!dragMachine) return null;
+    const fp     = getMachineFootprint(dragMachine.machineId);
+    const origin = gridToPx(dragMachine.ghostCol, dragMachine.ghostRow);
+    const w = fp.width  * cellSize * zoom;
+    const h = fp.height * cellSize * zoom;
+    const color = dragMachine.canDrop ? '#22c55e' : '#ef4444';
+
+    return (
+      <rect
+        x={origin.x} y={origin.y} width={w} height={h} rx={3}
+        fill={color}
+        fillOpacity={0.18}
+        stroke={color}
+        strokeWidth={2}
+        strokeDasharray="6 3"
+        style={{ pointerEvents: 'none' }}
+      />
+    );
+  };
+
   // ── Phase 4 render helpers ───────────────────────────────────────────────────────────
 
   const renderDragSelectBox = () => {
@@ -1127,16 +1298,21 @@ export function SandboxCanvas() {
       ref={outerRef}
       className="sandbox-canvas-wrapper"
       style={cursorStyle}
+      onPointerDownCapture={() => setFocus(true)}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
+      {!isFocused && (
+        <div className="sandbox-focus-hint" aria-hidden="true">
+          Click canvas to interact · scroll to zoom
+        </div>
+      )}
       <svg
         ref={svgRef}
         className="sandbox-svg"
         onMouseMove={handleMouseMove}
         onClick={handleCanvasClick}
-        onWheel={handleWheelZoom}
       >
         {/* Grid */}
         <g className="sandbox-grid">{gridLines}</g>
@@ -1158,7 +1334,7 @@ export function SandboxCanvas() {
         </g>
 
         {/* Ghost placement preview */}
-        <g className="sandbox-ghost">{renderGhost()}</g>
+        <g className="sandbox-ghost">{renderGhost()}{renderMachineDragGhost()}</g>
 
         {/* Phase 4: Zoop ghosts, paste ghosts, drag-select box */}
         <g className="sandbox-zoop-layer">{renderZoopGhosts()}</g>
