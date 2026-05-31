@@ -106,7 +106,7 @@ export function ItemModal({ isOpen, onClose, onSelect }: ItemModalProps) {
                 <span className="w-2 h-2 bg-[#f48721] inline-block clip-path-polygon-[50%_0,100%_50%,50%_100%,0_50%]"></span>
                 {category}
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sf-modal-grid">
                 {itemsInCategory.map(item => (
                   <button
                     key={item.id}

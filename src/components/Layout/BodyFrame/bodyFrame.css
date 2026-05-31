@@ -208,3 +208,29 @@
   display: flex;
   flex-direction: column;
 }
+
+@media (max-width: 768px) {
+  .sf-body-frame-wrapper {
+    padding: 4px;
+  }
+
+  .sf-body-frame-container {
+    border-width: 2px;
+    border-radius: 4px;
+  }
+
+  .sf-body-frame-container::before {
+    inset: 1px;
+    border-width: 1px;
+  }
+
+  /* Hide high-density decorative layout widgets to maximize screen estate */
+  .sf-frame-corner,
+  .sf-frame-screw,
+  .sf-frame-caution,
+  .sf-frame-edge-light,
+  .sf-frame-logo {
+    display: none !important;
+  }
+}
+

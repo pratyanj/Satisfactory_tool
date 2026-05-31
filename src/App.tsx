@@ -412,7 +412,7 @@ export default function App() {
               isGraphFullscreen ? 'fixed inset-0 z-50 w-screen h-screen' : ''
             }`}
           >
-            <div className="absolute top-4 right-4 z-10 flex gap-2">
+            <div className="sf-graph-controls">
               <button
                 onClick={() => setLayoutMode('aggregated')}
                 disabled={isRecalculating}
@@ -420,7 +420,10 @@ export default function App() {
                 aria-label="Switch to aggregated view"
               >
                 {layoutMode === 'aggregated' && <span className="sf-btn-scanner absolute inset-0 pointer-events-none z-10" />}
-                <span className="relative z-20">Aggregated View</span>
+                <span className="relative z-20">
+                  <span className="desktop-text">Aggregated View</span>
+                  <span className="mobile-text">Aggregated</span>
+                </span>
               </button>
               <button
                 onClick={() => setLayoutMode('expanded')}
@@ -429,7 +432,10 @@ export default function App() {
                 aria-label="Switch to machine view"
               >
                 {layoutMode === 'expanded' && <span className="sf-btn-scanner absolute inset-0 pointer-events-none z-10" />}
-                <span className="relative z-20">Machine View</span>
+                <span className="relative z-20">
+                  <span className="desktop-text">Machine View</span>
+                  <span className="mobile-text">Machine</span>
+                </span>
               </button>
               <button
                 onClick={toggleFullscreen}
@@ -444,7 +450,8 @@ export default function App() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 9M20.25 20.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
                     )}
                   </svg>
-                  {isGraphFullscreen ? 'Exit' : 'Fullscreen'}
+                  <span className="desktop-text">{isGraphFullscreen ? 'Exit' : 'Fullscreen'}</span>
+                  <span className="mobile-text">{isGraphFullscreen ? 'Exit' : 'Full'}</span>
                 </span>
               </button>
             </div>
@@ -455,7 +462,7 @@ export default function App() {
               </div>
             )}
             <div className="w-full h-full">
-              <FactoryGraph initialNodes={nodes} initialEdges={edges} beltId={lastInput.beltId} />
+              <FactoryGraph initialNodes={nodes} initialEdges={edges} beltId={lastInput.beltId} isFullscreen={isGraphFullscreen} />
             </div>
           </div>
         );
@@ -497,9 +504,8 @@ export default function App() {
               
               {/* Top Side: Settings & Summary — collapsible */}
               <div
-                className="relative flex flex-col xl:flex-row gap-2 shrink-0 z-20 w-full transition-all duration-300"
+                className={`relative flex flex-col xl:flex-row gap-2 shrink-0 z-20 w-full transition-all duration-300 sf-controls-row ${controlsCollapsed ? 'controls-collapsed' : ''}`}
                 style={{
-                  maxHeight: controlsCollapsed ? '0px' : '500px',
                   opacity: controlsCollapsed ? 0 : 1,
                   overflow: controlsCollapsed ? 'hidden' : 'visible'
                 }}

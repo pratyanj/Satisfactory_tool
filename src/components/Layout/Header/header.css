@@ -408,3 +408,209 @@
   clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 10px 100%);
   border-top: 2px solid #000;
 }
+
+/* ==========================================================================
+   MOBILE & TABLET RESPONSIVE NAVIGATION
+   ========================================================================== */
+
+.sf-hamburger-btn {
+  display: none;
+  position: absolute;
+  top: 25px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: #1e2024;
+  border: 1px solid #3a3d42;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 100;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.sf-hamburger-btn:hover {
+  background: #25282d;
+  border-color: #f48721;
+  box-shadow: 0 0 12px rgba(244, 135, 33, 0.35);
+}
+
+.sf-hamburger-btn:active {
+  transform: scale(0.95);
+}
+
+.sf-hamburger-line {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #f48721;
+  border-radius: 2px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hamburger animations when open */
+.sf-hamburger-btn.is-open .sf-hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.sf-hamburger-btn.is-open .sf-hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.sf-hamburger-btn.is-open .sf-hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 1024px) {
+  .sf-header-wrapper {
+    padding: 6px;
+  }
+
+  .sf-header-container {
+    height: auto;
+    min-height: 80px;
+    flex-direction: column;
+    padding-bottom: 0;
+    clip-path: none;
+    overflow: visible;
+  }
+
+  .sf-header-container::before {
+    clip-path: none;
+  }
+
+  /* Hide decorative desktop components */
+  .sf-caution-stripes,
+  .sf-bottom-stripes,
+  .sf-header-orange-block,
+  .sf-nav-cutout-border,
+  .sf-header-right {
+    display: none !important;
+  }
+
+  /* Make logo/title fit neatly on mobile */
+  .sf-header-title-plate {
+    position: static;
+    width: auto;
+    margin: 12px 60px 12px 12px;
+    box-shadow: none;
+    border: 1px solid #333;
+    padding: 8px 12px;
+    background: transparent;
+  }
+
+  .sf-screw {
+    display: none;
+  }
+
+  .sf-title-main,
+  .sf-title-sub {
+    font-size: 18px;
+    display: inline-block;
+  }
+
+  .sf-title-sub {
+    margin-left: 6px;
+  }
+
+  .sf-title-micro {
+    display: none;
+  }
+
+  /* Show Hamburger */
+  .sf-hamburger-btn {
+    display: flex;
+  }
+
+  /* Navigation Cutout becomes vertical drawer */
+  .sf-header-nav-cutout {
+    display: none;
+    width: calc(100% - 24px);
+    margin: 0 12px 12px;
+    padding: 8px;
+    background: #0d0f11;
+    border: 1px solid #23262d;
+    border-radius: 8px;
+    clip-path: none;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
+    box-sizing: border-box;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .sf-header-nav-cutout.is-open {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    animation: sf-drawer-slide-down 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .sf-nav-links {
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px;
+    height: auto;
+  }
+
+  .sf-nav-select-wrap {
+    flex: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    box-sizing: border-box;
+    padding: 10px;
+  }
+
+  .sf-nav-select-label {
+    border-right: none;
+    border-bottom: 1px solid #20232a;
+    padding-bottom: 8px;
+    padding-left: 0;
+    min-height: 0;
+  }
+
+  .sf-planner-segmented {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .sf-nav-btn {
+    flex: none;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 10px 12px;
+    border: 1px solid #1a1c22;
+    border-radius: 8px;
+    background: #111317;
+    box-sizing: border-box;
+  }
+
+  .sf-nav-btn:hover {
+    background: #161820;
+    border-color: #262a35;
+  }
+
+  .sf-nav-btn.active {
+    border-color: rgba(244, 135, 33, 0.35);
+    background: rgba(244, 135, 33, 0.04);
+  }
+}
+
+@keyframes sf-drawer-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

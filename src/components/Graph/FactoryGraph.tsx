@@ -28,6 +28,7 @@ interface FactoryGraphProps {
   initialNodes: Node[];
   initialEdges: Edge[];
   beltId?: string;
+  isFullscreen?: boolean;
 }
 
 const nodeTypes = {
@@ -42,13 +43,14 @@ const edgeTypes = {
 
 // ─── Toolbar (cleaned up — no more dead code) ───────────────────────────────
 
-function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand, onLayout }: {
+function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand, onLayout, isFullscreen = false }: {
   nodes: Node[],
   setNodes: React.Dispatch<React.SetStateAction<Node[]>>,
   selectionMode: boolean,
   setSelectionMode: (v: boolean) => void,
   onExpand: () => void,
-  onLayout: () => void
+  onLayout: () => void,
+  isFullscreen?: boolean
 }) {
   const { getNodesBounds, getNodes: rfGetNodes } = useReactFlow();
   const [isExporting, setIsExporting] = useState(false);
@@ -227,7 +229,7 @@ function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand
   };
 
   return (
-    <Panel position="top-left" className="flex items-center gap-2 bg-[#151619]/90 backdrop-blur-md p-1.5 rounded-xl shadow-lg border border-[#2a2d33] pointer-events-auto">
+    <Panel position="top-left" className={`sf-graph-panel ${isFullscreen ? 'is-fullscreen' : ''} flex items-center gap-2 bg-[#151619]/90 backdrop-blur-md p-1.5 rounded-xl shadow-lg border border-[#2a2d33] pointer-events-auto`}>
       <div className="flex bg-[#101114] p-0.5 rounded-lg border border-[#2a2d33]">
         <button onClick={() => setSelectionMode(false)} className={`p-2 rounded-md transition-colors ${!selectionMode ? 'bg-[#243142] text-blue-400' : 'text-[#8E9299] hover:text-white hover:bg-[#1c1e22]'}`} title="Pan & Move"><Hand className="w-4 h-4" /></button>
         <button onClick={() => setSelectionMode(true)} className={`p-2 rounded-md transition-colors ${selectionMode ? 'bg-[#243142] text-blue-400' : 'text-[#8E9299] hover:text-white hover:bg-[#1c1e22]'}`} title="Select Multiple"><MousePointer2 className="w-4 h-4" /></button>
@@ -270,7 +272,7 @@ export function FactoryGraph(props: FactoryGraphProps) {
 
 // ─── Inner graph (single source of truth for useReactFlow) ──────────────────
 
-function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: FactoryGraphProps) {
+function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1', isFullscreen = false }: FactoryGraphProps) {
   const { getNodes, getEdges, fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -650,6 +652,8 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         fitView
+        minZoom={0.05}
+        maxZoom={3}
         colorMode="dark"
         panOnDrag={!selectionMode}
         selectionOnDrag={selectionMode}
@@ -671,6 +675,7 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1' }: Facto
             if (selected) handleExpandNode(selected.id);
           }}
           onLayout={applyAILayout}
+          isFullscreen={isFullscreen}
         />
       </ReactFlow>
 

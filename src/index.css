@@ -7001,3 +7001,413 @@ input[type="number"] {
   to   { stroke-dashoffset: 0; }
 }
 
+
+/* ==========================================================================
+   FICSIT WEB CLIENT RESPONSIVENESS OVERRIDES
+   ========================================================================== */
+
+/* ── 1. COLLAPSIBLE CONTROLS ROW ── */
+.sf-controls-row {
+  max-height: 500px;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+.sf-controls-row.controls-collapsed {
+  max-height: 0px !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none;
+}
+
+@media (max-width: 1279px) {
+  .sf-controls-row {
+    max-height: 1500px; /* Expand vertical bounds when elements stack on mobile */
+  }
+}
+
+/* ── 2. INPUT FORM STACKING (Planner Controls) ── */
+@media (max-width: 768px) {
+  /* Stack input form elements */
+  .sf-controls-row form > .relative.z-10 {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 12px !important;
+    gap: 12px !important;
+  }
+
+  /* Make form column units full-width */
+  .sf-controls-row form .flex.flex-col {
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  /* Reposition and size alternate recipes dropdown */
+  .sf-controls-row form .relative.flex-col.gap-1 {
+    position: relative;
+  }
+
+  .sf-controls-row form [style*="width: 340"] {
+    width: 100% !important;
+    max-width: calc(100vw - 40px) !important;
+    left: 0 !important;
+    right: 0 !important;
+    position: absolute !important;
+    margin: 6px auto !important;
+  }
+
+  /* Scale and center calculation submit button */
+  .sf-controls-row form .ml-auto {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  .sf-controls-row form button[type="submit"] {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center;
+  }
+}
+
+/* ── 3. PRODUCTION SUMMARY CARD STACKING ── */
+@media (max-width: 768px) {
+  .sf-controls-row .flex-1.min-w-\[30\%\] {
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  /* Stack Summary interior rows */
+  .sf-controls-row .flex.flex-row.flex-wrap.gap-5.items-stretch {
+    flex-direction: column !important;
+    gap: 16px !important;
+    padding: 12px !important;
+  }
+
+  /* Stacking columns & borders */
+  .sf-controls-row .border-l {
+    border-left: none !important;
+    padding-left: 0 !important;
+    border-top: 1px solid rgba(42, 45, 51, 0.4) !important;
+    padding-top: 14px !important;
+  }
+
+  .sf-controls-row .min-w-\[120px\] {
+    min-width: 0 !important;
+    width: 100% !important;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+/* ── 4. 4-TAB NAVIGATION BAR RESPONSIVENESS ── */
+@media (max-width: 600px) {
+  .tab-bar-btn {
+    padding: 10px 4px !important;
+    font-size: 8.5px !important;
+    letter-spacing: 0.04em !important;
+    gap: 4px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .tab-bar-btn span {
+    display: none !important; /* Hide labels, show only icons on very small phone viewports */
+  }
+  .tab-bar-btn {
+    padding: 12px 6px !important;
+  }
+}
+
+/* ── 5. ITEM BROWSER (Codex) & DETAIL VIEW OVERRIDES ── */
+@media (max-width: 768px) {
+  /* Codex toolbar search bar size mapping */
+  .ib-toolbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    padding: 12px 14px !important;
+  }
+
+  .ib-search-wrap {
+    max-width: none !important;
+    width: 100% !important;
+  }
+
+  .ib-count {
+    text-align: right;
+  }
+
+  .ib-grid-wrap {
+    padding: 10px !important;
+  }
+
+  .ib-grid {
+    grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  /* Codex Details Page column stacking */
+  .id-body {
+    flex-direction: column !important;
+    gap: 16px !important;
+    padding: 8px !important;
+    overflow-y: auto !important;
+  }
+
+  .id-col {
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  .id-topbar {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    padding: 10px 14px !important;
+  }
+
+  .id-breadcrumb {
+    font-size: 11px !important;
+  }
+
+  /* Spec hero card stacking */
+  .sf-item-hero-body {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 16px !important;
+  }
+
+  .sf-item-hero-img-wrap {
+    width: 110px !important;
+    height: 110px !important;
+    flex-shrink: 0;
+  }
+
+  .sf-item-hero-info {
+    width: 100% !important;
+  }
+
+  /* Codex Tables list stacking instead of squished rows */
+  .sf-rt-header {
+    display: none !important; /* Hide column labels */
+  }
+
+  .sf-rt-row {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 14px 10px !important;
+  }
+
+  .sf-rt-td {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  .sf-rt-td--name {
+    align-items: flex-start !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+    padding-bottom: 6px !important;
+  }
+
+  .sf-rt-td--machine {
+    border-top: 1px solid rgba(255, 255, 255, 0.04) !important;
+    padding-top: 6px !important;
+  }
+
+  .sf-rt-op--eq {
+    display: none !important; /* Hide equality operators on stack */
+  }
+}
+
+/* ── 6. DIAGNOSTICS DASHBOARD GRID STACKING ── */
+@media (max-width: 991px) {
+  /* Stack metric boxes and scorecard */
+  .diagnostics-tab-wrapper,
+  .issue-card,
+  .DiagnosticsTab_issue-card__123 {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Stacking the warning lists and directives */
+  .relative.w-full.flex.flex-col.bg-\[\#0b0c0e\].text-\[\#e4e3e0\].p-4 {
+    padding: 8px !important;
+  }
+}
+
+/* ── 7. SANDBOX MOBILE DOCK SLIDE drawers ── */
+@media (max-width: 1024px) {
+  .sandbox-root {
+    position: relative !important;
+  }
+
+  /* Left Sidebar Drawer mapping */
+  .sandbox-sidebar {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 15px rgba(0,0,0,0.8);
+  }
+
+  /* Active Slide Trigger via hover or focus-within */
+  .sandbox-sidebar:hover,
+  .sandbox-sidebar:focus-within {
+    transform: translateX(0) !important;
+  }
+
+  /* Sidebar Caution Handle/Pull-Tab */
+  .sandbox-sidebar::after {
+    content: '▶';
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    right: -24px;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 60px;
+    background: repeating-linear-gradient(45deg, #f48721, #f48721 8px, #111 8px, #111 16px);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 900;
+    border: 1px solid #000;
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.5);
+    pointer-events: auto;
+    z-index: 60;
+  }
+
+  .sandbox-sidebar:hover::after,
+  .sandbox-sidebar:focus-within::after {
+    content: '◀';
+  }
+
+  /* Right Inspector Overlay Drawer */
+  .sandbox-inspector-panel {
+    position: absolute !important;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    transform: translateX(100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -4px 0 15px rgba(0,0,0,0.8);
+    width: 260px !important;
+  }
+
+  .sandbox-inspector-panel.is-open {
+    transform: translateX(0) !important;
+  }
+
+  /* Canvas Center re-claim */
+  .sandbox-center {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
+/* ── 8. PLANNER GRAPH SIDE CONTROLS RESPONSIVENESS ── */
+.sf-graph-controls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+
+.desktop-text {
+  display: inline;
+}
+.mobile-text {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .sf-graph-controls {
+    top: 8px !important;
+    left: 8px !important;
+    right: 8px !important;
+    gap: 4px !important;
+  }
+  .sf-graph-controls button {
+    flex: 1 !important;
+    padding: 6px 4px !important;
+    font-size: 8.5px !important;
+    letter-spacing: 0.02em !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    box-sizing: border-box !important;
+  }
+  .desktop-text {
+    display: none !important;
+  }
+  .mobile-text {
+    display: inline !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Hide the top-left panel (Hand/Pointer/AI layout/PNG tools) on mobile by default */
+  .sf-graph-panel {
+    display: none !important;
+  }
+  
+  /* ONLY show it when in fullscreen mode where there is plenty of screen estate! */
+  .sf-graph-panel.is-fullscreen {
+    display: flex !important;
+    position: absolute !important;
+    top: 50px !important; /* Position below the top view toggles */
+    left: 8px !important;
+    right: 8px !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.8) !important;
+    z-index: 100 !important;
+  }
+}
+
+/* ── 9. COMPACT SELECTION MODAL CARDS ON MOBILE ── */
+@media (max-width: 600px) {
+  /* Override the default grid to support more columns (auto-fill based on card width) */
+  .sf-modal-grid {
+    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  /* Shrink individual item cards */
+  .sf-item-card {
+    padding: 8px 4px !important;
+    min-height: 90px !important;
+  }
+
+  /* Shrink card image size and bottom margin */
+  .sf-item-card .w-16 {
+    width: 36px !important;
+    height: 36px !important;
+    margin-bottom: 6px !important;
+  }
+
+  /* Make item card name labels super compact and readable */
+  .sf-item-card span {
+    font-size: 9.5px !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0.01em !important;
+  }
+}
+
+
+
+
+
