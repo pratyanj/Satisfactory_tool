@@ -1,14 +1,31 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight, RotateCcw, Zap } from 'lucide-react';
 import { AppImage } from './AppImage';
-import { items, belts, machines, BeltId, MachineId, RecipeId } from '../engine/data';
+import { items, belts, machines, recipes, BeltId, MachineId, RecipeId } from '../engine/data';
 import { ItemModal } from './ItemModal';
 import { CustomSelect } from './CustomSelect';
 import { getAlternateRecipeCandidates, RecipeSelectionMap } from '../engine/solver';
 
+export type TargetMode = 'rate' | 'machine' | 'belt' | 'pipe' | 'resource';
+
+export interface TargetOutput {
+  itemId: string;
+  rate: number;
+  mode: TargetMode;
+  machineCount?: number;
+  recipeId?: string;
+  beltTier?: BeltId;
+  beltCount?: number;
+  pipeTier?: 'mk1' | 'mk2';
+  pipeCount?: number;
+  nodePurity?: 'impure' | 'normal' | 'pure';
+  nodeMinerId?: MachineId;
+  nodeClockSpeed?: number;
+}
+
 interface InputFormProps {
-  onCalculate: (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap) => void;
-  initialValues?: { itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections?: RecipeSelectionMap };
+  onCalculate: (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap, targets?: TargetOutput[]) => void;
+  initialValues?: { itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections?: RecipeSelectionMap, targets?: TargetOutput[] };
 }
 
 function formatRecipeLabel(recipeId: RecipeId): string {
@@ -19,45 +36,106 @@ function formatRecipeLabel(recipeId: RecipeId): string {
 }
 
 export function InputForm({ onCalculate, initialValues }: InputFormProps) {
-  const [selectedItem, setSelectedItem] = useState<string>(initialValues?.itemId || 'copper_sheet');
-  const [rate, setRate] = useState<number>(initialValues?.rate || 120);
+  const [targets, setTargets] = useState<TargetOutput[]>(
+    initialValues?.targets || [
+      {
+        itemId: initialValues?.itemId || 'copper_sheet',
+        rate: initialValues?.rate || 120,
+        mode: 'rate',
+        machineCount: 1,
+        beltTier: 'mk1',
+        beltCount: 1,
+        pipeTier: 'mk1',
+        pipeCount: 1,
+        nodePurity: 'normal',
+        nodeMinerId: 'miner_mk1',
+        nodeClockSpeed: 100,
+      }
+    ]
+  );
   const [minerId, setMinerId] = useState<MachineId>(initialValues?.minerId || 'miner_mk1');
   const [beltId, setBeltId] = useState<BeltId>(initialValues?.beltId || 'mk1');
   const [recipeSelections, setRecipeSelections] = useState<RecipeSelectionMap>(initialValues?.recipeSelections || {});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTargetIndex, setEditingTargetIndex] = useState<number | null>(null);
   const [showAltRecipes, setShowAltRecipes] = useState(false);
+
+  // Synchronize local state when inputs, targets, or selections are modified
+  const updateFormState = (
+    nextTargets: TargetOutput[],
+    nextMinerId: MachineId,
+    nextBeltId: BeltId,
+    nextRecipeSelections: RecipeSelectionMap
+  ) => {
+    setTargets(nextTargets);
+    setMinerId(nextMinerId);
+    setBeltId(nextBeltId);
+    setRecipeSelections(nextRecipeSelections);
+  };
 
   React.useEffect(() => {
     if (initialValues) {
-      setSelectedItem(initialValues.itemId);
-      setRate(initialValues.rate);
-      setMinerId(initialValues.minerId);
-      setBeltId(initialValues.beltId);
-      setRecipeSelections(initialValues.recipeSelections || {});
+      const initialTargets = initialValues.targets || [
+        {
+          itemId: initialValues.itemId,
+          rate: initialValues.rate,
+          mode: 'rate',
+          machineCount: 1,
+          beltTier: 'mk1',
+          beltCount: 1,
+          pipeTier: 'mk1',
+          pipeCount: 1,
+          nodePurity: 'normal',
+          nodeMinerId: 'miner_mk1',
+          nodeClockSpeed: 100,
+        }
+      ];
+
+      const targetsMatch = JSON.stringify(targets) === JSON.stringify(initialTargets);
+      if (!targetsMatch) {
+        setTargets(initialTargets);
+      }
+      if (minerId !== initialValues.minerId) {
+        setMinerId(initialValues.minerId);
+      }
+      if (beltId !== initialValues.beltId) {
+        setBeltId(initialValues.beltId);
+      }
+      const recipesMatch = JSON.stringify(recipeSelections) === JSON.stringify(initialValues.recipeSelections || {});
+      if (!recipesMatch) {
+        setRecipeSelections(initialValues.recipeSelections || {});
+      }
     }
   }, [initialValues]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedItem && rate > 0) {
-      onCalculate(selectedItem, rate, minerId, beltId, recipeSelections);
+    if (targets.length > 0) {
+      onCalculate(targets[0].itemId, targets[0].rate, minerId, beltId, recipeSelections, targets);
     }
   };
 
   const availableMiners = Object.values(machines).filter(m => m.id.startsWith('miner'));
   const availableBelts = Object.values(belts);
-  const selectedItemData = items[selectedItem as keyof typeof items];
-  const alternateRecipeCandidates = React.useMemo(
-    () => getAlternateRecipeCandidates(selectedItem, recipeSelections),
-    [selectedItem, recipeSelections]
-  );
+
+  const alternateRecipeCandidates = React.useMemo(() => {
+    const candidatesMap = new Map<string, any>();
+    for (const t of targets) {
+      try {
+        const itemCandidates = getAlternateRecipeCandidates(t.itemId, recipeSelections);
+        for (const cand of itemCandidates) {
+          candidatesMap.set(cand.itemId, cand);
+        }
+      } catch (err) {
+        // Safe catch for partial or virtual items
+      }
+    }
+    return Array.from(candidatesMap.values());
+  }, [targets, recipeSelections]);
 
   const handleAlternateRecipeChange = (itemId: string, recipeId: string) => {
     const nextSelections: RecipeSelectionMap = { ...recipeSelections, [itemId]: recipeId };
-    setRecipeSelections(nextSelections);
-    if (selectedItem && rate > 0) {
-      onCalculate(selectedItem, rate, minerId, beltId, nextSelections);
-    }
+    updateFormState(targets, minerId, beltId, nextSelections);
   };
 
   const altCount = Object.keys(recipeSelections).length;
@@ -69,7 +147,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
         onSubmit={handleSubmit}
         className="relative w-full text-white bg-transparent"
       >
-        {/* Slanted Background & Border decoration (non-clipping parent context) */}
+        {/* Slanted Background & Border decoration */}
         <div
           style={{
             position: 'absolute',
@@ -91,7 +169,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           zIndex: 10,
         }} />
 
-        {/* Corner accent – top-left chamfer highlight */}
+        {/* Corner accent */}
         <div style={{
           position: 'absolute', top: 0, left: 0, width: 0, height: 0,
           borderTop: '12px solid #f48721', borderRight: '12px solid transparent',
@@ -112,59 +190,347 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           <Zap size={10} className="text-[#f48721] opacity-60" />
         </div>
 
-        {/* Controls row */}
-        <div className="relative z-10 flex flex-row items-end gap-3.5 flex-wrap p-3.5">
+        {/* ── Dynamic Target Outputs Stack ── */}
+        <div className="relative z-10 p-4 flex flex-col gap-3">
+          <style dangerouslySetInnerHTML={{ __html: `
+            .sf-scrollable-targets::-webkit-scrollbar {
+              width: 4px;
+            }
+            .sf-scrollable-targets::-webkit-scrollbar-track {
+              background: rgba(0, 0, 0, 0.15);
+              border-radius: 2px;
+            }
+            .sf-scrollable-targets::-webkit-scrollbar-thumb {
+              background: #2a2d33;
+              border-radius: 2px;
+            }
+            .sf-scrollable-targets::-webkit-scrollbar-thumb:hover {
+              background: #f48721;
+            }
+          ` }} />
+          <div className="flex flex-col gap-2">
+            <span className="text-[9px] font-mono tracking-[0.2em] text-[#8e9299] uppercase font-bold">Planned Target Outputs</span>
+            <div className="flex flex-col gap-2 overflow-y-auto max-h-[300px] pr-1.5 sf-scrollable-targets">
+              {targets.map((target, idx) => {
+              const itemData = items[target.itemId];
+              return (
+                <div key={idx} className="flex items-center gap-3.5 flex-wrap bg-[#121316] border border-[#23262d] p-2.5 rounded relative">
+                  
+                  {/* Target Item Selection */}
+                  <div className="flex flex-col gap-1 flex-grow min-w-[150px]">
+                    <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Item</label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingTargetIndex(idx);
+                        setIsModalOpen(true);
+                      }}
+                      className="sf-input-container flex items-center justify-between w-full px-2.5 py-1.5 outline-none group text-white bg-[#0a0b0d]"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded shrink-0 overflow-hidden flex items-center justify-center bg-[#15171b] border border-[#2a2d33]">
+                          {itemData?.imageUrl && (
+                            <AppImage idKey={itemData.id} fallbackUrl={itemData.imageUrl} alt={itemData.name} className="w-full h-full object-contain" />
+                          )}
+                        </div>
+                        <span className="text-xs font-semibold text-[#e4e3e0]">{itemData?.name || 'Select Item'}</span>
+                      </div>
+                      <ChevronDown size={12} className="text-[#8E9299] group-hover:text-[#f48721] transition-colors" />
+                    </button>
+                  </div>
 
-          {/* ── Target Item ── */}
-          <div className="flex flex-col gap-1 flex-[2] min-w-[180px]">
-            <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Target Item</label>
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(true)}
-              className="sf-input-container flex items-center justify-between w-full px-2.5 py-1.5 outline-none group text-white"
-            >
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded shrink-0 overflow-hidden flex items-center justify-center"
-                  style={{ background: '#1a1c20', border: '1px solid #2a2d33' }}>
-                  {selectedItemData?.imageUrl && (
-                    <AppImage idKey={selectedItemData.id} fallbackUrl={selectedItemData.imageUrl} alt={selectedItemData.name} className="w-full h-full object-contain" />
+                  {/* Mode Selector */}
+                  <div className="flex flex-col gap-1 w-28 flex-shrink-0">
+                    <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Mode</label>
+                    <select
+                      value={target.mode || 'rate'}
+                      onChange={(e) => {
+                        const newTargets = [...targets];
+                        const mode = e.target.value as TargetMode;
+                        newTargets[idx].mode = mode;
+                        
+                        // Initialize defaults for modes
+                        if (mode === 'machine' && !newTargets[idx].recipeId) {
+                          newTargets[idx].machineCount = 1;
+                          const availableRecipes = recipes.filter(r => r.outputItemId === target.itemId);
+                          newTargets[idx].recipeId = availableRecipes[0]?.id || '';
+                        } else if (mode === 'belt' && !newTargets[idx].beltTier) {
+                          newTargets[idx].beltTier = 'mk1';
+                          newTargets[idx].beltCount = 1;
+                        } else if (mode === 'pipe' && !newTargets[idx].pipeTier) {
+                          newTargets[idx].pipeTier = 'mk1';
+                          newTargets[idx].pipeCount = 1;
+                        } else if (mode === 'resource' && !newTargets[idx].nodePurity) {
+                          newTargets[idx].nodePurity = 'normal';
+                          newTargets[idx].nodeMinerId = 'miner_mk1';
+                          newTargets[idx].nodeClockSpeed = 100;
+                        }
+                        updateFormState(newTargets, minerId, beltId, recipeSelections);
+                      }}
+                      className="sf-input-container w-full text-white px-2.5 py-1.5 outline-none font-mono text-xs bg-[#0a0b0d]"
+                    >
+                      <option value="rate">Items/min</option>
+                      <option value="machine">Machines</option>
+                      <option value="belt">Belts</option>
+                      <option value="pipe">Pipes</option>
+                      <option value="resource">Resource Node</option>
+                    </select>
+                  </div>
+
+                  {/* Context-aware dynamic inputs */}
+                  {target.mode === 'rate' && (
+                    <div className="flex flex-col gap-1 w-20 flex-shrink-0">
+                      <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Rate/m</label>
+                      <input
+                        type="number"
+                        step="1"
+                        min="1"
+                        value={target.rate}
+                        onChange={(e) => {
+                          const newTargets = [...targets];
+                          newTargets[idx].rate = Math.max(1, Number(e.target.value));
+                          updateFormState(newTargets, minerId, beltId, recipeSelections);
+                        }}
+                        className="sf-input-container w-full text-white px-2.5 py-1.5 outline-none font-mono text-xs bg-[#0a0b0d]"
+                      />
+                    </div>
+                  )}
+
+                  {target.mode === 'machine' && (
+                    <>
+                      <div className="flex flex-col gap-1 flex-1 min-w-[140px]">
+                        <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Recipe</label>
+                        <select
+                          value={target.recipeId || ''}
+                          onChange={(e) => {
+                            const newTargets = [...targets];
+                            newTargets[idx].recipeId = e.target.value;
+                            updateFormState(newTargets, minerId, beltId, recipeSelections);
+                          }}
+                          className="sf-input-container w-full text-white px-2.5 py-1.5 outline-none font-mono text-xs bg-[#0a0b0d]"
+                        >
+                          {recipes.filter(r => r.outputItemId === target.itemId).map(r => (
+                            <option key={r.id} value={r.id}>
+                              {formatRecipeLabel(r.id)} ({r.outputRate}/m)
+                            </option>
+                          ))}
+                          {recipes.filter(r => r.outputItemId === target.itemId).length === 0 && (
+                            <option value="">No standard recipes</option>
+                          )}
+                        </select>
+                      </div>
+
+                      <div className="flex flex-col gap-1 w-16 flex-shrink-0">
+                        <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Machines</label>
+                        <input
+                          type="number"
+                          step="0.1"
+                          min="0.1"
+                          value={target.machineCount ?? 1}
+                          onChange={(e) => {
+                            const newTargets = [...targets];
+                            newTargets[idx].machineCount = Math.max(0.1, Number(e.target.value));
+                            updateFormState(newTargets, minerId, beltId, recipeSelections);
+                          }}
+                          className="sf-input-container w-full text-white px-2.5 py-1.5 outline-none font-mono text-xs bg-[#0a0b0d]"
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {target.mode === 'belt' && (
+                    <>
+                      <div className="flex flex-col gap-1 w-28 flex-shrink-0">
+                        <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Belt Tier</label>
+                        <select
+                          value={target.beltTier || 'mk1'}
+                          onChange={(e) => {
+                            const newTargets = [...targets];
+                            newTargets[idx].beltTier = e.target.value as BeltId;
+                            updateFormState(newTargets, minerId, beltId, recipeSelections);
+                          }}
+                          className="sf-input-container w-full text-white px-2.5 py-1.5 outline-none font-mono text-xs bg-[#0a0b0d]"
+                        >
+                          {availableBelts.map(b => (
+                            <option key={b.id} value={b.id}>{b.name} ({b.capacity}/m)</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="flex flex-col gap-1 w-16 flex-shrink-0">
+                        <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Belts</label>
+                        <input
+                          type="number"
+                          step="0.1"
+                          min="0.1"
+                          value={target.beltCount ?? 1}
+                          onChange={(e) => {
+                            const newTargets = [...targets];
+                            newTargets[idx].beltCount = Math.max(0.1, Number(e.target.value));
+                            updateFormState(newTargets, minerId, beltId, recipeSelections);
+                          }}
+                          className="sf-input-container w-full text-white px-2.5 py-1.5 outline-none font-mono text-xs bg-[#0a0b0d]"
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {target.mode === 'pipe' && (
+                    <>
+                      <div className="flex flex-col gap-1 w-28 flex-shrink-0">
+                        <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Pipe Tier</label>
+                        <select
+                          value={target.pipeTier || 'mk1'}
+                          onChange={(e) => {
+                            const newTargets = [...targets];
+                            newTargets[idx].pipeTier = e.target.value as 'mk1' | 'mk2';
+                            updateFormState(newTargets, minerId, beltId, recipeSelections);
+                          }}
+                          className="sf-input-container w-full text-white px-2.5 py-1.5 outline-none font-mono text-xs bg-[#0a0b0d]"
+                        >
+                          <option value="mk1">Mk.1 Pipe (300/m)</option>
+                          <option value="mk2">Mk.2 Pipe (600/m)</option>
+                        </select>
+                      </div>
+
+                      <div className="flex flex-col gap-1 w-16 flex-shrink-0">
+                        <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Pipes</label>
+                        <input
+                          type="number"
+                          step="0.1"
+                          min="0.1"
+                          value={target.pipeCount ?? 1}
+                          onChange={(e) => {
+                            const newTargets = [...targets];
+                            newTargets[idx].pipeCount = Math.max(0.1, Number(e.target.value));
+                            updateFormState(newTargets, minerId, beltId, recipeSelections);
+                          }}
+                          className="sf-input-container w-full text-white px-2.5 py-1.5 outline-none font-mono text-xs bg-[#0a0b0d]"
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {target.mode === 'resource' && (
+                    <>
+                      <div className="flex flex-col gap-1 w-20 flex-shrink-0">
+                        <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Purity</label>
+                        <select
+                          value={target.nodePurity || 'normal'}
+                          onChange={(e) => {
+                            const newTargets = [...targets];
+                            newTargets[idx].nodePurity = e.target.value as 'impure' | 'normal' | 'pure';
+                            updateFormState(newTargets, minerId, beltId, recipeSelections);
+                          }}
+                          className="sf-input-container w-full text-white px-2.5 py-1.5 outline-none font-mono text-xs bg-[#0a0b0d]"
+                        >
+                          <option value="impure">Impure</option>
+                          <option value="normal">Normal</option>
+                          <option value="pure">Pure</option>
+                        </select>
+                      </div>
+
+                      <div className="flex flex-col gap-1 w-24 flex-shrink-0">
+                        <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Miner</label>
+                        <select
+                          value={target.nodeMinerId || 'miner_mk1'}
+                          onChange={(e) => {
+                            const newTargets = [...targets];
+                            newTargets[idx].nodeMinerId = e.target.value as MachineId;
+                            updateFormState(newTargets, minerId, beltId, recipeSelections);
+                          }}
+                          className="sf-input-container w-full text-white px-2.5 py-1.5 outline-none font-mono text-xs bg-[#0a0b0d]"
+                        >
+                          {availableMiners.map(m => (
+                            <option key={m.id} value={m.id}>{m.name.replace('Miner ', '')}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="flex flex-col gap-1 w-14 flex-shrink-0">
+                        <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Clock %</label>
+                        <input
+                          type="number"
+                          step="25"
+                          min="1"
+                          max="250"
+                          value={target.nodeClockSpeed ?? 100}
+                          onChange={(e) => {
+                            const newTargets = [...targets];
+                            newTargets[idx].nodeClockSpeed = Math.max(1, Number(e.target.value));
+                            updateFormState(newTargets, minerId, beltId, recipeSelections);
+                          }}
+                          className="sf-input-container w-full text-white px-2.5 py-1.5 outline-none font-mono text-xs bg-[#0a0b0d]"
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {/* Remove target row */}
+                  {targets.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newTargets = targets.filter((_, i) => i !== idx);
+                        updateFormState(newTargets, minerId, beltId, recipeSelections);
+                      }}
+                      className="text-[#8e9299] hover:text-[#ef4444] transition-colors p-1"
+                      title="Remove output target"
+                    >
+                      ✕
+                    </button>
                   )}
                 </div>
-                <span className="text-xs font-semibold text-[#e4e3e0]">{selectedItemData?.name || 'Select Item'}</span>
-              </div>
-              <ChevronDown size={12} className="text-[#8E9299] group-hover:text-[#f48721] transition-colors" />
-            </button>
+              );
+            })}
+            </div>
           </div>
 
-          {/* ── Rate ── */}
-          <div className="flex flex-col gap-1 w-20 flex-shrink-0">
-            <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Rate / m</label>
-            <input
-              type="number"
-              step="1"
-              min="1"
-              value={rate}
-              onChange={(e) => setRate(Number(e.target.value))}
-              className="sf-input-container w-full text-white px-2.5 py-1.5 outline-none font-mono text-xs"
-            />
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const newTargets = [...targets, {
+                  itemId: 'iron_plate',
+                  rate: 60,
+                  mode: 'rate',
+                  machineCount: 1,
+                  beltTier: 'mk1',
+                  beltCount: 1,
+                  pipeTier: 'mk1',
+                  pipeCount: 1,
+                  nodePurity: 'normal',
+                  nodeMinerId: 'miner_mk1',
+                  nodeClockSpeed: 100,
+                }];
+                updateFormState(newTargets, minerId, beltId, recipeSelections);
+              }}
+              className="sf-secondary-btn py-1 px-3 text-[9px] uppercase font-bold tracking-widest flex items-center gap-1.5 border border-[#2a2d33] hover:border-[#f48721]/60"
+            >
+              ＋ Add Target
+            </button>
           </div>
+        </div>
+
+        {/* ── Hardware & Alternate Recipes Controls row ── */}
+        <div className="relative z-10 flex flex-row items-end gap-3.5 flex-wrap p-3.5 border-t border-[#2a2d33] bg-[#14161a]/30">
 
           {/* ── Miner Tier ── */}
           <div className="flex flex-col gap-1 flex-1 min-w-[120px]">
-            <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Miner Tier</label>
+            <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Miner Tier (Fallback)</label>
             <CustomSelect
               value={minerId}
-              onChange={(val) => setMinerId(val as MachineId)}
+              onChange={(val) => updateFormState(targets, val as MachineId, beltId, recipeSelections)}
               options={availableMiners.map(m => ({ value: m.id, label: m.name }))}
             />
           </div>
 
-          {/* ── Belt Tier ── */}
+          {/* ── Belt Tier (Primary/Diagnostics) ── */}
           <div className="flex flex-col gap-1 flex-1 min-w-[120px]">
             <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Belt Tier</label>
             <CustomSelect
               value={beltId}
-              onChange={(val) => setBeltId(val as BeltId)}
+              onChange={(val) => updateFormState(targets, minerId, val as BeltId, recipeSelections)}
               options={availableBelts.map(b => ({ value: b.id, label: b.name }))}
             />
           </div>
@@ -198,7 +564,6 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                     e.preventDefault();
                     e.stopPropagation();
                     setRecipeSelections({});
-                    onCalculate(selectedItem, rate, minerId, beltId, {});
                   }}
                   title="Reset all alternate recipes"
                   className="p-1.5 text-[#8E9299] hover:text-[#f48721] transition-colors"
@@ -208,14 +573,14 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
               )}
             </div>
 
-            {/* Alt Recipes Dropdown Panel (positioned locally relative to trigger column, overflow-safe) */}
+            {/* Alt Recipes Dropdown Panel */}
             {showAltRecipes && (
               <div
                 className="absolute shadow-2xl z-50"
                 style={{
-                  top: '100%',
+                  bottom: '100%',
                   right: 0,
-                  marginTop: '6px',
+                  marginBottom: '6px',
                   width: 340,
                   background: 'linear-gradient(180deg, #1a1c20 0%, #111315 100%)',
                   border: '1px solid #2a2d33',
@@ -290,10 +655,24 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
 
       <ItemModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSelect={(id) => setSelectedItem(id)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingTargetIndex(null);
+        }}
+        onSelect={(id) => {
+          if (editingTargetIndex !== null) {
+            const newTargets = [...targets];
+            newTargets[editingTargetIndex].itemId = id;
+            
+            // Adjust recipeId if item changed in machine mode
+            if (newTargets[editingTargetIndex].mode === 'machine') {
+              const availableRecipes = recipes.filter(r => r.outputItemId === id);
+              newTargets[editingTargetIndex].recipeId = availableRecipes[0]?.id || '';
+            }
+            updateFormState(newTargets, minerId, beltId, recipeSelections);
+          }
+        }}
       />
     </div>
   );
 }
-
