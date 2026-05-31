@@ -639,7 +639,7 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1', isFulls
   return (
     <div
       className="w-full h-full bg-[#101114] relative"
-      onMouseDown={() => setScrollZoomActive(true)}
+      onPointerDown={() => setScrollZoomActive(true)}
       onMouseLeave={() => setScrollZoomActive(false)}
     >
       <ReactFlow
@@ -659,7 +659,7 @@ function FactoryGraphInner({ initialNodes, initialEdges, beltId = 'mk1', isFulls
         selectionOnDrag={selectionMode}
         selectionMode={selectionMode ? SelectionMode.Partial : SelectionMode.Full}
         zoomOnScroll={scrollZoomActive}
-        zoomOnPinch={scrollZoomActive}
+        zoomOnPinch={true}
         panOnScroll={false}
         preventScrolling={scrollZoomActive}
       >
