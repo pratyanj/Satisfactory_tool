@@ -24,8 +24,30 @@ export interface TargetOutput {
 }
 
 interface InputFormProps {
-  onCalculate: (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap, targets?: TargetOutput[]) => void;
-  initialValues?: { itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections?: RecipeSelectionMap, targets?: TargetOutput[] };
+  onCalculate: (
+    itemId: string,
+    rate: number,
+    minerId: MachineId,
+    beltId: BeltId,
+    recipeSelections: RecipeSelectionMap,
+    targets?: TargetOutput[],
+    pipeTier?: 'mk1' | 'mk2',
+    extractorTier?: string,
+    overclock?: number,
+    somersloopMultiplier?: number
+  ) => void;
+  initialValues?: {
+    itemId: string;
+    rate: number;
+    minerId: MachineId;
+    beltId: BeltId;
+    recipeSelections?: RecipeSelectionMap;
+    targets?: TargetOutput[];
+    pipeTier?: 'mk1' | 'mk2';
+    extractorTier?: string;
+    overclock?: number;
+    somersloopMultiplier?: number;
+  };
 }
 
 function formatRecipeLabel(recipeId: RecipeId): string {
@@ -55,6 +77,14 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   );
   const [minerId, setMinerId] = useState<MachineId>(initialValues?.minerId || 'miner_mk1');
   const [beltId, setBeltId] = useState<BeltId>(initialValues?.beltId || 'mk1');
+  
+  // New States
+  const [pipeTier, setPipeTier] = useState<'mk1' | 'mk2'>(initialValues?.pipeTier || 'mk1');
+  const [extractorTier, setExtractorTier] = useState<string>(initialValues?.extractorTier || 'mk1');
+  const [overclock, setOverclock] = useState<number>(initialValues?.overclock ?? 100);
+  const [somersloopMultiplier, setSomersloopMultiplier] = useState<number>(initialValues?.somersloopMultiplier ?? 1);
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+
   const [recipeSelections, setRecipeSelections] = useState<RecipeSelectionMap>(initialValues?.recipeSelections || {});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTargetIndex, setEditingTargetIndex] = useState<number | null>(null);
@@ -63,9 +93,9 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   // Synchronize local state when inputs, targets, or selections are modified
   const updateFormState = (
     nextTargets: TargetOutput[],
-    nextMinerId: MachineId,
-    nextBeltId: BeltId,
-    nextRecipeSelections: RecipeSelectionMap
+    nextMinerId: MachineId = minerId,
+    nextBeltId: BeltId = beltId,
+    nextRecipeSelections: RecipeSelectionMap = recipeSelections
   ) => {
     setTargets(nextTargets);
     setMinerId(nextMinerId);
@@ -101,6 +131,18 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
       if (beltId !== initialValues.beltId) {
         setBeltId(initialValues.beltId);
       }
+      if (initialValues.pipeTier && pipeTier !== initialValues.pipeTier) {
+        setPipeTier(initialValues.pipeTier);
+      }
+      if (initialValues.extractorTier && extractorTier !== initialValues.extractorTier) {
+        setExtractorTier(initialValues.extractorTier);
+      }
+      if (initialValues.overclock !== undefined && overclock !== initialValues.overclock) {
+        setOverclock(initialValues.overclock);
+      }
+      if (initialValues.somersloopMultiplier !== undefined && somersloopMultiplier !== initialValues.somersloopMultiplier) {
+        setSomersloopMultiplier(initialValues.somersloopMultiplier);
+      }
       const recipesMatch = JSON.stringify(recipeSelections) === JSON.stringify(initialValues.recipeSelections || {});
       if (!recipesMatch) {
         setRecipeSelections(initialValues.recipeSelections || {});
@@ -111,7 +153,18 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (targets.length > 0) {
-      onCalculate(targets[0].itemId, targets[0].rate, minerId, beltId, recipeSelections, targets);
+      onCalculate(
+        targets[0].itemId,
+        targets[0].rate,
+        minerId,
+        beltId,
+        recipeSelections,
+        targets,
+        pipeTier,
+        extractorTier,
+        overclock,
+        somersloopMultiplier
+      );
     }
   };
 
@@ -525,6 +578,20 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
             />
           </div>
 
+          {/* ── Extractor Tier ── */}
+          <div className="flex flex-col gap-1 flex-1 min-w-[120px]">
+            <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Extractor Tier</label>
+            <CustomSelect
+              value={extractorTier}
+              onChange={(val) => setExtractorTier(val)}
+              options={[
+                { value: 'mk1', label: 'Mk.1 (100% Clock)' },
+                { value: 'mk2', label: 'Mk.2 (200% Clock)' },
+                { value: 'mk3', label: 'Mk.3 (250% Clock)' }
+              ]}
+            />
+          </div>
+
           {/* ── Belt Tier (Primary/Diagnostics) ── */}
           <div className="flex flex-col gap-1 flex-1 min-w-[120px]">
             <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Belt Tier</label>
@@ -535,8 +602,21 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
             />
           </div>
 
+          {/* ── Pipe Tier ── */}
+          <div className="flex flex-col gap-1 flex-1 min-w-[120px]">
+            <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Pipe Tier</label>
+            <CustomSelect
+              value={pipeTier}
+              onChange={(val) => setPipeTier(val as 'mk1' | 'mk2')}
+              options={[
+                { value: 'mk1', label: 'Mk.1 Pipe (300/m)' },
+                { value: 'mk2', label: 'Mk.2 Pipe (600/m)' }
+              ]}
+            />
+          </div>
+
           {/* ── Alt Recipes ── */}
-          <div className="relative flex flex-col gap-1 flex-1 min-w-[130px] z-20">
+          <div className="relative flex flex-col gap-1 flex-1 min-w-[120px] z-20">
             <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Alt Recipes</label>
             <div className="flex items-center gap-1.5">
               <button
@@ -605,7 +685,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                     alternateRecipeCandidates.map((candidate) => (
                       <div key={candidate.itemId} className="flex flex-col gap-1">
                         <label className="text-[9px] font-mono tracking-widest text-[#8E9299] uppercase">
-                          {items[candidate.itemId]?.name || candidate.itemId}
+                           {items[candidate.itemId]?.name || candidate.itemId}
                         </label>
                         <CustomSelect
                           value={candidate.selectedRecipeId}
@@ -626,6 +706,21 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
             )}
           </div>
 
+          {/* ── Advanced Tuning Toggle ── */}
+          <div className="relative flex flex-col gap-1 flex-1 min-w-[120px] z-20">
+            <label className="text-[9px] font-mono tracking-[0.2em] text-[#6b7280] uppercase">Advanced Tuning</label>
+            <button
+              type="button"
+              onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
+              className={`sf-input-container px-2.5 py-1.5 flex items-center gap-2 outline-none font-mono text-xs transition-colors w-full ${isAdvancedOpen ? 'text-white border-[#f48721]' : 'text-[#8E9299] hover:text-white'}`}
+            >
+              <span className="uppercase text-[10px] tracking-widest flex-1 text-left">
+                {overclock !== 100 || somersloopMultiplier !== 1 ? 'Tuned' : 'Standard'}
+              </span>
+              {isAdvancedOpen ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+            </button>
+          </div>
+
           {/* ── Calculate button ── */}
           <div className="ml-auto px-1 py-1.5 flex items-end flex-shrink-0">
             <button
@@ -638,6 +733,62 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
             </button>
           </div>
         </div>
+
+        {/* ── Advanced Tuning Panel ── */}
+        {isAdvancedOpen && (
+          <div
+            className="relative z-10 flex flex-row items-center gap-6 flex-wrap p-4 border-t border-[#2a2d33] bg-[#1a1c22]/50 transition-all duration-300 animate-fadeIn"
+            style={{
+              background: 'linear-gradient(180deg, #131519 0%, #0d0e11 100%)',
+            }}
+          >
+            {/* Top orange accent thin line inside panel */}
+            <div style={{
+              position: 'absolute', top: 0, left: 20, right: 20, height: '1px',
+              background: 'linear-gradient(90deg, transparent, #f4872150, transparent)',
+            }} />
+
+            {/* Overclock Slider */}
+            <div className="flex flex-col gap-2 flex-grow min-w-[200px]">
+              <div className="flex justify-between items-baseline">
+                <span className="text-[9px] font-mono tracking-[0.2em] text-[#8e9299] uppercase font-bold">Global Machine Overclock</span>
+                <span className="text-xs font-mono font-bold" style={{ color: overclock > 100 ? '#f48721' : '#22c55e' }}>{overclock}%</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] font-mono text-[#555]">1%</span>
+                <input
+                  type="range"
+                  min="1"
+                  max="250"
+                  value={overclock}
+                  onChange={(e) => setOverclock(Number(e.target.value))}
+                  className="flex-1 accent-[#f48721] h-1 bg-[#1a1c22] rounded-lg cursor-pointer"
+                  style={{ outline: 'none' }}
+                />
+                <span className="text-[10px] font-mono text-[#555]">250%</span>
+              </div>
+            </div>
+
+            {/* Somersloop Boost Option */}
+            <div className="flex flex-col gap-1 w-44 flex-shrink-0">
+              <label className="text-[9px] font-mono tracking-[0.2em] text-[#8e9299] uppercase font-bold">Somersloop Multiplier</label>
+              <CustomSelect
+                value={String(somersloopMultiplier)}
+                onChange={(val) => setSomersloopMultiplier(Number(val))}
+                options={[
+                  { value: '1', label: '1x (Standard)' },
+                  { value: '2', label: '2x (Double Output)' }
+                ]}
+              />
+            </div>
+
+            {/* Micro details panel */}
+            <div className="text-[9px] font-mono text-[#6b7280] leading-relaxed max-w-[300px] border-l border-[#2a2d33] pl-4 flex-shrink-0">
+              <span className="text-[#f48721] font-bold block mb-0.5">⚡ FICSIT LOGISTICS UPDATE:</span>
+              Somerslooping boosts output rate by 2x with <span className="text-white">NO input rate increase</span> (4x power draw). Overclocking scales rates linearly and power exponentially (^1.6).
+            </div>
+          </div>
+        )}
 
         {/* Bottom edge accent */}
         <div style={{

@@ -10,27 +10,39 @@ export function isFluidItem(itemId: string): boolean {
   return FLUID_ITEMS.includes(itemId.toLowerCase()) || itemId.toLowerCase().includes('liquid') || itemId.toLowerCase().includes('solution') || itemId.toLowerCase().includes('acid');
 }
 
-export function analyzePipesFlowA(rootNode: SolverNode): DiagnosticIssue[] {
+export function analyzePipesFlowA(rootNode: SolverNode, activePipeTier: 'mk1' | 'mk2' = 'mk1'): DiagnosticIssue[] {
   const issues: DiagnosticIssue[] = [];
+  const limit = activePipeTier === 'mk2' ? 600 : 300;
 
   function traverse(node: SolverNode) {
     if (isFluidItem(node.itemId)) {
-      const maxPipeCap = 600; // Mk2 Pipeline max capacity
-      const stdPipeCap = 300; // Mk1 Pipeline capacity
-      
-      if (node.rate > stdPipeCap) {
-        const severity = node.rate > maxPipeCap ? 'critical' : 'warning';
-        issues.push({
+      if (node.rate > limit) {
+        const overloadPct = Math.round(((node.rate - limit) / limit) * 100);
+        
+        let targetPipeTier: 'mk1' | 'mk2' = 'mk2';
+        const hasBetterTier = activePipeTier === 'mk1';
+
+        const issue: DiagnosticIssue = {
           id: `pipe-overload-${node.itemId}`,
-          severity,
+          severity: overloadPct > 30 ? 'critical' : 'warning',
           category: 'pipe',
-          title: node.rate > maxPipeCap ? `Fluid Flow Exceeds Max Pipeline Limit` : `Fluid Flow Exceeds Mk.1 Pipeline Limit`,
-          description: `Fluid production for ${items[node.itemId]?.name || node.itemId} requires ${node.rate.toFixed(1)} m³/min, which exceeds standard Mk.1 Pipeline capacity (${stdPipeCap} m³/min) by ${Math.round(((node.rate - stdPipeCap) / stdPipeCap) * 100)}%.`,
-          suggestedFix: node.rate > maxPipeCap 
-            ? `Split the fluid pipeline into two parallel pipes or reduce the refinery throughput.` 
-            : `Upgrade this fluid pipeline network to Pipeline Mk.2 (600 m³/min limit).`,
+          title: node.rate > 600 ? `Fluid Flow Exceeds Max Pipeline Limit` : `Fluid Pipeline Overloaded: ${node.itemId}`,
+          description: `Pipeline carrying ${items[node.itemId]?.name || node.itemId} needs to transport ${node.rate.toFixed(1)} m³/min, which exceeds your active ${activePipeTier === 'mk2' ? 'Mk.2 Pipe' : 'Mk.1 Pipe'} capacity of ${limit} m³/min by ${overloadPct}%.`,
+          suggestedFix: hasBetterTier
+            ? `Upgrade your global pipe tier settings to Pipeline Mk.2 (600 m³/min limit) in the controls.`
+            : `Maximum physical Pipeline capacity (${limit} m³/min) reached! You must split this fluid stream into ${Math.ceil(node.rate / limit)}x parallel pipelines to avoid refinery starving.`,
           relatedEntityIds: [node.itemId],
-        });
+        };
+
+        if (hasBetterTier) {
+          issue.action = {
+            type: 'upgrade_pipe',
+            payload: { targetPipeTier },
+            label: `Upgrade Pipeline to Mk.2`,
+          };
+        }
+
+        issues.push(issue);
       }
     }
 

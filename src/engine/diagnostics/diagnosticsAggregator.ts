@@ -105,12 +105,12 @@ function compileProductionLosses(issues: DiagnosticIssue[]): { losses: Productio
 }
 
 // Flow A aggregator: Planner Plan Diagnostics
-export function aggregateDiagnosticsFlowA(rootNode: SolverNode, summary: SummaryData, activeBeltTier: string): FactoryDiagnostics {
+export function aggregateDiagnosticsFlowA(rootNode: SolverNode, summary: SummaryData, activeBeltTier: string, activePipeTier: 'mk1' | 'mk2' = 'mk1'): FactoryDiagnostics {
   const issues: DiagnosticIssue[] = [];
 
   // Run all sub-analyzers
   issues.push(...analyzeBeltsFlowA(rootNode, activeBeltTier));
-  issues.push(...analyzePipesFlowA(rootNode));
+  issues.push(...analyzePipesFlowA(rootNode, activePipeTier));
   issues.push(...analyzeMachinesFlowA(rootNode));
   issues.push(...analyzePowerFlowA(summary));
 

@@ -8,6 +8,8 @@ export interface SolverNode {
   machineId: MachineId;
   inputs: SolverNode[];
   byproducts?: { itemId: ItemId; rate: number }[];
+  clockSpeed?: number;      // e.g. 100, 150, 200, 250
+  somerslooped?: boolean;   // if true, 2x output
 }
 
 export type RecipeSelectionMap = Partial<Record<ItemId, RecipeId>>;
@@ -66,7 +68,12 @@ export function solve(
   itemIdOrTargets: ItemId | Record<ItemId, number>,
   requiredRate?: number,
   minerId: MachineId = "miner_mk1",
-  recipeSelections: RecipeSelectionMap = {}
+  recipeSelections: RecipeSelectionMap = {},
+  beltId: string = "mk1",
+  pipeTier: 'mk1' | 'mk2' = 'mk1',
+  extractorOverclock: number = 100,
+  globalOverclock: number = 100,
+  somersloopMultiplier: number = 1
 ): SolverNode {
   const targets: Record<ItemId, number> = typeof itemIdOrTargets === 'string'
     ? { [itemIdOrTargets]: requiredRate ?? 0 }
@@ -105,7 +112,12 @@ export function solve(
               if (minerId === "miner_mk2") outputRate = 120;
               else if (minerId === "miner_mk3") outputRate = 240;
               else outputRate = 60;
+            } else if (machineIdToUse === 'water_extractor' || machineIdToUse === 'oil_extractor') {
+              outputRate = 120 * (extractorOverclock / 100);
             }
+          } else {
+            // Production machines can be overclocked and Somerslooped
+            outputRate = outputRate * (globalOverclock / 100) * somersloopMultiplier;
           }
 
           // Consume from byproducts pool if available
@@ -121,7 +133,9 @@ export function solve(
           const nodeInputs: SolverNode[] = [];
 
           for (const input of recipe.inputs) {
-            const requiredInputRate = input.rate * machineCount;
+            // Overclocking scales input rate linearly. Somerslooping does not increase input consumption!
+            const machineInputRate = input.rate * (globalOverclock / 100);
+            const requiredInputRate = machineInputRate * machineCount;
             if (requiredInputRate > 0.001) {
               nodeInputs.push(solveNode(input.itemId, requiredInputRate));
             }
@@ -140,7 +154,7 @@ export function solve(
 
           const byproducts = (recipe.byproducts || []).map(bp => ({
             itemId: bp.itemId,
-            rate: bp.rate * machineCount
+            rate: bp.rate * (globalOverclock / 100) * somersloopMultiplier * machineCount
           }));
 
           return {
@@ -151,6 +165,12 @@ export function solve(
             machineId: machineIdToUse,
             inputs: nodeInputs,
             byproducts,
+            clockSpeed: machineIdToUse.startsWith('miner')
+              ? 100
+              : (machineIdToUse === 'water_extractor' || machineIdToUse === 'oil_extractor')
+                ? extractorOverclock
+                : globalOverclock,
+            somerslooped: somersloopMultiplier > 1 && recipe.inputs.length > 0,
           };
         } finally {
           activeStack.delete(currentId);
@@ -296,7 +316,17 @@ export function calculateSummary(rootNode: SolverNode): SummaryData {
     if (node.machineId !== 'planned_outputs' && node.machineId !== 'byproduct_reused') {
       const machineInfo = machines[node.machineId] || { name: node.machineId, powerUsage: 0 };
       machineCounts[node.machineId] = (machineCounts[node.machineId] || 0) + node.machines;
-      totalPower += node.machines * machineInfo.powerUsage;
+      
+      const clock = node.clockSpeed ?? 100;
+      const isSomerslooped = node.somerslooped ?? false;
+      
+      // Power = basePower * (clockSpeed / 100)^1.6
+      let powerPerMachine = machineInfo.powerUsage * Math.pow(clock / 100, 1.6);
+      if (isSomerslooped) {
+        powerPerMachine *= 4; // Somerslooping costs 4x power!
+      }
+      
+      totalPower += node.machines * powerPerMachine;
 
       if (!buildingDetails[node.machineId]) {
         buildingDetails[node.machineId] = {
