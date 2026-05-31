@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import { InputForm } from './components/InputForm';
+import { InputForm, TargetOutput } from './components/InputForm';
 import { Summary } from './components/Summary';
 import { FactoryGraph } from './components/Graph/FactoryGraph';
 import { TreeList } from './components/TreeList';
@@ -24,7 +24,7 @@ import { DiagnosticsTab } from './components/DiagnosticsTab';
 
 import { solve, calculateSummary, SummaryData, SolverNode, RecipeSelectionMap } from './engine/solver';
 import { mapSolverResultToGraph, LayoutMode } from './engine/graphMapper';
-import { BeltId, MachineId, items, machines, belts } from './engine/data';
+import { BeltId, MachineId, items, machines, belts, recipes } from './engine/data';
 import { Edge, Node } from '@xyflow/react';
 
 type MainTab = 'network_graph' | 'tree_list' | 'items' | 'buildings' | 'world_map' | 'diagnostics';
@@ -90,6 +90,45 @@ function parseRecipeSelections(value: unknown): RecipeSelectionMap {
   return result;
 }
 
+function convertTargetToRate(target: TargetOutput): number {
+  if (target.mode === 'machine') {
+    const recipeId = target.recipeId;
+    const recipe = recipes.find(r => r.id === recipeId);
+    if (recipe) {
+      return (target.machineCount ?? 1) * recipe.outputRate;
+    }
+    const firstRecipe = recipes.find(r => r.outputItemId === target.itemId);
+    return (target.machineCount ?? 1) * (firstRecipe?.outputRate || 60);
+  }
+  
+  if (target.mode === 'belt') {
+    const tier = target.beltTier || 'mk1';
+    const capacity = belts[tier]?.capacity || 60;
+    return (target.beltCount ?? 1) * capacity;
+  }
+  
+  if (target.mode === 'pipe') {
+    const tier = target.pipeTier || 'mk1';
+    const capacity = tier === 'mk2' ? 600 : 300;
+    return (target.pipeCount ?? 1) * capacity;
+  }
+  
+  if (target.mode === 'resource') {
+    const purity = target.nodePurity || 'normal';
+    const baseRate = purity === 'pure' ? 120 : purity === 'impure' ? 30 : 60;
+    const minerId = target.nodeMinerId || 'miner_mk1';
+    
+    let minerMult = 1;
+    if (minerId === 'miner_mk2') minerMult = 2;
+    else if (minerId === 'miner_mk3') minerMult = 4;
+    
+    const clock = (target.nodeClockSpeed ?? 100) / 100;
+    return baseRate * minerMult * clock;
+  }
+  
+  return target.rate;
+}
+
 export default function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
@@ -99,7 +138,14 @@ export default function App() {
   const [parsedSave, setParsedSave] = useState<ParsedSave | null>(null);
 
 
-  const [lastInput, setLastInput] = useState<{ itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap }>({ itemId: 'copper_sheet', rate: 120, minerId: 'miner_mk1', beltId: 'mk1', recipeSelections: {} });
+  const [lastInput, setLastInput] = useState<{ itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap, targets?: TargetOutput[] }>({
+    itemId: 'copper_sheet',
+    rate: 120,
+    minerId: 'miner_mk1',
+    beltId: 'mk1',
+    recipeSelections: {},
+    targets: [{ itemId: 'copper_sheet', rate: 120 }]
+  });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
   const [mainTab, setMainTab] = useState<MainTab>('network_graph');
   const [topLevelTab, setTopLevelTab] = useState<TopLevelTab>('planner');
@@ -174,12 +220,14 @@ export default function App() {
         const encoded = hash.replace('#plan=', '');
         const decoded = JSON.parse(atob(decodeURIComponent(encoded)));
         if (decoded.i && items[decoded.i] && typeof decoded.r === 'number' && decoded.m && machines[decoded.m] && decoded.b && belts[decoded.b] && (decoded.l === 'aggregated' || decoded.l === 'expanded')) {
+          const targets = decoded.tg || [{ itemId: decoded.i, rate: decoded.r }];
           setLastInput({
             itemId: decoded.i,
             rate: decoded.r,
             minerId: decoded.m,
             beltId: decoded.b,
             recipeSelections: parseRecipeSelections(decoded.ar),
+            targets: targets,
           });
           setLayoutMode(decoded.l);
           const top: TopLevelTab = decoded.t ?? 'planner';
@@ -297,6 +345,7 @@ export default function App() {
       l: layoutMode,
       t: topLevelTab,
       s: mainTab,
+      tg: lastInput.targets || [{ itemId: lastInput.itemId, rate: lastInput.rate }],
     };
 
     const encoded = encodeURIComponent(btoa(JSON.stringify(payload)));
@@ -308,11 +357,31 @@ export default function App() {
     });
   }, [lastInput, layoutMode, topLevelTab, mainTab]);
 
-  const calculatePlan = (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap, mode: LayoutMode) => {
-    setLastInput({ itemId, rate, minerId, beltId, recipeSelections });
+  const calculatePlan = (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap, mode: LayoutMode, targets?: TargetOutput[]) => {
+    const targetsToUse = targets || [{
+      itemId,
+      rate,
+      mode: 'rate' as const,
+      machineCount: 1,
+      beltTier: 'mk1' as const,
+      beltCount: 1,
+      pipeTier: 'mk1' as const,
+      pipeCount: 1,
+      nodePurity: 'normal' as const,
+      nodeMinerId: 'miner_mk1' as const,
+      nodeClockSpeed: 100,
+    }];
+    setLastInput({ itemId, rate, minerId, beltId, recipeSelections, targets: targetsToUse });
     try {
       setError(null);
-      const solvedRoot = solve(itemId, rate, minerId, recipeSelections);
+      
+      const targetsMap: Record<string, number> = {};
+      for (const t of targetsToUse) {
+        const computedRate = convertTargetToRate(t);
+        targetsMap[t.itemId] = (targetsMap[t.itemId] || 0) + computedRate;
+      }
+
+      const solvedRoot = solve(targetsMap, undefined, minerId, recipeSelections);
       const newSummary = calculateSummary(solvedRoot);
       const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(solvedRoot, mode, beltId);
 
@@ -348,8 +417,8 @@ export default function App() {
   };
 
   // Run calculation strictly when requested
-  const handleCalculate = (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap) => {
-    calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode);
+  const handleCalculate = (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap, targets?: TargetOutput[]) => {
+    calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode, targets);
   };
 
   const handleResolveAction = useCallback((actionType: string, payload: any) => {
@@ -362,22 +431,23 @@ export default function App() {
     }
   }, []);
 
+  const targetsSignature = JSON.stringify(lastInput.targets);
   const recipeSelectionSignature = JSON.stringify(lastInput.recipeSelections);
 
   // Step 1: Immediately show the spinner when inputs or mode change
   useEffect(() => {
     setIsRecalculating(true);
-  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, recipeSelectionSignature]);
+  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, recipeSelectionSignature, targetsSignature]);
 
   // Step 2: Defer heavy graph calculations to the next tick (80ms), allowing the spinner to render and animate smoothly first!
   useEffect(() => {
     if (!isRecalculating) return;
     const timer = setTimeout(() => {
-      calculatePlan(lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.recipeSelections, layoutMode);
+      calculatePlan(lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.recipeSelections, layoutMode, lastInput.targets);
       setIsRecalculating(false);
     }, 80);
     return () => clearTimeout(timer);
-  }, [isRecalculating, layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, recipeSelectionSignature]);
+  }, [isRecalculating, layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, recipeSelectionSignature, targetsSignature]);
 
 
   const renderTabContent = () => {
