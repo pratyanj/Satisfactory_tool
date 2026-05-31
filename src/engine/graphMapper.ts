@@ -46,11 +46,19 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
     };
   }
 
-  /** Build enriched data for a machine node, including recipe details */
   function buildNodeData(node: SolverNode, machineCount: number, rate: number, label: string) {
-    const recipe = recipes.find(r => r.id === node.recipeId) || recipes.find(r => r.outputItemId === node.itemId);
-    const machineInfo = machines[node.machineId];
-    const itemInfo = items[node.itemId];
+    const recipe = node.recipeId === 'product_output' ? undefined : (recipes.find(r => r.id === node.recipeId) || recipes.find(r => r.outputItemId === node.itemId));
+    const machineInfo = machines[node.machineId] || {
+      id: node.machineId,
+      name: node.machineId === 'planned_outputs' ? 'Planned Outputs' : node.machineId === 'byproduct_reused' ? 'Recycled Byproduct' : node.machineId,
+      powerUsage: 0,
+      imageUrl: '',
+    };
+    const itemInfo = items[node.itemId] || {
+      id: node.itemId,
+      name: node.itemId === 'planned_outputs' ? 'Planned Outputs' : node.itemId === 'awesome_sink' ? 'AWESOME Sink' : node.itemId,
+      imageUrl: node.itemId === 'awesome_sink' ? 'https://satisfactory.wiki.gg/wiki/Special:FilePath/AWESOME_Sink.png' : undefined,
+    };
 
     return {
       label,
@@ -89,6 +97,13 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
 
     const walk = (n: SolverNode) => {
       const key = n.itemId;
+      if (key === 'planned_outputs') {
+        for (const input of n.inputs) {
+          walk(input);
+        }
+        return;
+      }
+
       const existing = aggregatedNodes.get(key);
       if (existing) {
         existing.totalRate += n.rate;
@@ -112,13 +127,14 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       const nodeId = generateId();
       itemIdToNodeId.set(itemId, nodeId);
 
+      const machineName = machines[data.node.machineId]?.name || (data.node.machineId === 'planned_outputs' ? 'Planned Outputs' : data.node.machineId);
       nodeList.push({
         id: nodeId, type: 'machine', position: { x: 0, y: 0 },
         data: buildNodeData(
           data.node,
           data.totalMachines,
           data.totalRate,
-          `${machines[data.node.machineId].name} x${Math.ceil(data.totalMachines * 10) / 10}`
+          data.node.machineId === 'planned_outputs' ? 'Planned Outputs' : `${machineName} x${Math.ceil(data.totalMachines * 10) / 10}`
         ),
       });
     });
@@ -131,7 +147,13 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
     }>();
 
     const walkEdges = (n: SolverNode) => {
+      // Connect inputs
       for (const input of n.inputs) {
+        if (n.itemId === 'planned_outputs') {
+          walkEdges(input);
+          continue;
+        }
+
         const key = `${input.itemId}->${n.itemId}`;
         const existing = edgeFlows.get(key);
         if (existing) {
@@ -144,6 +166,23 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
           });
         }
         walkEdges(input);
+      }
+
+      // Route byproducts as active resource recycle edges
+      if (n.byproducts && n.byproducts.length > 0) {
+        for (const bp of n.byproducts) {
+          const key = `${n.itemId}->${bp.itemId}`;
+          const existing = edgeFlows.get(key);
+          if (existing) {
+            existing.totalRate += bp.rate;
+          } else {
+            edgeFlows.set(key, {
+              sourceItemId: n.itemId,
+              targetItemId: bp.itemId,
+              totalRate: bp.rate,
+            });
+          }
+        }
       }
     };
     walkEdges(rootNode);
@@ -162,9 +201,116 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
         ));
       }
     });
+
+    // 5. Inject product output bubbles
+    if (rootNode.itemId === 'planned_outputs') {
+      rootNode.inputs.forEach((targetInput) => {
+        if (targetInput.itemId === 'awesome_sink') return;
+        const productNodeId = `product-output-${targetInput.itemId}`;
+        const targetNodeId = itemIdToNodeId.get(targetInput.itemId);
+        if (targetNodeId) {
+          nodeList.push({
+            id: productNodeId,
+            type: 'machine',
+            position: { x: 0, y: 0 },
+            data: buildNodeData(
+              {
+                itemId: targetInput.itemId,
+                recipeId: 'product_output',
+                rate: targetInput.rate,
+                machines: 0,
+                machineId: 'product_output',
+                inputs: [],
+              },
+              0,
+              targetInput.rate,
+              `${targetInput.rate.toFixed(1)} ${items[targetInput.itemId]?.name || targetInput.itemId}`
+            ),
+          });
+          edgeList.push(createEdge(
+            `e-${targetInput.itemId}-to-product-output`,
+            targetNodeId,
+            productNodeId,
+            getBeltLabel(targetInput.rate),
+            targetInput.itemId
+          ));
+        }
+      });
+    } else {
+      const productNodeId = `product-output-${rootNode.itemId}`;
+      const targetNodeId = itemIdToNodeId.get(rootNode.itemId);
+      if (targetNodeId) {
+        nodeList.push({
+          id: productNodeId,
+          type: 'machine',
+          position: { x: 0, y: 0 },
+          data: buildNodeData(
+            {
+              itemId: rootNode.itemId,
+              recipeId: 'product_output',
+              rate: rootNode.rate,
+              machines: 0,
+              machineId: 'product_output',
+              inputs: [],
+            },
+            0,
+            rootNode.rate,
+            `${rootNode.rate.toFixed(1)} ${items[rootNode.itemId]?.name || rootNode.itemId}`
+          ),
+        });
+        edgeList.push(createEdge(
+          `e-${rootNode.itemId}-to-product-output`,
+          targetNodeId,
+          productNodeId,
+          getBeltLabel(rootNode.rate),
+          rootNode.itemId
+        ));
+      }
+    }
   }
 
   function traverseExpanded(node: SolverNode): { id: string; rate: number }[] {
+    if (node.itemId === 'planned_outputs') {
+      node.inputs.forEach((child) => {
+        if (child.itemId === 'awesome_sink') {
+          traverseExpanded(child);
+          return;
+        }
+        const childChunks = traverseExpanded(child);
+        const productNodeId = `product-output-${child.itemId}`;
+        const itemInfo = items[child.itemId];
+        nodeList.push({
+          id: productNodeId,
+          type: 'machine',
+          position: { x: 0, y: 0 },
+          data: buildNodeData(
+            {
+              itemId: child.itemId,
+              recipeId: 'product_output',
+              rate: child.rate,
+              machines: 0,
+              machineId: 'product_output',
+              inputs: [],
+            },
+            0,
+            child.rate,
+            `${child.rate.toFixed(1)} ${itemInfo?.name || child.itemId}`
+          ),
+        });
+
+        childChunks.forEach((chunk) => {
+          edgeList.push(createEdge(
+            `e-${chunk.id}-${productNodeId}`,
+            chunk.id,
+            productNodeId,
+            getBeltLabel(chunk.rate),
+            child.itemId
+          ));
+        });
+      });
+      return [];
+    }
+
     const totalMachines = node.machines;
     const outputRatePerMachine = node.rate / node.machines;
 
@@ -190,9 +336,10 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       const nodeId = generateId();
       myChunks.push({ id: nodeId, rate: ratePerChunk });
 
+      const machineName = machines[node.machineId]?.name || (node.machineId === 'planned_outputs' ? 'Planned Outputs' : node.machineId);
       const label = machinesPerChunk === 1
-        ? machines[node.machineId].name
-        : `${machines[node.machineId].name} x${Math.ceil(machinesPerChunk * 10) / 10}`;
+        ? machineName
+        : `${machineName} x${Math.ceil(machinesPerChunk * 10) / 10}`;
 
       nodeList.push({
         id: nodeId, type: 'machine', position: { x: 0, y: 0 },
@@ -205,26 +352,11 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       const childChunks = traverseExpanded(child);
 
       if (childChunks.length === 1 && myChunks.length === 1) {
-        if (child.rate > beltCapacity) {
-          const numBelts = Math.ceil(child.rate / beltCapacity);
-          const splitRate = child.rate / numBelts;
-          for (let i = 0; i < numBelts; i++) {
-            edgeList.push(createEdge(
-              `e-${childChunks[0].id}-${myChunks[0].id}-${i}`,
-              childChunks[0].id, myChunks[0].id,
-              `${splitRate.toFixed(1)}/min`,
-              child.itemId,
-              i,
-              numBelts
-            ));
-          }
-        } else {
-          edgeList.push(createEdge(
-            `e-${childChunks[0].id}-${myChunks[0].id}`,
-            childChunks[0].id, myChunks[0].id,
-            getBeltLabel(child.rate), child.itemId
-          ));
-        }
+        edgeList.push(createEdge(
+          `e-${childChunks[0].id}-${myChunks[0].id}`,
+          childChunks[0].id, myChunks[0].id,
+          getBeltLabel(child.rate), child.itemId
+        ));
       } else {
         // Ensure EVERY chunk on both sides has at least one connection.
         // Iterate over the larger set and map proportionally to the smaller set.
@@ -238,26 +370,11 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
           connected.add(key);
 
           const edgeRate = childChunks[ci].rate;
-          if (edgeRate > beltCapacity) {
-            const numBelts = Math.ceil(edgeRate / beltCapacity);
-            const splitRate = edgeRate / numBelts;
-            for (let k = 0; k < numBelts; k++) {
-              edgeList.push(createEdge(
-                `e-${childChunks[ci].id}-${myChunks[pi].id}-${k}`,
-                childChunks[ci].id, myChunks[pi].id,
-                `${splitRate.toFixed(1)}/min`,
-                child.itemId,
-                k,
-                numBelts
-              ));
-            }
-          } else {
-            edgeList.push(createEdge(
-              `e-${childChunks[ci].id}-${myChunks[pi].id}`,
-              childChunks[ci].id, myChunks[pi].id,
-              getBeltLabel(edgeRate), child.itemId
-            ));
-          }
+          edgeList.push(createEdge(
+            `e-${childChunks[ci].id}-${myChunks[pi].id}`,
+            childChunks[ci].id, myChunks[pi].id,
+            getBeltLabel(edgeRate), child.itemId
+          ));
         }
       }
     }
@@ -266,7 +383,39 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
   }
 
   if (mode === 'expanded') {
-    traverseExpanded(root);
+    const rootChunks = traverseExpanded(root);
+    if (root.itemId !== 'planned_outputs') {
+      const productNodeId = `product-output-${root.itemId}`;
+      const itemInfo = items[root.itemId];
+      nodeList.push({
+        id: productNodeId,
+        type: 'machine',
+        position: { x: 0, y: 0 },
+        data: buildNodeData(
+          {
+            itemId: root.itemId,
+            recipeId: 'product_output',
+            rate: root.rate,
+            machines: 0,
+            machineId: 'product_output',
+            inputs: [],
+          },
+          0,
+          root.rate,
+          `${root.rate.toFixed(1)} ${itemInfo?.name || root.itemId}`
+        ),
+      });
+
+      rootChunks.forEach((chunk) => {
+        edgeList.push(createEdge(
+          `e-${chunk.id}-${productNodeId}`,
+          chunk.id,
+          productNodeId,
+          getBeltLabel(chunk.rate),
+          root.itemId
+        ));
+      });
+    }
   } else {
     traverseAggregated(root);
   }
