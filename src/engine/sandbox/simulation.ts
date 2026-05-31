@@ -172,10 +172,11 @@ export function computeFactoryStats(state: SandboxState): FactoryStats {
     let gridLoad = 0;
 
     for (const id of componentMachineIds) {
-      const mach = state.machines.find((x) => x.instanceId === id)!;
+      const mach = state.machines.find((x) => x.instanceId === id);
+      if (!mach) continue;
       const prod = getMachinePowerProduction(mach.machineId, mach.fuelId);
       if (prod > 0) {
-        gridCapacity += prod * (mach.overclock / 100);
+        gridCapacity += prod * ((mach.overclock ?? 100) / 100);
       }
       const tp = nominalThroughputs.get(id);
       if (tp) {
@@ -209,7 +210,8 @@ export function computeFactoryStats(state: SandboxState): FactoryStats {
     }
 
     for (const id of grid.machineIds) {
-      const mach = state.machines.find((x) => x.instanceId === id)!;
+      const mach = state.machines.find((x) => x.instanceId === id);
+      if (!mach) continue;
       const nominalCons = getMachinePowerUsage(mach.machineId);
       const nominalProd = getMachinePowerProduction(mach.machineId, mach.fuelId);
 

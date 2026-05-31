@@ -943,9 +943,12 @@ export function SandboxCanvas() {
       satPct >= 80  ? '#f59e0b' :
       tierData.color;
 
-    // Animation speed: faster belts = shorter duration (0.4s–3s)
+    // Animation speed: faster belts = shorter duration (0.2s–3s)
     const flowRate = load?.actualLoad ?? (capacity * 0.5);
-    const animDuration = Math.max(0.4, 3 - (flowRate / capacity) * 2.6);
+    const baseDuration = belt.tier === 'mk6' ? 1.5 : 3;
+    const speedMult = belt.tier === 'mk6' ? 1.25 : 2.6;
+    const minDuration = belt.tier === 'mk6' ? 0.22 : 0.4;
+    const animDuration = Math.max(minDuration, baseDuration - (flowRate / capacity) * speedMult);
 
     const midX = (fp1.x + fp2.x) / 2;
     const midY = (fp1.y + fp2.y) / 2;

@@ -68,7 +68,7 @@ const REGISTRY: MachineRegistryEntry[] = [
   },
   {
     machineId: 'water_extractor',
-    footprint: { width: 2, height: 2 },
+    footprint: { width: 3, height: 3 },
     ports: [
       { id: 'out0', type: 'output', medium: 'pipe', relX: 0.5, relY: 1.0 },
     ],
@@ -78,7 +78,7 @@ const REGISTRY: MachineRegistryEntry[] = [
   },
   {
     machineId: 'oil_extractor',
-    footprint: { width: 2, height: 3 },
+    footprint: { width: 2, height: 2 },
     ports: [
       { id: 'out0', type: 'output', medium: 'pipe', relX: 0.5, relY: 1.0 },
     ],
@@ -136,7 +136,7 @@ const REGISTRY: MachineRegistryEntry[] = [
   },
   {
     machineId: 'manufacturer',
-    footprint: { width: 3, height: 2 },
+    footprint: { width: 3, height: 3 },
     ports: [
       { id: 'in0',  type: 'input',  medium: 'belt', relX: 0.17, relY: 0.0 },
       { id: 'in1',  type: 'input',  medium: 'belt', relX: 0.39, relY: 0.0 },
@@ -150,7 +150,7 @@ const REGISTRY: MachineRegistryEntry[] = [
   },
   {
     machineId: 'refinery',
-    footprint: { width: 3, height: 3 },
+    footprint: { width: 2, height: 3 },
     ports: [
       { id: 'in0',  type: 'input',  medium: 'belt', relX: 0.25, relY: 0.0 },
       { id: 'in1',  type: 'input',  medium: 'pipe', relX: 0.75, relY: 0.0 },
@@ -163,7 +163,7 @@ const REGISTRY: MachineRegistryEntry[] = [
   },
   {
     machineId: 'blender',
-    footprint: { width: 3, height: 3 },
+    footprint: { width: 3, height: 2 },
     ports: [
       { id: 'in0',  type: 'input',  medium: 'belt', relX: 0.17, relY: 0.0 },
       { id: 'in1',  type: 'input',  medium: 'belt', relX: 0.39, relY: 0.0 },
@@ -178,7 +178,7 @@ const REGISTRY: MachineRegistryEntry[] = [
   },
   {
     machineId: 'packager',
-    footprint: { width: 2, height: 2 },
+    footprint: { width: 1, height: 1 },
     ports: [
       { id: 'in0',  type: 'input',  medium: 'belt', relX: 0.25, relY: 0.0 },
       { id: 'in1',  type: 'input',  medium: 'pipe', relX: 0.75, relY: 0.0 },
@@ -190,7 +190,7 @@ const REGISTRY: MachineRegistryEntry[] = [
   },
   {
     machineId: 'particle_accelerator',
-    footprint: { width: 5, height: 3 },
+    footprint: { width: 5, height: 5 },
     ports: [
       { id: 'in0',  type: 'input',  medium: 'belt', relX: 0.2,  relY: 0.0 },
       { id: 'in1',  type: 'input',  medium: 'belt', relX: 0.4,  relY: 0.0 },
@@ -203,7 +203,7 @@ const REGISTRY: MachineRegistryEntry[] = [
   },
   {
     machineId: 'quantum_encoder',
-    footprint: { width: 5, height: 5 },
+    footprint: { width: 4, height: 4 },
     ports: [
       { id: 'in0',  type: 'input',  medium: 'belt', relX: 0.2, relY: 0.0 },
       { id: 'in1',  type: 'input',  medium: 'belt', relX: 0.4, relY: 0.0 },
@@ -373,7 +373,7 @@ const REGISTRY: MachineRegistryEntry[] = [
   {
     machineId: 'coal_generator',
     name: 'Coal Generator',
-    footprint: { width: 2, height: 3 },
+    footprint: { width: 2, height: 4 },
     ports: [
       { id: 'in_coal', type: 'input', medium: 'belt', relX: 0.25, relY: 0.0 },
       { id: 'in_water', type: 'input', medium: 'pipe', relX: 0.75, relY: 0.0 },
