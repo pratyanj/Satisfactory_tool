@@ -29,6 +29,7 @@ const FUEL_TYPES: { value: PowerFuelType; label: string }[] = [
   { value: 'fuel', label: 'Fuel' },
   { value: 'turbofuel', label: 'Turbofuel' },
   { value: 'rocket_fuel', label: 'Rocket Fuel' },
+  { value: 'ionized_fuel', label: 'Ionized Fuel' },
   { value: 'nuclear', label: 'Nuclear' },
   { value: 'geothermal', label: 'Geothermal' },
 ];

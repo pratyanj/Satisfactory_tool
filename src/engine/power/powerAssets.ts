@@ -12,6 +12,7 @@ export const GENERATOR_IMAGE_BY_FUEL: Record<PowerFuelType, string> = {
   fuel: githubGenerator('fuel-generator.png'),
   turbofuel: githubGenerator('fuel-generator.png'),
   rocket_fuel: githubGenerator('fuel-generator.png'),
+  ionized_fuel: githubGenerator('fuel-generator.png'),
   nuclear: githubGenerator('nuclear-power-plant.png'),
   geothermal: githubGenerator('geothermal-generator.png'),
 };
@@ -31,6 +32,7 @@ export const LOCAL_GENERATOR_IMAGE_BY_FUEL: Record<PowerFuelType, string> = {
   fuel: '/assets/generators/fuel-generator.png',
   turbofuel: '/assets/generators/fuel-generator.png',
   rocket_fuel: '/assets/generators/fuel-generator.png',
+  ionized_fuel: '/assets/generators/fuel-generator.png',
   nuclear: '/assets/generators/nuclear-power-plant.png',
   geothermal: '/assets/generators/geothermal-generator.png',
 };

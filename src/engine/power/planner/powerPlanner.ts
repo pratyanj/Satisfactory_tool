@@ -94,6 +94,25 @@ export const POWER_FUEL_PROFILES: Record<PowerFuelType, PowerFuelProfile> = {
       rocket_fuel: 'recipe_alternate_rocketfuel_nitro_c',
     },
   },
+  ionized_fuel: {
+    id: 'ionized_fuel',
+    label: 'Fuel Generators (Ionized Fuel)',
+    generatorId: 'fuel_generator',
+    generatorMachineName: 'Fuel Generator',
+    basePowerMW: 250,
+    fuelItemId: 'ionized_fuel',
+    fuelPerGeneratorPerMin: 3,
+    generatorWaterPerMin: 0,
+    standardRecipes: {
+      ionized_fuel: 'recipe_ionized_fuel',
+      rocket_fuel: 'recipe_rocket_fuel',
+      power_shard: 'recipe_synthetic_power_shard',
+    },
+    alternateRecipes: {
+      ionized_fuel: 'recipe_alternate_dark_ion_fuel',
+      rocket_fuel: 'recipe_alternate_rocket_fuel',
+    },
+  },
   nuclear: {
     id: 'nuclear',
     label: 'Nuclear Power Plants',

@@ -9,6 +9,7 @@ export type PowerFuelType =
   | 'fuel'
   | 'turbofuel'
   | 'rocket_fuel'
+  | 'ionized_fuel'
   | 'nuclear'
   | 'geothermal';
 
