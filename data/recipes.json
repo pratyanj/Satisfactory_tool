@@ -3619,5 +3619,166 @@
     ],
     "machineId": "assembler",
     "isAlternate": true
+  },
+  {
+    "id": "recipe_synthetic_power_shard",
+    "name": "Synthetic Power Shard",
+    "outputItemId": "power_shard",
+    "outputRate": 1,
+    "inputs": [
+      {
+        "itemId": "time_crystal",
+        "rate": 2
+      },
+      {
+        "itemId": "dark_matter_crystal",
+        "rate": 2
+      },
+      {
+        "itemId": "quartz_crystal",
+        "rate": 12
+      },
+      {
+        "itemId": "excited_photonic_matter",
+        "rate": 12
+      }
+    ],
+    "byproducts": [
+      {
+        "itemId": "dark_matter_residue",
+        "rate": 12
+      }
+    ],
+    "machineId": "quantum_encoder"
+  },
+  {
+    "id": "recipe_rocket_fuel",
+    "name": "Rocket Fuel",
+    "outputItemId": "rocket_fuel",
+    "outputRate": 100,
+    "inputs": [
+      {
+        "itemId": "turbofuel",
+        "rate": 60
+      },
+      {
+        "itemId": "nitric_acid",
+        "rate": 10
+      }
+    ],
+    "byproducts": [
+      {
+        "itemId": "compacted_coal",
+        "rate": 10
+      }
+    ],
+    "machineId": "blender"
+  },
+  {
+    "id": "recipe_alternate_rocket_fuel",
+    "name": "Alt: Rocket Fuel",
+    "outputItemId": "rocket_fuel",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "fuel",
+        "rate": 40
+      },
+      {
+        "itemId": "nitrogen_gas",
+        "rate": 30
+      },
+      {
+        "itemId": "sulfur",
+        "rate": 40
+      },
+      {
+        "itemId": "coal",
+        "rate": 20
+      }
+    ],
+    "byproducts": [
+      {
+        "itemId": "compacted_coal",
+        "rate": 10
+      }
+    ],
+    "machineId": "blender",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_ionized_fuel",
+    "name": "Ionized Fuel",
+    "outputItemId": "ionized_fuel",
+    "outputRate": 40,
+    "inputs": [
+      {
+        "itemId": "rocket_fuel",
+        "rate": 40
+      },
+      {
+        "itemId": "power_shard",
+        "rate": 2.5
+      }
+    ],
+    "byproducts": [
+      {
+        "itemId": "compacted_coal",
+        "rate": 5
+      }
+    ],
+    "machineId": "refinery"
+  },
+  {
+    "id": "recipe_alternate_dark_ion_fuel",
+    "name": "Alt: Dark-Ion Fuel",
+    "outputItemId": "ionized_fuel",
+    "outputRate": 40,
+    "inputs": [
+      {
+        "itemId": "packaged_rocket_fuel",
+        "rate": 240
+      },
+      {
+        "itemId": "dark_matter_crystal",
+        "rate": 200
+      }
+    ],
+    "machineId": "blender",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_packaged_rocket_fuel",
+    "name": "Packaged Rocket Fuel",
+    "outputItemId": "packaged_rocket_fuel",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "rocket_fuel",
+        "rate": 120
+      },
+      {
+        "itemId": "empty_fluid_tank",
+        "rate": 60
+      }
+    ],
+    "machineId": "packager"
+  },
+  {
+    "id": "recipe_packaged_ionized_fuel",
+    "name": "Packaged Ionized Fuel",
+    "outputItemId": "packaged_ionized_fuel",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "ionized_fuel",
+        "rate": 120
+      },
+      {
+        "itemId": "empty_fluid_tank",
+        "rate": 60
+      }
+    ],
+    "machineId": "packager"
   }
 ]

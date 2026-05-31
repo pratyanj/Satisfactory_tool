@@ -23,5 +23,10 @@
     "id": "mk5",
     "name": "Mk.5 Belt",
     "capacity": 780
+  },
+  "mk6": {
+    "id": "mk6",
+    "name": "Mk.6 Belt",
+    "capacity": 1200
   }
 }

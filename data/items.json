@@ -467,6 +467,12 @@
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Diamonds.png",
     "category": "Quantum Technology"
   },
+  "power_shard": {
+    "id": "power_shard",
+    "name": "Power Shard",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Power_Shard.png",
+    "category": "Quantum Technology"
+  },
   "time_crystal": {
     "id": "time_crystal",
     "name": "Time Crystal",
