@@ -1,0 +1,1 @@
+- [Recipe data pipeline](recipe-data-pipeline.md) — recipes.json is live source; alternate_recipes.json is authoritative; audit via scripts/audit_alternates.py

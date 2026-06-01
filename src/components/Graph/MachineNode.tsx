@@ -4,12 +4,12 @@ import { machines } from '../../engine/data';
 import { FlipHorizontal, Star } from 'lucide-react';
 import { AppImage } from '../AppImage';
 
-export const MachineNode = React.memo(function MachineNode({ id, data }: NodeProps) {
+export const MachineNode = React.memo(function MachineNode({ id, data, selected }: NodeProps) {
   const machineInfo = machines[data.machineId as string];
   const machineName = (machineInfo?.name || (data.machineName as string) || (data.label as string) || (data.machineId as string) || 'Machine');
   const machineImageUrl = machineInfo?.imageUrl || (data.machineImageUrl as string | undefined);
   const machineSecondaryImageUrl = data.machineSecondaryImageUrl as string | undefined;
-  const machinePowerPerMachine = machineInfo?.powerUsage ?? (data.powerPerMachine as number) ?? 0;
+  const machinePowerPerMachine = (data.powerPerMachine as number) ?? machineInfo?.powerUsage ?? 0;
   const machineCount = data.machines as number;
   const totalPower = machinePowerPerMachine * machineCount;
   const { setNodes } = useReactFlow();
@@ -92,7 +92,14 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
       />
 
       {/* Main Premium Beveled Card */}
-      <div className="sf-machine-card-frame" style={glowStyle}>
+      <div 
+        className={`sf-machine-card-frame ${selected ? 'border-[#f48721] shadow-[0_0_25px_rgba(244,135,33,0.85)]' : ''}`} 
+        style={{
+          ...glowStyle,
+          borderColor: selected ? '#f48721' : glowStyle.borderColor,
+          boxShadow: selected ? '0 0 25px rgba(244, 135, 33, 0.85)' : glowStyle.boxShadow,
+        }}
+      >
         {/* Bezel Corner Screws/Rivets */}
         <div className="sf-card-screw sf-card-screw-tl" />
         <div className="sf-card-screw sf-card-screw-tr" />
@@ -213,13 +220,29 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
                     <div className="w-[3px] h-[3px] rounded-full bg-[#f48721] absolute left-1/2 -translate-y-1/2" />
                   </div>
                 </div>
-                <div className="flex items-baseline mt-0">
+                <div className="flex items-baseline mt-0 flex-wrap gap-y-1">
                   <span className="text-xl font-extrabold font-mono tracking-tight text-white select-none">
                     {(data.rate as number).toFixed(1)}
                   </span>
-                  <span className="text-[#f48721] font-bold text-xs ml-0.5 select-none">
+                  <span className="text-[#f48721] font-bold text-xs ml-0.5 select-none mr-2">
                     /min
                   </span>
+                  {data.clockSpeed !== undefined && data.clockSpeed !== 100 && (
+                    <span 
+                      className="px-1 py-0.5 rounded text-[8px] bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 font-mono font-bold shrink-0 select-none mr-1"
+                      title={`Overclocked to ${data.clockSpeed}%`}
+                    >
+                      {data.clockSpeed}%
+                    </span>
+                  )}
+                  {data.somerslooped && (
+                    <span 
+                      className="px-1 py-0.5 rounded text-[8px] bg-purple-500/25 text-purple-300 border border-purple-500/40 font-mono font-bold shrink-0 select-none animate-pulse" 
+                      title="Somerslooped: 2x Productivity"
+                    >
+                      🌀 2x
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -262,7 +285,7 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
       />
 
       {/* Floating Detailed Hover Tooltip for Recipe Inputs/Outputs */}
-      <div className="sf-machine-tooltip whitespace-nowrap min-w-max z-50">
+      <div className="sf-machine-tooltip whitespace-nowrap min-w-[280px] z-50 p-3 bg-[#0d0e11]/95 border border-[#2a2d33] rounded-lg shadow-2xl backdrop-blur-md">
         {/* Bezel Corner Screws/Rivets */}
         <div className="sf-card-screw sf-card-screw-tl" />
         <div className="sf-card-screw sf-card-screw-tr" />
@@ -273,76 +296,116 @@ export const MachineNode = React.memo(function MachineNode({ id, data }: NodePro
         <div className="sf-card-light-top" />
         <div className="sf-card-light-bottom" />
 
-        <div className="relative z-20 flex flex-col pt-1">
-          {/* Inputs */}
-          {inputDetails.length > 0 &&
-            inputDetails.map((inp: any, idx: number) => (
-              <div key={idx} className="flex items-center gap-2 font-mono text-[11px] mb-1">
-              <span className="text-blue-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">
-                IN
-              </span>
-              {inp.imageUrl && (
-                <AppImage
-                  idKey={inp.itemId}
-                  fallbackUrl={inp.imageUrl}
-                  className="w-3.5 h-3.5 object-contain shrink-0"
-                  alt={inp.name}
-                />
-              )}
-              <span className="text-[#a0a4ab] flex-1">{inp.name}</span>
-              <span className="text-[#e4e3e0] shrink-0 text-right min-w-[50px]">
-                {inp.ratePerMachine}/m
-              </span>
-            </div>
-          ))}
-        {/* Output */}
-        {outputRatePerMachine > 0 && (
-          <div className="flex items-center gap-2 font-mono text-[11px] mb-1">
-            <span className="text-orange-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">
-              OUT
+        <div className="relative z-20 flex flex-col gap-2.5">
+          {/* Header Specifications */}
+          <div className="border-b border-[#2a2d33]/60 pb-1.5 shrink-0">
+            <span className="text-[7.5px] font-black tracking-widest text-[#f48721] font-mono uppercase block">
+              FICSIT DIAGNOSTIC SHEET
             </span>
-            {data.itemImageUrl && (
-              <AppImage
-                idKey={data.itemId as string}
-                fallbackUrl={data.itemImageUrl as string}
-                className="w-3.5 h-3.5 object-contain shrink-0"
-                alt={data.item as string}
-              />
+            <span className="text-[11px] font-bold text-white uppercase block tracking-wide">
+              {machineName} Array <span className="text-[#00e676] font-mono">x{Number(machineCount.toFixed(2))}</span>
+            </span>
+          </div>
+
+          {/* Rates Table */}
+          <div className="flex flex-col gap-1.5">
+            {/* Inputs */}
+            {inputDetails.length > 0 &&
+              inputDetails.map((inp: any, idx: number) => (
+                <div key={idx} className="flex items-center gap-2 font-mono text-[10.5px]">
+                  <span className="text-blue-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">
+                    IN
+                  </span>
+                  {inp.imageUrl && (
+                    <AppImage
+                      idKey={inp.itemId}
+                      fallbackUrl={inp.imageUrl}
+                      className="w-3.5 h-3.5 object-contain shrink-0"
+                      alt={inp.name}
+                    />
+                  )}
+                  <span className="text-[#a0a4ab] flex-grow truncate max-w-[120px]">{inp.name}</span>
+                  <span className="text-[#e4e3e0] shrink-0 text-right font-bold ml-2">
+                    {Number(inp.ratePerMachine.toFixed(1))}/m <span className="text-[9px] text-[#8E9299] font-normal">(Total: {Number((inp.ratePerMachine * machineCount).toFixed(1))}/m)</span>
+                  </span>
+                </div>
+              ))}
+
+            {/* Output */}
+            {outputRatePerMachine > 0 && (
+              <div className="flex items-center gap-2 font-mono text-[10.5px]">
+                <span className="text-orange-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">
+                  OUT
+                </span>
+                {data.itemImageUrl && (
+                  <AppImage
+                    idKey={data.itemId as string}
+                    fallbackUrl={data.itemImageUrl as string}
+                    className="w-3.5 h-3.5 object-contain shrink-0"
+                    alt={data.item as string}
+                  />
+                )}
+                <span className="text-[#a0a4ab] flex-grow truncate max-w-[120px]">{data.item as string}</span>
+                <span className="text-orange-300 shrink-0 text-right font-bold ml-2">
+                  {Number(outputRatePerMachine.toFixed(1))}/m <span className="text-[9px] text-[#8E9299] font-normal">(Total: {Number((outputRatePerMachine * machineCount).toFixed(1))}/m)</span>
+                </span>
+              </div>
             )}
-            <span className="text-[#a0a4ab] flex-1">{data.item as string}</span>
-            <span className="text-[#e4e3e0] shrink-0 text-right min-w-[50px]">
-              {outputRatePerMachine}/m
-            </span>
+
+            {/* Byproducts */}
+            {((data.byproductDetails as any[]) || []).length > 0 &&
+              (data.byproductDetails as any[]).map((bp: any, idx: number) => (
+                <div key={`bp-${idx}`} className="flex items-center gap-2 font-mono text-[10.5px]">
+                  <span className="text-orange-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">
+                    OUT
+                  </span>
+                  {bp.imageUrl && (
+                    <AppImage
+                      idKey={bp.itemId}
+                      fallbackUrl={bp.imageUrl}
+                      className="w-3.5 h-3.5 object-contain shrink-0"
+                      alt={bp.name}
+                    />
+                  )}
+                  <span className="text-[#a0a4ab] flex-grow truncate max-w-[120px]">{bp.name}</span>
+                  <span className="text-orange-300 shrink-0 text-right font-bold ml-2">
+                    {Number(bp.ratePerMachine.toFixed(1))}/m <span className="text-[9px] text-[#8E9299] font-normal">(Total: {Number((bp.ratePerMachine * machineCount).toFixed(1))}/m)</span>
+                  </span>
+                </div>
+              ))}
           </div>
-        )}
-        {/* Byproducts */}
-        {((data.byproductDetails as any[]) || []).length > 0 &&
-          (data.byproductDetails as any[]).map((bp: any, idx: number) => (
-            <div key={`bp-${idx}`} className="flex items-center gap-2 font-mono text-[11px] mb-1">
-              <span className="text-orange-400 font-bold w-6 text-center shrink-0 border-r border-[#2a2d33] pr-1">
-                OUT
-              </span>
-              {bp.imageUrl && (
-                <AppImage
-                  idKey={bp.itemId}
-                  fallbackUrl={bp.imageUrl}
-                  className="w-3.5 h-3.5 object-contain shrink-0"
-                  alt={bp.name}
-                />
-              )}
-              <span className="text-[#a0a4ab] flex-1">{bp.name}</span>
-              <span className="text-[#e4e3e0] shrink-0 text-right min-w-[50px]">
-                {bp.ratePerMachine}/m
-              </span>
+
+          {/* Tuning Details Section */}
+          <div className="border-t border-[#2a2d33]/50 pt-2 flex flex-col gap-1 text-[9.5px] font-mono">
+            <div className="flex justify-between">
+              <span className="text-[#8E9299]">CLOCK SPEED:</span>
+              <span className="text-yellow-500 font-bold">{data.clockSpeed ?? 100}%</span>
             </div>
-          ))}
-        {/* Power per machine */}
-        {machinePowerPerMachine > 0 && (
-          <div className="flex items-center gap-2 font-mono text-[11px] pt-1 mt-2 border-t border-[#2a2d33]">
-            <span className="text-yellow-500 w-6 text-center">⚡</span>
-            <span className="text-[#8E9299]">{machinePowerPerMachine} MW/machine</span>
+            {data.somerslooped && (
+              <div className="flex justify-between items-center">
+                <span className="text-[#8E9299]">ALIEN BOOSTER:</span>
+                <span className="text-purple-400 font-bold shrink-0">🌀 Somersloop Active (2x)</span>
+              </div>
+            )}
           </div>
-        )}
+
+          {/* Power Section */}
+          <div className="border-t border-[#2a2d33]/50 pt-2 flex flex-col gap-1 text-[9.5px] font-mono">
+            <div className="flex justify-between">
+              <span className="text-[#8E9299]">POWER PER MACHINE:</span>
+              <span className="text-white font-bold">{Number(machinePowerPerMachine.toFixed(2))} MW</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-[#8E9299]">TOTAL ARRAY POWER:</span>
+              <span className="text-orange-400 font-bold">{Number(totalPower.toFixed(2))} MW</span>
+            </div>
+          </div>
+
+          {/* Logistics recommendation */}
+          <div className="border-t border-[#2a2d33]/40 pt-2 text-[8px] font-mono text-[#8E9299] leading-tight">
+            ℹ️ Recommended logistics stream capacity for output: {Number((outputRatePerMachine * machineCount).toFixed(1))}/min
+          </div>
+
         </div>
       </div>
     </div>

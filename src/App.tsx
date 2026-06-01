@@ -149,6 +149,7 @@ export default function App() {
     extractorTier?: string;
     overclock?: number;
     somersloopMultiplier?: number;
+    perMachineSettings?: Record<string, { clockSpeed: number; somerslooped: boolean }>;
   }>({
     itemId: 'copper_sheet',
     rate: 120,
@@ -160,6 +161,7 @@ export default function App() {
     extractorTier: 'mk1',
     overclock: 100,
     somersloopMultiplier: 1,
+    perMachineSettings: {},
   });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
   const [mainTab, setMainTab] = useState<MainTab>('network_graph');
@@ -243,6 +245,7 @@ export default function App() {
             beltId: decoded.b,
             recipeSelections: parseRecipeSelections(decoded.ar),
             targets: targets,
+            perMachineSettings: decoded.pm || {},
           });
           setLayoutMode(decoded.l);
           const top: TopLevelTab = decoded.t ?? 'planner';
@@ -361,6 +364,7 @@ export default function App() {
       t: topLevelTab,
       s: mainTab,
       tg: lastInput.targets || [{ itemId: lastInput.itemId, rate: lastInput.rate }],
+      pm: lastInput.perMachineSettings || {},
     };
 
     const encoded = encodeURIComponent(btoa(JSON.stringify(payload)));
@@ -371,6 +375,27 @@ export default function App() {
       setTimeout(() => setCopied(false), 2000);
     });
   }, [lastInput, layoutMode, topLevelTab, mainTab]);
+
+  const handleUpdatePerMachineSettings = useCallback((itemId: string, settings: { clockSpeed?: number; somerslooped?: boolean }) => {
+    setLastInput(prev => {
+      const currentPm = prev.perMachineSettings || {};
+      const newPm = { ...currentPm };
+      
+      if (settings.clockSpeed === undefined && settings.somerslooped === undefined) {
+        delete newPm[itemId];
+      } else {
+        newPm[itemId] = {
+          clockSpeed: settings.clockSpeed ?? currentPm[itemId]?.clockSpeed ?? 100,
+          somerslooped: settings.somerslooped ?? currentPm[itemId]?.somerslooped ?? false,
+        };
+      }
+      
+      return {
+        ...prev,
+        perMachineSettings: newPm,
+      };
+    });
+  }, []);
 
   const calculatePlan = (
     itemId: string,
@@ -383,7 +408,8 @@ export default function App() {
     pipeTier: 'mk1' | 'mk2' = 'mk1',
     extractorTier: string = 'mk1',
     overclock: number = 100,
-    somersloopMultiplier: number = 1
+    somersloopMultiplier: number = 1,
+    perMachineSettings?: Record<string, { clockSpeed: number; somerslooped: boolean }>
   ) => {
     const targetsToUse = targets || [{
       itemId,
@@ -408,7 +434,8 @@ export default function App() {
       pipeTier,
       extractorTier,
       overclock,
-      somersloopMultiplier
+      somersloopMultiplier,
+      perMachineSettings: perMachineSettings || lastInput.perMachineSettings || {},
     });
     try {
       setError(null);
@@ -429,7 +456,8 @@ export default function App() {
         pipeTier,
         extractorOverclock,
         overclock,
-        somersloopMultiplier
+        somersloopMultiplier,
+        perMachineSettings || lastInput.perMachineSettings || {}
       );
       const newSummary = calculateSummary(solvedRoot);
       const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(solvedRoot, mode, beltId);
@@ -478,7 +506,7 @@ export default function App() {
     overclock: number = 100,
     somersloopMultiplier: number = 1
   ) => {
-    calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode, targets, pipeTier, extractorTier, overclock, somersloopMultiplier);
+    calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode, targets, pipeTier, extractorTier, overclock, somersloopMultiplier, lastInput.perMachineSettings);
   };
 
   const handleResolveAction = useCallback((actionType: string, payload: any) => {
@@ -499,11 +527,12 @@ export default function App() {
 
   const targetsSignature = JSON.stringify(lastInput.targets);
   const recipeSelectionSignature = JSON.stringify(lastInput.recipeSelections);
+  const perMachineSettingsSignature = JSON.stringify(lastInput.perMachineSettings);
 
   // Step 1: Immediately show the spinner when inputs or mode change
   useEffect(() => {
     setIsRecalculating(true);
-  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, recipeSelectionSignature, targetsSignature]);
+  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature]);
 
   // Step 2: Defer heavy graph calculations to the next tick (80ms), allowing the spinner to render and animate smoothly first!
   useEffect(() => {
@@ -520,12 +549,13 @@ export default function App() {
         lastInput.pipeTier || 'mk1',
         lastInput.extractorTier || 'mk1',
         lastInput.overclock ?? 100,
-        lastInput.somersloopMultiplier ?? 1
+        lastInput.somersloopMultiplier ?? 1,
+        lastInput.perMachineSettings || {}
       );
       setIsRecalculating(false);
     }, 80);
     return () => clearTimeout(timer);
-  }, [isRecalculating, layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, recipeSelectionSignature, targetsSignature]);
+  }, [isRecalculating, layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature]);
 
 
   const renderTabContent = () => {
@@ -610,7 +640,14 @@ export default function App() {
               </div>
             )}
             <div className="w-full h-full">
-              <FactoryGraph initialNodes={nodes} initialEdges={edges} beltId={lastInput.beltId} isFullscreen={isGraphFullscreen} />
+              <FactoryGraph 
+                initialNodes={nodes} 
+                initialEdges={edges} 
+                beltId={lastInput.beltId} 
+                isFullscreen={isGraphFullscreen} 
+                perMachineSettings={lastInput.perMachineSettings || {}}
+                onUpdatePerMachineSettings={handleUpdatePerMachineSettings}
+              />
             </div>
           </div>
         );

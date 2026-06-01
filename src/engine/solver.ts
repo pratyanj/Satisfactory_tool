@@ -73,7 +73,8 @@ export function solve(
   pipeTier: 'mk1' | 'mk2' = 'mk1',
   extractorOverclock: number = 100,
   globalOverclock: number = 100,
-  somersloopMultiplier: number = 1
+  somersloopMultiplier: number = 1,
+  perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean }>
 ): SolverNode {
   const targets: Record<ItemId, number> = typeof itemIdOrTargets === 'string'
     ? { [itemIdOrTargets]: requiredRate ?? 0 }
@@ -106,18 +107,36 @@ export function solve(
           let outputRate = recipe.outputRate;
           let machineIdToUse = recipe.machineId;
 
+          const customSettings = perMachineSettings?.[currentId];
+          const nodeOverclock = customSettings?.clockSpeed ?? (
+            machineIdToUse.startsWith('miner')
+              ? 100
+              : (machineIdToUse === 'water_extractor' || machineIdToUse === 'oil_extractor')
+                ? extractorOverclock
+                : globalOverclock
+          );
+          const nodeSomersloop = customSettings?.somerslooped !== undefined
+            ? customSettings.somerslooped
+            : (somersloopMultiplier > 1 && recipe.inputs.length > 0);
+
+          const effectiveSomersloopMultiplier = nodeSomersloop ? 2 : 1;
+
           if (recipe.inputs.length === 0) {
             if (machineIdToUse.startsWith('miner')) {
               machineIdToUse = minerId;
               if (minerId === "miner_mk2") outputRate = 120;
               else if (minerId === "miner_mk3") outputRate = 240;
               else outputRate = 60;
+              
+              if (customSettings?.clockSpeed !== undefined) {
+                outputRate = outputRate * (nodeOverclock / 100);
+              }
             } else if (machineIdToUse === 'water_extractor' || machineIdToUse === 'oil_extractor') {
-              outputRate = 120 * (extractorOverclock / 100);
+              outputRate = 120 * (nodeOverclock / 100);
             }
           } else {
             // Production machines can be overclocked and Somerslooped
-            outputRate = outputRate * (globalOverclock / 100) * somersloopMultiplier;
+            outputRate = outputRate * (nodeOverclock / 100) * effectiveSomersloopMultiplier;
           }
 
           // Consume from byproducts pool if available
@@ -134,7 +153,7 @@ export function solve(
 
           for (const input of recipe.inputs) {
             // Overclocking scales input rate linearly. Somerslooping does not increase input consumption!
-            const machineInputRate = input.rate * (globalOverclock / 100);
+            const machineInputRate = input.rate * (nodeOverclock / 100);
             const requiredInputRate = machineInputRate * machineCount;
             if (requiredInputRate > 0.001) {
               nodeInputs.push(solveNode(input.itemId, requiredInputRate));
@@ -154,7 +173,7 @@ export function solve(
 
           const byproducts = (recipe.byproducts || []).map(bp => ({
             itemId: bp.itemId,
-            rate: bp.rate * (globalOverclock / 100) * somersloopMultiplier * machineCount
+            rate: bp.rate * (nodeOverclock / 100) * effectiveSomersloopMultiplier * machineCount
           }));
 
           return {
@@ -165,12 +184,8 @@ export function solve(
             machineId: machineIdToUse,
             inputs: nodeInputs,
             byproducts,
-            clockSpeed: machineIdToUse.startsWith('miner')
-              ? 100
-              : (machineIdToUse === 'water_extractor' || machineIdToUse === 'oil_extractor')
-                ? extractorOverclock
-                : globalOverclock,
-            somerslooped: somersloopMultiplier > 1 && recipe.inputs.length > 0,
+            clockSpeed: nodeOverclock,
+            somerslooped: nodeSomersloop,
           };
         } finally {
           activeStack.delete(currentId);

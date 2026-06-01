@@ -1521,18 +1521,24 @@
   {
     "id": "recipe_rocket_fuel",
     "outputItemId": "rocket_fuel",
-    "outputRate": 50,
+    "outputRate": 100,
     "inputs": [
       {
         "itemId": "turbofuel",
-        "rate": 50
+        "rate": 60
       },
       {
         "itemId": "nitric_acid",
         "rate": 10
       }
     ],
-    "machineId": "blender"
+    "machineId": "blender",
+    "byproducts": [
+      {
+        "itemId": "compacted_coal",
+        "rate": 10
+      }
+    ]
   },
   {
     "id": "recipe_ionized_fuel",
@@ -1545,10 +1551,16 @@
       },
       {
         "itemId": "power_shard",
-        "rate": 1
+        "rate": 2.5
       }
     ],
-    "machineId": "blender"
+    "machineId": "blender",
+    "byproducts": [
+      {
+        "itemId": "compacted_coal",
+        "rate": 5
+      }
+    ]
   },
   {
     "id": "recipe_black_powder",
@@ -3652,102 +3664,6 @@
     "machineId": "quantum_encoder"
   },
   {
-    "id": "recipe_rocket_fuel",
-    "name": "Rocket Fuel",
-    "outputItemId": "rocket_fuel",
-    "outputRate": 100,
-    "inputs": [
-      {
-        "itemId": "turbofuel",
-        "rate": 60
-      },
-      {
-        "itemId": "nitric_acid",
-        "rate": 10
-      }
-    ],
-    "byproducts": [
-      {
-        "itemId": "compacted_coal",
-        "rate": 10
-      }
-    ],
-    "machineId": "blender"
-  },
-  {
-    "id": "recipe_alternate_rocket_fuel",
-    "name": "Alt: Rocket Fuel",
-    "outputItemId": "rocket_fuel",
-    "outputRate": 60,
-    "inputs": [
-      {
-        "itemId": "fuel",
-        "rate": 40
-      },
-      {
-        "itemId": "nitrogen_gas",
-        "rate": 30
-      },
-      {
-        "itemId": "sulfur",
-        "rate": 40
-      },
-      {
-        "itemId": "coal",
-        "rate": 20
-      }
-    ],
-    "byproducts": [
-      {
-        "itemId": "compacted_coal",
-        "rate": 10
-      }
-    ],
-    "machineId": "blender",
-    "isAlternate": true
-  },
-  {
-    "id": "recipe_ionized_fuel",
-    "name": "Ionized Fuel",
-    "outputItemId": "ionized_fuel",
-    "outputRate": 40,
-    "inputs": [
-      {
-        "itemId": "rocket_fuel",
-        "rate": 40
-      },
-      {
-        "itemId": "power_shard",
-        "rate": 2.5
-      }
-    ],
-    "byproducts": [
-      {
-        "itemId": "compacted_coal",
-        "rate": 5
-      }
-    ],
-    "machineId": "refinery"
-  },
-  {
-    "id": "recipe_alternate_dark_ion_fuel",
-    "name": "Alt: Dark-Ion Fuel",
-    "outputItemId": "ionized_fuel",
-    "outputRate": 40,
-    "inputs": [
-      {
-        "itemId": "packaged_rocket_fuel",
-        "rate": 240
-      },
-      {
-        "itemId": "dark_matter_crystal",
-        "rate": 200
-      }
-    ],
-    "machineId": "blender",
-    "isAlternate": true
-  },
-  {
     "id": "recipe_packaged_rocket_fuel",
     "name": "Packaged Rocket Fuel",
     "outputItemId": "packaged_rocket_fuel",
@@ -3780,5 +3696,113 @@
       }
     ],
     "machineId": "packager"
+  },
+  {
+    "id": "recipe_alternate_screw_c",
+    "name": "Cast Screws",
+    "outputItemId": "screw",
+    "outputRate": 50,
+    "inputs": [
+      {
+        "itemId": "iron_ingot",
+        "rate": 12.5
+      }
+    ],
+    "machineId": "constructor",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_screw_2_c",
+    "name": "Steel Screws",
+    "outputItemId": "screw",
+    "outputRate": 260,
+    "inputs": [
+      {
+        "itemId": "steel_beam",
+        "rate": 5
+      }
+    ],
+    "machineId": "constructor",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_boltedframe_c",
+    "name": "Bolted Frame",
+    "outputItemId": "modular_frame",
+    "outputRate": 5,
+    "inputs": [
+      {
+        "itemId": "reinforced_iron_plate",
+        "rate": 7.5
+      },
+      {
+        "itemId": "screw",
+        "rate": 140
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_reinforcedironplate_1_c",
+    "name": "Bolted Iron Plate",
+    "outputItemId": "reinforced_iron_plate",
+    "outputRate": 15,
+    "inputs": [
+      {
+        "itemId": "iron_plate",
+        "rate": 90
+      },
+      {
+        "itemId": "screw",
+        "rate": 250
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_copperrotor_c",
+    "name": "Copper Rotor",
+    "outputItemId": "rotor",
+    "outputRate": 11.25,
+    "inputs": [
+      {
+        "itemId": "copper_sheet",
+        "rate": 22.5
+      },
+      {
+        "itemId": "screw",
+        "rate": 195
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_heavyflexibleframe_c",
+    "name": "Heavy Flexible Frame",
+    "outputItemId": "heavy_modular_frame",
+    "outputRate": 3.75,
+    "inputs": [
+      {
+        "itemId": "modular_frame",
+        "rate": 18.75
+      },
+      {
+        "itemId": "encased_industrial_beam",
+        "rate": 11.25
+      },
+      {
+        "itemId": "rubber",
+        "rate": 75
+      },
+      {
+        "itemId": "screw",
+        "rate": 390
+      }
+    ],
+    "machineId": "manufacturer",
+    "isAlternate": true
   }
 ]

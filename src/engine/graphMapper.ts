@@ -60,6 +60,14 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       imageUrl: node.itemId === 'awesome_sink' ? 'https://satisfactory.wiki.gg/wiki/Special:FilePath/AWESOME_Sink.png' : undefined,
     };
 
+    const clock = node.clockSpeed ?? 100;
+    const isSomerslooped = node.somerslooped ?? false;
+    const speedMultiplier = clock / 100;
+    const loopMultiplier = isSomerslooped ? 2 : 1;
+
+    const actualOutputRatePerMachine = machineCount > 0 ? (rate / machineCount) : (recipe?.outputRate || 0);
+    const actualPowerUsagePerMachine = machineInfo.powerUsage * Math.pow(speedMultiplier, 1.6) * (isSomerslooped ? 4 : 1);
+
     return {
       label,
       item: itemInfo?.name || node.itemId,
@@ -68,21 +76,23 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       machineId: node.machineId,
       itemId: node.itemId,
       itemImageUrl: itemInfo?.imageUrl,
+      clockSpeed: clock,
+      somerslooped: isSomerslooped,
       // Recipe details for the expanded node card
-      outputRatePerMachine: recipe?.outputRate || 0,
+      outputRatePerMachine: actualOutputRatePerMachine,
       inputDetails: (recipe?.inputs || []).map(inp => ({
         itemId: inp.itemId,
         name: items[inp.itemId]?.name || inp.itemId,
         imageUrl: items[inp.itemId]?.imageUrl,
-        ratePerMachine: inp.rate,
+        ratePerMachine: inp.rate * speedMultiplier,
       })),
       byproductDetails: (recipe?.byproducts || []).map(bp => ({
         itemId: bp.itemId,
         name: items[bp.itemId]?.name || bp.itemId,
         imageUrl: items[bp.itemId]?.imageUrl,
-        ratePerMachine: bp.rate,
+        ratePerMachine: bp.rate * speedMultiplier * loopMultiplier,
       })),
-      powerPerMachine: machineInfo?.powerUsage || 0,
+      powerPerMachine: actualPowerUsagePerMachine,
       isAlternate: recipe?.isAlternate || false,
     };
   }

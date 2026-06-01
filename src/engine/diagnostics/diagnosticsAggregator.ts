@@ -46,52 +46,95 @@ function compileSuggestedFixes(issues: DiagnosticIssue[]): SuggestedFix[] {
   return fixes;
 }
 
-// Calculate generic production losses based on issue categories
+// Calculate dynamic production losses based on issue categories and affected entities
 function compileProductionLosses(issues: DiagnosticIssue[]): { losses: ProductionLoss[], totalLossVal: number } {
   const losses: ProductionLoss[] = [];
   let totalLossVal = 0;
 
-  const beltIssues = issues.filter(i => i.category === 'belt');
-  const pipeIssues = issues.filter(i => i.category === 'pipe');
-  const machineIssues = issues.filter(i => i.category === 'machine');
+  // Track loss by itemId to avoid duplicate entries for the same item
+  const lossMap = new Map<string, {
+    itemId: string;
+    itemName: string;
+    lossRate: number;
+    unit: string;
+    imageUrl?: string;
+  }>();
 
-  if (beltIssues.length > 0) {
-    const rate = beltIssues.length * 90;
-    losses.push({
-      itemId: 'iron_plate',
-      itemName: 'Iron Plates',
-      lossRate: rate,
-      unit: 'parts/min',
-      imageUrl: items['iron_plate']?.imageUrl,
-    });
-    totalLossVal += rate;
-  }
+  issues.forEach(issue => {
+    // 1. Identify which item is affected
+    let affectedItemId = '';
+    
+    // In Flow A / Flow B, relatedEntityIds has the itemId or building name.
+    // If the first element is an itemId, let's map it!
+    if (issue.relatedEntityIds && issue.relatedEntityIds.length > 0) {
+      const entityId = issue.relatedEntityIds[0];
+      if (items[entityId]) {
+        affectedItemId = entityId;
+      }
+    }
+    
+    // Fallback: If no item can be resolved from relatedEntityIds, let's try to extract from title or description
+    if (!affectedItemId) {
+      const titleWords = issue.title.toLowerCase();
+      const descriptionWords = issue.description.toLowerCase();
+      
+      const foundItem = Object.keys(items).find(itemId => {
+        const name = items[itemId].name.toLowerCase();
+        return titleWords.includes(name) || descriptionWords.includes(name);
+      });
+      
+      if (foundItem) {
+        affectedItemId = foundItem;
+      }
+    }
 
-  if (pipeIssues.length > 0) {
-    const rate = pipeIssues.length * 120;
-    losses.push({
-      itemId: 'alumina_solution',
-      itemName: 'Alumina Solution',
-      lossRate: rate,
-      unit: 'm³/min',
-      imageUrl: items['alumina_solution']?.imageUrl,
-    });
-    totalLossVal += rate;
-  }
+    if (!affectedItemId) {
+      // Flow B Save File generic fallbacks
+      if (issue.category === 'belt') affectedItemId = 'iron_plate';
+      else if (issue.category === 'pipe') affectedItemId = 'alumina_solution';
+      else affectedItemId = 'screws'; // generic underutilized machine / power issue
+    }
 
-  if (machineIssues.length > 0) {
-    const rate = machineIssues.length * 15;
-    losses.push({
-      itemId: 'alclad_aluminum_sheet',
-      itemName: 'Alclad Aluminum Sheets',
-      lossRate: rate,
-      unit: 'sheets/min',
-      imageUrl: items['alclad_aluminum_sheet']?.imageUrl,
-    });
-    totalLossVal += rate;
-  }
+    const itemMeta = items[affectedItemId];
+    if (!itemMeta) return;
 
-  // Fallback default
+    // 2. Calculate realistic loss rates
+    const unit = affectedItemId.includes('oil') || affectedItemId.includes('water') || affectedItemId.includes('solution') || affectedItemId.includes('acid') || affectedItemId.includes('fuel')
+      ? 'm³/min'
+      : (affectedItemId.includes('sheet') || affectedItemId.includes('plate') ? `${itemMeta.name.split(' ').pop()?.toLowerCase() || 'parts'}/min` : 'parts/min');
+
+    // Base loss on severity
+    let lossRate = 15;
+    if (issue.category === 'belt') {
+      lossRate = issue.severity === 'critical' ? 60 : 30;
+    } else if (issue.category === 'pipe') {
+      lossRate = issue.severity === 'critical' ? 120 : 60;
+    } else { // machine
+      lossRate = issue.severity === 'critical' ? 30 : 15;
+    }
+
+    const existing = lossMap.get(affectedItemId);
+    if (existing) {
+      existing.lossRate += lossRate;
+    } else {
+      lossMap.set(affectedItemId, {
+        itemId: affectedItemId,
+        itemName: itemMeta.name,
+        lossRate,
+        unit,
+        imageUrl: itemMeta.imageUrl,
+      });
+    }
+
+    totalLossVal += lossRate;
+  });
+
+  // Convert map to array
+  lossMap.forEach(loss => {
+    losses.push(loss);
+  });
+
+  // Fallback default if no losses
   if (losses.length === 0) {
     losses.push({
       itemId: 'screws',
