@@ -356,6 +356,31 @@ html, body {
 /* ===== Tree List Tab ===== */
 .tree-list-tab {
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Multiple output targets sit side by side (wrapping on narrow screens) */
+.tree-targets {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 8px;
+}
+
+.tree-target-block {
+  flex: 1 1 420px;
+  min-width: 300px;
+  border: 1px solid #23262d;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.15);
+  overflow: hidden;
 }
 
 .tree-target {
@@ -395,8 +420,7 @@ html, body {
 }
 
 .tree-body {
-  flex: 1;
-  overflow-y: auto;
+  overflow-x: auto;
   padding: 8px 0;
 }
 
