@@ -5,6 +5,7 @@ const STRATEGY_FUELS: PowerPlannerInput['fuelType'][] = [
   'fuel',
   'turbofuel',
   'rocket_fuel',
+  'ionized_fuel',
   'nuclear',
   'coal',
   'geothermal',

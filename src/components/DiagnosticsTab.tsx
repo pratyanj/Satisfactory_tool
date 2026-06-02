@@ -26,6 +26,7 @@ interface DiagnosticsTabProps {
   rootNode: SolverNode | null;
   summary: SummaryData | null;
   activeBeltTier: string;
+  activePipeTier?: 'mk1' | 'mk2';
   parsedSave: ParsedSave | null;
   onSaveUploaded: (save: ParsedSave) => void;
   onResolveAction?: (actionType: string, payload: any) => void;
@@ -39,6 +40,7 @@ export function DiagnosticsTab({
   rootNode,
   summary,
   activeBeltTier,
+  activePipeTier = 'mk1',
   parsedSave,
   onSaveUploaded,
   onResolveAction,
@@ -63,12 +65,12 @@ export function DiagnosticsTab({
   const diagnostics = useMemo(() => {
     if (mode === 'theoretical') {
       if (!rootNode || !summary) return null;
-      return aggregateDiagnosticsFlowA(rootNode, summary, activeBeltTier);
+      return aggregateDiagnosticsFlowA(rootNode, summary, activeBeltTier, activePipeTier);
     } else {
       if (!parsedSave) return null;
       return aggregateDiagnosticsFlowB(parsedSave);
     }
-  }, [mode, rootNode, summary, activeBeltTier, parsedSave]);
+  }, [mode, rootNode, summary, activeBeltTier, activePipeTier, parsedSave]);
 
   // Adjust health score dynamically based on resolved fixes!
   const adjustedHealthScore = useMemo(() => {

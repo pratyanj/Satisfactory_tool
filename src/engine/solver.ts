@@ -1,4 +1,4 @@
-import { ItemId, MachineId, Recipe, RecipeId, items, machines, recipes } from './data';
+import { ItemId, MachineId, Recipe, RecipeId, items, machines, recipes, isFluidItem } from './data';
 
 export interface SolverNode {
   itemId: ItemId;
@@ -8,6 +8,8 @@ export interface SolverNode {
   machineId: MachineId;
   inputs: SolverNode[];
   byproducts?: { itemId: ItemId; rate: number }[];
+  clockSpeed?: number;      // e.g. 100, 150, 200, 250
+  somerslooped?: boolean;   // if true, 2x output
 }
 
 export type RecipeSelectionMap = Partial<Record<ItemId, RecipeId>>;
@@ -62,65 +64,277 @@ export function getAlternateRecipeCandidates(rootItemId: ItemId, recipeSelection
   return result;
 }
 
-export function solve(
-  itemId: ItemId,
-  requiredRate: number,
-  minerId: MachineId = "miner_mk1",
+/** Machine types that extract fluids (water / oil / nitrogen) rather than mining solids. */
+export const EXTRACTOR_MACHINE_IDS: MachineId[] = ['water_extractor', 'oil_extractor', 'resource_well_pressurizer'];
+
+export interface ChainUsage {
+  /** Every machine type used anywhere in the production chain. */
+  machineIds: Set<MachineId>;
+  /** True when the chain relies on a fluid extractor (water / oil / nitrogen). */
+  usesExtractor: boolean;
+  /** True when the chain transports any fluid (liquid or gas) — i.e. needs pipes. */
+  usesFluid: boolean;
+}
+
+/**
+ * Walk the recipe tree for the given targets and report which machine types and
+ * transport modes the chain actually uses. Lets the UI surface only the controls
+ * (extractor tier, pipe tier) that are relevant to the current plan.
+ */
+export function analyzeChainUsage(
+  targetItemIds: ItemId[],
   recipeSelections: RecipeSelectionMap = {}
+): ChainUsage {
+  const machineIds = new Set<MachineId>();
+  let usesFluid = false;
+  const visited = new Set<ItemId>();
+
+  const walk = (itemId: ItemId) => {
+    if (visited.has(itemId)) return;
+    visited.add(itemId);
+    if (isFluidItem(itemId)) usesFluid = true;
+
+    const recipe = getRecipeForItem(itemId, recipeSelections);
+    if (!recipe) return;
+    machineIds.add(recipe.machineId);
+    for (const input of recipe.inputs) walk(input.itemId);
+  };
+  targetItemIds.forEach(walk);
+
+  const usesExtractor = EXTRACTOR_MACHINE_IDS.some((id) => machineIds.has(id));
+  return { machineIds, usesExtractor, usesFluid };
+}
+
+export function solve(
+  itemIdOrTargets: ItemId | Record<ItemId, number>,
+  requiredRate?: number,
+  minerId: MachineId = "miner_mk1",
+  recipeSelections: RecipeSelectionMap = {},
+  beltId: string = "mk1",
+  pipeTier: 'mk1' | 'mk2' = 'mk1',
+  extractorOverclock: number = 100,
+  globalOverclock: number = 100,
+  somersloopMultiplier: number = 1,
+  perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean }>
 ): SolverNode {
+  const targets: Record<ItemId, number> = typeof itemIdOrTargets === 'string'
+    ? { [itemIdOrTargets]: requiredRate ?? 0 }
+    : itemIdOrTargets;
+
   const activeStack = new Set<ItemId>();
+  let byproductPool: Record<ItemId, number> = {};
+  let finalRoot: SolverNode | null = null;
 
-  function solveInternal(currentId: ItemId, rate: number): SolverNode {
-    if (activeStack.has(currentId)) {
-      throw new Error(`Circular dependency detected in recipe chain for item: ${items[currentId]?.name || currentId}`);
-    }
-    activeStack.add(currentId);
+  // Numerical Fixed-Point Convergence (converges within 5 passes)
+  for (let pass = 0; pass < 5; pass++) {
+    const poolCopy = { ...byproductPool };
+    const solvedInputs: SolverNode[] = [];
 
-    try {
-      const recipe = getRecipeForItem(currentId, recipeSelections);
-      if (!recipe) {
-        throw new Error(`No recipe found for item: ${items[currentId]?.name || currentId}`);
-      }
+    for (const [targetId, targetRate] of Object.entries(targets)) {
+      activeStack.clear();
 
-      let outputRate = recipe.outputRate;
-      let machineIdToUse = recipe.machineId;
+      function solveNode(currentId: ItemId, rate: number): SolverNode {
+        if (activeStack.has(currentId)) {
+          throw new Error(`Circular dependency detected in recipe chain for item: ${items[currentId]?.name || currentId}`);
+        }
+        activeStack.add(currentId);
 
-      if (recipe.inputs.length === 0) {
-        if (machineIdToUse.startsWith('miner')) {
-          machineIdToUse = minerId;
-          if (minerId === "miner_mk2") outputRate = 120;
-          else if (minerId === "miner_mk3") outputRate = 240;
-          else outputRate = 60;
+        try {
+          const recipe = getRecipeForItem(currentId, recipeSelections);
+          if (!recipe) {
+            throw new Error(`No recipe found for item: ${items[currentId]?.name || currentId}`);
+          }
+
+          let outputRate = recipe.outputRate;
+          let machineIdToUse = recipe.machineId;
+
+          const customSettings = perMachineSettings?.[currentId];
+          const nodeOverclock = customSettings?.clockSpeed ?? (
+            machineIdToUse.startsWith('miner')
+              ? 100
+              : (machineIdToUse === 'water_extractor' || machineIdToUse === 'oil_extractor')
+                ? extractorOverclock
+                : globalOverclock
+          );
+          const nodeSomersloop = customSettings?.somerslooped !== undefined
+            ? customSettings.somerslooped
+            : (somersloopMultiplier > 1 && recipe.inputs.length > 0);
+
+          const effectiveSomersloopMultiplier = nodeSomersloop ? 2 : 1;
+
+          if (recipe.inputs.length === 0) {
+            if (machineIdToUse.startsWith('miner')) {
+              machineIdToUse = minerId;
+              if (minerId === "miner_mk2") outputRate = 120;
+              else if (minerId === "miner_mk3") outputRate = 240;
+              else outputRate = 60;
+              
+              if (customSettings?.clockSpeed !== undefined) {
+                outputRate = outputRate * (nodeOverclock / 100);
+              }
+            } else if (machineIdToUse === 'water_extractor' || machineIdToUse === 'oil_extractor') {
+              outputRate = 120 * (nodeOverclock / 100);
+            }
+          } else {
+            // Production machines can be overclocked and Somerslooped
+            outputRate = outputRate * (nodeOverclock / 100) * effectiveSomersloopMultiplier;
+          }
+
+          // Consume from byproducts pool if available
+          let reusedFromPool = 0;
+          if (poolCopy[currentId] > 0) {
+            reusedFromPool = Math.min(rate, poolCopy[currentId]);
+            poolCopy[currentId] -= reusedFromPool;
+          }
+
+          const remainingRate = rate - reusedFromPool;
+          const machineCount = remainingRate / outputRate;
+
+          const nodeInputs: SolverNode[] = [];
+
+          for (const input of recipe.inputs) {
+            // Overclocking scales input rate linearly. Somerslooping does not increase input consumption!
+            const machineInputRate = input.rate * (nodeOverclock / 100);
+            const requiredInputRate = machineInputRate * machineCount;
+            if (requiredInputRate > 0.001) {
+              nodeInputs.push(solveNode(input.itemId, requiredInputRate));
+            }
+          }
+
+          if (reusedFromPool > 0) {
+            nodeInputs.push({
+              itemId: currentId,
+              recipeId: 'byproduct_reuse',
+              rate: reusedFromPool,
+              machines: 0,
+              machineId: 'byproduct_reused',
+              inputs: [],
+            });
+          }
+
+          const byproducts = (recipe.byproducts || []).map(bp => ({
+            itemId: bp.itemId,
+            rate: bp.rate * (nodeOverclock / 100) * effectiveSomersloopMultiplier * machineCount
+          }));
+
+          return {
+            itemId: currentId,
+            recipeId: recipe.id,
+            rate,
+            machines: machineCount,
+            machineId: machineIdToUse,
+            inputs: nodeInputs,
+            byproducts,
+            clockSpeed: nodeOverclock,
+            somerslooped: nodeSomersloop,
+          };
+        } finally {
+          activeStack.delete(currentId);
         }
       }
 
-      const machineCount = rate / outputRate;
+      solvedInputs.push(solveNode(targetId, targetRate));
+    }
 
-      const result: SolverNode = {
-        itemId: currentId,
-        recipeId: recipe.id,
-        rate,
-        machines: machineCount,
-        machineId: machineIdToUse,
-        inputs: [],
-        byproducts: (recipe.byproducts || []).map(bp => ({
-          itemId: bp.itemId,
-          rate: bp.rate * machineCount
-        }))
-      };
-
-      for (const input of recipe.inputs) {
-        const requiredInputRate = input.rate * machineCount;
-        result.inputs.push(solveInternal(input.itemId, requiredInputRate));
+    // Recalculate byproduct pool from output results
+    const newByproducts: Record<ItemId, number> = {};
+    function collectByproducts(node: SolverNode) {
+      if (node.byproducts) {
+        for (const bp of node.byproducts) {
+          newByproducts[bp.itemId] = (newByproducts[bp.itemId] || 0) + bp.rate;
+        }
       }
+      for (const input of node.inputs) {
+        collectByproducts(input);
+      }
+    }
+    solvedInputs.forEach(collectByproducts);
 
-      return result;
-    } finally {
-      activeStack.delete(currentId);
+    let isStable = true;
+    for (const [itemId, rate] of Object.entries(newByproducts)) {
+      if (Math.abs((byproductPool[itemId] ?? 0) - rate) > 0.01) {
+        isStable = false;
+        break;
+      }
+    }
+
+    byproductPool = newByproducts;
+
+    finalRoot = {
+      itemId: 'planned_outputs',
+      recipeId: 'recipe_planned_outputs',
+      rate: 0,
+      machines: 0,
+      machineId: 'planned_outputs',
+      inputs: solvedInputs,
+    };
+
+    if (isStable) break;
+  }
+
+  // Route any excess byproducts to the AWESOME Sink
+  if (finalRoot) {
+    const excessByproducts: { itemId: ItemId; rate: number }[] = [];
+    const totalProduced: Record<ItemId, number> = {};
+    const totalReused: Record<ItemId, number> = {};
+
+    function countFlows(node: SolverNode) {
+      if (node.recipeId === 'byproduct_reuse') {
+        totalReused[node.itemId] = (totalReused[node.itemId] || 0) + node.rate;
+      }
+      if (node.byproducts) {
+        for (const bp of node.byproducts) {
+          totalProduced[bp.itemId] = (totalProduced[bp.itemId] || 0) + bp.rate;
+        }
+      }
+      for (const input of node.inputs) {
+        countFlows(input);
+      }
+    }
+    finalRoot.inputs.forEach(countFlows);
+
+    for (const [itemId, producedRate] of Object.entries(totalProduced)) {
+      const reusedRate = totalReused[itemId] ?? 0;
+      const excess = producedRate - reusedRate;
+      if (excess > 0.01) {
+        excessByproducts.push({ itemId, rate: excess });
+      }
+    }
+
+    if (excessByproducts.length > 0) {
+      const sinkInputs = excessByproducts.map(ep => ({
+        itemId: ep.itemId,
+        recipeId: `sink_${ep.itemId}`,
+        rate: ep.rate,
+        machines: 0,
+        machineId: 'awesome_sink',
+        inputs: [],
+      }));
+
+      finalRoot.inputs.push({
+        itemId: 'awesome_sink',
+        recipeId: 'recipe_awesome_sink',
+        rate: excessByproducts.reduce((acc, ep) => acc + ep.rate, 0),
+        machines: excessByproducts.reduce((acc, ep) => acc + ep.rate, 0) / 60,
+        machineId: 'awesome_sink',
+        inputs: sinkInputs,
+      });
     }
   }
 
-  return solveInternal(itemId, requiredRate);
+  // Preserve 100% single-item backward compatibility if possible
+  if (typeof itemIdOrTargets === 'string' && finalRoot && finalRoot.inputs.length === 1 && !finalRoot.inputs.some(inp => inp.itemId === 'awesome_sink')) {
+    return finalRoot.inputs[0];
+  }
+
+  return finalRoot || {
+    itemId: 'planned_outputs',
+    recipeId: 'recipe_planned_outputs',
+    rate: 0,
+    machines: 0,
+    machineId: 'planned_outputs',
+    inputs: [],
+  };
 }
 
 /** Details about what a specific building type produces */
@@ -155,10 +369,36 @@ export function calculateSummary(rootNode: SolverNode): SummaryData {
   producedItems[rootNode.itemId] = rootNode.rate;
 
   function traverse(node: SolverNode) {
-    machineCounts[node.machineId] = (machineCounts[node.machineId] || 0) + node.machines;
-    totalPower += node.machines * machines[node.machineId].powerUsage;
+    if (node.machineId !== 'planned_outputs' && node.machineId !== 'byproduct_reused') {
+      const machineInfo = machines[node.machineId] || { name: node.machineId, powerUsage: 0 };
+      machineCounts[node.machineId] = (machineCounts[node.machineId] || 0) + node.machines;
+      
+      const clock = node.clockSpeed ?? 100;
+      const isSomerslooped = node.somerslooped ?? false;
+      
+      // Power = basePower * (clockSpeed / 100)^1.6
+      let powerPerMachine = machineInfo.powerUsage * Math.pow(clock / 100, 1.6);
+      if (isSomerslooped) {
+        powerPerMachine *= 4; // Somerslooping costs 4x power!
+      }
+      
+      totalPower += node.machines * powerPerMachine;
 
-    // Aggregate all item rates (every node produces something)
+      if (!buildingDetails[node.machineId]) {
+        buildingDetails[node.machineId] = {
+          machineId: node.machineId,
+          count: 0,
+          produces: {},
+          buildCost: {},
+        };
+      }
+      const detail = buildingDetails[node.machineId];
+      if (!detail.produces) detail.produces = {};
+      if (!detail.buildCost) detail.buildCost = {};
+      detail.count += node.machines;
+      detail.produces[node.itemId] = (detail.produces[node.itemId] || 0) + node.rate;
+    }
+
     allItemRates[node.itemId] = (allItemRates[node.itemId] || 0) + node.rate;
     
     if (node.byproducts) {
@@ -168,24 +408,10 @@ export function calculateSummary(rootNode: SolverNode): SummaryData {
       }
     }
 
-    // Aggregate building details
-    if (!buildingDetails[node.machineId]) {
-      buildingDetails[node.machineId] = {
-        machineId: node.machineId,
-        count: 0,
-        produces: {},
-        buildCost: {},
-      };
-    }
-    const detail = buildingDetails[node.machineId];
-    // Defensive: ensure produces/buildCost exist in case of a stale or partial object
-    if (!detail.produces) detail.produces = {};
-    if (!detail.buildCost) detail.buildCost = {};
-    detail.count += node.machines;
-    detail.produces[node.itemId] = (detail.produces[node.itemId] || 0) + node.rate;
-
     if (node.inputs.length === 0) {
-      rawInputs[node.itemId] = (rawInputs[node.itemId] || 0) + node.rate;
+      if (node.machineId !== 'planned_outputs' && node.machineId !== 'byproduct_reused') {
+        rawInputs[node.itemId] = (rawInputs[node.itemId] || 0) + node.rate;
+      }
     } else {
       for (const child of node.inputs) {
         traverse(child);

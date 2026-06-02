@@ -28,6 +28,8 @@ import {
 } from '../../engine/sandbox/serializer';
 import { computeFactoryStats } from '../../engine/sandbox/simulation';
 import type { SandboxState, SandboxAction, FactoryStats } from '../../engine/sandbox/types';
+import { SandboxErrorBoundary } from './SandboxErrorBoundary';
+
 
 // ─── Context ──────────────────────────────────────────────────────────────────
 
@@ -92,49 +94,51 @@ export function SandboxTab() {
 
   return (
     <SandboxContext.Provider value={contextValue}>
-      <div className="sandbox-root">
-        {/* Left — Machine Browser */}
-        <SandboxSidebar selectedMachineIds={state.selectedMachineIds} />
+      <SandboxErrorBoundary>
+        <div className="sandbox-root">
+          {/* Left — Machine Browser */}
+          <SandboxSidebar selectedMachineIds={state.selectedMachineIds} />
 
-        {/* Centre — Canvas + Toolbar */}
-        <div className="sandbox-center">
-          <SandboxToolbar />
-          <div className="sandbox-canvas-area">
-            <SandboxCanvas />
+          {/* Centre — Canvas + Toolbar */}
+          <div className="sandbox-center">
+            <SandboxToolbar />
+            <div className="sandbox-canvas-area">
+              <SandboxCanvas />
+            </div>
+            <SandboxStatusBar stats={stats} />
           </div>
-          <SandboxStatusBar stats={stats} />
-        </div>
 
-        {/* Right — Inspector (multi-machine OR machine OR belt OR power line) */}
-        <div className={`sandbox-inspector-panel ${inspectorOpen ? 'is-open' : ''}`}>
-          {isMultiSelect && (
-            <ArrayInspector
-              selectedIds={state.selectedMachineIds}
-              machines={state.machines}
-              dispatch={dispatch}
-            />
-          )}
-          {!isMultiSelect && selectedMachine && (
-            <MachineInspector machine={selectedMachine} dispatch={dispatch} stats={stats} />
-          )}
-          {!isMultiSelect && selectedBelt && (
-            <BeltInspector
-              belt={selectedBelt}
-              machines={state.machines}
-              stats={stats}
-              dispatch={dispatch}
-            />
-          )}
-          {!isMultiSelect && selectedPowerLine && (
-            <PowerInspector
-              line={selectedPowerLine}
-              state={state}
-              stats={stats}
-              dispatch={dispatch}
-            />
-          )}
+          {/* Right — Inspector (multi-machine OR machine OR belt OR power line) */}
+          <div className={`sandbox-inspector-panel ${inspectorOpen ? 'is-open' : ''}`}>
+            {isMultiSelect && (
+              <ArrayInspector
+                selectedIds={state.selectedMachineIds}
+                machines={state.machines}
+                dispatch={dispatch}
+              />
+            )}
+            {!isMultiSelect && selectedMachine && (
+              <MachineInspector machine={selectedMachine} dispatch={dispatch} stats={stats} />
+            )}
+            {!isMultiSelect && selectedBelt && (
+              <BeltInspector
+                belt={selectedBelt}
+                machines={state.machines}
+                stats={stats}
+                dispatch={dispatch}
+              />
+            )}
+            {!isMultiSelect && selectedPowerLine && (
+              <PowerInspector
+                line={selectedPowerLine}
+                state={state}
+                stats={stats}
+                dispatch={dispatch}
+              />
+            )}
+          </div>
         </div>
-      </div>
+      </SandboxErrorBoundary>
     </SandboxContext.Provider>
   );
 }

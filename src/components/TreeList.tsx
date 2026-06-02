@@ -114,6 +114,32 @@ function TreeNodeRow({ node, depth }: { node: SolverNode; depth: number }) {
   );
 }
 
+/** A single output target: its item header + the machine tree that produces it. */
+function TreeTarget({ node }: { node: SolverNode }) {
+  const item = items[node.itemId];
+  return (
+    <div className="tree-target-block">
+      {/* Target header — shows the actual output item the user is getting */}
+      <div className="tree-target">
+        <div className="tree-target-icon">
+          {item?.imageUrl && (
+            <AppImage idKey={node.itemId} fallbackUrl={item.imageUrl} alt={item?.name} />
+          )}
+        </div>
+        <span className="tree-target-label">
+          {node.rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}x{' '}
+          <span className="tree-target-name">{item?.name || node.itemId}</span>
+        </span>
+      </div>
+
+      {/* Tree */}
+      <div className="tree-body">
+        <TreeNodeRow node={node} depth={0} />
+      </div>
+    </div>
+  );
+}
+
 export function TreeList({ rootNode, summary }: TreeListProps) {
   if (!rootNode || !summary) {
     return (
@@ -123,30 +149,20 @@ export function TreeList({ rootNode, summary }: TreeListProps) {
     );
   }
 
-  const item = items[rootNode.itemId];
+  // The solver wraps multiple targets under a synthetic 'planned_outputs' root.
+  // Render each real output as its own tree so the user sees what they're getting,
+  // rather than the internal root node. Excess byproducts (awesome_sink) are skipped.
+  const targets =
+    rootNode.itemId === 'planned_outputs'
+      ? rootNode.inputs.filter((n) => n.itemId !== 'awesome_sink')
+      : [rootNode];
 
   return (
     <div className="tab-content tree-list-tab">
-      {/* Target header */}
-      <div className="tree-target">
-        <div className="tree-target-icon">
-          {item?.imageUrl && (
-            <AppImage
-              idKey={rootNode.itemId}
-              fallbackUrl={item.imageUrl}
-              alt={item?.name}
-            />
-          )}
-        </div>
-        <span className="tree-target-label">
-          {rootNode.rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}x{' '}
-          <span className="tree-target-name">{item?.name || rootNode.itemId}</span>
-        </span>
-      </div>
-
-      {/* Tree */}
-      <div className="tree-body">
-        <TreeNodeRow node={rootNode} depth={0} />
+      <div className="tree-targets">
+        {targets.map((target, idx) => (
+          <TreeTarget key={`${target.itemId}-${idx}`} node={target} />
+        ))}
       </div>
 
       {/* Power footer */}

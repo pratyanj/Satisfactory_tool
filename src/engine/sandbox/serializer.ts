@@ -94,12 +94,17 @@ export function loadFromLocalStorage(): SandboxState | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as SandboxState;
     // Merge with defaults so new fields added in future versions are present
-    return { ...DEFAULT_STATE, ...parsed };
+    return {
+      ...DEFAULT_STATE,
+      ...parsed,
+      powerLines: parsed.powerLines ?? [],
+    };
   } catch (e) {
     console.warn('[Sandbox] Failed to load from localStorage', e);
     return null;
   }
 }
+
 
 // ─── URL Share Hash ───────────────────────────────────────────────────────────
 
@@ -134,15 +139,35 @@ export function loadFromShareHash(hash: string): Partial<SandboxState> | null {
 
 export function sandboxReducer(state: SandboxState, action: SandboxAction): SandboxState {
   switch (action.type) {
-    case 'PLACE_MACHINE':
+    case 'PLACE_MACHINE': {
+      const fp = getMachineFootprint(action.machine.machineId);
+      const fpMap = buildFootprintMap(state.machines);
+      fpMap.set(action.machine.machineId, fp);
+      if (!canPlace(state, action.machine.machineId, action.machine.position, fp, fpMap)) {
+        console.warn('[FICSIT Sandbox] Blocked PLACE_MACHINE due to overlap validation at', action.machine.position);
+        return state;
+      }
       return {
         ...state,
         machines: [...state.machines, action.machine],
         selectedMachineId: action.machine.instanceId,
         selectedMachineIds: [],
       };
+    }
 
-    case 'MOVE_MACHINE':
+    case 'MOVE_MACHINE': {
+      const targetMach = state.machines.find((m) => m.instanceId === action.instanceId);
+      if (!targetMach) return state;
+      const fp = getMachineFootprint(targetMach.machineId);
+      const fpMap = buildFootprintMap(state.machines);
+      const stateWithout = {
+        ...state,
+        machines: state.machines.filter((m) => m.instanceId !== action.instanceId),
+      };
+      if (!canPlace(stateWithout, targetMach.machineId, action.position, fp, fpMap)) {
+        console.warn('[FICSIT Sandbox] Blocked MOVE_MACHINE due to overlap validation at', action.position);
+        return state;
+      }
       return {
         ...state,
         machines: state.machines.map((m) =>
@@ -151,6 +176,8 @@ export function sandboxReducer(state: SandboxState, action: SandboxAction): Sand
             : m
         ),
       };
+    }
+
 
     case 'ROTATE_MACHINE':
       return {
@@ -171,11 +198,12 @@ export function sandboxReducer(state: SandboxState, action: SandboxAction): Sand
             b.from.machineInstanceId !== action.instanceId &&
             b.to.machineInstanceId   !== action.instanceId
         ),
-        powerLines: state.powerLines.filter(
+        powerLines: (state.powerLines ?? []).filter(
           (pl) =>
             pl.fromMachineId !== action.instanceId &&
             pl.toMachineId   !== action.instanceId
         ),
+
         selectedMachineId:
           state.selectedMachineId === action.instanceId ? null : state.selectedMachineId,
         selectedMachineIds: state.selectedMachineIds.filter((id) => id !== action.instanceId),
@@ -260,14 +288,15 @@ export function sandboxReducer(state: SandboxState, action: SandboxAction): Sand
       };
 
     case 'ADD_POWER_LINE':
-      return { ...state, powerLines: [...state.powerLines, action.line] };
+      return { ...state, powerLines: [...(state.powerLines ?? []), action.line] };
 
     case 'DELETE_POWER_LINE':
       return {
         ...state,
-        powerLines: state.powerLines.filter((pl) => pl.lineId !== action.lineId),
+        powerLines: (state.powerLines ?? []).filter((pl) => pl.lineId !== action.lineId),
         selectedPowerLineId: state.selectedPowerLineId === action.lineId ? null : state.selectedPowerLineId,
       };
+
 
     case 'SELECT_POWER_LINE':
       return {
@@ -355,13 +384,28 @@ export function sandboxReducer(state: SandboxState, action: SandboxAction): Sand
     }
 
     case 'PLACE_MACHINE_ARRAY': {
+      const fpMap = buildFootprintMap(state.machines);
+      const validMachines: SandboxMachine[] = [];
+      const tempState = { ...state, machines: [...state.machines] };
+      for (const mach of action.machines) {
+        const fp = getMachineFootprint(mach.machineId);
+        fpMap.set(mach.machineId, fp);
+        if (canPlace(tempState, mach.machineId, mach.position, fp, fpMap)) {
+          validMachines.push(mach);
+          tempState.machines.push(mach);
+        } else {
+          console.warn('[FICSIT Sandbox] Blocked PLACE_MACHINE_ARRAY element due to overlap validation at', mach.position);
+        }
+      }
+      if (validMachines.length === 0) return state;
       return {
         ...state,
-        machines: [...state.machines, ...action.machines],
-        selectedMachineIds: action.machines.map((m) => m.instanceId),
+        machines: [...state.machines, ...validMachines],
+        selectedMachineIds: validMachines.map((m) => m.instanceId),
         selectedMachineId: null,
       };
     }
+
 
     case 'BULK_SET_OVERCLOCK': {
       const idSet = new Set(action.instanceIds);
@@ -385,9 +429,10 @@ export function sandboxReducer(state: SandboxState, action: SandboxAction): Sand
             !idSet.has(b.from.machineInstanceId) &&
             !idSet.has(b.to.machineInstanceId)
         ),
-        powerLines: state.powerLines.filter(
+        powerLines: (state.powerLines ?? []).filter(
           (pl) => !idSet.has(pl.fromMachineId) && !idSet.has(pl.toMachineId)
         ),
+
         selectedMachineIds: [],
         selectedMachineId: null,
         selectedBeltId: null,
@@ -524,8 +569,10 @@ export function sandboxReducer(state: SandboxState, action: SandboxAction): Sand
 
       for (const target of sorted) {
         if (getMachineMaxConnections(target.machineId) === 0) continue;
+        if (!target.position) continue;
 
         const targetFp = getMachineFootprint(target.machineId);
+
         
         // Find a free cell adjacent to the target machine (prefer bottom-right or right)
         const candidatePositions = [

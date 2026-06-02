@@ -100,5 +100,11 @@
     "name": "Converter",
     "powerUsage": 250,
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Converter.png"
+  },
+  "awesome_sink": {
+    "id": "awesome_sink",
+    "name": "AWESOME Sink",
+    "powerUsage": 30,
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/AWESOME_Sink.png"
   }
 }

@@ -161,18 +161,18 @@
   {
     "id": "recipe_ficsite_ingot",
     "outputItemId": "ficsite_ingot",
-    "outputRate": 30,
+    "outputRate": 10,
     "inputs": [
       {
-        "itemId": "iron_ore",
-        "rate": 30
+        "itemId": "reanimated_sam",
+        "rate": 40
       },
       {
-        "itemId": "sam",
-        "rate": 30
+        "itemId": "iron_ingot",
+        "rate": 240
       }
     ],
-    "machineId": "smelter"
+    "machineId": "converter"
   },
   {
     "id": "recipe_iron_plate",
@@ -309,7 +309,7 @@
     "inputs": [
       {
         "itemId": "wood",
-        "rate": 37.5
+        "rate": 60.0
       }
     ],
     "machineId": "constructor"
@@ -425,7 +425,7 @@
       },
       {
         "itemId": "steel_pipe",
-        "rate": 30
+        "rate": 40.0
       },
       {
         "itemId": "encased_industrial_beam",
@@ -433,7 +433,7 @@
       },
       {
         "itemId": "screw",
-        "rate": 200
+        "rate": 240.0
       }
     ],
     "machineId": "manufacturer"
@@ -484,7 +484,13 @@
         "rate": 30
       }
     ],
-    "machineId": "refinery"
+    "machineId": "refinery",
+    "byproducts": [
+      {
+        "itemId": "heavy_oil_residue",
+        "rate": 10.0
+      }
+    ]
   },
   {
     "id": "recipe_rubber",
@@ -496,7 +502,13 @@
         "rate": 30
       }
     ],
-    "machineId": "refinery"
+    "machineId": "refinery",
+    "byproducts": [
+      {
+        "itemId": "heavy_oil_residue",
+        "rate": 20.0
+      }
+    ]
   },
   {
     "id": "recipe_heavy_oil_residue",
@@ -508,7 +520,13 @@
         "rate": 30
       }
     ],
-    "machineId": "refinery"
+    "machineId": "refinery",
+    "byproducts": [
+      {
+        "itemId": "polymer_resin",
+        "rate": 20.0
+      }
+    ]
   },
   {
     "id": "recipe_petroleum_coke",
@@ -532,7 +550,13 @@
         "rate": 60
       }
     ],
-    "machineId": "refinery"
+    "machineId": "refinery",
+    "byproducts": [
+      {
+        "itemId": "polymer_resin",
+        "rate": 30.0
+      }
+    ]
   },
   {
     "id": "recipe_circuit_board",
@@ -557,15 +581,15 @@
     "inputs": [
       {
         "itemId": "circuit_board",
-        "rate": 25
+        "rate": 10.0
       },
       {
         "itemId": "cable",
-        "rate": 22.5
+        "rate": 20.0
       },
       {
         "itemId": "plastic",
-        "rate": 45
+        "rate": 40.0
       }
     ],
     "machineId": "manufacturer"
@@ -620,7 +644,13 @@
         "rate": 180
       }
     ],
-    "machineId": "refinery"
+    "machineId": "refinery",
+    "byproducts": [
+      {
+        "itemId": "silica",
+        "rate": 50.0
+      }
+    ]
   },
   {
     "id": "recipe_aluminum_scrap",
@@ -636,7 +666,13 @@
         "rate": 120
       }
     ],
-    "machineId": "refinery"
+    "machineId": "refinery",
+    "byproducts": [
+      {
+        "itemId": "water",
+        "rate": 120.0
+      }
+    ]
   },
   {
     "id": "recipe_aluminum_casing",
@@ -684,7 +720,13 @@
         "rate": 20
       }
     ],
-    "machineId": "blender"
+    "machineId": "blender",
+    "byproducts": [
+      {
+        "itemId": "water",
+        "rate": 30.0
+      }
+    ]
   },
   {
     "id": "recipe_radio_control_unit",
@@ -693,7 +735,7 @@
     "inputs": [
       {
         "itemId": "aluminum_casing",
-        "rate": 80
+        "rate": 40.0
       },
       {
         "itemId": "crystal_oscillator",
@@ -701,7 +743,7 @@
       },
       {
         "itemId": "computer",
-        "rate": 1.25
+        "rate": 2.5
       }
     ],
     "machineId": "manufacturer"
@@ -865,7 +907,7 @@
     "inputs": [
       {
         "itemId": "computer",
-        "rate": 3.75
+        "rate": 7.5
       },
       {
         "itemId": "ai_limiter",
@@ -973,7 +1015,7 @@
     "inputs": [
       {
         "itemId": "automated_wiring",
-        "rate": 7.5
+        "rate": 5.0
       },
       {
         "itemId": "circuit_board",
@@ -985,7 +1027,7 @@
       },
       {
         "itemId": "computer",
-        "rate": 1
+        "rate": 2.0
       }
     ],
     "machineId": "manufacturer"
@@ -1025,7 +1067,7 @@
   {
     "id": "recipe_thermal_propulsion_rocket",
     "outputItemId": "thermal_propulsion_rocket",
-    "outputRate": 0.5,
+    "outputRate": 1.0,
     "inputs": [
       {
         "itemId": "modular_engine",
@@ -1033,15 +1075,15 @@
       },
       {
         "itemId": "turbo_motor",
-        "rate": 0.5
+        "rate": 1.0
       },
       {
         "itemId": "cooling_system",
-        "rate": 1.5
+        "rate": 3.0
       },
       {
         "itemId": "fused_modular_frame",
-        "rate": 0.5
+        "rate": 1.0
       }
     ],
     "machineId": "manufacturer"
@@ -1066,12 +1108,7 @@
     "id": "recipe_alien_protein",
     "outputItemId": "alien_protein",
     "outputRate": 20,
-    "inputs": [
-      {
-        "itemId": "alien_dna_capsule",
-        "rate": 10
-      }
-    ],
+    "inputs": [],
     "machineId": "constructor"
   },
   {
@@ -1105,39 +1142,57 @@
     "inputs": [
       {
         "itemId": "reanimated_sam",
-        "rate": 30
+        "rate": 60
       },
       {
         "itemId": "wire",
         "rate": 50
+      },
+      {
+        "itemId": "steel_pipe",
+        "rate": 30
       }
     ],
-    "machineId": "assembler"
+    "machineId": "manufacturer"
   },
   {
     "id": "recipe_superposition_oscillator",
     "outputItemId": "superposition_oscillator",
-    "outputRate": 1,
+    "outputRate": 5,
     "inputs": [
       {
-        "itemId": "crystal_oscillator",
-        "rate": 1
+        "itemId": "dark_matter_crystal",
+        "rate": 30
       },
       {
-        "itemId": "sam_fluctuator",
-        "rate": 1
+        "itemId": "crystal_oscillator",
+        "rate": 5
+      },
+      {
+        "itemId": "alclad_aluminum_sheet",
+        "rate": 45
+      },
+      {
+        "itemId": "excited_photonic_matter",
+        "rate": 125
       }
     ],
-    "machineId": "assembler"
+    "machineId": "quantum_encoder",
+    "byproducts": [
+      {
+        "itemId": "dark_matter_residue",
+        "rate": 125
+      }
+    ]
   },
   {
     "id": "recipe_diamonds",
     "outputItemId": "diamonds",
-    "outputRate": 10,
+    "outputRate": 30.0,
     "inputs": [
       {
         "itemId": "coal",
-        "rate": 100
+        "rate": 600.0
       }
     ],
     "machineId": "particle_accelerator"
@@ -1145,39 +1200,35 @@
   {
     "id": "recipe_time_crystal",
     "outputItemId": "time_crystal",
-    "outputRate": 5,
+    "outputRate": 6,
     "inputs": [
       {
         "itemId": "diamonds",
-        "rate": 10
-      },
-      {
-        "itemId": "reanimated_sam",
-        "rate": 10
+        "rate": 12
       }
     ],
-    "machineId": "quantum_encoder"
+    "machineId": "converter"
   },
   {
     "id": "recipe_dark_matter_crystal",
     "outputItemId": "dark_matter_crystal",
-    "outputRate": 5,
+    "outputRate": 30.0,
     "inputs": [
       {
         "itemId": "diamonds",
-        "rate": 5
+        "rate": 30.0
       },
       {
         "itemId": "dark_matter_residue",
-        "rate": 50
+        "rate": 150.0
       }
     ],
-    "machineId": "quantum_encoder"
+    "machineId": "particle_accelerator"
   },
   {
     "id": "recipe_singularity_cell",
     "outputItemId": "singularity_cell",
-    "outputRate": 1,
+    "outputRate": 10,
     "inputs": [
       {
         "itemId": "nuclear_pasta",
@@ -1185,47 +1236,83 @@
       },
       {
         "itemId": "dark_matter_crystal",
-        "rate": 10
+        "rate": 20
+      },
+      {
+        "itemId": "iron_plate",
+        "rate": 100
+      },
+      {
+        "itemId": "concrete",
+        "rate": 200
       }
     ],
-    "machineId": "quantum_encoder"
+    "machineId": "manufacturer"
   },
   {
     "id": "recipe_neural_quantum_processor",
     "outputItemId": "neural_quantum_processor",
-    "outputRate": 1,
+    "outputRate": 3,
     "inputs": [
       {
-        "itemId": "supercomputer",
-        "rate": 1
+        "itemId": "time_crystal",
+        "rate": 15
       },
       {
-        "itemId": "superposition_oscillator",
-        "rate": 1
+        "itemId": "supercomputer",
+        "rate": 3
+      },
+      {
+        "itemId": "ficsite_trigon",
+        "rate": 45
+      },
+      {
+        "itemId": "excited_photonic_matter",
+        "rate": 75
       }
     ],
-    "machineId": "quantum_encoder"
+    "machineId": "quantum_encoder",
+    "byproducts": [
+      {
+        "itemId": "dark_matter_residue",
+        "rate": 75
+      }
+    ]
   },
   {
     "id": "recipe_alien_power_matrix",
     "outputItemId": "alien_power_matrix",
-    "outputRate": 1,
+    "outputRate": 2.5,
     "inputs": [
       {
-        "itemId": "singularity_cell",
-        "rate": 1
+        "itemId": "sam_fluctuator",
+        "rate": 12.5
       },
       {
-        "itemId": "sam_fluctuator",
-        "rate": 10
+        "itemId": "power_shard",
+        "rate": 7.5
+      },
+      {
+        "itemId": "superposition_oscillator",
+        "rate": 7.5
+      },
+      {
+        "itemId": "excited_photonic_matter",
+        "rate": 60
       }
     ],
-    "machineId": "quantum_encoder"
+    "machineId": "quantum_encoder",
+    "byproducts": [
+      {
+        "itemId": "dark_matter_residue",
+        "rate": 60
+      }
+    ]
   },
   {
     "id": "recipe_ficsite_trigon",
     "outputItemId": "ficsite_trigon",
-    "outputRate": 10,
+    "outputRate": 30.0,
     "inputs": [
       {
         "itemId": "ficsite_ingot",
@@ -1237,18 +1324,22 @@
   {
     "id": "recipe_biochemical_sculptor",
     "outputItemId": "biochemical_sculptor",
-    "outputRate": 1,
+    "outputRate": 2,
     "inputs": [
       {
-        "itemId": "alien_power_matrix",
-        "rate": 1
+        "itemId": "assembly_director_system",
+        "rate": 0.5
       },
       {
         "itemId": "ficsite_trigon",
+        "rate": 40
+      },
+      {
+        "itemId": "water",
         "rate": 10
       }
     ],
-    "machineId": "quantum_encoder"
+    "machineId": "blender"
   },
   {
     "id": "recipe_ballistic_warp_drive",
@@ -1261,46 +1352,63 @@
       },
       {
         "itemId": "singularity_cell",
-        "rate": 1
+        "rate": 5
+      },
+      {
+        "itemId": "superposition_oscillator",
+        "rate": 2
+      },
+      {
+        "itemId": "dark_matter_crystal",
+        "rate": 40
       }
     ],
-    "machineId": "quantum_encoder"
+    "machineId": "manufacturer"
   },
   {
     "id": "recipe_ai_expansion_server",
     "outputItemId": "ai_expansion_server",
-    "outputRate": 1,
+    "outputRate": 4,
     "inputs": [
       {
-        "itemId": "neural_quantum_processor",
-        "rate": 1
+        "itemId": "magnetic_field_generator",
+        "rate": 4
       },
       {
-        "itemId": "assembly_director_system",
-        "rate": 1
+        "itemId": "neural_quantum_processor",
+        "rate": 4
+      },
+      {
+        "itemId": "superposition_oscillator",
+        "rate": 4
+      },
+      {
+        "itemId": "excited_photonic_matter",
+        "rate": 100
       }
     ],
-    "machineId": "quantum_encoder"
+    "machineId": "quantum_encoder",
+    "byproducts": [
+      {
+        "itemId": "dark_matter_residue",
+        "rate": 100
+      }
+    ]
   },
   {
     "id": "recipe_excited_photonic_matter",
     "outputItemId": "excited_photonic_matter",
-    "outputRate": 50,
-    "inputs": [
-      {
-        "itemId": "sam",
-        "rate": 50
-      }
-    ],
+    "outputRate": 200,
+    "inputs": [],
     "machineId": "converter"
   },
   {
     "id": "recipe_dark_matter_residue",
     "outputItemId": "dark_matter_residue",
-    "outputRate": 50,
+    "outputRate": 100,
     "inputs": [
       {
-        "itemId": "excited_photonic_matter",
+        "itemId": "reanimated_sam",
         "rate": 50
       }
     ],
@@ -1309,11 +1417,11 @@
   {
     "id": "recipe_encased_uranium_cell",
     "outputItemId": "encased_uranium_cell",
-    "outputRate": 20,
+    "outputRate": 25.0,
     "inputs": [
       {
         "itemId": "uranium",
-        "rate": 40
+        "rate": 50.0
       },
       {
         "itemId": "concrete",
@@ -1324,7 +1432,13 @@
         "rate": 40
       }
     ],
-    "machineId": "blender"
+    "machineId": "blender",
+    "byproducts": [
+      {
+        "itemId": "sulfuric_acid",
+        "rate": 10.0
+      }
+    ]
   },
   {
     "id": "recipe_uranium_fuel_rod",
@@ -1368,7 +1482,13 @@
         "rate": 15
       }
     ],
-    "machineId": "blender"
+    "machineId": "blender",
+    "byproducts": [
+      {
+        "itemId": "water",
+        "rate": 15.0
+      }
+    ]
   },
   {
     "id": "recipe_plutonium_pellet",
@@ -1389,15 +1509,15 @@
   {
     "id": "recipe_encased_plutonium_cell",
     "outputItemId": "encased_plutonium_cell",
-    "outputRate": 10,
+    "outputRate": 5.0,
     "inputs": [
       {
         "itemId": "plutonium_pellet",
-        "rate": 20
+        "rate": 10.0
       },
       {
         "itemId": "concrete",
-        "rate": 40
+        "rate": 20.0
       }
     ],
     "machineId": "assembler"
@@ -1436,8 +1556,12 @@
         "rate": 10
       },
       {
-        "itemId": "dark_matter_residue",
+        "itemId": "singularity_cell",
         "rate": 10
+      },
+      {
+        "itemId": "dark_matter_residue",
+        "rate": 200
       }
     ],
     "machineId": "particle_accelerator"
@@ -1445,18 +1569,32 @@
   {
     "id": "recipe_ficsonium_fuel_rod",
     "outputItemId": "ficsonium_fuel_rod",
-    "outputRate": 1,
+    "outputRate": 2.5,
     "inputs": [
       {
         "itemId": "ficsonium",
-        "rate": 10
+        "rate": 5
       },
       {
         "itemId": "electromagnetic_control_rod",
-        "rate": 1
+        "rate": 5
+      },
+      {
+        "itemId": "ficsite_trigon",
+        "rate": 100
+      },
+      {
+        "itemId": "excited_photonic_matter",
+        "rate": 50
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "quantum_encoder",
+    "byproducts": [
+      {
+        "itemId": "dark_matter_residue",
+        "rate": 50
+      }
+    ]
   },
   {
     "id": "recipe_empty_canister",
@@ -1466,6 +1604,18 @@
       {
         "itemId": "plastic",
         "rate": 30
+      }
+    ],
+    "machineId": "constructor"
+  },
+  {
+    "id": "recipe_empty_fluid_tank",
+    "outputItemId": "empty_fluid_tank",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "aluminum_ingot",
+        "rate": 60
       }
     ],
     "machineId": "constructor"
@@ -1521,18 +1671,24 @@
   {
     "id": "recipe_rocket_fuel",
     "outputItemId": "rocket_fuel",
-    "outputRate": 50,
+    "outputRate": 100,
     "inputs": [
       {
         "itemId": "turbofuel",
-        "rate": 50
+        "rate": 60
       },
       {
         "itemId": "nitric_acid",
         "rate": 10
       }
     ],
-    "machineId": "blender"
+    "machineId": "blender",
+    "byproducts": [
+      {
+        "itemId": "compacted_coal",
+        "rate": 10
+      }
+    ]
   },
   {
     "id": "recipe_ionized_fuel",
@@ -1545,10 +1701,16 @@
       },
       {
         "itemId": "power_shard",
-        "rate": 1
+        "rate": 2.5
       }
     ],
-    "machineId": "blender"
+    "machineId": "refinery",
+    "byproducts": [
+      {
+        "itemId": "compacted_coal",
+        "rate": 5
+      }
+    ]
   },
   {
     "id": "recipe_black_powder",
@@ -1585,15 +1747,15 @@
   {
     "id": "recipe_nobelisk",
     "outputItemId": "nobelisk",
-    "outputRate": 3,
+    "outputRate": 10.0,
     "inputs": [
       {
         "itemId": "black_powder",
-        "rate": 15
+        "rate": 20.0
       },
       {
         "itemId": "steel_pipe",
-        "rate": 15
+        "rate": 20.0
       }
     ],
     "machineId": "assembler"
@@ -1645,7 +1807,7 @@
   {
     "id": "recipe_dissolved_silica",
     "outputItemId": "dissolved_silica",
-    "outputRate": 120,
+    "outputRate": 60,
     "inputs": [
       {
         "itemId": "raw_quartz",
@@ -1653,7 +1815,7 @@
       },
       {
         "itemId": "nitric_acid",
-        "rate": 15
+        "rate": 10
       }
     ],
     "machineId": "refinery",
@@ -1674,7 +1836,13 @@
         "rate": 60
       }
     ],
-    "machineId": "refinery"
+    "machineId": "refinery",
+    "byproducts": [
+      {
+        "itemId": "heavy_oil_residue",
+        "rate": 20.0
+      }
+    ]
   },
   {
     "id": "recipe_fabric",
@@ -3618,6 +3786,179 @@
       }
     ],
     "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_synthetic_power_shard",
+    "name": "Synthetic Power Shard",
+    "outputItemId": "power_shard",
+    "outputRate": 5.0,
+    "inputs": [
+      {
+        "itemId": "time_crystal",
+        "rate": 10.0
+      },
+      {
+        "itemId": "dark_matter_crystal",
+        "rate": 10.0
+      },
+      {
+        "itemId": "quartz_crystal",
+        "rate": 60.0
+      },
+      {
+        "itemId": "excited_photonic_matter",
+        "rate": 60.0
+      }
+    ],
+    "byproducts": [
+      {
+        "itemId": "dark_matter_residue",
+        "rate": 60.0
+      }
+    ],
+    "machineId": "quantum_encoder"
+  },
+  {
+    "id": "recipe_packaged_rocket_fuel",
+    "name": "Packaged Rocket Fuel",
+    "outputItemId": "packaged_rocket_fuel",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "rocket_fuel",
+        "rate": 120
+      },
+      {
+        "itemId": "empty_fluid_tank",
+        "rate": 60
+      }
+    ],
+    "machineId": "packager"
+  },
+  {
+    "id": "recipe_packaged_ionized_fuel",
+    "name": "Packaged Ionized Fuel",
+    "outputItemId": "packaged_ionized_fuel",
+    "outputRate": 40.0,
+    "inputs": [
+      {
+        "itemId": "ionized_fuel",
+        "rate": 80.0
+      },
+      {
+        "itemId": "empty_fluid_tank",
+        "rate": 40.0
+      }
+    ],
+    "machineId": "packager"
+  },
+  {
+    "id": "recipe_alternate_screw_c",
+    "name": "Cast Screws",
+    "outputItemId": "screw",
+    "outputRate": 50,
+    "inputs": [
+      {
+        "itemId": "iron_ingot",
+        "rate": 12.5
+      }
+    ],
+    "machineId": "constructor",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_screw_2_c",
+    "name": "Steel Screws",
+    "outputItemId": "screw",
+    "outputRate": 260,
+    "inputs": [
+      {
+        "itemId": "steel_beam",
+        "rate": 5
+      }
+    ],
+    "machineId": "constructor",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_boltedframe_c",
+    "name": "Bolted Frame",
+    "outputItemId": "modular_frame",
+    "outputRate": 5,
+    "inputs": [
+      {
+        "itemId": "reinforced_iron_plate",
+        "rate": 7.5
+      },
+      {
+        "itemId": "screw",
+        "rate": 140
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_reinforcedironplate_1_c",
+    "name": "Bolted Iron Plate",
+    "outputItemId": "reinforced_iron_plate",
+    "outputRate": 15,
+    "inputs": [
+      {
+        "itemId": "iron_plate",
+        "rate": 90
+      },
+      {
+        "itemId": "screw",
+        "rate": 250
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_copperrotor_c",
+    "name": "Copper Rotor",
+    "outputItemId": "rotor",
+    "outputRate": 11.25,
+    "inputs": [
+      {
+        "itemId": "copper_sheet",
+        "rate": 22.5
+      },
+      {
+        "itemId": "screw",
+        "rate": 195
+      }
+    ],
+    "machineId": "assembler",
+    "isAlternate": true
+  },
+  {
+    "id": "recipe_alternate_heavyflexibleframe_c",
+    "name": "Heavy Flexible Frame",
+    "outputItemId": "heavy_modular_frame",
+    "outputRate": 3.75,
+    "inputs": [
+      {
+        "itemId": "modular_frame",
+        "rate": 18.75
+      },
+      {
+        "itemId": "encased_industrial_beam",
+        "rate": 11.25
+      },
+      {
+        "itemId": "rubber",
+        "rate": 75
+      },
+      {
+        "itemId": "screw",
+        "rate": 390
+      }
+    ],
+    "machineId": "manufacturer",
     "isAlternate": true
   }
 ]

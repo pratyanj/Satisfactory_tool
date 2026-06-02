@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import { InputForm } from './components/InputForm';
+import { InputForm, TargetOutput } from './components/InputForm';
 import { Summary } from './components/Summary';
 import { FactoryGraph } from './components/Graph/FactoryGraph';
 import { TreeList } from './components/TreeList';
@@ -24,7 +24,7 @@ import { DiagnosticsTab } from './components/DiagnosticsTab';
 
 import { solve, calculateSummary, SummaryData, SolverNode, RecipeSelectionMap } from './engine/solver';
 import { mapSolverResultToGraph, LayoutMode } from './engine/graphMapper';
-import { BeltId, MachineId, items, machines, belts } from './engine/data';
+import { BeltId, MachineId, items, machines, belts, recipes } from './engine/data';
 import { Edge, Node } from '@xyflow/react';
 
 type MainTab = 'network_graph' | 'tree_list' | 'items' | 'buildings' | 'world_map' | 'diagnostics';
@@ -90,6 +90,45 @@ function parseRecipeSelections(value: unknown): RecipeSelectionMap {
   return result;
 }
 
+function convertTargetToRate(target: TargetOutput): number {
+  if (target.mode === 'machine') {
+    const recipeId = target.recipeId;
+    const recipe = recipes.find(r => r.id === recipeId);
+    if (recipe) {
+      return (target.machineCount ?? 1) * recipe.outputRate;
+    }
+    const firstRecipe = recipes.find(r => r.outputItemId === target.itemId);
+    return (target.machineCount ?? 1) * (firstRecipe?.outputRate || 60);
+  }
+  
+  if (target.mode === 'belt') {
+    const tier = target.beltTier || 'mk1';
+    const capacity = belts[tier]?.capacity || 60;
+    return (target.beltCount ?? 1) * capacity;
+  }
+  
+  if (target.mode === 'pipe') {
+    const tier = target.pipeTier || 'mk1';
+    const capacity = tier === 'mk2' ? 600 : 300;
+    return (target.pipeCount ?? 1) * capacity;
+  }
+  
+  if (target.mode === 'resource') {
+    const purity = target.nodePurity || 'normal';
+    const baseRate = purity === 'pure' ? 120 : purity === 'impure' ? 30 : 60;
+    const minerId = target.nodeMinerId || 'miner_mk1';
+    
+    let minerMult = 1;
+    if (minerId === 'miner_mk2') minerMult = 2;
+    else if (minerId === 'miner_mk3') minerMult = 4;
+    
+    const clock = (target.nodeClockSpeed ?? 100) / 100;
+    return baseRate * minerMult * clock;
+  }
+  
+  return target.rate;
+}
+
 export default function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
@@ -99,7 +138,31 @@ export default function App() {
   const [parsedSave, setParsedSave] = useState<ParsedSave | null>(null);
 
 
-  const [lastInput, setLastInput] = useState<{ itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap }>({ itemId: 'copper_sheet', rate: 120, minerId: 'miner_mk1', beltId: 'mk1', recipeSelections: {} });
+  const [lastInput, setLastInput] = useState<{
+    itemId: string;
+    rate: number;
+    minerId: MachineId;
+    beltId: BeltId;
+    recipeSelections: RecipeSelectionMap;
+    targets?: TargetOutput[];
+    pipeTier?: 'mk1' | 'mk2';
+    extractorTier?: string;
+    overclock?: number;
+    somersloopMultiplier?: number;
+    perMachineSettings?: Record<string, { clockSpeed: number; somerslooped: boolean }>;
+  }>({
+    itemId: 'copper_sheet',
+    rate: 120,
+    minerId: 'miner_mk1',
+    beltId: 'mk1',
+    recipeSelections: {},
+    targets: [{ itemId: 'copper_sheet', rate: 120, mode: 'rate' as const }],
+    pipeTier: 'mk1',
+    extractorTier: 'mk1',
+    overclock: 100,
+    somersloopMultiplier: 1,
+    perMachineSettings: {},
+  });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
   const [mainTab, setMainTab] = useState<MainTab>('network_graph');
   const [topLevelTab, setTopLevelTab] = useState<TopLevelTab>('planner');
@@ -174,12 +237,15 @@ export default function App() {
         const encoded = hash.replace('#plan=', '');
         const decoded = JSON.parse(atob(decodeURIComponent(encoded)));
         if (decoded.i && items[decoded.i] && typeof decoded.r === 'number' && decoded.m && machines[decoded.m] && decoded.b && belts[decoded.b] && (decoded.l === 'aggregated' || decoded.l === 'expanded')) {
+          const targets = decoded.tg || [{ itemId: decoded.i, rate: decoded.r, mode: 'rate' as const }];
           setLastInput({
             itemId: decoded.i,
             rate: decoded.r,
             minerId: decoded.m,
             beltId: decoded.b,
             recipeSelections: parseRecipeSelections(decoded.ar),
+            targets: targets,
+            perMachineSettings: decoded.pm || {},
           });
           setLayoutMode(decoded.l);
           const top: TopLevelTab = decoded.t ?? 'planner';
@@ -297,6 +363,8 @@ export default function App() {
       l: layoutMode,
       t: topLevelTab,
       s: mainTab,
+      tg: lastInput.targets || [{ itemId: lastInput.itemId, rate: lastInput.rate }],
+      pm: lastInput.perMachineSettings || {},
     };
 
     const encoded = encodeURIComponent(btoa(JSON.stringify(payload)));
@@ -308,16 +376,94 @@ export default function App() {
     });
   }, [lastInput, layoutMode, topLevelTab, mainTab]);
 
-  const calculatePlan = (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap, mode: LayoutMode) => {
-    setLastInput({ itemId, rate, minerId, beltId, recipeSelections });
+  const handleUpdatePerMachineSettings = useCallback((itemId: string, settings: { clockSpeed?: number; somerslooped?: boolean }) => {
+    setLastInput(prev => {
+      const currentPm = prev.perMachineSettings || {};
+      const newPm = { ...currentPm };
+      
+      if (settings.clockSpeed === undefined && settings.somerslooped === undefined) {
+        delete newPm[itemId];
+      } else {
+        newPm[itemId] = {
+          clockSpeed: settings.clockSpeed ?? currentPm[itemId]?.clockSpeed ?? 100,
+          somerslooped: settings.somerslooped ?? currentPm[itemId]?.somerslooped ?? false,
+        };
+      }
+      
+      return {
+        ...prev,
+        perMachineSettings: newPm,
+      };
+    });
+  }, []);
+
+  const calculatePlan = (
+    itemId: string,
+    rate: number,
+    minerId: MachineId,
+    beltId: BeltId,
+    recipeSelections: RecipeSelectionMap,
+    mode: LayoutMode,
+    targets?: TargetOutput[],
+    pipeTier: 'mk1' | 'mk2' = 'mk1',
+    extractorTier: string = 'mk1',
+    overclock: number = 100,
+    somersloopMultiplier: number = 1,
+    perMachineSettings?: Record<string, { clockSpeed: number; somerslooped: boolean }>
+  ) => {
+    const targetsToUse = targets || [{
+      itemId,
+      rate,
+      mode: 'rate' as const,
+      machineCount: 1,
+      beltTier: 'mk1' as const,
+      beltCount: 1,
+      pipeTier: 'mk1' as const,
+      pipeCount: 1,
+      nodePurity: 'normal' as const,
+      nodeMinerId: 'miner_mk1' as const,
+      nodeClockSpeed: 100,
+    }];
+    setLastInput({
+      itemId,
+      rate,
+      minerId,
+      beltId,
+      recipeSelections,
+      targets: targetsToUse,
+      pipeTier,
+      extractorTier,
+      overclock,
+      somersloopMultiplier,
+      perMachineSettings: perMachineSettings || lastInput.perMachineSettings || {},
+    });
     try {
       setError(null);
-      const solvedRoot = solve(itemId, rate, minerId, recipeSelections);
+      
+      const targetsMap: Record<string, number> = {};
+      for (const t of targetsToUse) {
+        const computedRate = convertTargetToRate(t);
+        targetsMap[t.itemId] = (targetsMap[t.itemId] || 0) + computedRate;
+      }
+
+      const extractorOverclock = extractorTier === 'mk3' ? 250 : extractorTier === 'mk2' ? 200 : 100;
+      const solvedRoot = solve(
+        targetsMap,
+        undefined,
+        minerId,
+        recipeSelections,
+        beltId,
+        pipeTier,
+        extractorOverclock,
+        overclock,
+        somersloopMultiplier,
+        perMachineSettings || lastInput.perMachineSettings || {}
+      );
       const newSummary = calculateSummary(solvedRoot);
-      const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(solvedRoot, mode, beltId);
+      const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(solvedRoot, mode, beltId, pipeTier);
 
       // Integrate Diagnostics overlay directly on the ReactFlow graph
-      const diag = aggregateDiagnosticsFlowA(solvedRoot, newSummary, beltId);
+      const diag = aggregateDiagnosticsFlowA(solvedRoot, newSummary, beltId, pipeTier);
       const enrichedNodes = newNodes.map(node => {
         const item = node.data.itemId as string;
         if (item && diag.faultyMachineIds.has(item)) {
@@ -348,8 +494,19 @@ export default function App() {
   };
 
   // Run calculation strictly when requested
-  const handleCalculate = (itemId: string, rate: number, minerId: MachineId, beltId: BeltId, recipeSelections: RecipeSelectionMap) => {
-    calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode);
+  const handleCalculate = (
+    itemId: string,
+    rate: number,
+    minerId: MachineId,
+    beltId: BeltId,
+    recipeSelections: RecipeSelectionMap,
+    targets?: TargetOutput[],
+    pipeTier: 'mk1' | 'mk2' = 'mk1',
+    extractorTier: string = 'mk1',
+    overclock: number = 100,
+    somersloopMultiplier: number = 1
+  ) => {
+    calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode, targets, pipeTier, extractorTier, overclock, somersloopMultiplier, lastInput.perMachineSettings);
   };
 
   const handleResolveAction = useCallback((actionType: string, payload: any) => {
@@ -359,25 +516,46 @@ export default function App() {
         ...prev,
         beltId: targetBeltId,
       }));
+    } else if (actionType === 'upgrade_pipe') {
+      const { targetPipeTier } = payload;
+      setLastInput(prev => ({
+        ...prev,
+        pipeTier: targetPipeTier,
+      }));
     }
   }, []);
 
+  const targetsSignature = JSON.stringify(lastInput.targets);
   const recipeSelectionSignature = JSON.stringify(lastInput.recipeSelections);
+  const perMachineSettingsSignature = JSON.stringify(lastInput.perMachineSettings);
 
   // Step 1: Immediately show the spinner when inputs or mode change
   useEffect(() => {
     setIsRecalculating(true);
-  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, recipeSelectionSignature]);
+  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature]);
 
   // Step 2: Defer heavy graph calculations to the next tick (80ms), allowing the spinner to render and animate smoothly first!
   useEffect(() => {
     if (!isRecalculating) return;
     const timer = setTimeout(() => {
-      calculatePlan(lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.recipeSelections, layoutMode);
+      calculatePlan(
+        lastInput.itemId,
+        lastInput.rate,
+        lastInput.minerId,
+        lastInput.beltId,
+        lastInput.recipeSelections,
+        layoutMode,
+        lastInput.targets,
+        lastInput.pipeTier || 'mk1',
+        lastInput.extractorTier || 'mk1',
+        lastInput.overclock ?? 100,
+        lastInput.somersloopMultiplier ?? 1,
+        lastInput.perMachineSettings || {}
+      );
       setIsRecalculating(false);
     }, 80);
     return () => clearTimeout(timer);
-  }, [isRecalculating, layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, recipeSelectionSignature]);
+  }, [isRecalculating, layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature]);
 
 
   const renderTabContent = () => {
@@ -462,7 +640,15 @@ export default function App() {
               </div>
             )}
             <div className="w-full h-full">
-              <FactoryGraph initialNodes={nodes} initialEdges={edges} beltId={lastInput.beltId} isFullscreen={isGraphFullscreen} />
+              <FactoryGraph 
+                initialNodes={nodes}
+                initialEdges={edges}
+                beltId={lastInput.beltId}
+                pipeTier={lastInput.pipeTier || 'mk1'}
+                isFullscreen={isGraphFullscreen}
+                perMachineSettings={lastInput.perMachineSettings || {}}
+                onUpdatePerMachineSettings={handleUpdatePerMachineSettings}
+              />
             </div>
           </div>
         );
@@ -478,6 +664,7 @@ export default function App() {
             rootNode={rootNode}
             summary={summary}
             activeBeltTier={lastInput.beltId}
+            activePipeTier={lastInput.pipeTier || 'mk1'}
             parsedSave={parsedSave}
             onSaveUploaded={(save) => setParsedSave(save)}
             onResolveAction={handleResolveAction}
@@ -596,6 +783,7 @@ export default function App() {
                     rootNode={rootNode}
                     summary={summary}
                     activeBeltTier={lastInput.beltId}
+                    activePipeTier={lastInput.pipeTier || 'mk1'}
                     parsedSave={parsedSave}
                     onSaveUploaded={(save) => setParsedSave(save)}
                     onResolveAction={handleResolveAction}
