@@ -41,31 +41,38 @@ export const SatisfactoryEdge = React.memo(function SatisfactoryEdge({
   });
 
   const isOverloaded = !!data?.isOverloaded;
+  const isFluid = !!data?.isFluid;
   const flowRate = data?.rate as number || 0;
-  
+
   // Animation duration inversely proportional to flow
   const duration = isOverloaded ? 0.4 : Math.max(0.6, 3 / (flowRate / 60 + 0.5));
 
+  // Belts = slate, solid; Pipes (fluids/gases) = cyan, flowing dashes. Overload = red for both.
+  const baseStroke = isOverloaded ? '#ef4444' : isFluid ? '#0891b2' : '#64748b';
+  const flowStroke = isOverloaded ? '#fecaca' : isFluid ? '#67e8f9' : '#cbd5e1';
+  // Pipes get longer dashes (continuous fluid), belts get short dots (discrete items).
+  const flowDashArray = isFluid ? '10, 8' : '4, 16';
+
   return (
     <>
-      <BaseEdge 
-        path={edgePath} 
-        markerEnd={markerEnd} 
-        style={{ 
-          ...style, 
-          stroke: isOverloaded ? '#ef4444' : '#64748b',
+      <BaseEdge
+        path={edgePath}
+        markerEnd={markerEnd}
+        style={{
+          ...style,
+          stroke: baseStroke,
           strokeWidth: isOverloaded ? 4 : 3,
           transition: 'stroke 0.3s, stroke-width 0.3s'
-        }} 
+        }}
       />
-      
-      {/* Moving dots animation — keyframe is in index.css */}
+
+      {/* Moving flow animation — keyframe is in index.css */}
       <path
         d={edgePath}
         fill="none"
-        stroke={isOverloaded ? '#fecaca' : '#cbd5e1'}
+        stroke={flowStroke}
         strokeWidth={2}
-        strokeDasharray="4, 16"
+        strokeDasharray={flowDashArray}
         strokeLinecap="round"
         style={{
           animation: `dash ${duration}s linear infinite`,
@@ -83,13 +90,22 @@ export const SatisfactoryEdge = React.memo(function SatisfactoryEdge({
             }}
             className="nodrag nopan"
           >
-            <div 
+            <div
                 className={`px-2 py-0.5 rounded border text-[10px] font-mono font-bold shadow-sm flex items-center gap-1.5 ${
-                    isOverloaded 
-                    ? 'bg-[#7f1d1d] text-white border-[#ef4444]' 
+                    isOverloaded
+                    ? 'bg-[#7f1d1d] text-white border-[#ef4444]'
+                    : isFluid
+                    ? 'bg-[#0c2a33] text-[#cffafe] border-[#0e7490]'
                     : 'bg-[#151619] text-[#e5e7eb] border-[#374151]'
                 }`}
             >
+              {isFluid && (
+                <span title="Pipe (fluid)" className="shrink-0" style={{ color: '#67e8f9' }}>
+                  <svg width="9" height="11" viewBox="0 0 9 11" fill="currentColor" aria-hidden="true">
+                    <path d="M4.5 0C4.5 0 0 5 0 7.5A4.5 4.5 0 0 0 9 7.5C9 5 4.5 0 4.5 0Z" />
+                  </svg>
+                </span>
+              )}
               {data?.itemImageUrl && (
                 <AppImage 
                   idKey={undefined}

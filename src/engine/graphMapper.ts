@@ -1,6 +1,6 @@
 import { Edge, Node } from '@xyflow/react';
 import dagre from 'dagre';
-import { belts, BeltId, items, machines, recipes } from './data';
+import { belts, BeltId, items, machines, recipes, isFluidItem } from './data';
 import { SolverNode } from './solver';
 
 function generateId() {
@@ -9,16 +9,23 @@ function generateId() {
 
 export type LayoutMode = 'aggregated' | 'expanded';
 
-export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'aggregated', beltId: BeltId = 'mk1'): { nodes: Node[]; edges: Edge[] } {
+export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'aggregated', beltId: BeltId = 'mk1', pipeTier: 'mk1' | 'mk2' = 'mk1'): { nodes: Node[]; edges: Edge[] } {
   const nodeList: Node[] = [];
   const edgeList: Edge[] = [];
   const beltCapacity = belts[beltId]?.capacity || 60;
   const beltName = belts[beltId]?.name || 'Mk.1 Belt';
+  const pipeCapacity = pipeTier === 'mk2' ? 600 : 300;
+  const pipeName = pipeTier === 'mk2' ? 'Mk.2 Pipe' : 'Mk.1 Pipe';
 
-  function getBeltLabel(rate: number): string {
-    if (rate <= beltCapacity) return `${rate.toFixed(1)}/min`;
-    const beltsNeeded = Math.ceil(rate / beltCapacity);
-    return `${rate.toFixed(1)}/min (${beltsNeeded}x ${beltName})`;
+  // Fluids/gases travel by pipe; everything else by belt. Pick the matching
+  // transport capacity & name so labels and overload flags stay accurate.
+  function getFlowLabel(rate: number, itemId?: string): string {
+    const fluid = itemId ? isFluidItem(itemId) : false;
+    const capacity = fluid ? pipeCapacity : beltCapacity;
+    const name = fluid ? pipeName : beltName;
+    if (rate <= capacity) return `${rate.toFixed(1)}/min`;
+    const linesNeeded = Math.ceil(rate / capacity);
+    return `${rate.toFixed(1)}/min (${linesNeeded}x ${name})`;
   }
 
   function createEdge(
@@ -31,13 +38,16 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
     totalSplits?: number
   ): Edge {
     const rate = label ? parseFloat(label) : 0;
-    const isOverloaded = rate > beltCapacity;
+    const isFluid = itemId ? isFluidItem(itemId) : false;
+    const capacity = isFluid ? pipeCapacity : beltCapacity;
+    const isOverloaded = rate > capacity;
     const item = itemId ? items[itemId] : null;
     return {
       id, source, target, label, type: 'satisfactory',
-      data: { 
-        rate, 
-        isOverloaded, 
+      data: {
+        rate,
+        isOverloaded,
+        isFluid,
         itemImageUrl: item?.imageUrl,
         splitIndex,
         totalSplits
@@ -206,7 +216,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
           `e-${sourceNodeId}-${targetNodeId}`,
           sourceNodeId,
           targetNodeId,
-          getBeltLabel(flow.totalRate),
+          getFlowLabel(flow.totalRate, flow.sourceItemId),
           flow.sourceItemId
         ));
       }
@@ -241,7 +251,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
             `e-${targetInput.itemId}-to-product-output`,
             targetNodeId,
             productNodeId,
-            getBeltLabel(targetInput.rate),
+            getFlowLabel(targetInput.rate, targetInput.itemId),
             targetInput.itemId
           ));
         }
@@ -272,7 +282,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
           `e-${rootNode.itemId}-to-product-output`,
           targetNodeId,
           productNodeId,
-          getBeltLabel(rootNode.rate),
+          getFlowLabel(rootNode.rate, rootNode.itemId),
           rootNode.itemId
         ));
       }
@@ -313,7 +323,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
             `e-${chunk.id}-${productNodeId}`,
             chunk.id,
             productNodeId,
-            getBeltLabel(chunk.rate),
+            getFlowLabel(chunk.rate, child.itemId),
             child.itemId
           ));
         });
@@ -365,7 +375,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
         edgeList.push(createEdge(
           `e-${childChunks[0].id}-${myChunks[0].id}`,
           childChunks[0].id, myChunks[0].id,
-          getBeltLabel(child.rate), child.itemId
+          getFlowLabel(child.rate, child.itemId), child.itemId
         ));
       } else {
         // Ensure EVERY chunk on both sides has at least one connection.
@@ -383,7 +393,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
           edgeList.push(createEdge(
             `e-${childChunks[ci].id}-${myChunks[pi].id}`,
             childChunks[ci].id, myChunks[pi].id,
-            getBeltLabel(edgeRate), child.itemId
+            getFlowLabel(edgeRate, child.itemId), child.itemId
           ));
         }
       }
@@ -421,7 +431,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
           `e-${chunk.id}-${productNodeId}`,
           chunk.id,
           productNodeId,
-          getBeltLabel(chunk.rate),
+          getFlowLabel(chunk.rate, root.itemId),
           root.itemId
         ));
       });

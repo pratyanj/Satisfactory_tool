@@ -9,7 +9,7 @@ import { SatisfactoryEdge } from './SatisfactoryEdge';
 import { toPng, toSvg } from 'html-to-image';
 import { MousePointer2, Plus, Ungroup, Hand, Download, WandSparkles, SplitSquareHorizontal } from 'lucide-react';
 import ELK from 'elkjs/lib/elk.bundled.js';
-import { machines } from '../../engine/data';
+import { machines, isFluidItem } from '../../engine/data';
 
 const elk = new ELK();
 
@@ -29,6 +29,7 @@ interface FactoryGraphProps {
   initialNodes: Node[];
   initialEdges: Edge[];
   beltId?: string;
+  pipeTier?: 'mk1' | 'mk2';
   isFullscreen?: boolean;
   perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean }>;
   onUpdatePerMachineSettings?: (itemId: string, settings: { clockSpeed?: number; somerslooped?: boolean }) => void;
@@ -276,9 +277,10 @@ export function FactoryGraph(props: FactoryGraphProps) {
 // ─── Inner graph (single source of truth for useReactFlow) ──────────────────
 
 function FactoryGraphInner({ 
-  initialNodes, 
-  initialEdges, 
-  beltId = 'mk1', 
+  initialNodes,
+  initialEdges,
+  beltId = 'mk1',
+  pipeTier = 'mk1',
   isFullscreen = false,
   perMachineSettings = {},
   onUpdatePerMachineSettings
@@ -375,10 +377,14 @@ function FactoryGraphInner({
     const newNodes: Node[] = [newGroupNode];
     const newEdges: Edge[] = [];
 
+    // Pipes (fluids/gases) use pipe capacity & cyan styling; belts use belt capacity.
+    const nodeItemId = node.data.itemId as string | undefined;
+    const edgeIsFluid = nodeItemId ? isFluidItem(nodeItemId) : false;
+    const edgeCapacity = edgeIsFluid ? (pipeTier === 'mk2' ? 600 : 300) : beltCapacity;
     const createSatEdge = (id: string, source: string, target: string, rate: number, extras: Record<string, unknown> = {}) => ({
       id, source, target, type: 'satisfactory',
       label: `${rate.toFixed(1)}/min`,
-      data: { rate, isOverloaded: rate > beltCapacity, itemImageUrl },
+      data: { rate, isOverloaded: rate > edgeCapacity, isFluid: edgeIsFluid, itemImageUrl },
       ...extras,
     });
 

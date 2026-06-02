@@ -50,3 +50,12 @@ export const items = itemsData as Record<ItemId, Item>;
 export const machines = machinesData as Record<MachineId, Machine>;
 export const recipes = recipesData as Recipe[];
 export const belts = beltsData as Record<BeltId, Belt>;
+
+/** Item categories that are transported through pipes (fluids & gases) rather than belts. */
+export const FLUID_CATEGORIES: ReadonlySet<string> = new Set(['Liquids', 'Gas']);
+
+/** True when an item flows through pipes (liquid or gas) instead of belts. */
+export function isFluidItem(itemId: ItemId): boolean {
+  const category = items[itemId]?.category;
+  return category ? FLUID_CATEGORIES.has(category) : false;
+}

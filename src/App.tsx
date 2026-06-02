@@ -460,7 +460,7 @@ export default function App() {
         perMachineSettings || lastInput.perMachineSettings || {}
       );
       const newSummary = calculateSummary(solvedRoot);
-      const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(solvedRoot, mode, beltId);
+      const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(solvedRoot, mode, beltId, pipeTier);
 
       // Integrate Diagnostics overlay directly on the ReactFlow graph
       const diag = aggregateDiagnosticsFlowA(solvedRoot, newSummary, beltId, pipeTier);
@@ -641,10 +641,11 @@ export default function App() {
             )}
             <div className="w-full h-full">
               <FactoryGraph 
-                initialNodes={nodes} 
-                initialEdges={edges} 
-                beltId={lastInput.beltId} 
-                isFullscreen={isGraphFullscreen} 
+                initialNodes={nodes}
+                initialEdges={edges}
+                beltId={lastInput.beltId}
+                pipeTier={lastInput.pipeTier || 'mk1'}
+                isFullscreen={isGraphFullscreen}
                 perMachineSettings={lastInput.perMachineSettings || {}}
                 onUpdatePerMachineSettings={handleUpdatePerMachineSettings}
               />
