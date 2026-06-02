@@ -123,6 +123,9 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
         }
         return;
       }
+      // Excess byproducts are surfaced as their own "Byproduct: X" bubbles below,
+      // so skip the AWESOME Sink collector node and its sink inputs.
+      if (key === 'awesome_sink' || n.machineId === 'awesome_sink') return;
 
       const existing = aggregatedNodes.get(key);
       if (existing) {
@@ -167,6 +170,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
     }>();
 
     const walkEdges = (n: SolverNode) => {
+      if (n.itemId === 'awesome_sink' || n.machineId === 'awesome_sink') return;
       // Connect inputs
       for (const input of n.inputs) {
         if (n.itemId === 'planned_outputs') {
@@ -206,6 +210,30 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       }
     };
     walkEdges(rootNode);
+
+    // 3b. Any byproduct flow whose target item has no producing machine is an
+    // unconsumed byproduct — surface it as a terminal "Byproduct: X" bubble so it
+    // is never silently dropped.
+    const unconsumedByproductRates = new Map<string, number>();
+    edgeFlows.forEach((flow) => {
+      if (!itemIdToNodeId.has(flow.targetItemId)) {
+        unconsumedByproductRates.set(
+          flow.targetItemId,
+          (unconsumedByproductRates.get(flow.targetItemId) || 0) + flow.totalRate
+        );
+      }
+    });
+    unconsumedByproductRates.forEach((rate, itemId) => {
+      const bpNodeId = `byproduct-output-${itemId}`;
+      itemIdToNodeId.set(itemId, bpNodeId);
+      nodeList.push({
+        id: bpNodeId, type: 'machine', position: { x: 0, y: 0 },
+        data: buildNodeData(
+          { itemId, recipeId: 'product_output', rate, machines: 0, machineId: 'byproduct_output', inputs: [] },
+          0, rate, `Byproduct: ${items[itemId]?.name || itemId}`
+        ),
+      });
+    });
 
     // 4. Create single aggregated edges
     edgeFlows.forEach((flow) => {
@@ -293,8 +321,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
     if (node.itemId === 'planned_outputs') {
       node.inputs.forEach((child) => {
         if (child.itemId === 'awesome_sink') {
-          traverseExpanded(child);
-          return;
+          return; // excess byproducts are surfaced as per-recipe "Byproduct: X" bubbles
         }
         const childChunks = traverseExpanded(child);
         const productNodeId = `product-output-${child.itemId}`;
@@ -329,6 +356,17 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
         });
       });
       return [];
+    }
+
+    // Recycled byproduct pulled from the pool (machines: 0) — render as a single
+    // source chunk so it can feed its consumer without dividing by zero machines.
+    if (node.recipeId === 'byproduct_reuse' || node.machineId === 'byproduct_reused' || node.machines <= 0) {
+      const nodeId = generateId();
+      nodeList.push({
+        id: nodeId, type: 'machine', position: { x: 0, y: 0 },
+        data: buildNodeData(node, 0, node.rate, `Recycled ${items[node.itemId]?.name || node.itemId}`),
+      });
+      return [{ id: nodeId, rate: node.rate }];
     }
 
     const totalMachines = node.machines;
@@ -367,9 +405,30 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       });
     }
 
+    // Surface this recipe's byproducts as terminal "Byproduct: X" bubbles so the
+    // expanded view never silently drops them.
+    (node.byproducts || []).forEach((bp) => {
+      const bpNodeId = `byproduct-output-${node.itemId}-${bp.itemId}-${generateId()}`;
+      nodeList.push({
+        id: bpNodeId, type: 'machine', position: { x: 0, y: 0 },
+        data: buildNodeData(
+          { itemId: bp.itemId, recipeId: 'product_output', rate: bp.rate, machines: 0, machineId: 'byproduct_output', inputs: [] },
+          0, bp.rate, `Byproduct: ${items[bp.itemId]?.name || bp.itemId}`
+        ),
+      });
+      const perChunk = bp.rate / myChunks.length;
+      myChunks.forEach((chunk) => {
+        edgeList.push(createEdge(
+          `e-${chunk.id}-${bpNodeId}`, chunk.id, bpNodeId,
+          getFlowLabel(perChunk, bp.itemId), bp.itemId
+        ));
+      });
+    });
+
     // Connect child recipe steps → my chunks with DIRECT edges
     for (const child of node.inputs) {
       const childChunks = traverseExpanded(child);
+      if (childChunks.length === 0) continue;
 
       if (childChunks.length === 1 && myChunks.length === 1) {
         edgeList.push(createEdge(

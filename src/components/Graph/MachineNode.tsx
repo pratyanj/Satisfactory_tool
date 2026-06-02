@@ -43,10 +43,13 @@ export const MachineNode = React.memo(function MachineNode({ id, data, selected 
   const inputDetails = (data.inputDetails as any[]) || [];
   const outputRatePerMachine = data.outputRatePerMachine as number || 0;
 
-  if (data.machineId === 'product_output' || id.startsWith('product-output')) {
+  if (data.machineId === 'product_output' || data.machineId === 'byproduct_output' || id.startsWith('product-output') || id.startsWith('byproduct-output')) {
     const rate = data.rate as number;
     const itemName = data.item as string;
     const itemImageUrl = data.itemImageUrl as string;
+    const isByproduct = data.machineId === 'byproduct_output' || id.startsWith('byproduct-output');
+    const accent = isByproduct ? '#a78bfa' : '#f48721';
+    const accentRgb = isByproduct ? '167,139,250' : '244,135,33';
     return (
       <div className="relative group flex flex-col items-center justify-center p-2">
         <Handle
@@ -56,14 +59,16 @@ export const MachineNode = React.memo(function MachineNode({ id, data, selected 
           className="w-3 h-3 bg-blue-500 border-none opacity-0 group-hover:opacity-100 transition-opacity z-30"
         />
         <div
-          className="w-24 h-24 rounded-full border-2 border-[#f48721]/50 flex items-center justify-center shadow-[0_0_20px_rgba(244,135,33,0.3)] hover:border-[#f48721] hover:scale-110 transition-all duration-300 relative group-hover:shadow-[0_0_30px_rgba(244,135,33,0.5)] cursor-pointer"
+          className="w-24 h-24 rounded-full border-2 flex items-center justify-center hover:scale-110 transition-all duration-300 relative cursor-pointer"
           style={{
             background: 'radial-gradient(circle, #252830 0%, #0f1013 100%)',
+            borderColor: `rgba(${accentRgb},0.5)`,
+            boxShadow: `0 0 20px rgba(${accentRgb},0.3)`,
           }}
         >
           {/* Animated pulsing orbit glow */}
-          <div className="absolute inset-0 rounded-full border border-dashed border-[#f48721]/20 animate-[spin_20s_linear_infinite]" />
-          
+          <div className="absolute inset-0 rounded-full border border-dashed animate-[spin_20s_linear_infinite]" style={{ borderColor: `rgba(${accentRgb},0.2)` }} />
+
           {itemImageUrl && (
             <AppImage
               idKey={data.itemId as string}
@@ -74,7 +79,10 @@ export const MachineNode = React.memo(function MachineNode({ id, data, selected 
           )}
         </div>
         <div className="mt-3 text-center select-none font-mono text-[14px] font-bold text-white bg-[#0f1013]/90 px-3 py-1 rounded-full border border-[#23252a] shadow-[0_2px_8px_rgba(0,0,0,0.5)] tracking-wide">
-          <span className="text-[#f48721] font-black mr-1">{Number(rate.toFixed(2)).toString()}</span>
+          {isByproduct && (
+            <span className="block text-[8px] font-black tracking-[0.18em] uppercase" style={{ color: accent }}>Byproduct</span>
+          )}
+          <span style={{ color: accent }} className="font-black mr-1">{Number(rate.toFixed(2)).toString()}</span>
           {itemName}
         </div>
       </div>
