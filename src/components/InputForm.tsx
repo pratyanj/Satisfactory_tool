@@ -337,7 +337,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                         style={{ WebkitAppearance: 'none' }}
                       >
                         {recipes.filter(r => r.outputItemId === target.itemId).map(r => (
-                          <option key={r.id} value={r.id}>{formatRecipeLabel(r.id)} ({r.outputRate}/m)</option>
+                          <option key={r.id} value={r.id}>{r.name || formatRecipeLabel(r.id)} ({r.outputRate}/m)</option>
                         ))}
                         {recipes.filter(r => r.outputItemId === target.itemId).length === 0 && <option value="">No recipes</option>}
                       </select>
@@ -546,10 +546,11 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                           <CustomSelect
                             value={candidate.selectedRecipeId}
                             onChange={(value) => handleAlternateRecipeChange(candidate.itemId, value)}
-                            options={candidate.recipes.map((recipe) => {
-                              const inputNames = recipe.inputs.map(i => items[i.itemId]?.name || i.itemId).join(', ');
-                              return { value: recipe.id, label: `${formatRecipeLabel(recipe.id)} (${recipe.outputRate}/m) [${inputNames}]` };
-                            })}
+                            options={candidate.recipes.map((recipe) => ({
+                              value: recipe.id,
+                              // Show the recipe's in-game name so users pick by name, not by inputs/outputs
+                              label: `${recipe.name || formatRecipeLabel(recipe.id)} (${recipe.outputRate}/min)`,
+                            }))}
                           />
                         </div>
                       ))
