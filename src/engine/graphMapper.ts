@@ -500,7 +500,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
   }
 
   // Apply Dagre layout — use taller nodes to accommodate recipe details
-  const NODE_W = 340;
+  const NODE_W = 380;
   const NODE_H = 160;
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));

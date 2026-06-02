@@ -353,7 +353,7 @@ function FactoryGraphInner({
     // Logistics node: 48x48px
     const PAD        = 24;   // group inner padding
     const LOGI_W     = 48;   // splitter / merger width
-    const MACH_W     = 340;  // machine card width
+    const MACH_W     = 380;  // machine card width
     const ROW_H      = 170;  // vertical spacing between rows
     const LOGI_OFF   = (ROW_H - LOGI_W) / 2; // vertical centering offset for logistics nodes
 
@@ -572,7 +572,7 @@ function FactoryGraphInner({
     newGroups.forEach(g => childrenMap.set(g.id, []));
 
     currentNodes.forEach(n => {
-      let w = 340, h = 160;
+      let w = 380, h = 160;
       if (n.type === 'logistics') { w = 48; h = 48; }
       else if (n.type === 'customGroup') { w = 100; h = 100; }
       const elkNode = { id: n.id, width: w, height: h, layoutOptions: n.type === 'customGroup' ? { 'elk.padding': '[top=40,left=20,bottom=20,right=20]' } : undefined };

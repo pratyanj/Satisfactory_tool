@@ -174,12 +174,15 @@ export const MachineNode = React.memo(function MachineNode({ id, data, selected 
                 </svg>
               </div>
 
-              {/* Item Name */}
+              {/* Item Name — wraps to 2 lines so long names stay inside the card;
+                  min-w-0 lets it shrink so the power badge never gets clipped. */}
               <div
-                className="font-bold tracking-wider text-white text-[10px] truncate uppercase ml-1.5 flex-1 select-none pr-1 flex items-center gap-1"
+                className="ml-1.5 flex-1 min-w-0 select-none pr-1 flex items-center gap-1"
                 title={data.item as string}
               >
-                <span className="truncate">{data.item as string}</span>
+                <span className="font-bold tracking-wider text-white text-[10px] uppercase leading-[1.05] line-clamp-2 break-words flex-1 min-w-0">
+                  {data.item as string}
+                </span>
                 {diagnosticsStatus && (
                   <span className={`text-[6px] font-black tracking-tighter uppercase px-1 rounded animate-pulse shrink-0 ${
                     diagnosticsStatus === 'starved' ? 'bg-[#ff9100] text-black animate-pulse' : 'bg-[#ff1744] text-white animate-bounce'
@@ -215,14 +218,10 @@ export const MachineNode = React.memo(function MachineNode({ id, data, selected 
 
               {/* Rate counters */}
               <div className="flex-1 min-w-0 flex flex-col justify-center">
-                <div className="flex items-center justify-between w-full">
+                <div className="flex items-center w-full">
                   <span className="text-[7.5px] font-extrabold tracking-widest text-[#7e828a] uppercase select-none">
                     PRODUCTION RATE
                   </span>
-                  {/* Decorative industrial line-flow */}
-                  <div className="h-[1px] flex-1 bg-gradient-to-r from-[#23252a] via-[#3a3d45] to-transparent ml-1.5 relative flex items-center">
-                    <div className="w-[3px] h-[3px] rounded-full bg-[#f48721] absolute left-1/2 -translate-y-1/2" />
-                  </div>
                 </div>
                 <div className="flex items-baseline mt-0 flex-wrap gap-y-1">
                   <span className="text-xl font-extrabold font-mono tracking-tight text-white select-none">
