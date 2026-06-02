@@ -16,16 +16,13 @@ export function analyzeMachinesFlowA(rootNode: SolverNode): DiagnosticIssue[] {
     if (machineCount > 0 && decimalPart > 0 && decimalPart < 0.6) {
       const activeUptime = Math.round(decimalPart * 100);
       const machineInfo = machines[node.machineId];
-      const activeClock = node.clockSpeed ?? 100;
-      const suggestedClock = Math.round(activeClock * decimalPart);
-
       issues.push({
         id: `machine-underutilization-${node.itemId}`,
         severity: 'info',
         category: 'machine',
         title: `Machine Underutilized: ${machineInfo?.name || node.machineId}`,
-        description: `Your planned production requires ${machineCount.toFixed(2)} ${machineInfo?.name || node.machineId} producing ${items[node.itemId]?.name || node.itemId}. The final machine is running at only ${activeUptime}% of its configured capacity (configured at ${activeClock}% clock speed), which wastes standby power.`,
-        suggestedFix: `Underclock the final machine to ${suggestedClock}% clock speed inside its control interface to save power, or adjust your output target rate to fully utilize integer machine counts.`,
+        description: `Your planned production requires ${machineCount.toFixed(2)} ${machineInfo?.name || node.machineId} producing ${items[node.itemId]?.name || node.itemId}. The final machine is running at only ${activeUptime}% capacity, which wastes standby power.`,
+        suggestedFix: `Underclock the final machine to ${activeUptime}% to save power, or adjust output target rate to fully utilize integer machine counts.`,
         relatedEntityIds: [node.itemId],
       });
     }
