@@ -93,11 +93,11 @@ export const MachineNode = React.memo(function MachineNode({ id, data, selected 
 
       {/* Main Premium Beveled Card */}
       <div 
-        className={`sf-machine-card-frame ${selected ? 'border-[#f48721] shadow-[0_0_25px_rgba(244,135,33,0.85)]' : ''}`} 
+        className={`sf-machine-card-frame ${selected ? 'border-[#f48721]' : ''}`}
         style={{
           ...glowStyle,
           borderColor: selected ? '#f48721' : glowStyle.borderColor,
-          boxShadow: selected ? '0 0 25px rgba(244, 135, 33, 0.85)' : glowStyle.boxShadow,
+          boxShadow: glowStyle.boxShadow,
         }}
       >
         {/* Bezel Corner Screws/Rivets */}
@@ -105,10 +105,6 @@ export const MachineNode = React.memo(function MachineNode({ id, data, selected 
         <div className="sf-card-screw sf-card-screw-tr" />
         <div className="sf-card-screw sf-card-screw-bl" />
         <div className="sf-card-screw sf-card-screw-br" />
-
-        {/* Orange Bezel Edge Lights */}
-        <div className="sf-card-light-top" />
-        <div className="sf-card-light-bottom" />
 
         {/* Outer Bezel Hazard Stripes */}
         <div className="sf-card-stripes-tl" />
@@ -291,10 +287,6 @@ export const MachineNode = React.memo(function MachineNode({ id, data, selected 
         <div className="sf-card-screw sf-card-screw-tr" />
         <div className="sf-card-screw sf-card-screw-bl" />
         <div className="sf-card-screw sf-card-screw-br" />
-
-        {/* Orange Bezel Edge Lights */}
-        <div className="sf-card-light-top" />
-        <div className="sf-card-light-bottom" />
 
         <div className="relative z-20 flex flex-col gap-2.5">
           {/* Header Specifications */}

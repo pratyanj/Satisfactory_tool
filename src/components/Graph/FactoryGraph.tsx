@@ -751,6 +751,12 @@ function FactoryGraphInner({
             }
           `}</style>
           <div className="absolute top-4 right-4 bottom-4 w-[340px] bg-[#0c0d0f]/95 border border-[#2a2d33] rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.9)] z-40 flex flex-col pointer-events-auto backdrop-blur-lg transition-all duration-300 transform translate-x-0 animate-[tunerSlideIn_0.25s_ease-out]">
+            {/* Bezel Corner Screws */}
+            <div className="sf-card-screw sf-card-screw-tl" />
+            <div className="sf-card-screw sf-card-screw-tr" />
+            <div className="sf-card-screw sf-card-screw-bl" />
+            <div className="sf-card-screw sf-card-screw-br" />
+
             {/* Header section with hazard stripes */}
             <div className="flex items-center justify-between border-b border-[#2a2d33] p-4 bg-[#121316]/50 relative rounded-t-xl overflow-hidden shrink-0">
               <div className="sf-card-stripes-tl" style={{ opacity: 0.3 }} />
@@ -790,78 +796,34 @@ function FactoryGraphInner({
                     <span className="text-[8px] font-black tracking-widest text-[#7e828a] uppercase block">
                       ACTIVE NODE
                     </span>
-                    <span className="text-[14px] font-black text-white uppercase truncate block mt-0.5 font-mono">
+                    <span className="text-[14px] font-black text-white uppercase truncate block mt-0.5">
                       {selectedNode.data.item as string}
                     </span>
-                    <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                      <span className="text-[9.5px] text-[#f48721] font-bold font-mono">
-                        {machines[selectedNode.data.machineId as string]?.name || selectedNode.data.machineId} x{Number((selectedNode.data.machines as number).toFixed(2))}
-                      </span>
-                      <span className="text-[8px] text-[#7e828a]">•</span>
-                      <span className="bg-[#e58927]/10 border border-[#e58927]/20 text-orange-400 text-[8.5px] font-extrabold font-mono px-1 rounded shadow-[0_0_6px_rgba(229,137,39,0.15)] flex items-center gap-0.5">
-                        ⚡ {((machines[selectedNode.data.machineId as string]?.powerUsage || 0) * (selectedNode.data.machines as number) * Math.pow(localClock / 100, 1.6) * (localSomersloop ? 4 : 1)).toFixed(1)} MW
-                      </span>
-                    </div>
+                    <span className="text-[9px] text-[#f48721] font-bold font-mono">
+                      {machines[selectedNode.data.machineId as string]?.name || selectedNode.data.machineId} x{Number((selectedNode.data.machines as number).toFixed(2))}
+                    </span>
                   </div>
                 </div>
 
                 <div className="h-[1px] bg-[#1d2024]" />
 
                 {/* Base Stats Row */}
-                <div className="grid grid-cols-2 gap-2 text-left">
-                  {/* Left Column: Total Output Card */}
-                  <div className="bg-[#0c0d0f] border border-[#1c1d20] p-2 rounded flex flex-col justify-between min-w-0">
-                    <div>
-                      <span className="text-[7.5px] font-black tracking-wider text-[#7e828a] uppercase block">
-                        TOTAL OUTPUT
-                      </span>
-                      <span className="text-sm font-extrabold font-mono text-white mt-0.5 block">
-                        {Number((selectedNode.data.rate as number).toFixed(1))}/min
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5 mt-2 pt-1.5 border-t border-[#1d2024]/40 font-mono text-[9px] min-w-0">
-                      {selectedNode.data.itemImageUrl && (
-                        <img 
-                          src={selectedNode.data.itemImageUrl as string} 
-                          className="w-3.5 h-3.5 object-contain shrink-0" 
-                          alt={selectedNode.data.item as string} 
-                        />
-                      )}
-                      <span className="truncate text-[#a0a4ab]">{selectedNode.data.item as string}</span>
-                    </div>
+                <div className="grid grid-cols-2 gap-2 text-center">
+                  <div className="bg-[#0c0d0f] border border-[#1c1d20] p-1.5 rounded">
+                    <span className="text-[7.5px] font-black tracking-wider text-[#7e828a] uppercase block">
+                      OUTPUT FLOW
+                    </span>
+                    <span className="text-sm font-extrabold font-mono text-white mt-0.5 block">
+                      {Number((selectedNode.data.rate as number).toFixed(1))}/min
+                    </span>
                   </div>
-
-                  {/* Right Column: Total Input Card */}
-                  <div className="bg-[#0c0d0f] border border-[#1c1d20] p-2 rounded flex flex-col justify-between min-w-0">
-                    <div>
-                      <span className="text-[7.5px] font-black tracking-wider text-[#7e828a] uppercase block">
-                        TOTAL INPUTS
-                      </span>
-                      <span className="text-sm font-extrabold font-mono text-[#f48721] mt-0.5 block">
-                        {selectedNode.data.inputDetails && (selectedNode.data.inputDetails as any[]).length > 0
-                          ? `${(selectedNode.data.inputDetails as any[]).reduce((acc: number, inp: any) => acc + (inp.ratePerMachine * (selectedNode.data.machines as number) * (localClock / 100)), 0).toFixed(1)}/min`
-                          : '0.0/min'
-                        }
-                      </span>
-                    </div>
-                    <div className="flex flex-col gap-1 mt-2 pt-1.5 border-t border-[#1d2024]/40 min-w-0">
-                      {selectedNode.data.inputDetails && (selectedNode.data.inputDetails as any[]).length > 0 ? (
-                        (selectedNode.data.inputDetails as any[]).map((inp: any, idx: number) => {
-                          const totalNeeded = inp.ratePerMachine * (selectedNode.data.machines as number) * (localClock / 100);
-                          return (
-                            <div key={idx} className="flex items-center gap-1 font-mono text-[9px] min-w-0">
-                              {inp.imageUrl && (
-                                <img src={inp.imageUrl} className="w-3 h-3 object-contain shrink-0" alt={inp.name} />
-                              )}
-                              <span className="truncate text-[#a0a4ab] max-w-[65px]">{inp.name}</span>
-                              <span className="text-gray-400 font-bold ml-auto shrink-0">{totalNeeded.toFixed(0)}</span>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <span className="text-[8px] text-[#555b66] font-mono italic">Raw Resource</span>
-                      )}
-                    </div>
+                  <div className="bg-[#0c0d0f] border border-[#1c1d20] p-1.5 rounded">
+                    <span className="text-[7.5px] font-black tracking-wider text-[#7e828a] uppercase block">
+                      POWER USAGE
+                    </span>
+                    <span className="text-sm font-extrabold font-mono text-orange-400 mt-0.5 block">
+                      {((machines[selectedNode.data.machineId as string]?.powerUsage || 0) * (selectedNode.data.machines as number) * Math.pow(localClock / 100, 1.6) * (localSomersloop ? 4 : 1)).toFixed(1)} MW
+                    </span>
                   </div>
                 </div>
               </div>
@@ -919,17 +881,9 @@ function FactoryGraphInner({
               <div className="flex flex-col gap-2.5">
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-extrabold tracking-widest text-[#8E9299] uppercase font-mono">
-                        SOMERSLOOP SLOTS
-                      </span>
-                      <div className="relative group cursor-help">
-                        <span className="text-purple-400 hover:text-purple-300 font-mono text-[10px] bg-purple-500/10 border border-purple-500/20 px-1.5 py-0.5 rounded transition-colors">ⓘ</span>
-                        <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block w-64 p-2.5 bg-[#0c0d0f]/98 border border-purple-800/40 text-[10px] font-mono text-purple-300 rounded-lg shadow-[0_4px_25px_rgba(168,85,247,0.4)] z-50 pointer-events-none leading-relaxed">
-                          Somerslooping uses alien technology to double machine outputs for free. Increases local power draw exponentially (4.0x).
-                        </div>
-                      </div>
-                    </div>
+                    <span className="text-[10px] font-extrabold tracking-widest text-[#8E9299] uppercase font-mono">
+                      SOMERSLOOP SLOTS
+                    </span>
                     <span className="text-[7.5px] text-[#8E9299]/80 font-mono mt-0.5">
                       PRODUCTIVITY DOUBLE MULTIPLIER
                     </span>
@@ -958,8 +912,46 @@ function FactoryGraphInner({
                     </div>
                   </button>
                 </div>
+
+                {/* Info Pill */}
+                <div className={`p-2 rounded border text-[9.5px] font-mono transition-all duration-300 leading-relaxed ${
+                  localSomersloop 
+                    ? 'bg-purple-950/20 border-purple-800/40 text-purple-300 animate-pulse' 
+                    : 'bg-[#121316] border-[#2a2d33] text-[#8E9299]'
+                }`}>
+                  <p>
+                    {localSomersloop 
+                      ? '🌀 Somersloop ACTIVE: Production rate is doubled (200% yield) without consuming extra inputs. Power usage multiplied by 4.0x.' 
+                      : 'ℹ️ Somerslooping uses alien technology to double machine outputs for free. Increases local power draw exponentially.'
+                    }
+                  </p>
+                </div>
               </div>
 
+              {/* Recipe Inputs details */}
+              {selectedNode.data.inputDetails && (selectedNode.data.inputDetails as any[]).length > 0 && (
+                <div className="flex flex-col gap-2 bg-[#050607]/40 border border-[#1c1d20]/50 rounded-lg p-2.5">
+                  <span className="text-[9px] font-bold tracking-widest text-[#7e828a] uppercase font-mono block">
+                    RECIPE INPUT FLOWS
+                  </span>
+                  <div className="flex flex-col gap-1.5 mt-1">
+                    {(selectedNode.data.inputDetails as any[]).map((inp: any, idx: number) => {
+                      const totalNeeded = inp.ratePerMachine * (selectedNode.data.machines as number) * (localClock / 100);
+                      return (
+                        <div key={idx} className="flex items-center justify-between font-mono text-[10px]">
+                          <div className="flex items-center gap-1.5 text-[#a0a4ab] min-w-0">
+                            {inp.imageUrl && (
+                              <img src={inp.imageUrl} className="w-3.5 h-3.5 object-contain shrink-0" alt={inp.name} />
+                            )}
+                            <span className="truncate max-w-[150px]">{inp.name}</span>
+                          </div>
+                          <span className="text-white font-bold shrink-0">{totalNeeded.toFixed(1)}/min</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
             </div>
 
