@@ -781,7 +781,7 @@ function FactoryGraphInner({
             <div className="flex-grow overflow-y-auto p-4 flex flex-col gap-5">
               
               {/* Machine Summary Box */}
-              <div className="bg-[#050607] border border-[#1d2024] rounded-lg p-3 relative overflow-hidden flex flex-col gap-2.5">
+              <div className="bg-[#050607] border border-[#1d2024] rounded-lg p-3 relative shrink-0 flex flex-col gap-2.5">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-[#121316] border border-[#23252a] rounded-lg p-1 flex items-center justify-center shrink-0 shadow-inner">
                     {selectedNode.data.itemImageUrl && (
@@ -796,10 +796,11 @@ function FactoryGraphInner({
                     <span className="text-[8px] font-black tracking-widest text-[#7e828a] uppercase block">
                       ACTIVE NODE
                     </span>
-                    <span className="text-[14px] font-black text-white uppercase truncate block mt-0.5">
+                    {/* Wrap long names (e.g. "Electromagnetic Control Rod") instead of clipping */}
+                    <span className="text-[14px] font-black text-white uppercase leading-[1.1] line-clamp-2 break-words block mt-0.5">
                       {selectedNode.data.item as string}
                     </span>
-                    <span className="text-[9px] text-[#f48721] font-bold font-mono">
+                    <span className="text-[9px] text-[#f48721] font-bold font-mono block truncate mt-0.5">
                       {machines[selectedNode.data.machineId as string]?.name || selectedNode.data.machineId} x{Number((selectedNode.data.machines as number).toFixed(2))}
                     </span>
                   </div>
@@ -829,7 +830,7 @@ function FactoryGraphInner({
               </div>
 
               {/* Overclock Adjuster */}
-              <div className="flex flex-col gap-2.5">
+              <div className="flex flex-col gap-2.5 shrink-0">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-extrabold tracking-widest text-[#8E9299] uppercase font-mono">
                     CLOCK SPEED OVERCLOCK
@@ -878,7 +879,7 @@ function FactoryGraphInner({
               </div>
 
               {/* Somersloop Productivity Box */}
-              <div className="flex flex-col gap-2.5">
+              <div className="flex flex-col gap-2.5 shrink-0">
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col">
                     <span className="text-[10px] font-extrabold tracking-widest text-[#8E9299] uppercase font-mono">
@@ -930,7 +931,7 @@ function FactoryGraphInner({
 
               {/* Recipe Inputs details */}
               {selectedNode.data.inputDetails && (selectedNode.data.inputDetails as any[]).length > 0 && (
-                <div className="flex flex-col gap-2 bg-[#050607]/40 border border-[#1c1d20]/50 rounded-lg p-2.5">
+                <div className="flex flex-col gap-2 bg-[#050607]/40 border border-[#1c1d20]/50 rounded-lg p-2.5 shrink-0">
                   <span className="text-[9px] font-bold tracking-widest text-[#7e828a] uppercase font-mono block">
                     RECIPE INPUT FLOWS
                   </span>
