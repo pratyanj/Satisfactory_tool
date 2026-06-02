@@ -4,7 +4,7 @@ import { AppImage } from './AppImage';
 import { items, belts, machines, recipes, BeltId, MachineId, RecipeId } from '../engine/data';
 import { ItemModal } from './ItemModal';
 import { CustomSelect } from './CustomSelect';
-import { getAlternateRecipeCandidates, RecipeSelectionMap } from '../engine/solver';
+import { getAlternateRecipeCandidates, analyzeChainUsage, RecipeSelectionMap } from '../engine/solver';
 
 export type TargetMode = 'rate' | 'machine' | 'belt' | 'pipe' | 'resource';
 
@@ -170,6 +170,19 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
 
   const availableMiners = Object.values(machines).filter(m => m.id.startsWith('miner'));
   const availableBelts = Object.values(belts);
+
+  // Inspect the production chain so we only surface controls that are relevant:
+  // the extractor tier (only when a fluid extractor is used) and the pipe tier
+  // (only when the chain actually transports a fluid).
+  const chainUsage = React.useMemo(() => {
+    try {
+      return analyzeChainUsage(targets.map(t => t.itemId), recipeSelections);
+    } catch {
+      // On any analysis failure, fall back to showing the controls.
+      return { machineIds: new Set<MachineId>(), usesExtractor: true, usesFluid: true };
+    }
+  }, [targets, recipeSelections]);
+  const hardwareColumns = 2 + (chainUsage.usesExtractor ? 1 : 0) + (chainUsage.usesFluid ? 1 : 0);
 
   const alternateRecipeCandidates = React.useMemo(() => {
     const candidatesMap = new Map<string, any>();
@@ -424,8 +437,8 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
 
         {/* ── Zone 2: Hardware Settings ── */}
         <div className="relative z-10 px-4 py-3 border-t border-[#1e2128]" style={{ background: 'rgba(0,0,0,0.15)' }}>
-          {/* 4-column tier grid */}
-          <div className="grid grid-cols-4 gap-2 mb-2.5">
+          {/* Hardware tier grid — Extractor & Pipe appear only when the chain uses them */}
+          <div className="grid gap-2 mb-2.5" style={{ gridTemplateColumns: `repeat(${hardwareColumns}, minmax(0, 1fr))` }}>
             <div className="flex flex-col gap-1">
               <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Miner</span>
               <CustomSelect
@@ -434,18 +447,20 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                 options={availableMiners.map(m => ({ value: m.id, label: m.name }))}
               />
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Extractor</span>
-              <CustomSelect
-                value={extractorTier}
-                onChange={(val) => setExtractorTier(val)}
-                options={[
-                  { value: 'mk1', label: 'Mk.1 · 100%' },
-                  { value: 'mk2', label: 'Mk.2 · 200%' },
-                  { value: 'mk3', label: 'Mk.3 · 250%' },
-                ]}
-              />
-            </div>
+            {chainUsage.usesExtractor && (
+              <div className="flex flex-col gap-1">
+                <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Extractor</span>
+                <CustomSelect
+                  value={extractorTier}
+                  onChange={(val) => setExtractorTier(val)}
+                  options={[
+                    { value: 'mk1', label: 'Mk.1 · 100%' },
+                    { value: 'mk2', label: 'Mk.2 · 200%' },
+                    { value: 'mk3', label: 'Mk.3 · 250%' },
+                  ]}
+                />
+              </div>
+            )}
             <div className="flex flex-col gap-1">
               <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Belt</span>
               <CustomSelect
@@ -454,21 +469,23 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                 options={availableBelts.map(b => ({ value: b.id, label: b.name }))}
               />
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Pipe</span>
-              <CustomSelect
-                value={pipeTier}
-                onChange={(val) => setPipeTier(val as 'mk1' | 'mk2')}
-                options={[
-                  { value: 'mk1', label: 'Mk.1 · 300/m' },
-                  { value: 'mk2', label: 'Mk.2 · 600/m' },
-                ]}
-              />
-            </div>
+            {chainUsage.usesFluid && (
+              <div className="flex flex-col gap-1">
+                <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Pipe</span>
+                <CustomSelect
+                  value={pipeTier}
+                  onChange={(val) => setPipeTier(val as 'mk1' | 'mk2')}
+                  options={[
+                    { value: 'mk1', label: 'Mk.1 · 300/m' },
+                    { value: 'mk2', label: 'Mk.2 · 600/m' },
+                  ]}
+                />
+              </div>
+            )}
           </div>
 
           {/* Action row */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {/* Alt Recipes */}
             <div className="relative z-20">
               <div className="flex items-center gap-1">
@@ -561,7 +578,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
             {/* Calculate */}
             <button
               type="submit"
-              className="sf-primary-btn font-bold tracking-[0.15em] uppercase relative overflow-hidden shrink-0 ml-auto"
+              className="sf-primary-btn font-bold tracking-[0.15em] uppercase relative overflow-hidden shrink-0 w-full sm:w-auto sm:ml-auto"
               style={{ padding: '7px 20px', fontSize: 11 }}
             >
               <span className="sf-btn-scanner absolute inset-0 pointer-events-none z-10" />

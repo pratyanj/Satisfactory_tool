@@ -1,4 +1,4 @@
-import { ItemId, MachineId, Recipe, RecipeId, items, machines, recipes } from './data';
+import { ItemId, MachineId, Recipe, RecipeId, items, machines, recipes, isFluidItem } from './data';
 
 export interface SolverNode {
   itemId: ItemId;
@@ -62,6 +62,47 @@ export function getAlternateRecipeCandidates(rootItemId: ItemId, recipeSelection
 
   walk(rootItemId);
   return result;
+}
+
+/** Machine types that extract fluids (water / oil / nitrogen) rather than mining solids. */
+export const EXTRACTOR_MACHINE_IDS: MachineId[] = ['water_extractor', 'oil_extractor', 'resource_well_pressurizer'];
+
+export interface ChainUsage {
+  /** Every machine type used anywhere in the production chain. */
+  machineIds: Set<MachineId>;
+  /** True when the chain relies on a fluid extractor (water / oil / nitrogen). */
+  usesExtractor: boolean;
+  /** True when the chain transports any fluid (liquid or gas) — i.e. needs pipes. */
+  usesFluid: boolean;
+}
+
+/**
+ * Walk the recipe tree for the given targets and report which machine types and
+ * transport modes the chain actually uses. Lets the UI surface only the controls
+ * (extractor tier, pipe tier) that are relevant to the current plan.
+ */
+export function analyzeChainUsage(
+  targetItemIds: ItemId[],
+  recipeSelections: RecipeSelectionMap = {}
+): ChainUsage {
+  const machineIds = new Set<MachineId>();
+  let usesFluid = false;
+  const visited = new Set<ItemId>();
+
+  const walk = (itemId: ItemId) => {
+    if (visited.has(itemId)) return;
+    visited.add(itemId);
+    if (isFluidItem(itemId)) usesFluid = true;
+
+    const recipe = getRecipeForItem(itemId, recipeSelections);
+    if (!recipe) return;
+    machineIds.add(recipe.machineId);
+    for (const input of recipe.inputs) walk(input.itemId);
+  };
+  targetItemIds.forEach(walk);
+
+  const usesExtractor = EXTRACTOR_MACHINE_IDS.some((id) => machineIds.has(id));
+  return { machineIds, usesExtractor, usesFluid };
 }
 
 export function solve(
