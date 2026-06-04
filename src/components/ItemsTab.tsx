@@ -16,8 +16,12 @@ export function ItemsTab({ summary }: ItemsTabProps) {
     );
   }
 
-  // Sort by rate descending
-  const sorted = Object.entries(summary.allItemRates).sort((a, b) => b[1] - a[1]);
+  // Real production items only, sorted by rate descending. Skips the solver's
+  // synthetic nodes (planned_outputs, awesome_sink, byproduct_reused) and any
+  // zero-rate noise.
+  const sorted = Object.entries(summary.allItemRates)
+    .filter(([itemId, rate]) => items[itemId] && rate > 0.001)
+    .sort((a, b) => b[1] - a[1]);
 
   return (
     <div className="tab-content items-tab">
