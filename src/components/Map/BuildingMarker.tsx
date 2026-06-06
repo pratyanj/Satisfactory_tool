@@ -6,7 +6,7 @@
  * Visual style: hexagon-framed colored badge with icon, matching the
  * SC-InteractiveMap aesthetic.
  */
-import React, { useCallback } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 
@@ -70,7 +70,8 @@ function getIconUrl(typePath: string): string | null {
 // ─── Create Leaflet DivIcon ───────────────────────────────────────────────────
 function createBuildingIcon(info: BuildingInfo, typePath: string, zoom: number, diagnosticsStatus?: 'idle' | 'starved' | 'clogged'): L.DivIcon {
   const iconUrl = getIconUrl(typePath);
-  const size = zoom >= 0 ? 36 : zoom >= -1 ? 28 : zoom >= -2 ? 22 : 16;
+  // Zoom range is 0 (full world) → 8 (max in); default view is 2.
+  const size = zoom >= 4 ? 36 : zoom >= 3 ? 28 : zoom >= 2 ? 22 : 16;
 
   const glowColor = diagnosticsStatus === 'idle' ? '#ff1744' : diagnosticsStatus === 'starved' ? '#ff9100' : info.color;
   const pulseClass = diagnosticsStatus ? 'bm-root bm-pulse animate-pulse' : 'bm-root';
@@ -116,22 +117,23 @@ interface BuildingMarkerProps {
 export function BuildingMarker({ building, zoom, diagnosticsStatus, onPlanProduction }: BuildingMarkerProps) {
   const info = classifyBuilding(building.typePath);
   const latlng = gameToLatLng(building.position.x, building.position.y);
-  const icon = createBuildingIcon(info, building.typePath, zoom, diagnosticsStatus);
+  // Rebuild the DivIcon only when something that affects its look changes.
+  const icon = useMemo(
+    () => createBuildingIcon(info, building.typePath, zoom, diagnosticsStatus),
+    [info.color, info.emoji, building.typePath, zoom, diagnosticsStatus],
+  );
 
-  const eventHandlers = useCallback(() => ({}), []);
+  // The popup body is heavy, so only mount it once the popup is actually opened.
+  const [open, setOpen] = useState(false);
 
   return (
     <Marker
-      key={building.instanceName}
       position={latlng}
       icon={icon}
-      eventHandlers={eventHandlers()}
+      eventHandlers={{ popupopen: () => setOpen(true), popupclose: () => setOpen(false) }}
     >
       <Popup className="map-popup bpop-popup" maxWidth={280} minWidth={240}>
-        <BuildingPopup
-          building={building}
-          onPlanProduction={onPlanProduction}
-        />
+        {open ? <BuildingPopup building={building} onPlanProduction={onPlanProduction} /> : null}
       </Popup>
     </Marker>
   );

@@ -1,37 +1,45 @@
 /**
  * MapLayerSwitcher.tsx
  * Floating bottom-right panel with map background layer thumbnails.
- * Matches the "Map layers" panel from satisfactory-calculator.com.
+ *
+ * The realistic layer is now a self-hosted tile pyramid
+ * (public/map/v2/{z}/{x}/{y}.webp) rendered via Leaflet TileLayer,
+ * replacing the old single ~45MB PNG ImageOverlay.
  */
 import React from 'react';
 
 export type MapLayerType = 'realistic' | 'blueprint' | 'blank';
 
+/** Base path for the self-hosted tile pyramid (overridable for a CDN). */
+export const TILES_BASE_URL: string =
+  (import.meta as any).env?.VITE_MAP_TILES_BASE_URL ?? '/map/v2';
+
+export type MapLayerKind = 'tiles' | 'image' | 'none';
+
 export interface MapLayerConfig {
   id: MapLayerType;
   label: string;
+  kind: MapLayerKind;
+  /** Tile-template base for `tiles`, image path for `image`, '' for `none`. */
   url: string;
-  thumb: string; // used as background-color fallback
+  /** Thumbnail image used in the switcher (empty → solid colour fallback). */
+  thumb: string;
 }
 
 export const MAP_LAYERS: MapLayerConfig[] = [
   {
     id: 'realistic',
     label: 'Realistic',
-    url: '/map/maprz5.png',
-    thumb: '#1a3a2a',
-  },
-  {
-    id: 'blueprint',
-    label: 'Game Map',
-    url: '/map/mapgz5.png',
-    thumb: '#0d1b2e',
+    kind: 'tiles',
+    url: TILES_BASE_URL,
+    thumb: `${TILES_BASE_URL}/0/0/0.webp`,
   },
   {
     id: 'blank',
     label: 'No Map',
+    kind: 'none',
     url: '',
-    thumb: '#0a0b0d',
+    thumb: '',
   },
 ];
 
@@ -54,7 +62,7 @@ export function MapLayerSwitcher({ current, onChange }: MapLayerSwitcherProps) {
           >
             <div
               className="mls-thumb"
-              style={{ background: layer.id !== 'blank' ? `url(${layer.url}) center/cover` : layer.thumb }}
+              style={{ background: layer.thumb ? `url(${layer.thumb}) center/cover` : '#0a0b0d' }}
             />
             <span className="mls-label">{layer.label}</span>
           </button>

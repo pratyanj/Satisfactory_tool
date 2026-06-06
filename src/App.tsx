@@ -792,11 +792,11 @@ export default function App() {
               )}
             </main>
           ) : topLevelTab === 'power_planner' ? (
-            <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
+            <main className="flex flex-col flex-1 min-h-0 w-full relative sf-blueprint-bg overflow-hidden">
               <PowerPlannerTab parsedSave={parsedSave} />
             </main>
           ) : topLevelTab === 'codex' ? (
-            <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
+            <main className="flex flex-col flex-1 min-h-0 w-full relative sf-blueprint-bg overflow-hidden">
               <ItemBrowser
                 selectedItemId={selectedCodexItemId}
                 setSelectedItemId={(itemId) => {
@@ -806,7 +806,7 @@ export default function App() {
               />
             </main>
           ) : topLevelTab === 'save_map' ? (
-            <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
+            <main className="flex flex-col flex-1 min-h-0 w-full relative sf-blueprint-bg overflow-hidden">
               <MapTab
                 parsedSave={parsedSave}
                 onParsed={(save) => setParsedSave(save)}
@@ -819,7 +819,7 @@ export default function App() {
               <SandboxTab />
             </main>
           ) : (
-            <main className="flex flex-col w-full h-full relative sf-blueprint-bg overflow-hidden">
+            <main className="flex flex-col flex-1 min-h-0 w-full relative sf-blueprint-bg overflow-hidden">
               <WorldMapTab />
             </main>
           )}

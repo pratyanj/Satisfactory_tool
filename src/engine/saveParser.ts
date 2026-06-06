@@ -43,6 +43,24 @@ function getPropNum(properties: Record<string, unknown>, key: string): number | 
   return null;
 }
 
+/** Coerce an unknown value to Vec3 if it looks like one ({x,y[,z]}). */
+function toVec3FromAny(v: any): Vec3 | null {
+  if (v && typeof v.x === 'number' && typeof v.y === 'number') {
+    return { x: v.x, y: v.y, z: typeof v.z === 'number' ? v.z : 0 };
+  }
+  return null;
+}
+
+/**
+ * A power-line connection ref points at a PowerConnection *component* whose path
+ * is "<buildingInstanceName>.PowerConnection...". Strip the trailing component to
+ * get the owning building's instance name.
+ */
+function ownerFromConnectionPath(pathName: string): string {
+  const i = pathName.lastIndexOf('.');
+  return i > 0 ? pathName.slice(0, i) : pathName;
+}
+
 export type ParseProgress = { progress: number; message: string };
 
 export async function parseSaveFile(
@@ -62,10 +80,18 @@ export async function parseSaveFile(
   onProgress?.({ progress: 0.92, message: 'Extracting buildings…' });
 
   const buildings: SaveBuilding[]   = [];
-  const conveyors: SaveConveyor[]   = [];
+  // Belt geometry comes from two sources depending on save version:
+  //  - chainConveyors: ConveyorChainActor special properties (Satisfactory 1.0) — full spline paths
+  //  - beltConveyors:  per-belt fallback (zero-length point if no spline available)
+  const chainConveyors: SaveConveyor[] = [];
+  const beltConveyors: SaveConveyor[]  = [];
   const pipes: SavePipe[]           = [];
   const powerLines: SavePowerLine[] = [];
   const players: PlayerInfo[]       = [];
+  // instanceName/path -> world position, for resolving power-line connection refs
+  const instancePos = new Map<string, Vec3>();
+  // power lines are resolved after the loop, once every position is known
+  const pendingPowerLines: { instanceName: string; position: Vec3; sp: any }[] = [];
 
   let totalObjectCount = 0;
   let totalProduction  = 0;
@@ -86,6 +112,29 @@ export async function parseSaveFile(
       const position = toVec3(translation);
       const rot      = toQuat(rotation);
       const props: Record<string, unknown> = obj.properties ?? {};
+      const special: any = (obj as any).specialProperties;
+
+      if (instanceName) instancePos.set(instanceName, position);
+
+      // ── Conveyor chain actors (Satisfactory 1.0): full belt spline path ──
+      if (special?.type === 'ConveyorChainActorSpecialProperties' && Array.isArray(special.beltsInChain)) {
+        try {
+          const path: Vec3[] = [];
+          for (const seg of special.beltsInChain) {
+            for (const pt of (seg?.splinePoints ?? [])) {
+              const loc = toVec3FromAny(pt?.location);
+              if (loc) path.push(loc);
+            }
+          }
+          if (path.length >= 2) {
+            chainConveyors.push({
+              instanceName, typePath,
+              startPosition: path[0], endPosition: path[path.length - 1], path,
+            });
+          }
+        } catch { /* ignore malformed chain */ }
+        continue;
+      }
 
       // ── Players ──────────────────────────────────────────────
       if (PLAYER_KEYWORDS.some(k => typePath.includes(k))) {
@@ -101,9 +150,9 @@ export async function parseSaveFile(
         continue;
       }
 
-      // ── Conveyors ────────────────────────────────────────────
+      // ── Conveyors (per-belt fallback; geometry may be empty) ──
       if (CONVEYOR_KEYWORDS.some(k => typePath.includes(k))) {
-        conveyors.push({ instanceName, typePath, startPosition: position, endPosition: position });
+        beltConveyors.push({ instanceName, typePath, startPosition: position, endPosition: position });
         continue;
       }
 
@@ -113,9 +162,9 @@ export async function parseSaveFile(
         continue;
       }
 
-      // ── Power lines ──────────────────────────────────────────
+      // ── Power lines (resolved after the loop, once positions are known) ──
       if (POWERLINE_KEYWORDS.some(k => typePath.includes(k))) {
-        powerLines.push({ instanceName, startPosition: position, endPosition: position });
+        pendingPowerLines.push({ instanceName, position, sp: special });
         continue;
       }
 
@@ -154,6 +203,34 @@ export async function parseSaveFile(
       }
     }
   }
+
+  // ── Resolve power-line endpoints ─────────────────────────────
+  // Prefer the translations stored on the line; otherwise look up the owning
+  // building's position from the source/target connection refs.
+  const resolvePos = (ref: any): Vec3 | null => {
+    const pathName: string | undefined = ref?.pathName;
+    if (!pathName) return null;
+    return instancePos.get(pathName)
+        ?? instancePos.get(ownerFromConnectionPath(pathName))
+        ?? null;
+  };
+  for (const pw of pendingPowerLines) {
+    const sp = pw.sp;
+    const start = toVec3FromAny(sp?.sourceTranslation) ?? resolvePos(sp?.source) ?? pw.position;
+    const end   = toVec3FromAny(sp?.targetTranslation) ?? resolvePos(sp?.target) ?? pw.position;
+    powerLines.push({ instanceName: pw.instanceName, startPosition: start, endPosition: end });
+  }
+
+  // Prefer real belt spline paths (chain actors) when present; else per-belt points.
+  const conveyors: SaveConveyor[] = chainConveyors.length > 0 ? chainConveyors : beltConveyors;
+
+  const wiredCount = powerLines.filter(
+    p => p.startPosition.x !== p.endPosition.x || p.startPosition.y !== p.endPosition.y,
+  ).length;
+  console.log(
+    `[saveParser] conveyors=${conveyors.length} (chains=${chainConveyors.length}, belts=${beltConveyors.length}) ` +
+    `powerLines=${powerLines.length} (wired=${wiredCount}) pipes=${pipes.length}`,
+  );
 
   onProgress?.({ progress: 1.0, message: 'Done!' });
 

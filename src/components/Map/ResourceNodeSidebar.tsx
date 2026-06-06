@@ -126,7 +126,7 @@ export function ResourceNodeSidebar({
       {/* ── Header ──────────────────────────────────────── */}
       <div className="rn-sidebar-header">
         <span className="rn-sidebar-title">
-          <span className="rn-sidebar-icon"><img src='public/icons/map-icon.png' alt="map" className="rn-btn-img" draggable={false} /></span>
+          <span className="rn-sidebar-icon"><img src='/icons/map-icon.png' alt="map" className="rn-btn-img" draggable={false} /></span>
           Resource Nodes
         </span>
         <div className="rn-sidebar-actions">

@@ -27,7 +27,7 @@ export function MapSearch({ buildings, mapRef }: MapSearchProps) {
     const map = mapRef.current;
     if (!map) return;
     const latlng = gameToLatLng(b.position.x, b.position.y);
-    map.flyTo(latlng, 1, { duration: 1.2 });
+    map.flyTo(latlng, 5, { duration: 1.2 });
     setQuery('');
     setIsOpen(false);
   };

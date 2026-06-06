@@ -3,11 +3,14 @@
  * Adds PlayerMarker and ResourceNodeLayer integration
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { MapContainer, ImageOverlay, Polyline, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, ImageOverlay, TileLayer, Polyline, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-import { MAP_BOUNDS, MAP_IMAGE_SIZE, gameToLatLng } from './mapUtils';
+import {
+  MAP_BOUNDS, MAP_IMAGE_SIZE, gameToLatLng,
+  DEFAULT_CENTER, DEFAULT_ZOOM, MIN_ZOOM, MAX_ZOOM, MIN_NATIVE_ZOOM, MAX_NATIVE_ZOOM,
+} from './mapUtils';
 import { classifyBuilding, getBeltColor, getBeltWeight, getPipeColor } from '../../engine/buildingClassifier';
 import type { SaveBuilding, SaveConveyor, SavePipe, SavePowerLine, PlayerInfo } from '../../types/save';
 import type { LayerState } from './LayerControls';
@@ -39,52 +42,54 @@ const CRS = L.CRS.Simple;
 function MapController({
   mapRef,
   onZoomChange,
+  onBoundsChange,
 }: {
   mapRef: React.MutableRefObject<L.Map | null>;
   onZoomChange: (z: number) => void;
+  onBoundsChange: (b: L.LatLngBounds) => void;
 }) {
   const map = useMap();
-  useEffect(() => { 
-    console.log('[MapController] Map mounted or updated:', map);
-    mapRef.current = map; 
-    onZoomChange(map.getZoom()); 
+  useEffect(() => {
+    mapRef.current = map;
+    onZoomChange(map.getZoom());
+    onBoundsChange(map.getBounds());
   }, [map]);
-  useMapEvents({ 
-    zoomend: () => {
-      console.log('[MapController] Zoom ended:', map.getZoom());
-      onZoomChange(map.getZoom());
-    }
+  // Re-report the viewport after each pan/zoom so off-screen markers can be culled.
+  useMapEvents({
+    zoomend: () => { onZoomChange(map.getZoom()); onBoundsChange(map.getBounds()); },
+    moveend: () => { onBoundsChange(map.getBounds()); },
   });
   return null;
 }
 
 // ─── Building Markers ─────────────────────────────────────────────────────────
 function BuildingMarkersLayer({
-  buildings, layers, zoom, altitudeRange, faultyMachineIds, active, onPlanProduction,
+  buildings, layers, zoom, altitudeRange, bounds, faultyMachineIds, active, onPlanProduction,
 }: {
   buildings: SaveBuilding[];
   layers: LayerState;
   zoom: number;
   altitudeRange: AltitudeRange | null;
+  /** Current map viewport; only markers inside it (padded) are rendered. */
+  bounds: L.LatLngBounds | null;
   faultyMachineIds: Map<string, 'idle' | 'starved' | 'clogged'>;
   active: boolean;
   onPlanProduction?: (itemId: string, rate: number) => void;
 }) {
-  console.log('[BuildingMarkersLayer] Render. Buildings count:', buildings.length);
-
   const visible = useMemo(() => {
-    const v = buildings.filter(b => {
+    // Pad the viewport so markers don't pop in/out right at the edge.
+    const padded = bounds ? bounds.pad(0.3) : null;
+    return buildings.filter(b => {
       const info = classifyBuilding(b.typePath);
       if (!layers.categories[info.category]) return false;
       if (altitudeRange) {
         const zm = b.position.z / 100;
         if (zm < altitudeRange.low || zm > altitudeRange.high) return false;
       }
+      if (padded && !padded.contains(gameToLatLng(b.position.x, b.position.y))) return false;
       return true;
     });
-    console.log('[BuildingMarkersLayer] Visible buildings calculated:', v.length);
-    return v;
-  }, [buildings, layers.categories, altitudeRange]);
+  }, [buildings, layers.categories, altitudeRange, bounds]);
 
   return (
     <>
@@ -107,9 +112,10 @@ function ConveyorLayer({ conveyors, overloadedBeltIds, active }: { conveyors: Sa
   return <>
     {conveyors.map(c => {
       const isOverloaded = active && overloadedBeltIds.has(c.instanceName);
+      const pts = (c.path && c.path.length >= 2) ? c.path : [c.startPosition, c.endPosition];
       return (
         <Polyline key={c.instanceName}
-          positions={[gameToLatLng(c.startPosition.x, c.startPosition.y), gameToLatLng(c.endPosition.x, c.endPosition.y)]}
+          positions={pts.map(p => gameToLatLng(p.x, p.y))}
           pathOptions={{ 
             color: isOverloaded ? '#ff1744' : getBeltColor(c.typePath), 
             weight: isOverloaded ? getBeltWeight(c.typePath) * 2.5 : getBeltWeight(c.typePath), 
@@ -126,9 +132,10 @@ function PipeLayer({ pipes, unstablePipeIds, active }: { pipes: SavePipe[]; unst
   return <>
     {pipes.map(p => {
       const isUnstable = active && unstablePipeIds.has(p.instanceName);
+      const pts = (p.path && p.path.length >= 2) ? p.path : [p.startPosition, p.endPosition];
       return (
         <Polyline key={p.instanceName}
-          positions={[gameToLatLng(p.startPosition.x, p.startPosition.y), gameToLatLng(p.endPosition.x, p.endPosition.y)]}
+          positions={pts.map(pt => gameToLatLng(pt.x, pt.y))}
           pathOptions={{ 
             color: isUnstable ? '#00e6ff' : getPipeColor(p.typePath), 
             weight: isUnstable ? 5 : p.typePath.includes('Mk2') ? 3 : 2, 
@@ -226,11 +233,10 @@ export function WorldMap({
   onPlanProduction,
   activeFilters,
 }: WorldMapProps) {
-  console.log('[WorldMap] Rendering with mapLayer:', mapLayer, 'buildings count:', buildings.length);
-
   const internalRef = useRef<L.Map | null>(null);
   const combinedRef = (mapRef as React.MutableRefObject<L.Map | null>) ?? internalRef;
-  const [zoom, setZoom] = useState(-2);
+  const [zoom, setZoom] = useState(DEFAULT_ZOOM);
+  const [bounds, setBounds] = useState<L.LatLngBounds | null>(null);
 
   const diagnostics = useMemo(() => {
     if (!layers.diagnostics || buildings.length === 0) {
@@ -261,36 +267,36 @@ export function WorldMap({
     return aggregateDiagnosticsFlowB(mockSave);
   }, [layers.diagnostics, buildings, conveyors, pipes, powerLines, players, saveName]);
 
-  const center: L.LatLngExpression = [MAP_IMAGE_SIZE / 2, MAP_IMAGE_SIZE / 2];
+  const center: L.LatLngExpression = DEFAULT_CENTER;
 
-  const layerConfig = MAP_LAYERS.find(l => l.id === mapLayer);
-  const bgUrl = layerConfig?.url ?? '/map/maprz5.png';
-  console.log('[WorldMap] Background URL resolved to:', bgUrl);
+  const layerConfig = MAP_LAYERS.find(l => l.id === mapLayer) ?? MAP_LAYERS[0];
+  const layerKind = layerConfig.kind;
+  const layerUrl = layerConfig.url;
 
-  // Track whether the background image has finished downloading.
-  // BUG FIX: onLoaded must be stable (useCallback) so MapImageLoader's
-  // useEffect doesn't re-run on every parent render and reset progress.
+  // The tiled background streams progressively (tiles are tiny), so there is
+  // nothing to "preload". The full-image loader only applies to legacy
+  // single-image ('image' kind) layers.
+  const isImageLayer = layerKind === 'image';
+
+  // Track whether a legacy single image has finished downloading.
+  // onLoaded must be stable (useCallback) so MapImageLoader's useEffect
+  // doesn't re-run on every parent render and reset progress.
   const [bgLoaded, setBgLoaded] = useState(false);
   const handleBgLoaded = useCallback(() => {
     console.log('[WorldMap] Background image loaded, revealing map.');
     setBgLoaded(true);
   }, []);
 
-  // Reset loader when the user switches map layer
+  // Reset the loader only when an image layer changes; tiled/blank layers
+  // have nothing to wait for.
   useEffect(() => {
-    if (bgUrl) {
-      console.log('[WorldMap] bgUrl changed, resetting bgLoaded:', bgUrl);
-      setBgLoaded(false);
-    } else {
-      // "No Map" blank layer — nothing to load
-      setBgLoaded(true);
-    }
-  }, [bgUrl]);
+    setBgLoaded(!isImageLayer);
+  }, [isImageLayer, layerUrl]);
 
   return (
     <div className="world-map-root flex flex-col flex-1 w-full h-full relative">
-      {bgUrl && !bgLoaded && (
-        <MapImageLoader url={bgUrl} onLoaded={handleBgLoaded} />
+      {isImageLayer && !bgLoaded && (
+        <MapImageLoader url={layerUrl} onLoaded={handleBgLoaded} />
       )}
       
       {buildings.length > 0 && (
@@ -309,16 +315,29 @@ export function WorldMap({
       {/* MapContainer is ALWAYS mounted so Leaflet initialises immediately.
           The loading overlay above covers it until the image is ready. */}
       <MapContainer
-        crs={CRS} center={center} zoom={-2} minZoom={-4} maxZoom={2}
-        maxBounds={[[-200, -200], [MAP_IMAGE_SIZE + 200, MAP_IMAGE_SIZE + 200]]}
+        crs={CRS} center={center} zoom={DEFAULT_ZOOM} minZoom={MIN_ZOOM} maxZoom={MAX_ZOOM}
+        maxBounds={[[-MAP_IMAGE_SIZE - 16, -16], [16, MAP_IMAGE_SIZE + 16]]}
         maxBoundsViscosity={0.8}
         style={{ width: '100%', height: '100%', minHeight: 0, background: '#0d1117', flex: 1 }}
         zoomControl={true}
       >
-        <MapController mapRef={combinedRef} onZoomChange={setZoom} />
+        <MapController mapRef={combinedRef} onZoomChange={setZoom} onBoundsChange={setBounds} />
         <MapStatusBar saveName={saveName} />
 
-        {bgUrl && <ImageOverlay url={bgUrl} bounds={MAP_BOUNDS} opacity={1} />}
+        {/* Background: self-hosted tile pyramid (default) or legacy single image */}
+        {layerKind === 'tiles' && (
+          <TileLayer
+            url={`${layerUrl}/{z}/{x}/{y}.webp`}
+            tileSize={256}
+            noWrap
+            bounds={MAP_BOUNDS}
+            minZoom={MIN_ZOOM}
+            minNativeZoom={MIN_NATIVE_ZOOM}
+            maxNativeZoom={MAX_NATIVE_ZOOM}
+            maxZoom={MAX_ZOOM}
+          />
+        )}
+        {layerKind === 'image' && <ImageOverlay url={layerUrl} bounds={MAP_BOUNDS} opacity={1} />}
 
         {/* Resource nodes — visible even without a save file */}
         {layers.resourceNodes && (
@@ -329,6 +348,7 @@ export function WorldMap({
         <BuildingMarkersLayer
           buildings={buildings} layers={layers} zoom={zoom}
           altitudeRange={altitudeRange}
+          bounds={bounds}
           faultyMachineIds={diagnostics.faultyMachineIds}
           active={layers.diagnostics}
           onPlanProduction={onPlanProduction} />

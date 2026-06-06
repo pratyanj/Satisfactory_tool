@@ -37,6 +37,8 @@ export interface SaveConveyor {
   endPosition: Vec3;
   /** Belt class path determines tier */
   typePath: string;
+  /** Full spline path (world cm) when available — renders the actual belt route. */
+  path?: Vec3[];
 }
 
 /** A fluid pipe segment */
@@ -45,6 +47,8 @@ export interface SavePipe {
   startPosition: Vec3;
   endPosition: Vec3;
   typePath: string;
+  /** Full spline path (world cm) when available — renders the actual pipe route. */
+  path?: Vec3[];
 }
 
 /** A power line connection between two poles */
