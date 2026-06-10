@@ -2913,6 +2913,10 @@ input[type="number"] {
   overflow: hidden;
   background: #0d0e11;
   border-right: 1px solid #1e2330;
+  position: relative;
+}
+.wmt-sidebar-toggle {
+  display: none;
 }
 /* Save + layers region (scrolls if tall) */
 .wmt-side-top {
@@ -7595,6 +7599,55 @@ input[type="number"] {
     font-size: 9.5px !important;
     line-height: 1.15 !important;
     letter-spacing: 0.01em !important;
+  }
+}
+
+/* ── 10. WORLD MAP TAB MOBILE DRAWER OVERLAY ── */
+@media (max-width: 768px) {
+  .wmt-root {
+    position: relative;
+  }
+  .wmt-sidebar {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    z-index: 1001;
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.8);
+    overflow: visible !important;
+  }
+  .wmt-sidebar.is-open {
+    transform: translateX(0) !important;
+  }
+  .wmt-sidebar-toggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    right: -24px;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 60px;
+    background: repeating-linear-gradient(45deg, #f48721, #f48721 8px, #111 8px, #111 16px);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 900;
+    border: 1px solid #000;
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.5);
+    z-index: 1002;
+    outline: none;
+    padding: 0;
+    margin: 0;
+  }
+  .wmt-sidebar-toggle:hover {
+    filter: brightness(1.1);
   }
 }
 

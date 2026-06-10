@@ -36,6 +36,7 @@ export function WorldMapTab() {
   // ── Map state ───────────────────────────────────────────────────────────────
   const [mapLayer, setMapLayer] = useState<MapLayerType>('realistic');
   const mapRef = useRef<L.Map | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Layer visibility. Resource nodes default ON for the world map; building /
   // infra layers come from defaultLayerState (already ON) so a loaded save's
@@ -157,7 +158,14 @@ export function WorldMapTab() {
   return (
     <div className="wmt-root" style={{ flex: 1, minHeight: 0 }}>
       {/* ── Single left sidebar: save + layers + resource nodes ───── */}
-      <div className="wmt-sidebar">
+      <div className={`wmt-sidebar ${isSidebarOpen ? 'is-open' : ''}`}>
+        <button
+          className="wmt-sidebar-toggle"
+          onClick={() => setIsSidebarOpen(prev => !prev)}
+          aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+        >
+          {isSidebarOpen ? '◀' : '▶'}
+        </button>
         <div className="wmt-side-top">
           <input
             ref={fileInputRef}
