@@ -11,11 +11,12 @@ import {
   MAP_BOUNDS, MAP_IMAGE_SIZE, gameToLatLng,
   DEFAULT_CENTER, DEFAULT_ZOOM, MIN_ZOOM, MAX_ZOOM, MIN_NATIVE_ZOOM, MAX_NATIVE_ZOOM,
 } from './mapUtils';
-import { classifyBuilding, getBeltColor, getBeltWeight, getPipeColor } from '../../engine/buildingClassifier';
+import { getBeltColor, getBeltWeight, getPipeColor } from '../../engine/buildingClassifier';
 import type { SaveBuilding, SaveConveyor, SavePipe, SavePowerLine, PlayerInfo } from '../../types/save';
 import type { LayerState } from './LayerControls';
 import { MapSearch } from './MapSearch';
-import { BuildingMarker } from './BuildingMarker';
+import { CanvasInfraLayer, HoveredBuilding } from './CanvasInfraLayer';
+import { BuildingHoverCard } from './BuildingHoverCard';
 import { MapStatusBar } from './MapStatusBar';
 import { MapLayerSwitcher, MapLayerType, MAP_LAYERS } from './MapLayerSwitcher';
 import { PlayerMarker } from './PlayerMarker';
@@ -62,50 +63,8 @@ function MapController({
   return null;
 }
 
-// ─── Building Markers ─────────────────────────────────────────────────────────
-function BuildingMarkersLayer({
-  buildings, layers, zoom, altitudeRange, bounds, faultyMachineIds, active, onPlanProduction,
-}: {
-  buildings: SaveBuilding[];
-  layers: LayerState;
-  zoom: number;
-  altitudeRange: AltitudeRange | null;
-  /** Current map viewport; only markers inside it (padded) are rendered. */
-  bounds: L.LatLngBounds | null;
-  faultyMachineIds: Map<string, 'idle' | 'starved' | 'clogged'>;
-  active: boolean;
-  onPlanProduction?: (itemId: string, rate: number) => void;
-}) {
-  const visible = useMemo(() => {
-    // Pad the viewport so markers don't pop in/out right at the edge.
-    const padded = bounds ? bounds.pad(0.3) : null;
-    return buildings.filter(b => {
-      const info = classifyBuilding(b.typePath);
-      if (!layers.categories[info.category]) return false;
-      if (altitudeRange) {
-        const zm = b.position.z / 100;
-        if (zm < altitudeRange.low || zm > altitudeRange.high) return false;
-      }
-      if (padded && !padded.contains(gameToLatLng(b.position.x, b.position.y))) return false;
-      return true;
-    });
-  }, [buildings, layers.categories, altitudeRange, bounds]);
-
-  return (
-    <>
-      {visible.map(b => (
-        <React.Fragment key={b.instanceName}>
-          <BuildingMarker 
-            building={b} 
-            zoom={zoom} 
-            diagnosticsStatus={active ? faultyMachineIds.get(b.instanceName) : undefined}
-            onPlanProduction={onPlanProduction} 
-          />
-        </React.Fragment>
-      ))}
-    </>
-  );
-}
+// Building rendering lives in BuildingFootprintLayer.tsx (footprint rectangles
+// when zoomed in, dots when zoomed out).
 
 // ─── Conveyor Layer ───────────────────────────────────────────────────────────
 function ConveyorLayer({ conveyors, overloadedBeltIds, active }: { conveyors: SaveConveyor[]; overloadedBeltIds: Set<string>; active: boolean }) {
@@ -119,7 +78,7 @@ function ConveyorLayer({ conveyors, overloadedBeltIds, active }: { conveyors: Sa
           pathOptions={{ 
             color: isOverloaded ? '#ff1744' : getBeltColor(c.typePath), 
             weight: isOverloaded ? getBeltWeight(c.typePath) * 2.5 : getBeltWeight(c.typePath), 
-            opacity: isOverloaded ? 1.0 : 0.75,
+            opacity: isOverloaded ? 1.0 : 0.95,
             dashArray: isOverloaded ? '5 5' : undefined
           }} />
       );
@@ -153,8 +112,8 @@ function PowerLineLayer({ powerLines }: { powerLines: SavePowerLine[] }) {
   return <>
     {powerLines.map(pl => (
       <Polyline key={pl.instanceName}
-        positions={[gameToLatLng(pl.startPosition.x, pl.startPosition.y), gameToLatLng(pl.endPosition.x, pl.endPosition.y)]}
-        pathOptions={{ color: '#fde68a', weight: 1, opacity: 0.5 }} />
+        positions={((pl.path && pl.path.length >= 2) ? pl.path : [pl.startPosition, pl.endPosition]).map(p => gameToLatLng(p.x, p.y))}
+        pathOptions={{ color: '#facc15', weight: 2, opacity: 0.9 }} />
     ))}
   </>;
 }
@@ -237,6 +196,7 @@ export function WorldMap({
   const combinedRef = (mapRef as React.MutableRefObject<L.Map | null>) ?? internalRef;
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
   const [bounds, setBounds] = useState<L.LatLngBounds | null>(null);
+  const [hover, setHover] = useState<HoveredBuilding | null>(null);
 
   const diagnostics = useMemo(() => {
     if (!layers.diagnostics || buildings.length === 0) {
@@ -320,6 +280,7 @@ export function WorldMap({
         maxBoundsViscosity={0.8}
         style={{ width: '100%', height: '100%', minHeight: 0, background: '#0d1117', flex: 1 }}
         zoomControl={true}
+        preferCanvas={true}
       >
         <MapController mapRef={combinedRef} onZoomChange={setZoom} onBoundsChange={setBounds} />
         <MapStatusBar saveName={saveName} />
@@ -344,14 +305,16 @@ export function WorldMap({
           <ResourceNodeLayer activeFilters={activeFilters ?? new Map()} />
         )}
 
-        {/* Building markers from save */}
-        <BuildingMarkersLayer
-          buildings={buildings} layers={layers} zoom={zoom}
-          altitudeRange={altitudeRange}
-          bounds={bounds}
+        {/* Buildings + belts + pipes + power — all drawn on ONE canvas (fast) */}
+        <CanvasInfraLayer
+          buildings={buildings}
+          conveyors={conveyors}
+          pipes={pipes}
+          powerLines={powerLines}
+          layers={layers}
           faultyMachineIds={diagnostics.faultyMachineIds}
-          active={layers.diagnostics}
-          onPlanProduction={onPlanProduction} />
+          diagnosticsActive={layers.diagnostics}
+          onHover={setHover} />
 
         {/* Player markers */}
         {layers.players && players.map((p, i) => (
@@ -360,17 +323,17 @@ export function WorldMap({
           </React.Fragment>
         ))}
 
-        {/* Infrastructure */}
-        {layers.conveyors  && <ConveyorLayer conveyors={conveyors} overloadedBeltIds={diagnostics.overloadedBeltIds} active={layers.diagnostics} />}
-        {layers.pipes      && <PipeLayer pipes={pipes} unstablePipeIds={diagnostics.unstablePipeIds} active={layers.diagnostics} />}
-
-        {layers.powerLines && <PowerLineLayer powerLines={powerLines} />}
+        {/* belts / pipes / power lines are drawn by CanvasInfraLayer above */}
 
         {/* Sprint 4 overlay layers */}
         {layers.trainNetwork && <TrainNetworkLayer buildings={buildings} />}
         {layers.vehicles     && <VehicleLayer buildings={buildings} />}
         {layers.drones       && <DroneLayer buildings={buildings} />}
       </MapContainer>
+
+      {hover && (
+        <BuildingHoverCard building={hover.building} x={hover.px} y={hover.py} />
+      )}
     </div>
   );
 }
