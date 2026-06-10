@@ -12,6 +12,8 @@ export interface Item {
   name: string;
   imageUrl?: string;
   category: string;
+  /** FICSIT AWESOME Sink points awarded per item (undefined if not sinkable). */
+  sinkPoints?: number;
 }
 
 export interface ResourceInput {

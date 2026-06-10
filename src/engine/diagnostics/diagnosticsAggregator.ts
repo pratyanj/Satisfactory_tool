@@ -147,10 +147,17 @@ export function aggregateDiagnosticsFlowA(rootNode: SolverNode, summary: Summary
 
   const faultyMachineIds = new Map<string, 'idle' | 'starved' | 'clogged'>();
   issues.forEach(issue => {
-    if (issue.category === 'machine') {
-      issue.relatedEntityIds.forEach(id => {
-        faultyMachineIds.set(id, 'starved');
-      });
+    // A planned machine is never actually "starved" — the solver guarantees every
+    // input is supplied. The only machine issue Flow A raises is underutilization
+    // (a fractional/underclocked final machine), which is informational, not a
+    // fault. So only surface a status for genuine warning/critical issues, and
+    // never fabricate "starved" for an info-level underutilization note.
+    if (issue.category === 'machine' && issue.severity !== 'info') {
+      const status: 'idle' | 'starved' | 'clogged' =
+        issue.title.toLowerCase().includes('idle') ? 'idle'
+        : issue.title.toLowerCase().includes('clog') || issue.title.toLowerCase().includes('overprod') ? 'clogged'
+        : 'starved';
+      issue.relatedEntityIds.forEach(id => faultyMachineIds.set(id, status));
     }
   });
 
