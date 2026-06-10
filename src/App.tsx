@@ -11,7 +11,6 @@ import { FactoryGraph } from './components/Graph/FactoryGraph';
 import { TreeList } from './components/TreeList';
 import { ItemsTab } from './components/ItemsTab';
 import { BuildingsTab } from './components/BuildingsTab';
-import { MapTab } from './components/Map/MapTab';
 import { WorldMapTab } from './components/Map/WorldMapTab';
 import { ItemBrowser } from './components/ItemBrowser';
 import { PowerPlannerTab } from './components/PowerPlanner/PowerPlannerTab';
@@ -77,7 +76,7 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
 ];
 
 
-type TopLevelTab = 'planner' | 'power_planner' | 'save_map' | 'world_map' | 'codex' | 'sandbox';
+type TopLevelTab = 'planner' | 'power_planner' | 'world_map' | 'codex' | 'sandbox';
 
 function parseRecipeSelections(value: unknown): RecipeSelectionMap {
   if (!value || typeof value !== 'object') return {};
@@ -150,6 +149,7 @@ export default function App() {
     overclock?: number;
     somersloopMultiplier?: number;
     perMachineSettings?: Record<string, { clockSpeed: number; somerslooped: boolean }>;
+    wholeMachineMode?: boolean;
   }>({
     itemId: 'copper_sheet',
     rate: 120,
@@ -162,6 +162,7 @@ export default function App() {
     overclock: 100,
     somersloopMultiplier: 1,
     perMachineSettings: {},
+    wholeMachineMode: false,
   });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
   const [mainTab, setMainTab] = useState<MainTab>('network_graph');
@@ -266,7 +267,7 @@ export default function App() {
       if (cleanHash && !cleanHash.startsWith('plan=') && !cleanHash.startsWith('tab=')) {
         const parts = cleanHash.split('/');
         const top = parts[0] as TopLevelTab;
-        if (['planner', 'power_planner', 'save_map', 'world_map', 'codex', 'sandbox'].includes(top)) {
+        if (['planner', 'power_planner', 'world_map', 'codex', 'sandbox'].includes(top)) {
           setTopLevelTab(top);
           let sub: MainTab = 'network_graph';
           let itemId: string | null = null;
@@ -292,7 +293,7 @@ export default function App() {
       if (pathname && pathname !== '/') {
         const parts = pathname.slice(1).split('/');
         const top = parts[0] as TopLevelTab;
-        if (['planner', 'power_planner', 'save_map', 'world_map', 'codex', 'sandbox'].includes(top)) {
+        if (['planner', 'power_planner', 'world_map', 'codex', 'sandbox'].includes(top)) {
           setTopLevelTab(top);
           if (top === 'planner' && parts[1]) {
             const sub = parts[1] as MainTab;
@@ -312,7 +313,7 @@ export default function App() {
         const params = new URLSearchParams(hash.slice(1));
         const top = (params.get('tab') ?? '') as TopLevelTab;
         const sub = (params.get('sub') ?? '') as MainTab;
-        if (['planner', 'power_planner', 'save_map', 'world_map', 'codex', 'sandbox'].includes(top)) setTopLevelTab(top);
+        if (['planner', 'power_planner', 'world_map', 'codex', 'sandbox'].includes(top)) setTopLevelTab(top);
         if (['network_graph', 'tree_list', 'items', 'buildings'].includes(sub)) setMainTab(sub);
         setSelectedCodexItemId(null);
         
@@ -327,7 +328,7 @@ export default function App() {
       const storedSub = sessionStorage.getItem('sf_sub') as MainTab | null;
       const storedCodexItem = sessionStorage.getItem('sf_codex_item');
       
-      const resolvedTop = (storedTop && ['planner', 'power_planner', 'save_map', 'world_map', 'codex', 'sandbox'].includes(storedTop)) ? storedTop : 'planner';
+      const resolvedTop = (storedTop && ['planner', 'power_planner', 'world_map', 'codex', 'sandbox'].includes(storedTop)) ? storedTop : 'planner';
       const resolvedSub = (storedSub && ['network_graph', 'tree_list', 'items', 'buildings'].includes(storedSub)) ? storedSub : 'network_graph';
       const resolvedCodexItem = resolvedTop === 'codex' ? (storedCodexItem || null) : null;
       
@@ -409,7 +410,8 @@ export default function App() {
     extractorTier: string = 'mk1',
     overclock: number = 100,
     somersloopMultiplier: number = 1,
-    perMachineSettings?: Record<string, { clockSpeed: number; somerslooped: boolean }>
+    perMachineSettings?: Record<string, { clockSpeed: number; somerslooped: boolean }>,
+    wholeMachineMode: boolean = false
   ) => {
     const targetsToUse = targets || [{
       itemId,
@@ -436,6 +438,7 @@ export default function App() {
       overclock,
       somersloopMultiplier,
       perMachineSettings: perMachineSettings || lastInput.perMachineSettings || {},
+      wholeMachineMode,
     });
     try {
       setError(null);
@@ -457,7 +460,8 @@ export default function App() {
         extractorOverclock,
         overclock,
         somersloopMultiplier,
-        perMachineSettings || lastInput.perMachineSettings || {}
+        perMachineSettings || lastInput.perMachineSettings || {},
+        wholeMachineMode
       );
       const newSummary = calculateSummary(solvedRoot);
       const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(solvedRoot, mode, beltId, pipeTier);
@@ -504,9 +508,10 @@ export default function App() {
     pipeTier: 'mk1' | 'mk2' = 'mk1',
     extractorTier: string = 'mk1',
     overclock: number = 100,
-    somersloopMultiplier: number = 1
+    somersloopMultiplier: number = 1,
+    wholeMachineMode: boolean = false
   ) => {
-    calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode, targets, pipeTier, extractorTier, overclock, somersloopMultiplier, lastInput.perMachineSettings);
+    calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode, targets, pipeTier, extractorTier, overclock, somersloopMultiplier, lastInput.perMachineSettings, wholeMachineMode);
   };
 
   const handleResolveAction = useCallback((actionType: string, payload: any) => {
@@ -532,7 +537,7 @@ export default function App() {
   // Step 1: Immediately show the spinner when inputs or mode change
   useEffect(() => {
     setIsRecalculating(true);
-  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature]);
+  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, lastInput.wholeMachineMode, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature]);
 
   // Step 2: Defer heavy graph calculations to the next tick (80ms), allowing the spinner to render and animate smoothly first!
   useEffect(() => {
@@ -550,7 +555,8 @@ export default function App() {
         lastInput.extractorTier || 'mk1',
         lastInput.overclock ?? 100,
         lastInput.somersloopMultiplier ?? 1,
-        lastInput.perMachineSettings || {}
+        lastInput.perMachineSettings || {},
+        lastInput.wholeMachineMode ?? false
       );
       setIsRecalculating(false);
     }, 80);
@@ -803,14 +809,6 @@ export default function App() {
                   setSelectedCodexItemId(itemId);
                   updatePath('codex', mainTab, itemId);
                 }}
-              />
-            </main>
-          ) : topLevelTab === 'save_map' ? (
-            <main className="flex flex-col flex-1 min-h-0 w-full relative sf-blueprint-bg overflow-hidden">
-              <MapTab
-                parsedSave={parsedSave}
-                onParsed={(save) => setParsedSave(save)}
-                onClearSave={() => setParsedSave(null)}
               />
             </main>
 
