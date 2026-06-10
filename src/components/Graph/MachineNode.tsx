@@ -231,11 +231,15 @@ export const MachineNode = React.memo(function MachineNode({ id, data, selected 
                     /min
                   </span>
                   {data.clockSpeed !== undefined && data.clockSpeed !== 100 && (
-                    <span 
-                      className="px-1 py-0.5 rounded text-[8px] bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 font-mono font-bold shrink-0 select-none mr-1"
-                      title={`Overclocked to ${data.clockSpeed}%`}
+                    <span
+                      className={`px-1 py-0.5 rounded text-[8px] border font-mono font-bold shrink-0 select-none mr-1 ${
+                        (data.clockSpeed as number) < 100
+                          ? 'bg-green-500/20 text-green-400 border-green-500/30'
+                          : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+                      }`}
+                      title={`${(data.clockSpeed as number) < 100 ? 'Underclocked' : 'Overclocked'} to ${data.clockSpeed}%`}
                     >
-                      {data.clockSpeed}%
+                      {data.clockSpeed as number}%
                     </span>
                   )}
                   {data.somerslooped && (
@@ -378,7 +382,7 @@ export const MachineNode = React.memo(function MachineNode({ id, data, selected 
           <div className="border-t border-[#2a2d33]/50 pt-2 flex flex-col gap-1 text-[9.5px] font-mono">
             <div className="flex justify-between">
               <span className="text-[#8E9299]">CLOCK SPEED:</span>
-              <span className="text-yellow-500 font-bold">{data.clockSpeed ?? 100}%</span>
+              <span className="text-yellow-500 font-bold">{(data.clockSpeed as number) ?? 100}%</span>
             </div>
             {data.somerslooped && (
               <div className="flex justify-between items-center">
