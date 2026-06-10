@@ -99,6 +99,12 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
                   </span>
                 </div>
                 <div className="sf-item-hero-row">
+                  <span className="sf-item-hero-label">SINK POINTS</span>
+                  <span className="sf-item-hero-val" style={{ color: item.sinkPoints ? '#22c55e' : undefined }}>
+                    {item.sinkPoints ? item.sinkPoints.toLocaleString() : '—'}
+                  </span>
+                </div>
+                <div className="sf-item-hero-row">
                   <span className="sf-item-hero-label">USED IN RECIPES</span>
                   <span className="sf-item-hero-val sf-item-hero-val--accent">{usedAsIngredient.length}</span>
                 </div>
