@@ -34,7 +34,8 @@ interface InputFormProps {
     pipeTier?: 'mk1' | 'mk2',
     extractorTier?: string,
     overclock?: number,
-    somersloopMultiplier?: number
+    somersloopMultiplier?: number,
+    wholeMachineMode?: boolean
   ) => void;
   initialValues?: {
     itemId: string;
@@ -47,6 +48,7 @@ interface InputFormProps {
     extractorTier?: string;
     overclock?: number;
     somersloopMultiplier?: number;
+    wholeMachineMode?: boolean;
   };
 }
 
@@ -83,6 +85,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   const [extractorTier, setExtractorTier] = useState<string>(initialValues?.extractorTier || 'mk1');
   const [overclock, setOverclock] = useState<number>(initialValues?.overclock ?? 100);
   const [somersloopMultiplier, setSomersloopMultiplier] = useState<number>(initialValues?.somersloopMultiplier ?? 1);
+  const [wholeMachineMode, setWholeMachineMode] = useState<boolean>(initialValues?.wholeMachineMode ?? false);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 
   const [recipeSelections, setRecipeSelections] = useState<RecipeSelectionMap>(initialValues?.recipeSelections || {});
@@ -143,6 +146,9 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
       if (initialValues.somersloopMultiplier !== undefined && somersloopMultiplier !== initialValues.somersloopMultiplier) {
         setSomersloopMultiplier(initialValues.somersloopMultiplier);
       }
+      if (initialValues.wholeMachineMode !== undefined && wholeMachineMode !== initialValues.wholeMachineMode) {
+        setWholeMachineMode(initialValues.wholeMachineMode);
+      }
       const recipesMatch = JSON.stringify(recipeSelections) === JSON.stringify(initialValues.recipeSelections || {});
       if (!recipesMatch) {
         setRecipeSelections(initialValues.recipeSelections || {});
@@ -163,7 +169,8 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
         pipeTier,
         extractorTier,
         overclock,
-        somersloopMultiplier
+        somersloopMultiplier,
+        wholeMachineMode
       );
     }
   };
@@ -318,11 +325,20 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                     <option value="resource">Resource Node</option>
                   </select>
 
-                  {/* Rate value */}
+                  {/* Rate value — accepts both integers (120) and decimals (10.8) */}
                   {(target.mode === 'rate' || !target.mode) && (
                     <input
-                      type="number" step="1" min="1" value={target.rate}
-                      onChange={(e) => { const n = [...targets]; n[idx].rate = Math.max(1, Number(e.target.value)); updateFormState(n, minerId, beltId, recipeSelections); }}
+                      type="number"
+                      step="any"
+                      min="0.001"
+                      value={target.rate}
+                      onChange={(e) => {
+                        const parsed = parseFloat(e.target.value);
+                        if (isNaN(parsed) || parsed <= 0) return;
+                        const n = [...targets];
+                        n[idx].rate = Math.round(parsed * 1000) / 1000;
+                        updateFormState(n, minerId, beltId, recipeSelections);
+                      }}
                       className="w-16 text-right text-xs font-mono font-bold text-[#f48721] bg-transparent border-none outline-none shrink-0"
                     />
                   )}
@@ -574,6 +590,28 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
               <Zap size={10} />
               <span>{overclock !== 100 || somersloopMultiplier !== 1 ? 'Tuned' : 'Tuning'}</span>
               {isAdvancedOpen ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
+            </button>
+
+            {/* Whole Machines toggle — round machines up to whole units and sink the surplus */}
+            <button
+              type="button"
+              onClick={() => setWholeMachineMode(v => !v)}
+              title="Round every machine up to a whole unit (no fractional clocks); route the surplus to an Awesome Sink"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded shrink-0"
+              style={{
+                background: wholeMachineMode ? 'rgba(34,197,94,0.10)' : '#0d0f12',
+                border: `1px solid ${wholeMachineMode ? '#22c55e55' : '#1e2128'}`,
+                color: wholeMachineMode ? '#22c55e' : '#555b66',
+              }}
+            >
+              <span
+                style={{
+                  width: 8, height: 8, borderRadius: 2, flexShrink: 0,
+                  background: wholeMachineMode ? '#22c55e' : 'transparent',
+                  border: `1px solid ${wholeMachineMode ? '#22c55e' : '#3a3d44'}`,
+                }}
+              />
+              <span>Whole Machines</span>
             </button>
 
             {/* Calculate */}

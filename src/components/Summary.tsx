@@ -87,6 +87,37 @@ export function Summary({ summary }: SummaryProps) {
           </ul>
         </div>
 
+        {/* Overflow → Sink (whole-machine mode only) */}
+        {summary.overflowItems && Object.keys(summary.overflowItems).length > 0 && (
+          <div className="flex flex-col flex-1 min-w-[200px] border-l border-[#2a2d33]/50 pl-4">
+            <label className="text-[9px] font-mono tracking-[0.2em] uppercase mb-2 flex items-center gap-1.5" style={{ color: '#22c55e' }}>
+              <span style={{ width: 6, height: 6, borderRadius: 1, background: '#22c55e' }} />
+              Overflow → Sink / Storage
+            </label>
+            <ul className="space-y-1.5 max-h-[110px] overflow-y-auto pr-1">
+              {Object.entries(summary.overflowItems)
+                .sort(([, a], [, b]) => b - a)
+                .map(([itemId, rate]) => {
+                  const pts = items[itemId]?.sinkPoints;
+                  const ptsPerMin = pts ? pts * rate : null;
+                  return (
+                    <li key={itemId} className="flex justify-between items-center bg-[#13201a] px-2.5 py-1.5 border border-[#22c55e25] transition-colors hover:border-[#22c55e50]" style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                      <span className="font-bold text-[11px] text-[#e4e3e0] tracking-wide truncate mr-2">{items[itemId]?.name || itemId}</span>
+                      <span className="flex items-baseline gap-2 shrink-0">
+                        <span className="font-mono text-[11px] font-bold" style={{ color: '#22c55e' }}>+{rate.toFixed(1)}/m</span>
+                        {ptsPerMin !== null && (
+                          <span className="font-mono text-[9px] text-[#6b7280]" title={`${pts} points each → ${Math.round(ptsPerMin).toLocaleString()} points/min to the AWESOME Sink`}>
+                            {Math.round(ptsPerMin).toLocaleString()} pts/m
+                          </span>
+                        )}
+                      </span>
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
+        )}
+
       </div>
 
       {/* Bottom edge accent */}
