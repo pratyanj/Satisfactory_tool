@@ -2866,6 +2866,188 @@ input[type="number"] {
   flex-direction: column;
 }
 
+/* ── World Map: building hover detail card ─────────────────────────────────── */
+.bhover-card {
+  position: absolute;
+  z-index: 1200;
+  pointer-events: none;
+  min-width: 160px;
+  max-width: 240px;
+  background: #14161a;
+  border: 1px solid #2a2d33;
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.7);
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #e4e3e0;
+}
+.bhover-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+  border-bottom: 2px solid #2a2d33;
+}
+.bhover-emoji { font-size: 14px; }
+.bhover-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bhover-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 1px 0;
+  color: #9aa0a6;
+}
+.bhover-row b { color: #e4e3e0; font-weight: 600; }
+
+/* ── World Map: single docked left sidebar (save + layers + resource nodes) ── */
+.wmt-sidebar {
+  width: 300px;
+  min-width: 300px;
+  flex-shrink: 0;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #0d0e11;
+  border-right: 1px solid #1e2330;
+}
+/* Save + layers region (scrolls if tall) */
+.wmt-side-top {
+  flex-shrink: 0;
+  max-height: 60%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border-bottom: 1px solid #1e2330;
+}
+/* The resource-node sidebar now fills the rest of the single sidebar column */
+.wmt-sidebar .rn-sidebar {
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  border-right: none;
+}
+
+.wmt-load-btn {
+  background: #f48721;
+  color: #111;
+  font-weight: 700;
+  font-size: 13px;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  transition: filter 0.15s;
+}
+.wmt-load-btn:hover { filter: brightness(1.1); }
+.wmt-load-btn:disabled { opacity: 0.6; cursor: default; }
+
+.wmt-save-card {
+  background: #14161a;
+  border: 1px solid #2a2d33;
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6);
+}
+.wmt-save-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.wmt-save-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e4e3e0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wmt-save-clear {
+  background: transparent;
+  border: none;
+  color: #8E9299;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 2px 4px;
+}
+.wmt-save-clear:hover { color: #ff6b6b; }
+.wmt-save-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 10px;
+  margin-top: 6px;
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  color: #9aa0a6;
+}
+.wmt-save-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.wmt-save-actions button {
+  flex: 1;
+  background: #1c1e22;
+  border: 1px solid #2a2d33;
+  color: #c7cbd1;
+  font-size: 11px;
+  border-radius: 6px;
+  padding: 5px 6px;
+  cursor: pointer;
+}
+.wmt-save-actions button:hover { background: #25282d; color: #fff; }
+
+.wmt-progress {
+  background: #14161a;
+  border: 1px solid #2a2d33;
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+.wmt-progress-msg {
+  font-size: 11px;
+  color: #c7cbd1;
+  margin-bottom: 6px;
+}
+.wmt-progress-track {
+  height: 6px;
+  background: #1a1b1e;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.wmt-progress-fill {
+  height: 100%;
+  background: repeating-linear-gradient(45deg, #f48721, #f48721 8px, #111 8px, #111 16px);
+  transition: width 0.2s;
+}
+.wmt-save-error {
+  background: rgba(80, 20, 20, 0.92);
+  border: 1px solid #7f1d1d;
+  color: #fecaca;
+  font-size: 11px;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.wmt-layers-panel {
+  overflow-y: auto;
+  min-height: 0;
+  background: #14161a;
+  border: 1px solid #2a2d33;
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6);
+}
+
 /* ================================================================
    RESOURCE NODE SIDEBAR
    ================================================================ */
