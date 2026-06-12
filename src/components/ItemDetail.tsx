@@ -204,8 +204,10 @@ function RecipeCard({ recipe, highlightId, onNavigate }: { recipe: Recipe; highl
         )}
       </div>
 
-      {/* Flow area — height driven by item count, so SVG y=50 always = machine vertical center */}
-      <div className="sf-recipe-card-flow" style={{ height: flowHeight }}>
+      {/* Flow area — height driven by item count, so SVG y=50 always = machine vertical center.
+          Passed as a CSS var (not `height`) so the mobile media query can override it
+          to `auto` and let the stacked layout grow instead of clipping. */}
+      <div className="sf-recipe-card-flow" style={{ '--sf-flow-h': `${flowHeight}px` } as React.CSSProperties}>
 
         {/* 1. INPUTS column */}
         <div className="sf-recipe-card-block sf-recipe-card-block--inputs">

@@ -4942,7 +4942,9 @@ input[type="number"] {
   justify-content: space-between;
   gap: 12px;
   position: relative;
-  /* height comes from React inline style: LABEL_H + maxItems * CHIP_H + gaps */
+  /* Height is computed in React and passed as the --sf-flow-h CSS var (not an
+     inline `height`) so the mobile media query below can override it to `auto`. */
+  height: var(--sf-flow-h, 140px);
   min-height: 140px;
   padding-top: 28px;
   box-sizing: border-box;
@@ -7434,6 +7436,24 @@ input[type="number"] {
   .sf-rt-op--eq {
     display: none !important; /* Hide equality operators on stack */
   }
+
+  /* The header row is hidden on mobile, so label each stacked section instead.
+     A full-width ::before forces its own line; chips wrap below it. */
+  .sf-rt-td--ingredients::before,
+  .sf-rt-td--products::before,
+  .sf-rt-td--machine::before {
+    flex: 0 0 100%;
+    font-family: monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #555c6d;
+    margin-bottom: 2px;
+  }
+  .sf-rt-td--ingredients::before { content: 'Inputs'; }
+  .sf-rt-td--products::before { content: 'Products'; }
+  .sf-rt-td--machine::before { content: 'Machine'; }
 }
 
 /* ── 6. DIAGNOSTICS DASHBOARD GRID STACKING ── */
