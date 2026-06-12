@@ -125,7 +125,9 @@ export function ResourceNodeLayer({ activeFilters }: ResourceNodeLayerProps) {
   if (activeFilters.size === 0) return null;
 
   const visible = nodes.filter(node => {
-    const puritySet = activeFilters.get(node.resource);
+    const isWell = node.type === 'well' || node.type === 'geyser';
+    const mapKey = isWell ? `${node.resource} (Well)` : node.resource;
+    const puritySet = activeFilters.get(mapKey);
     return puritySet?.has(node.purity) ?? false;
   });
 
@@ -177,7 +179,13 @@ function ResourceNodeCard({ node }: { node: ResourceNode }) {
             <span className="rnc-badge-purity" style={{ background: color + '22', color, borderColor: color + '55' }}>
               {node.purity.toUpperCase()}
             </span>
-            <span className="rnc-badge-type">{node.type === 'well' ? 'OIL WELL' : 'NODE'}</span>
+            <span className="rnc-badge-type">
+              {node.type === 'geyser'
+                ? 'GEYSER'
+                : node.type === 'well'
+                ? `${node.resource.toUpperCase()} WELL`
+                : 'NODE'}
+            </span>
           </span>
         </div>
       </div>
@@ -194,8 +202,8 @@ function ResourceNodeCard({ node }: { node: ResourceNode }) {
         </div>
       </div>
 
-      {/* Extraction rate table — only for solid nodes */}
-      {node.type !== 'well' && (
+      {/* Extraction rate table — solid nodes (miners) */}
+      {node.type !== 'well' && node.type !== 'geyser' && (
         <div className="rnc-table-wrap">
           <table className="rnc-table">
             <thead>
@@ -223,10 +231,37 @@ function ResourceNodeCard({ node }: { node: ResourceNode }) {
         </div>
       )}
 
-      {/* Oil well note */}
+      {/* Extraction rate table — resource wells (Resource Well Extractor, m³/min) */}
       {node.type === 'well' && (
+        <div className="rnc-table-wrap">
+          <table className="rnc-table">
+            <thead>
+              <tr>
+                <th></th>
+                {CLOCK_SPEEDS.map(cs => (
+                  <th key={cs}>{cs}%</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="rnc-miner-label">Resource Well Extractor</td>
+                {CLOCK_SPEEDS.map(cs => (
+                  <td key={cs}>
+                    {Math.round(baseRate * cs / 100)}
+                    <span className="rnc-unit"> m³/m</span>
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Geyser note — geothermal power, not item extraction */}
+      {node.type === 'geyser' && (
         <div className="rnc-well-note">
-          Requires Oil Extractor — output depends on clock speed.
+          Geothermal source — powers a Geothermal Generator (variable MW). No item output.
         </div>
       )}
     </div>
