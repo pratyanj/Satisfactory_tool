@@ -24,6 +24,7 @@ import { ResourceNodeLayer } from './ResourceNodeLayer';
 import { TrainNetworkLayer } from './TrainNetworkLayer';
 import { VehicleLayer } from './VehicleLayer';
 import { DroneLayer } from './DroneLayer';
+import { CollectibleLayer } from './CollectibleLayer';
 import type { AltitudeRange } from './AltitudeFilter';
 import { aggregateDiagnosticsFlowB } from '../../engine/diagnostics/diagnosticsAggregator';
 import type { ParsedSave } from '../../types/save';
@@ -134,6 +135,7 @@ interface WorldMapProps {
   onPlanProduction?: (itemId: string, rate: number) => void;
   /** Resource node filter: Map<resourceName, Set<purity>> */
   activeFilters?: Map<string, Set<string>>;
+  activeCollectibles?: Set<string>;
 }
 
 // ─── Map Image Loader ───────────────────────────────────────────────────────────
@@ -191,6 +193,7 @@ export function WorldMap({
   onMapLayerChange,
   onPlanProduction,
   activeFilters,
+  activeCollectibles,
 }: WorldMapProps) {
   const internalRef = useRef<L.Map | null>(null);
   const combinedRef = (mapRef as React.MutableRefObject<L.Map | null>) ?? internalRef;
@@ -304,6 +307,9 @@ export function WorldMap({
         {layers.resourceNodes && (
           <ResourceNodeLayer activeFilters={activeFilters ?? new Map()} />
         )}
+
+        {/* Collectibles */}
+        <CollectibleLayer activeCollectibles={activeCollectibles ?? new Set()} />
 
         {/* Buildings + belts + pipes + power — all drawn on ONE canvas (fast) */}
         <CanvasInfraLayer

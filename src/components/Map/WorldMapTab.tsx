@@ -38,9 +38,7 @@ export function WorldMapTab() {
   const mapRef = useRef<L.Map | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Layer visibility. Resource nodes default ON for the world map; building /
-  // infra layers come from defaultLayerState (already ON) so a loaded save's
-  // machines appear immediately.
+  // Layer visibility
   const [layers, setLayers] = useState<LayerState>(() => ({
     ...defaultLayerState(),
     resourceNodes: true,
@@ -50,7 +48,6 @@ export function WorldMapTab() {
   const [save, setSave] = useState<ParsedSave | null>(null);
   const [progress, setProgress] = useState<ParseProgress | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [showLayers, setShowLayers] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = useCallback(async (file: File) => {
@@ -63,8 +60,6 @@ export function WorldMapTab() {
 
     try {
       const buffer = await file.arrayBuffer();
-      // The parser is synchronous and blocks the main thread; yield once so the
-      // "Parsing…" message paints before the freeze.
       setProgress({ progress: 0.05, message: 'Parsing save… (large saves take a few seconds)' });
       await new Promise(r => setTimeout(r, 60));
 
@@ -92,53 +87,73 @@ export function WorldMapTab() {
 
   const openPicker = useCallback(() => fileInputRef.current?.click(), []);
 
-  // ── Resource data ────────────────────────────────────────────────────────────
-  const [counts, setCounts] = useState<ResourceCounts>({});
+  // ── Resource data & Collectibles state ───────────────────────────────────────
+  const [nodeCounts, setNodeCounts] = useState<ResourceCounts>({});
+  const [wellCounts, setWellCounts] = useState<ResourceCounts>({});
+  const [activeCollectibles, setActiveCollectibles] = useState<Set<string>>(() => new Set());
 
   useEffect(() => {
     fetch('/data/resource_nodes.json')
       .then(r => r.json())
-      .then((nodes: { resource: string; purity: string }[]) => {
-        const c: ResourceCounts = {};
+      .then((nodes: { resource: string; purity: string; type: string }[]) => {
+        const nodesC: ResourceCounts = {};
+        const wellsC: ResourceCounts = {};
         for (const node of nodes) {
-          if (!c[node.resource]) {
-            c[node.resource] = { Impure: 0, Normal: 0, Pure: 0 };
+          const isWell = node.type === 'well' || node.type === 'geyser';
+          const target = isWell ? wellsC : nodesC;
+          if (!target[node.resource]) {
+            target[node.resource] = { Impure: 0, Normal: 0, Pure: 0 };
           }
           const p = node.purity as Purity;
-          if (p in c[node.resource]) {
-            c[node.resource][p]++;
+          if (p in target[node.resource]) {
+            target[node.resource][p]++;
           }
         }
-        setCounts(c);
+        setNodeCounts(nodesC);
+        setWellCounts(wellsC);
       })
       .catch(console.error);
   }, []);
 
-  // ── Active filters — default: Iron Ore, all purities ────────────────────────
+  // ── Active filters ──────────────────────────────────────────────────────────
   const [activeFilters, setActiveFilters] = useState<Map<string, Set<string>>>(
     () => new Map([['Iron Ore', new Set<string>(['Impure', 'Normal', 'Pure'])]])
   );
 
-  const handleToggle = useCallback((resource: string, purity: Purity) => {
+  const handleToggle = useCallback((resource: string, purity: Purity, type: string) => {
     setActiveFilters(prev => {
       const next = new Map<string, Set<string>>(prev);
-      const existing = next.get(resource);
+      const isWell = type === 'well' || type === 'geyser';
+      const mapKey = isWell ? `${resource} (Well)` : resource;
+      const existing = next.get(mapKey);
 
       if (existing) {
         const newSet = new Set<string>([...existing]);
         if (newSet.has(purity)) {
           newSet.delete(purity);
           if (newSet.size === 0) {
-            next.delete(resource);  // remove resource entirely when no purities active
+            next.delete(mapKey);
           } else {
-            next.set(resource, newSet);
+            next.set(mapKey, newSet);
           }
         } else {
           newSet.add(purity);
-          next.set(resource, newSet);
+          next.set(mapKey, newSet);
         }
       } else {
-        next.set(resource, new Set([purity]));
+        next.set(mapKey, new Set([purity]));
+      }
+      return next;
+    });
+  }, []);
+
+  const handleToggleCollectible = useCallback((type: string) => {
+    setActiveCollectibles(prev => {
+      const next = new Set<string>(prev);
+      if (next.has(type)) {
+        next.delete(type);
+      } else {
+        next.add(type);
       }
       return next;
     });
@@ -148,17 +163,62 @@ export function WorldMapTab() {
     setActiveFilters(new Map());
   }, []);
 
-  const handleSelectAll = useCallback(() => {
-    setActiveFilters(buildSelectAll(counts));
-  }, [counts]);
+  const handleTogglePurityAll = useCallback((purity: Purity) => {
+    setActiveFilters(prev => {
+      const next = new Map<string, Set<string>>(prev);
+      const allResources = [...Object.keys(nodeCounts), ...Object.keys(wellCounts).map(k => `${k} (Well)`)];
+      if (allResources.length === 0) return prev;
 
-  const pct = progress ? Math.round(progress.progress * 100) : 0;
+      let allSelected = true;
+      for (const resource of allResources) {
+        const existing = next.get(resource);
+        if (!existing || !existing.has(purity)) {
+          allSelected = false;
+          break;
+        }
+      }
+
+      if (allSelected) {
+        for (const resource of allResources) {
+          const existing = next.get(resource);
+          if (existing) {
+            const newSet = new Set<string>(existing);
+            newSet.delete(purity);
+            if (newSet.size === 0) {
+              next.delete(resource);
+            } else {
+              next.set(resource, newSet);
+            }
+          }
+        }
+      } else {
+        for (const resource of allResources) {
+          const existing = next.get(resource) ?? new Set<string>();
+          const newSet = new Set<string>(existing);
+          newSet.add(purity);
+          next.set(resource, newSet);
+        }
+      }
+      return next;
+    });
+  }, [nodeCounts, wellCounts]);
+
+  const handleShowPurityOnly = useCallback((purity: Purity) => {
+    setActiveFilters(() => {
+      const next = new Map<string, Set<string>>();
+      const allResources = [...Object.keys(nodeCounts), ...Object.keys(wellCounts).map(k => `${k} (Well)`)];
+      for (const resource of allResources) {
+        next.set(resource, new Set([purity]));
+      }
+      return next;
+    });
+  }, [nodeCounts, wellCounts]);
 
   // ─── Render ──────────────────────────────────────────────────────────────────
   return (
-    <div className="wmt-root" style={{ flex: 1, minHeight: 0 }}>
+    <div className="wmt-root" style={{ display: 'flex', flexDirection: 'row', flex: 1, minHeight: 0, height: '100%', width: '100%', overflow: 'hidden' }}>
       {/* ── Single left sidebar: save + layers + resource nodes ───── */}
-      <div className={`wmt-sidebar ${isSidebarOpen ? 'is-open' : ''}`}>
+      <div className={`wmt-sidebar ${isSidebarOpen ? 'is-open' : ''}`} style={{ display: 'flex', flexDirection: 'column', height: '100%', flexShrink: 0 }}>
         <button
           className="wmt-sidebar-toggle"
           onClick={() => setIsSidebarOpen(prev => !prev)}
@@ -166,76 +226,31 @@ export function WorldMapTab() {
         >
           {isSidebarOpen ? '◀' : '▶'}
         </button>
-        <div className="wmt-side-top">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".sav"
-            style={{ display: 'none' }}
-            onChange={onFileChange}
-          />
-
-          {!save ? (
-            <button className="wmt-load-btn" onClick={openPicker} disabled={!!progress}>
-              📁 Load Save&nbsp;(.sav)
-            </button>
-          ) : (
-            <div className="wmt-save-card">
-              <div className="wmt-save-head">
-                <span className="wmt-save-name" title={save.saveName}>💾 {save.saveName}</span>
-                <button className="wmt-save-clear" title="Clear save" onClick={clearSave}>✕</button>
-              </div>
-              <div className="wmt-save-stats">
-                <span>{save.buildings.length.toLocaleString()} buildings</span>
-                <span>{save.conveyors.length.toLocaleString()} belts</span>
-                <span>{save.pipes.length.toLocaleString()} pipes</span>
-                <span>{save.powerLines.length.toLocaleString()} power</span>
-              </div>
-              <div className="wmt-save-actions">
-                <button onClick={openPicker}>Load different</button>
-                <button onClick={() => setShowLayers(v => !v)}>
-                  {showLayers ? 'Hide layers' : 'Show layers'}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {progress && (
-            <div className="wmt-progress">
-              <div className="wmt-progress-msg">{progress.message}</div>
-              <div className="wmt-progress-track">
-                <div className="wmt-progress-fill" style={{ width: `${pct}%` }} />
-              </div>
-            </div>
-          )}
-
-          {error && <div className="wmt-save-error">⚠ {error}</div>}
-
-          {save && showLayers && (
-            <div className="wmt-layers-panel">
-              <LayerControls
-                layers={layers}
-                onChange={setLayers}
-                buildingCount={save.buildings.length}
-                conveyorCount={save.conveyors.length}
-                pipeCount={save.pipes.length}
-                powerLineCount={save.powerLines.length}
-              />
-            </div>
-          )}
-        </div>
 
         <ResourceNodeSidebar
-          counts={counts}
+          save={save}
+          progress={progress}
+          error={error}
+          onFileChange={onFileChange}
+          onClearSave={clearSave}
+          onOpenPicker={openPicker}
+          fileInputRef={fileInputRef}
+          layers={layers}
+          onLayersChange={setLayers}
+          nodeCounts={nodeCounts}
+          wellCounts={wellCounts}
           activeFilters={activeFilters}
           onToggle={handleToggle}
+          onTogglePurityAll={handleTogglePurityAll}
+          onShowPurityOnly={handleShowPurityOnly}
           onClearAll={handleClearAll}
-          onSelectAll={handleSelectAll}
+          activeCollectibles={activeCollectibles}
+          onToggleCollectible={handleToggleCollectible}
         />
       </div>
 
       {/* ── Map ─────────────────────────────────────────────────── */}
-      <div className="wmt-map">
+      <div className="wmt-map" style={{ flex: 1, height: '100%', position: 'relative', minWidth: 0 }}>
         <WorldMap
           buildings={save?.buildings ?? []}
           conveyors={save?.conveyors ?? []}
@@ -248,6 +263,7 @@ export function WorldMapTab() {
           mapLayer={mapLayer}
           onMapLayerChange={setMapLayer}
           activeFilters={activeFilters}
+          activeCollectibles={activeCollectibles}
         />
       </div>
     </div>
