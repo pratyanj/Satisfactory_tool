@@ -1,0 +1,305 @@
+/* ============================================================
+   Codex hub + Buildings/Recipes/Tiers sections
+   Reuses the ib-, id- and sf- classes from index.css; this only
+   adds the hub landing, back button, building-detail, tier bits.
+   ============================================================ */
+
+/* ── Back-to-hub button (shared across sections) ── */
+.cdx-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: #8e9299;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #2a2d33;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.cdx-back-btn:hover {
+  color: #f48721;
+  border-color: #f4872166;
+  background: rgba(244, 135, 33, 0.08);
+}
+
+/* ── Hub landing ── */
+.cdx-hub {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 40px 32px;
+  width: 100%;
+}
+.cdx-hub-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #e9e8e6;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+.cdx-hub-sub {
+  font-size: 14px;
+  color: #8e9299;
+  margin: 8px 0 28px;
+}
+.cdx-hub-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+.cdx-hub-card {
+  position: relative;
+  text-align: left;
+  padding: 18px 18px 20px;
+  background: linear-gradient(160deg, rgba(26, 27, 30, 0.9), rgba(16, 17, 20, 0.9));
+  border: 1px solid #2a2d33;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  overflow: hidden;
+}
+.cdx-hub-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--cdx-accent, #f48721);
+  opacity: 0.7;
+}
+.cdx-hub-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--cdx-accent, #f48721);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--cdx-accent, #f48721) inset;
+}
+.cdx-hub-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.cdx-hub-card-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--cdx-accent, #f48721);
+  flex-shrink: 0;
+}
+.cdx-hub-card-icon svg { width: 100%; height: 100%; }
+.cdx-hub-card-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #e9e8e6;
+}
+.cdx-hub-card-count {
+  font-size: 12px;
+  font-family: monospace;
+  color: #6b7280;
+}
+.cdx-hub-card-desc {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #9aa0a6;
+  margin: 0;
+}
+
+/* ── Building card power badge ── */
+.ib-card-badge--power {
+  background: rgba(244, 135, 33, 0.9) !important;
+  color: #0d1117 !important;
+  font-weight: 700;
+}
+
+/* ── Building detail extras ── */
+.bld-desc-card {
+  margin-top: 14px;
+  padding: 14px 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #b9bdc4;
+  white-space: pre-line;
+  background: rgba(9, 10, 12, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+}
+.bld-cost-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+.bld-unlock-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(167, 139, 250, 0.06);
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  border-radius: 10px;
+}
+.bld-unlock-type {
+  font-size: 9px;
+  font-weight: 700;
+  font-family: monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #c4b5fd;
+  background: rgba(167, 139, 250, 0.15);
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  border-radius: 5px;
+  padding: 3px 7px;
+}
+.bld-unlock-text { display: flex; flex-direction: column; gap: 2px; }
+.bld-unlock-name { font-size: 13px; font-weight: 600; color: #e4e3e0; }
+.bld-unlock-tier { font-size: 11px; color: #8e9299; }
+
+/* ── Recipe browser wrapper ── */
+.cdx-recipe-wrap { padding-bottom: 24px; }
+
+/* ── Tiers ── */
+.cdx-tiers-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 20px 40px;
+}
+.tier-block { margin-bottom: 26px; }
+.tier-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.tier-heading-num {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #f48721;
+  font-family: monospace;
+}
+.tier-heading-count {
+  font-size: 11px;
+  color: #6b7280;
+  font-family: monospace;
+}
+.tier-heading-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, #f4872140, transparent);
+}
+.tier-milestones {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+.ms-card {
+  padding: 14px;
+  background: linear-gradient(160deg, rgba(26, 27, 30, 0.85), rgba(16, 17, 20, 0.85));
+  border: 1px solid #2a2d33;
+  border-radius: 10px;
+}
+.ms-card-header { margin-bottom: 10px; }
+.ms-card-name { font-size: 14px; font-weight: 700; color: #e9e8e6; }
+.ms-section { margin-top: 10px; }
+.ms-section-label {
+  display: block;
+  font-size: 9px;
+  font-family: monospace;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #555c6d;
+  margin-bottom: 6px;
+}
+.ms-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.ms-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px 4px 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 7px;
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+.ms-chip:hover:not(:disabled) {
+  background: rgba(244, 135, 33, 0.07);
+  border-color: rgba(244, 135, 33, 0.3);
+}
+.ms-chip:disabled { cursor: default; opacity: 0.85; }
+.ms-chip-img { width: 24px; height: 24px; object-fit: contain; flex-shrink: 0; }
+.ms-chip-amt { font-size: 11px; font-weight: 700; font-family: monospace; color: #d8dce2; }
+.ms-chip--unlock { padding-right: 10px; }
+.ms-chip-label { font-size: 11.5px; color: #c4c8cf; white-space: nowrap; }
+
+/* ── Section stack: list stays mounted under the detail overlay so Back
+   restores the same page/scroll. flex:1 (not height:100%) avoids the
+   percentage-height flex collapse. ── */
+.cdx-section-stack {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.cdx-section-stack > .ib-root {
+  flex: 1;
+  min-height: 0;
+}
+.cdx-detail-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  background: #0d1117;
+}
+.cdx-detail-overlay > .id-root {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Pagination ── */
+.cdx-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 20px 0 10px;
+}
+.cdx-pager-btn {
+  min-width: 34px;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: #b9bdc4;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #2a2d33;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.cdx-pager-btn:hover:not(:disabled) { color: #f48721; border-color: #f4872166; }
+.cdx-pager-btn--active {
+  background: rgba(244, 135, 33, 0.15);
+  border-color: #f48721;
+  color: #f48721;
+}
+.cdx-pager-btn:disabled { opacity: 0.4; cursor: default; }
+.cdx-pager-ellipsis { color: #555c6d; padding: 0 2px; }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .cdx-hub { padding: 24px 16px; }
+  .cdx-hub-title { font-size: 22px; }
+  .cdx-hub-cards { grid-template-columns: 1fr; gap: 12px; }
+  .tier-milestones { grid-template-columns: 1fr; }
+}

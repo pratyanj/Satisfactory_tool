@@ -160,7 +160,7 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
   );
 }
 
-function RecipeCard({ recipe, highlightId, onNavigate }: { recipe: Recipe; highlightId: string; onNavigate: (id: string) => void }) {
+export function RecipeCard({ recipe, highlightId, onNavigate }: { recipe: Recipe; highlightId: string; onNavigate: (id: string) => void }) {
   const machine = machines[recipe.machineId];
   const isAlternate = recipe.id.startsWith('recipe_alternate_');
   const recipeName = recipe.name ?? recipe.id
@@ -401,7 +401,7 @@ function ViewToggle({ viewMode, onChange }: { viewMode: 'flow' | 'table'; onChan
 // ============================================================
 // Table View Components
 // ============================================================
-function RecipeTable({ recipes, highlightId, onNavigate }: { recipes: Recipe[]; highlightId: string; onNavigate: (id: string) => void }) {
+export function RecipeTable({ recipes, highlightId, onNavigate }: { recipes: Recipe[]; highlightId: string; onNavigate: (id: string) => void }) {
   return (
     <div className="sf-rt">
       {/* Header row */}

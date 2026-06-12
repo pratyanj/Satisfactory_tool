@@ -12,7 +12,7 @@ import { TreeList } from './components/TreeList';
 import { ItemsTab } from './components/ItemsTab';
 import { BuildingsTab } from './components/BuildingsTab';
 import { WorldMapTab } from './components/Map/WorldMapTab';
-import { ItemBrowser } from './components/ItemBrowser';
+import { Codex } from './components/Codex';
 import { PowerPlannerTab } from './components/PowerPlanner/PowerPlannerTab';
 import { SandboxTab } from './components/Sandbox/SandboxTab';
 import { HeaderNav } from './components/Layout/Header/HeaderNav';
@@ -270,20 +270,15 @@ export default function App() {
         if (['planner', 'power_planner', 'world_map', 'codex', 'sandbox'].includes(top)) {
           setTopLevelTab(top);
           let sub: MainTab = 'network_graph';
-          let itemId: string | null = null;
           if (top === 'planner' && parts[1]) {
             const parsedSub = parts[1] as MainTab;
             if (['network_graph', 'tree_list', 'items', 'buildings'].includes(parsedSub)) {
               sub = parsedSub;
               setMainTab(parsedSub);
             }
-          } else if (top === 'codex') {
-            itemId = parts[1] || null;
-            setSelectedCodexItemId(itemId);
           }
-          
-          // Clean the URL bar by replacing the hash with the clean pathname
-          const cleanPath = top === 'planner' ? `/planner/${sub}` : (itemId ? `/codex/${itemId}` : `/${top}`);
+          // Codex owns its own sub-path (/codex/<section>/<id>) — preserve it verbatim.
+          const cleanPath = top === 'planner' ? `/planner/${sub}` : `/${cleanHash}`;
           window.history.replaceState(null, '', cleanPath);
           return;
         }
@@ -300,10 +295,8 @@ export default function App() {
             if (['network_graph', 'tree_list', 'items', 'buildings'].includes(sub)) {
               setMainTab(sub);
             }
-          } else if (top === 'codex') {
-            const itemId = parts[1] || null;
-            setSelectedCodexItemId(itemId);
           }
+          // Codex parses its own /codex/<section>/<id> sub-path internally.
           return;
         }
       }
@@ -803,13 +796,7 @@ export default function App() {
             </main>
           ) : topLevelTab === 'codex' ? (
             <main className="flex flex-col flex-1 min-h-0 w-full relative sf-blueprint-bg overflow-hidden">
-              <ItemBrowser
-                selectedItemId={selectedCodexItemId}
-                setSelectedItemId={(itemId) => {
-                  setSelectedCodexItemId(itemId);
-                  updatePath('codex', mainTab, itemId);
-                }}
-              />
+              <Codex />
             </main>
 
           ) : topLevelTab === 'sandbox' ? (
