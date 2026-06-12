@@ -1,0 +1,104 @@
+Root keys: ['options', 'version', 'lastBuild']
+Tab ID: resource_nodes, Name: Resource nodes
+  - Option Name: Limestone, Type: Desc_Stone_C
+      * Sub-Option Layer: limestoneImpure, Name: Limestone (Impure), Markers Count: 15
+      * Sub-Option Layer: limestoneNormal, Name: Limestone (Normal), Markers Count: 50
+      * Sub-Option Layer: limestonePure, Name: Limestone (Pure), Markers Count: 29
+  - Option Name: Iron Ore, Type: Desc_OreIron_C
+      * Sub-Option Layer: ironImpure, Name: Iron Ore (Impure), Markers Count: 39
+      * Sub-Option Layer: ironNormal, Name: Iron Ore (Normal), Markers Count: 42
+      * Sub-Option Layer: ironPure, Name: Iron Ore (Pure), Markers Count: 46
+  - Option Name: Copper Ore, Type: Desc_OreCopper_C
+      * Sub-Option Layer: copperImpure, Name: Copper Ore (Impure), Markers Count: 13
+      * Sub-Option Layer: copperNormal, Name: Copper Ore (Normal), Markers Count: 29
+      * Sub-Option Layer: copperPure, Name: Copper Ore (Pure), Markers Count: 13
+  - Option Name: Caterium Ore, Type: Desc_OreGold_C
+      * Sub-Option Layer: cateriumImpure, Name: Caterium Ore (Impure), Markers Count: 0
+      * Sub-Option Layer: cateriumNormal, Name: Caterium Ore (Normal), Markers Count: 9
+      * Sub-Option Layer: cateriumPure, Name: Caterium Ore (Pure), Markers Count: 8
+  - Option Name: Coal, Type: Desc_Coal_C
+      * Sub-Option Layer: coalImpure, Name: Coal (Impure), Markers Count: 15
+      * Sub-Option Layer: coalNormal, Name: Coal (Normal), Markers Count: 31
+      * Sub-Option Layer: coalPure, Name: Coal (Pure), Markers Count: 16
+  - Option Name: Crude Oil, Type: Desc_LiquidOil_C
+      * Sub-Option Layer: oilImpure, Name: Crude Oil (Impure), Markers Count: 10
+      * Sub-Option Layer: oilNormal, Name: Crude Oil (Normal), Markers Count: 12
+      * Sub-Option Layer: oilPure, Name: Crude Oil (Pure), Markers Count: 8
+  - Option Name: Sulfur, Type: Desc_Sulfur_C
+      * Sub-Option Layer: sulfurImpure, Name: Sulfur (Impure), Markers Count: 6
+      * Sub-Option Layer: sulfurNormal, Name: Sulfur (Normal), Markers Count: 5
+      * Sub-Option Layer: sulfurPure, Name: Sulfur (Pure), Markers Count: 5
+  - Option Name: Bauxite, Type: Desc_OreBauxite_C
+      * Sub-Option Layer: bauxiteImpure, Name: Bauxite (Impure), Markers Count: 5
+      * Sub-Option Layer: bauxiteNormal, Name: Bauxite (Normal), Markers Count: 6
+      * Sub-Option Layer: bauxitePure, Name: Bauxite (Pure), Markers Count: 6
+  - Option Name: Raw Quartz, Type: Desc_RawQuartz_C
+      * Sub-Option Layer: quartzImpure, Name: Raw Quartz (Impure), Markers Count: 3
+      * Sub-Option Layer: quartzNormal, Name: Raw Quartz (Normal), Markers Count: 7
+      * Sub-Option Layer: quartzPure, Name: Raw Quartz (Pure), Markers Count: 7
+  - Option Name: Uranium, Type: Desc_OreUranium_C
+      * Sub-Option Layer: uraniumImpure, Name: Uranium (Impure), Markers Count: 3
+      * Sub-Option Layer: uraniumNormal, Name: Uranium (Normal), Markers Count: 2
+      * Sub-Option Layer: uraniumPure, Name: Uranium (Pure), Markers Count: 0
+  - Option Name: SAM, Type: Desc_SAM_C
+      * Sub-Option Layer: samImpure, Name: SAM (Impure), Markers Count: 10
+      * Sub-Option Layer: samNormal, Name: SAM (Normal), Markers Count: 6
+      * Sub-Option Layer: samPure, Name: SAM (Pure), Markers Count: 3
+  - Option Name: Unknown nodes, Type: None
+      * Sub-Option Layer: unknown, Name: Unknown node, Markers Count: 0
+Tab ID: resource_wells, Name: Resource wells
+  - Option Name: Nitrogen Gas, Type: Desc_NitrogenGas_C
+      * Sub-Option Layer: nitrogenGasWellImpure, Name: Nitrogen Gas (Impure), Markers Count: 2
+      * Sub-Option Layer: nitrogenGasWellNormal, Name: Nitrogen Gas (Normal), Markers Count: 7
+      * Sub-Option Layer: nitrogenGasWellPure, Name: Nitrogen Gas (Pure), Markers Count: 36
+  - Option Name: Crude Oil, Type: Desc_LiquidOilWell_C
+      * Sub-Option Layer: oilWellImpure, Name: Crude Oil (Impure), Markers Count: 8
+      * Sub-Option Layer: oilWellNormal, Name: Crude Oil (Normal), Markers Count: 6
+      * Sub-Option Layer: oilWellPure, Name: Crude Oil (Pure), Markers Count: 4
+  - Option Name: Water, Type: Desc_Water_C
+      * Sub-Option Layer: waterWellImpure, Name: Water (Impure), Markers Count: 7
+      * Sub-Option Layer: waterWellNormal, Name: Water (Normal), Markers Count: 12
+      * Sub-Option Layer: waterWellPure, Name: Water (Pure), Markers Count: 36
+  - Option Name: Unknown wells, Type: None
+      * Sub-Option Layer: unknownWell, Name: Unknown well, Markers Count: 0
+  - Option Name: Geysers, Type: Desc_Geyser_C
+      * Sub-Option Layer: geyserUnknown, Name: Geyser (Unknown), Markers Count: 0
+      * Sub-Option Layer: geyserImpure, Name: Geyser (Impure), Markers Count: 9
+      * Sub-Option Layer: geyserNormal, Name: Geyser (Normal), Markers Count: 13
+      * Sub-Option Layer: geyserPure, Name: Geyser (Pure), Markers Count: 9
+Tab ID: power_slugs, Name: Power Slugs
+  - Option Name: Power Slugs, Type: Desc_Crystal_C
+      * Sub-Option Layer: greenSlugs, Name: Blue Power Slug, Markers Count: 596
+      * Sub-Option Layer: yellowSlugs, Name: Yellow Power Slug, Markers Count: 389
+      * Sub-Option Layer: purpleSlugs, Name: Purple Power Slug, Markers Count: 257
+Tab ID: artifacts, Name: Artifacts
+  - Option Name: Artifacts, Type: None
+      * Sub-Option Layer: mercerSpheres, Name: Mercer Sphere, Markers Count: 298
+      * Sub-Option Layer: somersloops, Name: Somersloop, Markers Count: 106
+Tab ID: collectibles, Name: Collectibles
+  - Option Name: Drop-Pods, Type: None
+      * Sub-Option Layer: hardDrives, Name: Hard Drive, Markers Count: 118
+  - Option Name: Consumable, Type: None
+      * Sub-Option Layer: paleBerry, Name: Paleberry, Markers Count: 2154
+      * Sub-Option Layer: berylNut, Name: Beryl Nut, Markers Count: 1515
+      * Sub-Option Layer: baconAgaric, Name: Bacon Agaric, Markers Count: 1615
+  - Option Name: Items, Type: None
+      * Sub-Option Layer: playerResourceDepositsLayer, Name: Resource deposits, Markers Count: 0
+      * Sub-Option Layer: playerItemsPickupLayer, Name: Dropped Items, Markers Count: 0
+Tab ID: None, Name: None
+  - Option Name: None, Type: None
+      * Sub-Option Layer: spawn, Name: None, Markers Count: 4
+  - Option Name: None, Type: None
+      * Sub-Option Layer: worldBorder, Name: None, Markers Count: 0
+  - Option Name: None, Type: None
+      * Sub-Option Layer: caves, Name: None, Markers Count: 104
+  - Option Name: None, Type: None
+      * Sub-Option Layer: roads, Name: None, Markers Count: 111
+  - Option Name: None, Type: None
+      * Sub-Option Layer: sporeFlowers, Name: Spore Flowers, Markers Count: 652
+  - Option Name: None, Type: None
+      * Sub-Option Layer: pillars, Name: Gas Pillars, Markers Count: 831
+  - Option Name: None, Type: None
+      * Sub-Option Layer: smallRocks, Name: Small Rocks, Markers Count: 0
+  - Option Name: None, Type: None
+      * Sub-Option Layer: largeRocks, Name: Large Rocks, Markers Count: 0
