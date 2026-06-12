@@ -348,7 +348,8 @@ function FactoryGraphInner({
     ? solvedMachines * (solvedClock * solvedSloopMult) / (localClock * localSloopMult)
     : solvedMachines;
   const previewBasePower = machines[selectedNode?.data?.machineId as string]?.powerUsage || 0;
-  const previewPower = previewMachines * previewBasePower * Math.pow(localClock / 100, 1.6) * (localSomersloop ? 4 : 1);
+  // Overclock power exponent log2(2.5) ≈ 1.321928 (Satisfactory 0.7.0.0+).
+  const previewPower = previewMachines * previewBasePower * Math.pow(localClock / 100, Math.log2(2.5)) * (localSomersloop ? 4 : 1);
   // Multiply each input's solved total by this to reflect a somersloop toggle.
   const inputSloopFactor = solvedSloopMult / localSloopMult;
 

@@ -103,7 +103,8 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
     const loopMultiplier = isSomerslooped ? 2 : 1;
 
     const actualOutputRatePerMachine = machineCount > 0 ? (rate / machineCount) : (recipe?.outputRate || 0);
-    const actualPowerUsagePerMachine = machineInfo.powerUsage * Math.pow(speedMultiplier, 1.6) * (isSomerslooped ? 4 : 1);
+    // Overclock power exponent log2(2.5) ≈ 1.321928 (Satisfactory 0.7.0.0+).
+    const actualPowerUsagePerMachine = machineInfo.powerUsage * Math.pow(speedMultiplier, Math.log2(2.5)) * (isSomerslooped ? 4 : 1);
 
     return {
       label,

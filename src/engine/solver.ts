@@ -435,7 +435,9 @@ export function calculateSummary(rootNode: SolverNode): SummaryData {
       const isSomerslooped = node.somerslooped ?? false;
       
       // Power = basePower * (clockSpeed / 100)^1.6
-      let powerPerMachine = machineInfo.powerUsage * Math.pow(clock / 100, 1.6);
+      // Overclock power exponent is log2(2.5) ≈ 1.321928 (Satisfactory 0.7.0.0+),
+      // so 250% clock = 2.5× power (not 4.33× under the old 1.6 exponent).
+      let powerPerMachine = machineInfo.powerUsage * Math.pow(clock / 100, Math.log2(2.5));
       if (isSomerslooped) {
         powerPerMachine *= 4; // Somerslooping costs 4x power!
       }

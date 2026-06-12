@@ -1,6 +1,8 @@
 import type { PowerSimulationInput, PowerSimulationResult, SimulationSpikeEvent } from '../../../types/power';
 
-const OVERCLOCK_EXPONENT = 1.6;
+// Overclock power exponent. Satisfactory changed this from 1.6 to log2(2.5)
+// (≈1.321928) in Patch 0.7.0.0, so 250% clock costs exactly 2.5× power, not 4.33×.
+const OVERCLOCK_EXPONENT = Math.log2(2.5);
 
 export function calculateOverclockedPower(basePowerMW: number, clockSpeed: number): number {
   return basePowerMW * Math.pow(clockSpeed, OVERCLOCK_EXPONENT);
