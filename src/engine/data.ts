@@ -2,6 +2,8 @@ import itemsData from '../../data/items.json';
 import machinesData from '../../data/machines.json';
 import recipesData from '../../data/recipes.json';
 import beltsData from '../../data/belts.json';
+import buildingsData from '../../data/buildings.json';
+import tiersData from '../../data/tiers.json';
 
 export type ItemId = string;
 export type MachineId = string;
@@ -47,11 +49,65 @@ export interface Belt {
   capacity: number; // items per minute
 }
 
+/** One material entry in a building's construction cost. */
+export interface BuildCostItem {
+  /** Our item id (links to the item codex) when the material maps to a known item. */
+  itemId: ItemId | null;
+  name: string;
+  amount: number;
+}
+
+/** Which milestone / MAM research unlocks a building. */
+export interface BuildingUnlock {
+  schematic: string;
+  tier: number | null;
+  /** Milestone | MAM | Tutorial | Alternate | ... (EST_ prefix stripped). */
+  type: string;
+}
+
+/** A constructable building/machine/structure shown in the Codex. */
+export interface Building {
+  id: string;
+  name: string;
+  className: string;
+  category: string;
+  description: string;
+  imageUrl: string;
+  /** Base power draw in MW (0 for passive structures and generators). */
+  powerConsumption: number;
+  buildCost: BuildCostItem[];
+  unlock: BuildingUnlock | null;
+}
+
 // Re-export the data loaded from JSON files with strong types
 export const items = itemsData as Record<ItemId, Item>;
 export const machines = machinesData as Record<MachineId, Machine>;
 export const recipes = recipesData as Recipe[];
 export const belts = beltsData as Record<BeltId, Belt>;
+export const buildings = buildingsData as unknown as Record<string, Building>;
+
+/** A milestone unlock target — links to a building or item in the codex. */
+export interface TierUnlock {
+  type: 'building' | 'item';
+  id: string | null;
+  name: string;
+}
+
+/** A HUB milestone within a tier. */
+export interface Milestone {
+  name: string;
+  schematic: string;
+  cost: BuildCostItem[];
+  unlocks: TierUnlock[];
+}
+
+/** One HUB tier (1-9) and its milestones. */
+export interface Tier {
+  tier: number;
+  milestones: Milestone[];
+}
+
+export const tiers = tiersData as unknown as Tier[];
 
 /** Item categories that are transported through pipes (fluids & gases) rather than belts. */
 export const FLUID_CATEGORIES: ReadonlySet<string> = new Set(['Liquids', 'Gas']);
