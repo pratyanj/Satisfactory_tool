@@ -683,14 +683,14 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans overflow-y-auto">
+    <div className={`min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans ${topLevelTab === 'planner' ? 'overflow-y-auto' : 'h-screen overflow-hidden'}`}>
       <HeaderNav
         topLevelTab={topLevelTab}
         handleTopLevelTab={handleTopLevelTab}
         generateShareLink={generateShareLink}
         copied={copied}
       />
-      <div className="flex-grow flex flex-col w-full">
+      <div className="flex-grow flex flex-col w-full min-h-0">
         <BodyFrame>
           {topLevelTab === 'planner' ? (
             <main className="w-full flex flex-col gap-4 p-4">
