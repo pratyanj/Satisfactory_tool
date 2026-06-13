@@ -80,7 +80,7 @@
             "amount": 300.0
           },
           {
-            "itemId": null,
+            "itemId": "screw",
             "name": "Screws",
             "amount": 300.0
           },
@@ -98,7 +98,7 @@
           },
           {
             "type": "item",
-            "id": null,
+            "id": "object_scanner",
             "name": "Object Scanner"
           },
           {
@@ -232,7 +232,7 @@
         "schematic": "Schematic_2-2_C",
         "cost": [
           {
-            "itemId": null,
+            "itemId": "screw",
             "name": "Screws",
             "amount": 500.0
           },
@@ -250,7 +250,7 @@
         "unlocks": [
           {
             "type": "item",
-            "id": null,
+            "id": "chainsaw",
             "name": "Chainsaw"
           },
           {
@@ -275,7 +275,7 @@
             "amount": 200.0
           },
           {
-            "itemId": null,
+            "itemId": "screw",
             "name": "Screws",
             "amount": 500.0
           },
@@ -490,7 +490,7 @@
         "unlocks": [
           {
             "type": "item",
-            "id": null,
+            "id": "xeno_basher",
             "name": "Xeno-Basher"
           }
         ]
@@ -854,7 +854,7 @@
         "unlocks": [
           {
             "type": "item",
-            "id": null,
+            "id": "jetpack",
             "name": "Jetpack"
           }
         ]
@@ -1382,7 +1382,7 @@
         "unlocks": [
           {
             "type": "item",
-            "id": null,
+            "id": "hazmat_suit",
             "name": "Hazmat Suit"
           },
           {
@@ -1420,7 +1420,7 @@
         "unlocks": [
           {
             "type": "item",
-            "id": null,
+            "id": "hoverpack",
             "name": "Hoverpack"
           }
         ]

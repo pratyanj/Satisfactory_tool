@@ -1052,5 +1052,47 @@
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/AI_Expansion_Server.png",
     "category": "Special",
     "sinkPoints": 597652
+  },
+  "object_scanner": {
+    "id": "object_scanner",
+    "name": "Object Scanner",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Object_Scanner.png",
+    "category": "Equipment",
+    "sinkPoints": 0
+  },
+  "chainsaw": {
+    "id": "chainsaw",
+    "name": "Chainsaw",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Chainsaw.png",
+    "category": "Equipment",
+    "sinkPoints": 0
+  },
+  "xeno_basher": {
+    "id": "xeno_basher",
+    "name": "Xeno-Basher",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Xeno-Basher.png",
+    "category": "Equipment",
+    "sinkPoints": 0
+  },
+  "jetpack": {
+    "id": "jetpack",
+    "name": "Jetpack",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Jetpack.png",
+    "category": "Equipment",
+    "sinkPoints": 0
+  },
+  "hazmat_suit": {
+    "id": "hazmat_suit",
+    "name": "Hazmat Suit",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Hazmat_Suit.png",
+    "category": "Equipment",
+    "sinkPoints": 0
+  },
+  "hoverpack": {
+    "id": "hoverpack",
+    "name": "Hoverpack",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Hoverpack.png",
+    "category": "Equipment",
+    "sinkPoints": 0
   }
 }
