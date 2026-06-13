@@ -28,7 +28,7 @@ Coordinate conversion matches mapUtils.ts (5000px map, Y-flipped):
 import json, csv, os, sys
 sys.stdout.reconfigure(encoding='utf-8')
 
-BASE = os.path.dirname(__file__)
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ── Input: the downloaded mapData JSON ──────────────────────────────────────
 mapdata_path = os.path.join(BASE, 'data', 'mapdata_sample.json')
@@ -86,6 +86,8 @@ RESOURCE = {
     'Desc_NitrogenGas_C':'Nitrogen Gas',
     'Desc_Water_C':      'Water',
     'Desc_OreGold_C':    'Caterium Ore',
+    'Desc_LiquidOilWell_C': 'Crude Oil',
+    'Desc_Geyser_C':      'Geyser',
 }
 
 # Map layerId suffix → node type
@@ -99,11 +101,27 @@ def node_type(layer_id):
     return 'node'
 
 # ── Parse ────────────────────────────────────────────────────────────────────
+# Set default purity map
+WELL_PURITIES = {
+    'nitrogenGasWellImpure': 'Impure',
+    'nitrogenGasWellNormal': 'Normal',
+    'nitrogenGasWellPure': 'Pure',
+    'oilWellImpure': 'Impure',
+    'oilWellNormal': 'Normal',
+    'oilWellPure': 'Pure',
+    'waterWellImpure': 'Impure',
+    'waterWellNormal': 'Normal',
+    'waterWellPure': 'Pure',
+    'geyserImpure': 'Impure',
+    'geyserNormal': 'Normal',
+    'geyserPure': 'Pure',
+}
+
 records = []
 id_counter = 1
 
 for tab in mapdata.get('options', []):
-    if tab.get('tabId') != 'resource_nodes':
+    if tab.get('tabId') not in ('resource_nodes', 'resource_wells'):
         continue
     for resource_group in tab.get('options', []):
         desc_class = resource_group.get('type', '')
@@ -113,6 +131,10 @@ for tab in mapdata.get('options', []):
             layer_id  = purity_layer.get('layerId', '')
             purity_rp = purity_layer.get('purity', '')
             purity    = PURITY.get(purity_rp, purity_rp)
+            if not purity and layer_id in WELL_PURITIES:
+                purity = WELL_PURITIES[layer_id]
+            if not purity:
+                purity = 'Normal' # fallback
             ntype     = node_type(layer_id)
 
             for marker in purity_layer.get('markers', []):

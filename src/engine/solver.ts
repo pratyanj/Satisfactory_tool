@@ -10,6 +10,10 @@ export interface SolverNode {
   byproducts?: { itemId: ItemId; rate: number }[];
   clockSpeed?: number;      // e.g. 100, 150, 200, 250
   somerslooped?: boolean;   // if true, 2x output
+  /** In whole-machine mode: units/min produced ABOVE what downstream needs. */
+  overflowRate?: number;
+  /** True when this node runs a single machine below 100% clock (fractional need). */
+  isUnderclocked?: boolean;
 }
 
 export type RecipeSelectionMap = Partial<Record<ItemId, RecipeId>>;
@@ -115,7 +119,11 @@ export function solve(
   extractorOverclock: number = 100,
   globalOverclock: number = 100,
   somersloopMultiplier: number = 1,
-  perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean }>
+  perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean }>,
+  wholeMachineMode: boolean = false,
+  /** Items the user already supplies (rate/min). The solver consumes these as
+   *  free sources and only produces the shortfall for each. */
+  availableInputs: Record<ItemId, number> = {}
 ): SolverNode {
   const targets: Record<ItemId, number> = typeof itemIdOrTargets === 'string'
     ? { [itemIdOrTargets]: requiredRate ?? 0 }
@@ -124,10 +132,15 @@ export function solve(
   const activeStack = new Set<ItemId>();
   let byproductPool: Record<ItemId, number> = {};
   let finalRoot: SolverNode | null = null;
+  // Supply the user provided but the plan never consumed (captured from the
+  // final pass) — routed to the AWESOME Sink so it isn't silently dropped.
+  let unusedAvailable: Record<ItemId, number> = {};
 
   // Numerical Fixed-Point Convergence (converges within 5 passes)
   for (let pass = 0; pass < 5; pass++) {
     const poolCopy = { ...byproductPool };
+    // Per-pass copy of the user's available inputs, depleted as items consume it.
+    const availCopy: Record<ItemId, number> = { ...availableInputs };
     const solvedInputs: SolverNode[] = [];
 
     for (const [targetId, targetRate] of Object.entries(targets)) {
@@ -142,7 +155,17 @@ export function solve(
         try {
           const recipe = getRecipeForItem(currentId, recipeSelections);
           if (!recipe) {
-            throw new Error(`No recipe found for item: ${items[currentId]?.name || currentId}`);
+            // Foraged / collected items (Leaves, Mycelia, Wood, Power Slugs, …) have
+            // no production recipe. Treat them as a raw-input boundary instead of
+            // failing the whole plan — they surface in the Raw Inputs summary.
+            return {
+              itemId: currentId,
+              recipeId: `raw_${currentId}`,
+              rate,
+              machines: 0,
+              machineId: 'raw_input',
+              inputs: [],
+            };
           }
 
           let outputRate = recipe.outputRate;
@@ -187,17 +210,52 @@ export function solve(
             poolCopy[currentId] -= reusedFromPool;
           }
 
+          // User-supplied "available inputs" are consumed at the demand point
+          // (see solveDemand), so this node only ever produces what's asked of it.
           const remainingRate = rate - reusedFromPool;
-          const machineCount = remainingRate / outputRate;
+          const exactMachineCount = remainingRate / outputRate;
+
+          // Raw taps (miners / fluid extractors) scale freely — never ceil them.
+          const isRawTap = recipe.inputs.length === 0;
+
+          // ── Resolve effective machine count, clock and the rate actually produced ──
+          let nodeMachines = exactMachineCount;
+          let nodeRate = remainingRate;        // units/min this node actually produces
+          let nodeClock = nodeOverclock;
+          let isUnderclocked = false;
+          let overflowRate = 0;
+
+          if (wholeMachineMode && !isRawTap) {
+            // Round up to whole machines; the extra production is overflow.
+            const wholeMachines = Math.max(1, Math.ceil(exactMachineCount - 1e-9));
+            const producedRate = wholeMachines * outputRate;
+            overflowRate = Math.max(0, producedRate - remainingRate);
+            nodeMachines = wholeMachines;
+            nodeRate = producedRate;           // inputs are sized for the ceiled output
+            nodeClock = nodeOverclock;         // whole machines run at full clock
+          } else if (!isRawTap && exactMachineCount > 0 && exactMachineCount < 1) {
+            // Sub-1 machine in normal mode → a single machine underclocked to the
+            // exact fractional need (e.g. 0.4 machines → 1 machine @ 40%).
+            nodeMachines = 1;
+            isUnderclocked = true;
+            // Display clock reflects the actual throughput fraction.
+            nodeClock = Math.round(exactMachineCount * nodeOverclock * 1000) / 1000;
+          }
 
           const nodeInputs: SolverNode[] = [];
 
+          // Input demand scales with the rate this node actually produces. In whole-
+          // machine mode that's the ceiled rate (so upstream over-produces to feed it).
+          const inputScale = nodeRate / outputRate; // == nodeMachines for production machines
           for (const input of recipe.inputs) {
             // Overclocking scales input rate linearly. Somerslooping does not increase input consumption!
             const machineInputRate = input.rate * (nodeOverclock / 100);
-            const requiredInputRate = machineInputRate * machineCount;
+            const requiredInputRate = machineInputRate * inputScale;
             if (requiredInputRate > 0.001) {
-              nodeInputs.push(solveNode(input.itemId, requiredInputRate));
+              // solveDemand splits the input into a user-supplied "Imported X"
+              // source (if any) plus the produced remainder — both as direct
+              // children, so the import bubble wires straight to this machine.
+              nodeInputs.push(...solveDemand(input.itemId, requiredInputRate));
             }
           }
 
@@ -214,27 +272,57 @@ export function solve(
 
           const byproducts = (recipe.byproducts || []).map(bp => ({
             itemId: bp.itemId,
-            rate: bp.rate * (nodeOverclock / 100) * effectiveSomersloopMultiplier * machineCount
+            rate: bp.rate * (nodeOverclock / 100) * effectiveSomersloopMultiplier * inputScale
           }));
 
           return {
             itemId: currentId,
             recipeId: recipe.id,
-            rate,
-            machines: machineCount,
+            rate: nodeRate + reusedFromPool,
+            machines: nodeMachines,
             machineId: machineIdToUse,
             inputs: nodeInputs,
             byproducts,
-            clockSpeed: nodeOverclock,
+            clockSpeed: nodeClock,
             somerslooped: nodeSomersloop,
+            overflowRate: overflowRate > 0.001 ? overflowRate : undefined,
+            isUnderclocked: isUnderclocked || undefined,
           };
         } finally {
           activeStack.delete(currentId);
         }
       }
 
-      solvedInputs.push(solveNode(targetId, targetRate));
+      // Meet `rate` demand for an item: consume user-supplied "available inputs"
+      // first (emitted as an Imported source node that wires to the consumer),
+      // then produce only the shortfall.
+      function solveDemand(itemId: ItemId, rate: number): SolverNode[] {
+        const out: SolverNode[] = [];
+        let supplied = 0;
+        if (availCopy[itemId] > 0) {
+          supplied = Math.min(rate, availCopy[itemId]);
+          availCopy[itemId] -= supplied;
+        }
+        if (supplied > 0.001) {
+          out.push({
+            itemId,
+            recipeId: 'supplied_input',
+            rate: supplied,
+            machines: 0,
+            machineId: 'supplied_input',
+            inputs: [],
+          });
+        }
+        const toProduce = rate - supplied;
+        if (toProduce > 0.001) out.push(solveNode(itemId, toProduce));
+        return out;
+      }
+
+      solvedInputs.push(...solveDemand(targetId, targetRate));
     }
+
+    // Whatever supply remains after this pass consumed what it needed.
+    unusedAvailable = { ...availCopy };
 
     // Recalculate byproduct pool from output results
     const newByproducts: Record<ItemId, number> = {};
@@ -272,11 +360,12 @@ export function solve(
     if (isStable) break;
   }
 
-  // Route any excess byproducts to the AWESOME Sink
+  // Route any excess byproducts — and whole-machine-mode overflow — to the AWESOME Sink
   if (finalRoot) {
     const excessByproducts: { itemId: ItemId; rate: number }[] = [];
     const totalProduced: Record<ItemId, number> = {};
     const totalReused: Record<ItemId, number> = {};
+    const overflow: Record<ItemId, number> = {};
 
     function countFlows(node: SolverNode) {
       if (node.recipeId === 'byproduct_reuse') {
@@ -286,6 +375,9 @@ export function solve(
         for (const bp of node.byproducts) {
           totalProduced[bp.itemId] = (totalProduced[bp.itemId] || 0) + bp.rate;
         }
+      }
+      if (node.overflowRate && node.overflowRate > 0.001) {
+        overflow[node.itemId] = (overflow[node.itemId] || 0) + node.overflowRate;
       }
       for (const input of node.inputs) {
         countFlows(input);
@@ -300,9 +392,33 @@ export function solve(
         excessByproducts.push({ itemId, rate: excess });
       }
     }
+    // Whole-machine overflow joins the same sink stream.
+    for (const [itemId, rate] of Object.entries(overflow)) {
+      if (rate > 0.01) {
+        const existing = excessByproducts.find(e => e.itemId === itemId);
+        if (existing) existing.rate += rate;
+        else excessByproducts.push({ itemId, rate });
+      }
+    }
 
-    if (excessByproducts.length > 0) {
-      const sinkInputs = excessByproducts.map(ep => ({
+    // Unused user supply → its own "Imported X" source feeding the sink, so the
+    // player sees exactly which provided item went unused (not silently dropped).
+    const unusedInputSinks: SolverNode[] = [];
+    for (const [itemId, rate] of Object.entries(unusedAvailable)) {
+      if (rate > 0.01) {
+        unusedInputSinks.push({
+          itemId,
+          recipeId: 'supplied_input',
+          rate,
+          machines: 0,
+          machineId: 'supplied_input',
+          inputs: [],
+        });
+      }
+    }
+
+    if (excessByproducts.length > 0 || unusedInputSinks.length > 0) {
+      const sinkInputs: SolverNode[] = excessByproducts.map(ep => ({
         itemId: ep.itemId,
         recipeId: `sink_${ep.itemId}`,
         rate: ep.rate,
@@ -310,14 +426,18 @@ export function solve(
         machineId: 'awesome_sink',
         inputs: [],
       }));
+      const allSinkInputs = [...sinkInputs, ...unusedInputSinks];
 
+      const sinkTotalRate = allSinkInputs.reduce((acc, s) => acc + s.rate, 0);
       finalRoot.inputs.push({
         itemId: 'awesome_sink',
         recipeId: 'recipe_awesome_sink',
-        rate: excessByproducts.reduce((acc, ep) => acc + ep.rate, 0),
-        machines: excessByproducts.reduce((acc, ep) => acc + ep.rate, 0) / 60,
+        rate: sinkTotalRate,
+        // One AWESOME Sink consumes a full belt (~780/min on Mk.5+). Show whole
+        // sinks, never a confusing fraction — 1 sink for any normal overflow.
+        machines: Math.max(1, Math.ceil(sinkTotalRate / 780)),
         machineId: 'awesome_sink',
-        inputs: sinkInputs,
+        inputs: allSinkInputs,
       });
     }
   }
@@ -356,6 +476,8 @@ export interface SummaryData {
   allItemRates: Record<string, number>;
   /** Per-building-type breakdown */
   buildingDetails: Record<string, BuildingDetail>;
+  /** Whole-machine mode: surplus units/min routed to Awesome Sink / storage. */
+  overflowItems: Record<string, number>;
 }
 
 export function calculateSummary(rootNode: SolverNode): SummaryData {
@@ -364,12 +486,16 @@ export function calculateSummary(rootNode: SolverNode): SummaryData {
   const producedItems: Record<string, number> = Object.create(null);
   const allItemRates: Record<string, number> = Object.create(null);
   const buildingDetails: Record<string, BuildingDetail> = Object.create(null);
+  const overflowItems: Record<string, number> = Object.create(null);
   let totalPower = 0;
 
   producedItems[rootNode.itemId] = rootNode.rate;
 
   function traverse(node: SolverNode) {
-    if (node.machineId !== 'planned_outputs' && node.machineId !== 'byproduct_reused') {
+    if (node.overflowRate && node.overflowRate > 0.001) {
+      overflowItems[node.itemId] = (overflowItems[node.itemId] || 0) + node.overflowRate;
+    }
+    if (node.machineId !== 'planned_outputs' && node.machineId !== 'byproduct_reused' && node.machineId !== 'supplied_input' && node.machineId !== 'raw_input') {
       const machineInfo = machines[node.machineId] || { name: node.machineId, powerUsage: 0 };
       machineCounts[node.machineId] = (machineCounts[node.machineId] || 0) + node.machines;
       
@@ -377,7 +503,9 @@ export function calculateSummary(rootNode: SolverNode): SummaryData {
       const isSomerslooped = node.somerslooped ?? false;
       
       // Power = basePower * (clockSpeed / 100)^1.6
-      let powerPerMachine = machineInfo.powerUsage * Math.pow(clock / 100, 1.6);
+      // Overclock power exponent is log2(2.5) ≈ 1.321928 (Satisfactory 0.7.0.0+),
+      // so 250% clock = 2.5× power (not 4.33× under the old 1.6 exponent).
+      let powerPerMachine = machineInfo.powerUsage * Math.pow(clock / 100, Math.log2(2.5));
       if (isSomerslooped) {
         powerPerMachine *= 4; // Somerslooping costs 4x power!
       }
@@ -409,7 +537,7 @@ export function calculateSummary(rootNode: SolverNode): SummaryData {
     }
 
     if (node.inputs.length === 0) {
-      if (node.machineId !== 'planned_outputs' && node.machineId !== 'byproduct_reused') {
+      if (node.machineId !== 'planned_outputs' && node.machineId !== 'byproduct_reused' && node.machineId !== 'supplied_input') {
         rawInputs[node.itemId] = (rawInputs[node.itemId] || 0) + node.rate;
       }
     } else {
@@ -421,5 +549,5 @@ export function calculateSummary(rootNode: SolverNode): SummaryData {
 
   traverse(rootNode);
 
-  return { machineCounts, rawInputs, producedItems, totalPower, allItemRates, buildingDetails };
+  return { machineCounts, rawInputs, producedItems, totalPower, allItemRates, buildingDetails, overflowItems };
 }

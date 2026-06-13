@@ -69,6 +69,24 @@ function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand
     const currentNodes = rfGetNodes();
     if (currentNodes.length === 0) { setIsExporting(false); return; }
 
+    // Derive output-specific filename
+    const outputNames = currentNodes
+      .filter(n => n.data?.machineId === 'product_output')
+      .map(n => n.data?.item as string)
+      .filter(Boolean);
+    const uniqueOutputs = Array.from(new Set(outputNames));
+
+    let filenameBase = 'ficsit-blueprint';
+    if (uniqueOutputs.length > 0) {
+      const cleanName = (name: string) =>
+        name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+      const slugified = uniqueOutputs.map(cleanName).join('-and-');
+      filenameBase = `ficsit-blueprint-${slugified}`;
+    }
+
     const bounds = getNodesBounds(currentNodes);
     const padding = 100;
     const innerWidth = bounds.width + padding * 2;
@@ -153,7 +171,7 @@ function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand
             style: { margin: '0', padding: '0' }
           }).then((finalDataUrl) => {
             const a = document.createElement('a');
-            a.setAttribute('download', `ficsit-blueprint.${format}`);
+            a.setAttribute('download', `${filenameBase}.${format}`);
             a.setAttribute('href', finalDataUrl);
             a.click();
             document.body.removeChild(wrapper);
@@ -161,7 +179,7 @@ function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand
           }).catch((err) => {
             console.error("Frame export failed", err);
             const a = document.createElement('a');
-            a.setAttribute('download', `factory-plan.${format}`);
+            a.setAttribute('download', `${filenameBase}-fallback.${format}`);
             a.setAttribute('href', dataUrl);
             a.click();
             document.body.removeChild(wrapper);
@@ -182,7 +200,7 @@ function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand
         })
           .then((dataUrl2) => {
             const a = document.createElement('a');
-            a.setAttribute('download', `factory-plan-fallback.${format}`);
+            a.setAttribute('download', `${filenameBase}-fallback.${format}`);
             a.setAttribute('href', dataUrl2);
             a.click();
             setIsExporting(false);
@@ -301,7 +319,8 @@ function FactoryGraphInner({
     selectedNode.data.itemId &&
     selectedNode.data.machineId !== 'product_output' &&
     selectedNode.data.machineId !== 'planned_outputs' &&
-    selectedNode.data.machineId !== 'byproduct_reused');
+    selectedNode.data.machineId !== 'byproduct_reused' &&
+    selectedNode.data.machineId !== 'supplied_input');
 
   const itemId = selectedNode?.data?.itemId as string;
   const customConfig = perMachineSettings[itemId] || {};
@@ -332,6 +351,26 @@ function FactoryGraphInner({
     setLocalSomersloop(false);
     onUpdatePerMachineSettings?.(itemId, { clockSpeed: undefined, somerslooped: undefined });
   };
+
+  // ── Tuner live preview ──────────────────────────────────────────────────────
+  // Applying a clock/somersloop change keeps this node's REQUIRED OUTPUT fixed and
+  // re-solves the machine COUNT (machines ∝ 1 / (clock × somersloopMult)). Mirror
+  // that here so the preview matches the real re-solve instead of assuming a fixed
+  // machine count. Key facts (see solver.ts): total input is clock-INDEPENDENT for
+  // a fixed output, and somersloop halves both the machine count and the input
+  // (it doubles output per craft without raising input).
+  const solvedClock = (selectedNode?.data?.clockSpeed as number) ?? 100;
+  const solvedMachines = (selectedNode?.data?.machines as number) ?? 0;
+  const solvedSloopMult = (selectedNode?.data?.somerslooped as boolean) ? 2 : 1;
+  const localSloopMult = localSomersloop ? 2 : 1;
+  const previewMachines = localClock > 0
+    ? solvedMachines * (solvedClock * solvedSloopMult) / (localClock * localSloopMult)
+    : solvedMachines;
+  const previewBasePower = machines[selectedNode?.data?.machineId as string]?.powerUsage || 0;
+  // Overclock power exponent log2(2.5) ≈ 1.321928 (Satisfactory 0.7.0.0+).
+  const previewPower = previewMachines * previewBasePower * Math.pow(localClock / 100, Math.log2(2.5)) * (localSomersloop ? 4 : 1);
+  // Multiply each input's solved total by this to reflect a somersloop toggle.
+  const inputSloopFactor = solvedSloopMult / localSloopMult;
 
   const beltCapacity = beltId === 'mk1' ? 60 : beltId === 'mk2' ? 120 : beltId === 'mk3' ? 270 : beltId === 'mk4' ? 480 : 780;
 
@@ -801,15 +840,15 @@ function FactoryGraphInner({
                       {selectedNode.data.item as string}
                     </span>
                     <span className="text-[9px] text-[#f48721] font-bold font-mono block truncate mt-0.5">
-                      {machines[selectedNode.data.machineId as string]?.name || selectedNode.data.machineId} x{Number((selectedNode.data.machines as number).toFixed(2))}
+                      {machines[selectedNode.data.machineId as string]?.name || (selectedNode.data.machineId as string)} x{Number(previewMachines.toFixed(2))}
                     </span>
                   </div>
                 </div>
 
                 <div className="h-[1px] bg-[#1d2024]" />
 
-                {/* Base Stats Row */}
-                <div className="grid grid-cols-2 gap-2 text-center">
+                {/* Base Stats Row — Output is fixed; Machines & Power update live with the clock */}
+                <div className="grid grid-cols-3 gap-2 text-center">
                   <div className="bg-[#0c0d0f] border border-[#1c1d20] p-1.5 rounded">
                     <span className="text-[7.5px] font-black tracking-wider text-[#7e828a] uppercase block">
                       OUTPUT FLOW
@@ -820,10 +859,18 @@ function FactoryGraphInner({
                   </div>
                   <div className="bg-[#0c0d0f] border border-[#1c1d20] p-1.5 rounded">
                     <span className="text-[7.5px] font-black tracking-wider text-[#7e828a] uppercase block">
+                      MACHINES
+                    </span>
+                    <span className="text-sm font-extrabold font-mono text-yellow-400 mt-0.5 block">
+                      x{Number(previewMachines.toFixed(2))}
+                    </span>
+                  </div>
+                  <div className="bg-[#0c0d0f] border border-[#1c1d20] p-1.5 rounded">
+                    <span className="text-[7.5px] font-black tracking-wider text-[#7e828a] uppercase block">
                       POWER USAGE
                     </span>
                     <span className="text-sm font-extrabold font-mono text-orange-400 mt-0.5 block">
-                      {((machines[selectedNode.data.machineId as string]?.powerUsage || 0) * (selectedNode.data.machines as number) * Math.pow(localClock / 100, 1.6) * (localSomersloop ? 4 : 1)).toFixed(1)} MW
+                      {previewPower.toFixed(1)} MW
                     </span>
                   </div>
                 </div>
@@ -937,7 +984,10 @@ function FactoryGraphInner({
                   </span>
                   <div className="flex flex-col gap-1.5 mt-1">
                     {(selectedNode.data.inputDetails as any[]).map((inp: any, idx: number) => {
-                      const totalNeeded = inp.ratePerMachine * (selectedNode.data.machines as number) * (localClock / 100);
+                      // Total input is clock-INDEPENDENT for a fixed output (the clock
+                      // cancels). It only changes with a somersloop toggle, which halves
+                      // input. ratePerMachine already has the solved clock baked in.
+                      const totalNeeded = inp.ratePerMachine * solvedMachines * inputSloopFactor;
                       return (
                         <div key={idx} className="flex items-center justify-between font-mono text-[10px]">
                           <div className="flex items-center gap-1.5 text-[#a0a4ab] min-w-0">

@@ -28,6 +28,9 @@ export interface SaveBuilding {
   rotation: Quaternion;
   /** Raw properties map — varies per actor type */
   properties: Record<string, unknown>;
+  /** True for structural pieces (foundations/walls/etc) from the lightweight
+   *  buildable subsystem — shown only when zoomed in, not as overview dots. */
+  structural?: boolean;
 }
 
 /** A conveyor belt segment (start + end point pair from save data). */
@@ -56,6 +59,8 @@ export interface SavePowerLine {
   instanceName: string;
   startPosition: Vec3;
   endPosition: Vec3;
+  /** Full wire path (world cm) when available — renders the actual sag/route. */
+  path?: Vec3[];
 }
 
 /** Fully parsed save data ready for the map */

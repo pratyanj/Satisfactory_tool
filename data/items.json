@@ -3,565 +3,659 @@
     "id": "limestone",
     "name": "Limestone",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Limestone.png",
-    "category": "Ores"
+    "category": "Ores",
+    "sinkPoints": 2
   },
   "iron_ore": {
     "id": "iron_ore",
     "name": "Iron Ore",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Ore.png",
-    "category": "Ores"
+    "category": "Ores",
+    "sinkPoints": 1
   },
   "copper_ore": {
     "id": "copper_ore",
     "name": "Copper Ore",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Copper_Ore.png",
-    "category": "Ores"
+    "category": "Ores",
+    "sinkPoints": 3
   },
   "caterium_ore": {
     "id": "caterium_ore",
     "name": "Caterium Ore",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Caterium_Ore.png",
-    "category": "Ores"
+    "category": "Ores",
+    "sinkPoints": 7
   },
   "coal": {
     "id": "coal",
     "name": "Coal",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Coal.png",
-    "category": "Ores"
+    "category": "Ores",
+    "sinkPoints": 3
   },
   "raw_quartz": {
     "id": "raw_quartz",
     "name": "Raw Quartz",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Raw_Quartz.png",
-    "category": "Ores"
+    "category": "Ores",
+    "sinkPoints": 15
   },
   "sulfur": {
     "id": "sulfur",
     "name": "Sulfur",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Sulfur.png",
-    "category": "Ores"
+    "category": "Ores",
+    "sinkPoints": 11
   },
   "bauxite": {
     "id": "bauxite",
     "name": "Bauxite",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Bauxite.png",
-    "category": "Ores"
+    "category": "Ores",
+    "sinkPoints": 8
   },
   "sam": {
     "id": "sam",
     "name": "SAM",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/SAM.png",
-    "category": "Ores"
+    "category": "Ores",
+    "sinkPoints": 20
   },
   "uranium": {
     "id": "uranium",
     "name": "Uranium",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Uranium.png",
-    "category": "Ores"
+    "category": "Ores",
+    "sinkPoints": 35
   },
   "iron_ingot": {
     "id": "iron_ingot",
     "name": "Iron Ingot",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Ingot.png",
-    "category": "Ingots"
+    "category": "Ingots",
+    "sinkPoints": 2
   },
   "copper_ingot": {
     "id": "copper_ingot",
     "name": "Copper Ingot",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Copper_Ingot.png",
-    "category": "Ingots"
+    "category": "Ingots",
+    "sinkPoints": 6
   },
   "caterium_ingot": {
     "id": "caterium_ingot",
     "name": "Caterium Ingot",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Caterium_Ingot.png",
-    "category": "Ingots"
+    "category": "Ingots",
+    "sinkPoints": 42
   },
   "steel_ingot": {
     "id": "steel_ingot",
     "name": "Steel Ingot",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Steel_Ingot.png",
-    "category": "Ingots"
+    "category": "Ingots",
+    "sinkPoints": 8
   },
   "aluminum_ingot": {
     "id": "aluminum_ingot",
     "name": "Aluminum Ingot",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Aluminum_Ingot.png",
-    "category": "Ingots"
+    "category": "Ingots",
+    "sinkPoints": 131
   },
   "ficsite_ingot": {
     "id": "ficsite_ingot",
     "name": "Ficsite Ingot",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ficsite_Ingot.png",
-    "category": "Ingots"
+    "category": "Ingots",
+    "sinkPoints": 1936
   },
   "concrete": {
     "id": "concrete",
     "name": "Concrete",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Concrete.png",
-    "category": "Minerals"
+    "category": "Minerals",
+    "sinkPoints": 12
   },
   "quartz_crystal": {
     "id": "quartz_crystal",
     "name": "Quartz Crystal",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Quartz_Crystal.png",
-    "category": "Minerals"
+    "category": "Minerals",
+    "sinkPoints": 50
   },
   "silica": {
     "id": "silica",
     "name": "Silica",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Silica.png",
-    "category": "Minerals"
+    "category": "Minerals",
+    "sinkPoints": 20
   },
   "copper_powder": {
     "id": "copper_powder",
     "name": "Copper Powder",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Copper_Powder.png",
-    "category": "Minerals"
+    "category": "Minerals",
+    "sinkPoints": 72
   },
   "polymer_resin": {
     "id": "polymer_resin",
     "name": "Polymer Resin",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Polymer_Resin.png",
-    "category": "Minerals"
+    "category": "Minerals",
+    "sinkPoints": 12
   },
   "petroleum_coke": {
     "id": "petroleum_coke",
     "name": "Petroleum Coke",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Petroleum_Coke.png",
-    "category": "Minerals"
+    "category": "Minerals",
+    "sinkPoints": 20
   },
   "aluminum_scrap": {
     "id": "aluminum_scrap",
     "name": "Aluminum Scrap",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Aluminum_Scrap.png",
-    "category": "Minerals"
+    "category": "Minerals",
+    "sinkPoints": 27
   },
   "alien_protein": {
     "id": "alien_protein",
     "name": "Alien Protein",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alien_Protein.png",
-    "category": "Aliens"
+    "category": "Aliens",
+    "sinkPoints": 0
   },
   "alien_dna_capsule": {
     "id": "alien_dna_capsule",
     "name": "Alien DNA Capsule",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alien_DNA_Capsule.png",
-    "category": "Aliens"
+    "category": "Aliens",
+    "sinkPoints": 0
   },
   "water": {
     "id": "water",
     "name": "Water",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Water.png",
-    "category": "Liquids"
+    "category": "Liquids",
+    "sinkPoints": 5000
   },
   "crude_oil": {
     "id": "crude_oil",
     "name": "Crude Oil",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Crude_Oil.png",
-    "category": "Liquids"
+    "category": "Liquids",
+    "sinkPoints": 30000
   },
   "heavy_oil_residue": {
     "id": "heavy_oil_residue",
     "name": "Heavy Oil Residue",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Heavy_Oil_Residue.png",
-    "category": "Liquids"
+    "category": "Liquids",
+    "sinkPoints": 30000
   },
   "fuel": {
     "id": "fuel",
     "name": "Fuel",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Fuel.png",
-    "category": "Liquids"
+    "category": "Liquids",
+    "sinkPoints": 75000
   },
   "liquid_biofuel": {
     "id": "liquid_biofuel",
     "name": "Liquid Biofuel",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Liquid_Biofuel.png",
-    "category": "Liquids"
+    "category": "Liquids",
+    "sinkPoints": 261000
   },
   "turbofuel": {
     "id": "turbofuel",
     "name": "Turbofuel",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Turbofuel.png",
-    "category": "Liquids"
+    "category": "Liquids",
+    "sinkPoints": 225000
   },
   "alumina_solution": {
     "id": "alumina_solution",
     "name": "Alumina Solution",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alumina_Solution.png",
-    "category": "Liquids"
+    "category": "Liquids",
+    "sinkPoints": 20000
   },
   "sulfuric_acid": {
     "id": "sulfuric_acid",
     "name": "Sulfuric Acid",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Sulfuric_Acid.png",
-    "category": "Liquids"
+    "category": "Liquids",
+    "sinkPoints": 16000
   },
   "nitric_acid": {
     "id": "nitric_acid",
     "name": "Nitric Acid",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nitric_Acid.png",
-    "category": "Liquids"
+    "category": "Liquids",
+    "sinkPoints": 94000
   },
   "dissolved_silica": {
     "id": "dissolved_silica",
     "name": "Dissolved Silica",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Dissolved_Silica.png",
-    "category": "Liquids"
+    "category": "Liquids",
+    "sinkPoints": 0
   },
   "nitrogen_gas": {
     "id": "nitrogen_gas",
     "name": "Nitrogen Gas",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nitrogen_Gas.png",
-    "category": "Gas"
+    "category": "Gas",
+    "sinkPoints": 10000
   },
   "rocket_fuel": {
     "id": "rocket_fuel",
     "name": "Rocket Fuel",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Rocket_Fuel.png",
-    "category": "Gas"
+    "category": "Gas",
+    "sinkPoints": 289000
   },
   "ionized_fuel": {
     "id": "ionized_fuel",
     "name": "Ionized Fuel",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ionized_Fuel.png",
-    "category": "Gas"
+    "category": "Gas",
+    "sinkPoints": 2398000
   },
   "dark_matter_residue": {
     "id": "dark_matter_residue",
     "name": "Dark Matter Residue",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Dark_Matter_Residue.png",
-    "category": "Gas"
+    "category": "Gas",
+    "sinkPoints": 130000
   },
   "excited_photonic_matter": {
     "id": "excited_photonic_matter",
     "name": "Excited Photonic Matter",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Excited_Photonic_Matter.png",
-    "category": "Gas"
+    "category": "Gas",
+    "sinkPoints": 100000
   },
   "iron_rod": {
     "id": "iron_rod",
     "name": "Iron Rod",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Rod.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 4
   },
   "screw": {
     "id": "screw",
     "name": "Screw",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Screw.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 2
   },
   "iron_plate": {
     "id": "iron_plate",
     "name": "Iron Plate",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Plate.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 6
   },
   "reinforced_iron_plate": {
     "id": "reinforced_iron_plate",
     "name": "Reinforced Iron Plate",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Reinforced_Iron_Plate.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 120
   },
   "copper_sheet": {
     "id": "copper_sheet",
     "name": "Copper Sheet",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Copper_Sheet.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 24
   },
   "alclad_aluminum_sheet": {
     "id": "alclad_aluminum_sheet",
     "name": "Alclad Aluminum Sheet",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alclad_Aluminum_Sheet.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 266
   },
   "aluminum_casing": {
     "id": "aluminum_casing",
     "name": "Aluminum Casing",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Aluminum_Casing.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 393
   },
   "steel_pipe": {
     "id": "steel_pipe",
     "name": "Steel Pipe",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Steel_Pipe.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 24
   },
   "steel_beam": {
     "id": "steel_beam",
     "name": "Steel Beam",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Steel_Beam.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 64
   },
   "encased_industrial_beam": {
     "id": "encased_industrial_beam",
     "name": "Encased Industrial Beam",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Encased_Industrial_Beam.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 528
   },
   "modular_frame": {
     "id": "modular_frame",
     "name": "Modular Frame",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Modular_Frame.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 408
   },
   "heavy_modular_frame": {
     "id": "heavy_modular_frame",
     "name": "Heavy Modular Frame",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Heavy_Modular_Frame.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 10800
   },
   "fused_modular_frame": {
     "id": "fused_modular_frame",
     "name": "Fused Modular Frame",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Fused_Modular_Frame.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 62840
   },
   "ficsite_trigon": {
     "id": "ficsite_trigon",
     "name": "Ficsite Trigon",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ficsite_Trigon.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 1291
   },
   "fabric": {
     "id": "fabric",
     "name": "Fabric",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Fabric.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 140
   },
   "plastic": {
     "id": "plastic",
     "name": "Plastic",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Plastic.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 75
   },
   "rubber": {
     "id": "rubber",
     "name": "Rubber",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Rubber.png",
-    "category": "Standard Parts"
+    "category": "Standard Parts",
+    "sinkPoints": 60
   },
   "rotor": {
     "id": "rotor",
     "name": "Rotor",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Rotor.png",
-    "category": "Industrial Parts"
+    "category": "Industrial Parts",
+    "sinkPoints": 140
   },
   "stator": {
     "id": "stator",
     "name": "Stator",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Stator.png",
-    "category": "Industrial Parts"
+    "category": "Industrial Parts",
+    "sinkPoints": 240
   },
   "battery": {
     "id": "battery",
     "name": "Battery",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Battery.png",
-    "category": "Industrial Parts"
+    "category": "Industrial Parts",
+    "sinkPoints": 465
   },
   "motor": {
     "id": "motor",
     "name": "Motor",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Motor.png",
-    "category": "Industrial Parts"
+    "category": "Industrial Parts",
+    "sinkPoints": 1520
   },
   "heat_sink": {
     "id": "heat_sink",
     "name": "Heat Sink",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Heat_Sink.png",
-    "category": "Industrial Parts"
+    "category": "Industrial Parts",
+    "sinkPoints": 2804
   },
   "cooling_system": {
     "id": "cooling_system",
     "name": "Cooling System",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Cooling_System.png",
-    "category": "Industrial Parts"
+    "category": "Industrial Parts",
+    "sinkPoints": 12006
   },
   "turbo_motor": {
     "id": "turbo_motor",
     "name": "Turbo Motor",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Turbo_Motor.png",
-    "category": "Industrial Parts"
+    "category": "Industrial Parts",
+    "sinkPoints": 240496
   },
   "wire": {
     "id": "wire",
     "name": "Wire",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Wire.png",
-    "category": "Electronics"
+    "category": "Electronics",
+    "sinkPoints": 6
   },
   "cable": {
     "id": "cable",
     "name": "Cable",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Cable.png",
-    "category": "Electronics"
+    "category": "Electronics",
+    "sinkPoints": 24
   },
   "quickwire": {
     "id": "quickwire",
     "name": "Quickwire",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Quickwire.png",
-    "category": "Electronics"
+    "category": "Electronics",
+    "sinkPoints": 17
   },
   "circuit_board": {
     "id": "circuit_board",
     "name": "Circuit Board",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Circuit_Board.png",
-    "category": "Electronics"
+    "category": "Electronics",
+    "sinkPoints": 696
   },
   "ai_limiter": {
     "id": "ai_limiter",
     "name": "AI Limiter",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/AI_Limiter.png",
-    "category": "Electronics"
+    "category": "Electronics",
+    "sinkPoints": 920
   },
   "high_speed_connector": {
     "id": "high_speed_connector",
     "name": "High-Speed Connector",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/High-Speed_Connector.png",
-    "category": "Electronics"
+    "category": "Electronics",
+    "sinkPoints": 3776
   },
   "reanimated_sam": {
     "id": "reanimated_sam",
     "name": "Reanimated SAM",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Reanimated_SAM.png",
-    "category": "Electronics"
+    "category": "Electronics",
+    "sinkPoints": 160
   },
   "sam_fluctuator": {
     "id": "sam_fluctuator",
     "name": "SAM Fluctuator",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/SAM_Fluctuator.png",
-    "category": "Electronics"
+    "category": "Electronics",
+    "sinkPoints": 1968
   },
   "computer": {
     "id": "computer",
     "name": "Computer",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Computer.png",
-    "category": "Communications"
+    "category": "Communications",
+    "sinkPoints": 8352
   },
   "supercomputer": {
     "id": "supercomputer",
     "name": "Supercomputer",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Supercomputer.png",
-    "category": "Communications"
+    "category": "Communications",
+    "sinkPoints": 97352
   },
   "radio_control_unit": {
     "id": "radio_control_unit",
     "name": "Radio Control Unit",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Radio_Control_Unit.png",
-    "category": "Communications"
+    "category": "Communications",
+    "sinkPoints": 32352
   },
   "crystal_oscillator": {
     "id": "crystal_oscillator",
     "name": "Crystal Oscillator",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Crystal_Oscillator.png",
-    "category": "Communications"
+    "category": "Communications",
+    "sinkPoints": 3072
   },
   "superposition_oscillator": {
     "id": "superposition_oscillator",
     "name": "Superposition Oscillator",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Superposition_Oscillator.png",
-    "category": "Communications"
+    "category": "Communications",
+    "sinkPoints": 37292
   },
   "diamonds": {
     "id": "diamonds",
     "name": "Diamonds",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Diamonds.png",
-    "category": "Quantum Technology"
+    "category": "Quantum Technology",
+    "sinkPoints": 240
   },
   "power_shard": {
     "id": "power_shard",
     "name": "Power Shard",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Power_Shard.png",
-    "category": "Quantum Technology"
+    "category": "Special",
+    "sinkPoints": 0
   },
   "time_crystal": {
     "id": "time_crystal",
     "name": "Time Crystal",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Time_Crystal.png",
-    "category": "Quantum Technology"
+    "category": "Quantum Technology",
+    "sinkPoints": 960
   },
   "dark_matter_crystal": {
     "id": "dark_matter_crystal",
     "name": "Dark Matter Crystal",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Dark_Matter_Crystal.png",
-    "category": "Quantum Technology"
+    "category": "Quantum Technology",
+    "sinkPoints": 1780
   },
   "singularity_cell": {
     "id": "singularity_cell",
     "name": "Singularity Cell",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Singularity_Cell.png",
-    "category": "Quantum Technology"
+    "category": "Quantum Technology",
+    "sinkPoints": 114675
   },
   "neural_quantum_processor": {
     "id": "neural_quantum_processor",
     "name": "Neural-Quantum Processor",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Neural-Quantum_Processor.png",
-    "category": "Quantum Technology"
+    "category": "Quantum Technology",
+    "sinkPoints": 248034
   },
   "alien_power_matrix": {
     "id": "alien_power_matrix",
     "name": "Alien Power Matrix",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Alien_Power_Matrix.png",
-    "category": "Quantum Technology"
+    "category": "Quantum Technology",
+    "sinkPoints": 210
   },
   "empty_canister": {
     "id": "empty_canister",
     "name": "Empty Canister",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Empty_Canister.png",
-    "category": "Containers"
+    "category": "Containers",
+    "sinkPoints": 60
   },
   "empty_fluid_tank": {
     "id": "empty_fluid_tank",
     "name": "Empty Fluid Tank",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Empty_Fluid_Tank.png",
-    "category": "Containers"
+    "category": "Containers",
+    "sinkPoints": 170
   },
   "pressure_conversion_cube": {
     "id": "pressure_conversion_cube",
     "name": "Pressure Conversion Cube",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Pressure_Conversion_Cube.png",
-    "category": "Containers"
+    "category": "Containers",
+    "sinkPoints": 255088
   },
   "packaged_water": {
     "id": "packaged_water",
     "name": "Packaged Water",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Water.png",
-    "category": "Containers"
+    "category": "Containers",
+    "sinkPoints": 130
   },
   "packaged_alumina_solution": {
     "id": "packaged_alumina_solution",
     "name": "Packaged Alumina Solution",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Alumina_Solution.png",
-    "category": "Containers"
+    "category": "Containers",
+    "sinkPoints": 160
   },
   "packaged_sulfuric_acid": {
     "id": "packaged_sulfuric_acid",
     "name": "Packaged Sulfuric Acid",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Sulfuric_Acid.png",
-    "category": "Containers"
+    "category": "Containers",
+    "sinkPoints": 152
   },
   "packaged_nitric_acid": {
     "id": "packaged_nitric_acid",
     "name": "Packaged Nitric Acid",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Nitric_Acid.png",
-    "category": "Containers"
+    "category": "Containers",
+    "sinkPoints": 412
   },
   "packaged_nitrogen_gas": {
     "id": "packaged_nitrogen_gas",
     "name": "Packaged Nitrogen Gas",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Nitrogen_Gas.png",
-    "category": "Containers"
+    "category": "Containers",
+    "sinkPoints": 312
   },
   "leaves": {
     "id": "leaves",
     "name": "Leaves",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Leaves.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 3
   },
   "mycelia": {
     "id": "mycelia",
     "name": "Mycelia",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Mycelia.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 10
   },
   "flower_petals": {
     "id": "flower_petals",
@@ -573,97 +667,113 @@
     "id": "wood",
     "name": "Wood",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Wood.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 30
   },
   "biomass": {
     "id": "biomass",
     "name": "Biomass",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Biomass.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 12
   },
   "compacted_coal": {
     "id": "compacted_coal",
     "name": "Compacted Coal",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Compacted_Coal.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 28
   },
   "packaged_oil": {
     "id": "packaged_oil",
     "name": "Packaged Oil",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Oil.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 180
   },
   "packaged_heavy_oil_residue": {
     "id": "packaged_heavy_oil_residue",
     "name": "Packaged Heavy Oil Residue",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Heavy_Oil_Residue.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 180
   },
   "solid_biofuel": {
     "id": "solid_biofuel",
     "name": "Solid Biofuel",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Solid_Biofuel.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 48
   },
   "packaged_fuel": {
     "id": "packaged_fuel",
     "name": "Packaged Fuel",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Fuel.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 270
   },
   "packaged_liquid_biofuel": {
     "id": "packaged_liquid_biofuel",
     "name": "Packaged Liquid Biofuel",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Liquid_Biofuel.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 370
   },
   "packaged_turbofuel": {
     "id": "packaged_turbofuel",
     "name": "Packaged Turbofuel",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Turbofuel.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 570
   },
   "packaged_rocket_fuel": {
     "id": "packaged_rocket_fuel",
     "name": "Packaged Rocket Fuel",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Rocket_Fuel.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 1028
   },
   "packaged_ionized_fuel": {
     "id": "packaged_ionized_fuel",
     "name": "Packaged Ionized Fuel",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Packaged_Ionized_Fuel.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 5246
   },
   "uranium_fuel_rod": {
     "id": "uranium_fuel_rod",
     "name": "Uranium Fuel Rod",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Uranium_Fuel_Rod.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 43468
   },
   "plutonium_fuel_rod": {
     "id": "plutonium_fuel_rod",
     "name": "Plutonium Fuel Rod",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Plutonium_Fuel_Rod.png",
-    "category": "Fuels"
+    "category": "Fuels",
+    "sinkPoints": 153184
   },
   "black_powder": {
     "id": "black_powder",
     "name": "Black Powder",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Black_Powder.png",
-    "category": "Consumed"
+    "category": "Consumed",
+    "sinkPoints": 14
   },
   "smokeless_powder": {
     "id": "smokeless_powder",
     "name": "Smokeless Powder",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Smokeless_Powder.png",
-    "category": "Consumed"
+    "category": "Consumed",
+    "sinkPoints": 58
   },
   "gas_filter": {
     "id": "gas_filter",
     "name": "Gas Filter",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Gas_Filter.png",
-    "category": "Consumed"
+    "category": "Consumed",
+    "sinkPoints": 608
   },
   "color_cartridge": {
     "id": "color_cartridge",
@@ -681,234 +791,308 @@
     "id": "iodine_infused_filter",
     "name": "Iodine-Infused Filter",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iodine-Infused_Filter.png",
-    "category": "Consumed"
+    "category": "Consumed",
+    "sinkPoints": 2274
   },
   "iron_rebar": {
     "id": "iron_rebar",
     "name": "Iron Rebar",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Rebar.png",
-    "category": "Ammos"
+    "category": "Ammos",
+    "sinkPoints": 8
   },
   "stun_rebar": {
     "id": "stun_rebar",
     "name": "Stun Rebar",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Stun_Rebar.png",
-    "category": "Ammos"
+    "category": "Ammos",
+    "sinkPoints": 186
   },
   "shatter_rebar": {
     "id": "shatter_rebar",
     "name": "Shatter Rebar",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Shatter_Rebar.png",
-    "category": "Ammos"
+    "category": "Ammos",
+    "sinkPoints": 332
   },
   "explosive_rebar": {
     "id": "explosive_rebar",
     "name": "Explosive Rebar",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Explosive_Rebar.png",
-    "category": "Ammos"
+    "category": "Ammos",
+    "sinkPoints": 360
   },
   "rifle_ammo": {
     "id": "rifle_ammo",
     "name": "Rifle Ammo",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Rifle_Ammo.png",
-    "category": "Ammos"
+    "category": "Ammos",
+    "sinkPoints": 25
   },
   "homing_rifle_ammo": {
     "id": "homing_rifle_ammo",
     "name": "Homing Rifle Ammo",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Homing_Rifle_Ammo.png",
-    "category": "Ammos"
+    "category": "Ammos",
+    "sinkPoints": 855
   },
   "turbo_rifle_ammo": {
     "id": "turbo_rifle_ammo",
     "name": "Turbo Rifle Ammo",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Turbo_Rifle_Ammo.png",
-    "category": "Ammos"
+    "category": "Ammos",
+    "sinkPoints": 120
   },
   "nobelisk": {
     "id": "nobelisk",
     "name": "Nobelisk",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nobelisk.png",
-    "category": "Ammos"
+    "category": "Ammos",
+    "sinkPoints": 152
   },
   "gas_nobelisk": {
     "id": "gas_nobelisk",
     "name": "Gas Nobelisk",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Gas_Nobelisk.png",
-    "category": "Ammos"
+    "category": "Ammos",
+    "sinkPoints": 544
   },
   "pulse_nobelisk": {
     "id": "pulse_nobelisk",
     "name": "Pulse Nobelisk",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Pulse_Nobelisk.png",
-    "category": "Ammos"
+    "category": "Ammos",
+    "sinkPoints": 1533
   },
   "cluster_nobelisk": {
     "id": "cluster_nobelisk",
     "name": "Cluster Nobelisk",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Cluster_Nobelisk.png",
-    "category": "Ammos"
+    "category": "Ammos",
+    "sinkPoints": 1376
   },
   "nuke_nobelisk": {
     "id": "nuke_nobelisk",
     "name": "Nuke Nobelisk",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nuke_Nobelisk.png",
-    "category": "Ammos"
+    "category": "Ammos",
+    "sinkPoints": 19600
   },
   "electromagnetic_control_rod": {
     "id": "electromagnetic_control_rod",
     "name": "Electromagnetic Control Rod",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Electromagnetic_Control_Rod.png",
-    "category": "Nuclear"
+    "category": "Nuclear",
+    "sinkPoints": 2560
   },
   "encased_uranium_cell": {
     "id": "encased_uranium_cell",
     "name": "Encased Uranium Cell",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Encased_Uranium_Cell.png",
-    "category": "Nuclear"
+    "category": "Nuclear",
+    "sinkPoints": 147
   },
   "non_fissile_uranium": {
     "id": "non_fissile_uranium",
     "name": "Non-Fissile Uranium",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Non-Fissile_Uranium.png",
-    "category": "Nuclear"
+    "category": "Nuclear",
+    "sinkPoints": 0
   },
   "plutonium_pellet": {
     "id": "plutonium_pellet",
     "name": "Plutonium Pellet",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Plutonium_Pellet.png",
-    "category": "Nuclear"
+    "category": "Nuclear",
+    "sinkPoints": 0
   },
   "encased_plutonium_cell": {
     "id": "encased_plutonium_cell",
     "name": "Encased Plutonium Cell",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Encased_Plutonium_Cell.png",
-    "category": "Nuclear"
+    "category": "Nuclear",
+    "sinkPoints": 0
   },
   "ficsonium": {
     "id": "ficsonium",
     "name": "Ficsonium",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ficsonium.png",
-    "category": "Nuclear"
+    "category": "Nuclear",
+    "sinkPoints": 0
   },
   "ficsonium_fuel_rod": {
     "id": "ficsonium_fuel_rod",
     "name": "Ficsonium Fuel Rod",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ficsonium_Fuel_Rod.png",
-    "category": "Nuclear"
+    "category": "Nuclear",
+    "sinkPoints": 0
   },
   "uranium_waste": {
     "id": "uranium_waste",
     "name": "Uranium Waste",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Uranium_Waste.png",
-    "category": "Waste"
+    "category": "Waste",
+    "sinkPoints": 0
   },
   "plutonium_waste": {
     "id": "plutonium_waste",
     "name": "Plutonium Waste",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Plutonium_Waste.png",
-    "category": "Waste"
+    "category": "Waste",
+    "sinkPoints": 0
   },
   "blue_power_slug": {
     "id": "blue_power_slug",
     "name": "Blue Power Slug",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Blue_Power_Slug.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 0
   },
   "yellow_power_slug": {
     "id": "yellow_power_slug",
     "name": "Yellow Power Slug",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Yellow_Power_Slug.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 0
   },
   "purple_power_slug": {
     "id": "purple_power_slug",
     "name": "Purple Power Slug",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Purple_Power_Slug.png",
-    "category": "Special"
-  },
-  "power_shard": {
-    "id": "power_shard",
-    "name": "Power Shard",
-    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Power_Shard.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 0
   },
   "ficsit_coupon": {
     "id": "ficsit_coupon",
     "name": "FICSIT Coupon",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/FICSIT_Coupon.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 0
   },
   "smart_plating": {
     "id": "smart_plating",
     "name": "Smart Plating",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Smart_Plating.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 520
   },
   "versatile_framework": {
     "id": "versatile_framework",
     "name": "Versatile Framework",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Versatile_Framework.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 1176
   },
   "automated_wiring": {
     "id": "automated_wiring",
     "name": "Automated Wiring",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Automated_Wiring.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 1440
   },
   "modular_engine": {
     "id": "modular_engine",
     "name": "Modular Engine",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Modular_Engine.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 9960
   },
   "adaptive_control_unit": {
     "id": "adaptive_control_unit",
     "name": "Adaptive Control Unit",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Adaptive_Control_Unit.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 76368
   },
   "assembly_director_system": {
     "id": "assembly_director_system",
     "name": "Assembly Director System",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Assembly_Director_System.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 500176
   },
   "magnetic_field_generator": {
     "id": "magnetic_field_generator",
     "name": "Magnetic Field Generator",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Magnetic_Field_Generator.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 11000
   },
   "thermal_propulsion_rocket": {
     "id": "thermal_propulsion_rocket",
     "name": "Thermal Propulsion Rocket",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Thermal_Propulsion_Rocket.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 728508
   },
   "nuclear_pasta": {
     "id": "nuclear_pasta",
     "name": "Nuclear Pasta",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nuclear_Pasta.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 538976
   },
   "biochemical_sculptor": {
     "id": "biochemical_sculptor",
     "name": "Biochemical Sculptor",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Biochemical_Sculptor.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 301778
   },
   "ballistic_warp_drive": {
     "id": "ballistic_warp_drive",
     "name": "Ballistic Warp Drive",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ballistic_Warp_Drive.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 2895334
   },
   "ai_expansion_server": {
     "id": "ai_expansion_server",
     "name": "AI Expansion Server",
     "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/AI_Expansion_Server.png",
-    "category": "Special"
+    "category": "Special",
+    "sinkPoints": 597652
+  },
+  "object_scanner": {
+    "id": "object_scanner",
+    "name": "Object Scanner",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Object_Scanner.png",
+    "category": "Equipment",
+    "sinkPoints": 0
+  },
+  "chainsaw": {
+    "id": "chainsaw",
+    "name": "Chainsaw",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Chainsaw.png",
+    "category": "Equipment",
+    "sinkPoints": 0
+  },
+  "xeno_basher": {
+    "id": "xeno_basher",
+    "name": "Xeno-Basher",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Xeno-Basher.png",
+    "category": "Equipment",
+    "sinkPoints": 0
+  },
+  "jetpack": {
+    "id": "jetpack",
+    "name": "Jetpack",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Jetpack.png",
+    "category": "Equipment",
+    "sinkPoints": 0
+  },
+  "hazmat_suit": {
+    "id": "hazmat_suit",
+    "name": "Hazmat Suit",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Hazmat_Suit.png",
+    "category": "Equipment",
+    "sinkPoints": 0
+  },
+  "hoverpack": {
+    "id": "hoverpack",
+    "name": "Hoverpack",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Hoverpack.png",
+    "category": "Equipment",
+    "sinkPoints": 0
   }
 }

@@ -1,0 +1,1998 @@
+[
+  {
+    "tier": 1,
+    "milestones": [
+      {
+        "name": "Base Building",
+        "schematic": "Schematic_1-1_C",
+        "cost": [
+          {
+            "itemId": "concrete",
+            "name": "Concrete",
+            "amount": 200.0
+          },
+          {
+            "itemId": "iron_plate",
+            "name": "Iron Plate",
+            "amount": 100.0
+          },
+          {
+            "itemId": "iron_rod",
+            "name": "Iron Rod",
+            "amount": 100.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "lookout_tower",
+            "name": "Lookout Tower"
+          },
+          {
+            "type": "building",
+            "id": "foundation_8x1_01",
+            "name": "Foundation (1 m)"
+          },
+          {
+            "type": "building",
+            "id": "foundation_8x2_01",
+            "name": "Foundation (2 m)"
+          },
+          {
+            "type": "building",
+            "id": "foundation_8x4_01",
+            "name": "Foundation (4 m)"
+          },
+          {
+            "type": "building",
+            "id": "ramp_8x1_01",
+            "name": "Ramp (1 m)"
+          },
+          {
+            "type": "building",
+            "id": "ramp_8x2_01",
+            "name": "Ramp (2 m)"
+          },
+          {
+            "type": "building",
+            "id": "ramp_8x4_01",
+            "name": "Ramp (4 m)"
+          },
+          {
+            "type": "building",
+            "id": "wall_8x4_01",
+            "name": "Basic Wall (4 m)"
+          },
+          {
+            "type": "building",
+            "id": "wall_orange_8x1",
+            "name": "Basic Wall (1 m)"
+          }
+        ]
+      },
+      {
+        "name": "Field Research",
+        "schematic": "Schematic_1-3_C",
+        "cost": [
+          {
+            "itemId": "wire",
+            "name": "Wire",
+            "amount": 300.0
+          },
+          {
+            "itemId": "screw",
+            "name": "Screws",
+            "amount": 300.0
+          },
+          {
+            "itemId": "iron_plate",
+            "name": "Iron Plate",
+            "amount": 100.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "mam",
+            "name": "MAM"
+          },
+          {
+            "type": "item",
+            "id": "object_scanner",
+            "name": "Object Scanner"
+          },
+          {
+            "type": "building",
+            "id": "storage_player",
+            "name": "Personal Storage Box"
+          }
+        ]
+      },
+      {
+        "name": "Logistics",
+        "schematic": "Schematic_1-2_C",
+        "cost": [
+          {
+            "itemId": "iron_plate",
+            "name": "Iron Plate",
+            "amount": 150.0
+          },
+          {
+            "itemId": "iron_rod",
+            "name": "Iron Rod",
+            "amount": 150.0
+          },
+          {
+            "itemId": "wire",
+            "name": "Wire",
+            "amount": 300.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "conveyor_attachment_splitter",
+            "name": "Conveyor Splitter"
+          },
+          {
+            "type": "building",
+            "id": "conveyor_attachment_merger",
+            "name": "Conveyor Merger"
+          },
+          {
+            "type": "building",
+            "id": "conveyor_lift_mk1",
+            "name": "Conveyor Lift Mk.1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "tier": 2,
+    "milestones": [
+      {
+        "name": "Jump Pads",
+        "schematic": "Schematic_2-3_C",
+        "cost": [
+          {
+            "itemId": "rotor",
+            "name": "Rotor",
+            "amount": 50.0
+          },
+          {
+            "itemId": "iron_plate",
+            "name": "Iron Plate",
+            "amount": 300.0
+          },
+          {
+            "itemId": "cable",
+            "name": "Cable",
+            "amount": 150.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "jump_pad_adjustable",
+            "name": "Jump Pad"
+          },
+          {
+            "type": "building",
+            "id": "landing_pad",
+            "name": "U-Jelly Landing Pad"
+          }
+        ]
+      },
+      {
+        "name": "Logistics Mk.2",
+        "schematic": "Schematic_3-2_C",
+        "cost": [
+          {
+            "itemId": "reinforced_iron_plate",
+            "name": "Reinforced Iron Plate",
+            "amount": 50.0
+          },
+          {
+            "itemId": "concrete",
+            "name": "Concrete",
+            "amount": 200.0
+          },
+          {
+            "itemId": "iron_rod",
+            "name": "Iron Rod",
+            "amount": 300.0
+          },
+          {
+            "itemId": "iron_plate",
+            "name": "Iron Plate",
+            "amount": 300.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "conveyor_belt_mk2",
+            "name": "Conveyor Belt Mk.2"
+          },
+          {
+            "type": "building",
+            "id": "conveyor_pole_stackable",
+            "name": "Stackable Conveyor Pole"
+          },
+          {
+            "type": "building",
+            "id": "conveyor_lift_mk2",
+            "name": "Conveyor Lift Mk.2"
+          }
+        ]
+      },
+      {
+        "name": "Obstacle Clearing",
+        "schematic": "Schematic_2-2_C",
+        "cost": [
+          {
+            "itemId": "screw",
+            "name": "Screws",
+            "amount": 500.0
+          },
+          {
+            "itemId": "cable",
+            "name": "Cable",
+            "amount": 100.0
+          },
+          {
+            "itemId": "concrete",
+            "name": "Concrete",
+            "amount": 100.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "item",
+            "id": "chainsaw",
+            "name": "Chainsaw"
+          },
+          {
+            "type": "item",
+            "id": "solid_biofuel",
+            "name": "Solid Biofuel"
+          }
+        ]
+      },
+      {
+        "name": "Part Assembly",
+        "schematic": "Schematic_2-1_C",
+        "cost": [
+          {
+            "itemId": "cable",
+            "name": "Cable",
+            "amount": 200.0
+          },
+          {
+            "itemId": "iron_rod",
+            "name": "Iron Rod",
+            "amount": 200.0
+          },
+          {
+            "itemId": "screw",
+            "name": "Screws",
+            "amount": 500.0
+          },
+          {
+            "itemId": "iron_plate",
+            "name": "Iron Plate",
+            "amount": 300.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "assembler_mk1",
+            "name": "Assembler"
+          },
+          {
+            "type": "item",
+            "id": "copper_sheet",
+            "name": "Copper Sheet"
+          },
+          {
+            "type": "item",
+            "id": "rotor",
+            "name": "Rotor"
+          },
+          {
+            "type": "item",
+            "id": "modular_frame",
+            "name": "Modular Frame"
+          },
+          {
+            "type": "item",
+            "id": "smart_plating",
+            "name": "Smart Plating"
+          }
+        ]
+      },
+      {
+        "name": "Resource Sink Bonus Program",
+        "schematic": "Schematic_2-5_C",
+        "cost": [
+          {
+            "itemId": "concrete",
+            "name": "Concrete",
+            "amount": 400.0
+          },
+          {
+            "itemId": "wire",
+            "name": "Wire",
+            "amount": 500.0
+          },
+          {
+            "itemId": "iron_rod",
+            "name": "Iron Rod",
+            "amount": 200.0
+          },
+          {
+            "itemId": "iron_plate",
+            "name": "Iron Plate",
+            "amount": 200.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "resource_sink",
+            "name": "AWESOME Sink"
+          },
+          {
+            "type": "building",
+            "id": "resource_sink_shop",
+            "name": "AWESOME Shop"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "tier": 3,
+    "milestones": [
+      {
+        "name": "Basic Steel Production",
+        "schematic": "Schematic_3-4_C",
+        "cost": [
+          {
+            "itemId": "modular_frame",
+            "name": "Modular Frame",
+            "amount": 50.0
+          },
+          {
+            "itemId": "rotor",
+            "name": "Rotor",
+            "amount": 150.0
+          },
+          {
+            "itemId": "concrete",
+            "name": "Concrete",
+            "amount": 500.0
+          },
+          {
+            "itemId": "wire",
+            "name": "Wire",
+            "amount": 1000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "foundry_mk1",
+            "name": "Foundry"
+          },
+          {
+            "type": "item",
+            "id": "steel_ingot",
+            "name": "Steel Ingot"
+          },
+          {
+            "type": "item",
+            "id": "steel_beam",
+            "name": "Steel Beam"
+          },
+          {
+            "type": "item",
+            "id": "steel_pipe",
+            "name": "Steel Pipe"
+          },
+          {
+            "type": "item",
+            "id": "versatile_framework",
+            "name": "Versatile Framework"
+          }
+        ]
+      },
+      {
+        "name": "Coal Power",
+        "schematic": "Schematic_3-1_C",
+        "cost": [
+          {
+            "itemId": "reinforced_iron_plate",
+            "name": "Reinforced Iron Plate",
+            "amount": 150.0
+          },
+          {
+            "itemId": "rotor",
+            "name": "Rotor",
+            "amount": 50.0
+          },
+          {
+            "itemId": "cable",
+            "name": "Cable",
+            "amount": 500.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "generator_coal",
+            "name": "Coal-Powered Generator"
+          },
+          {
+            "type": "building",
+            "id": "water_pump",
+            "name": "Water Extractor"
+          },
+          {
+            "type": "building",
+            "id": "pipeline",
+            "name": "Pipeline Mk.1"
+          },
+          {
+            "type": "building",
+            "id": "pipeline_support",
+            "name": "Pipeline Support"
+          },
+          {
+            "type": "building",
+            "id": "pipeline_junction_cross",
+            "name": "Pipeline Junction"
+          },
+          {
+            "type": "building",
+            "id": "pipeline_pump",
+            "name": "Pipeline Pump Mk.1"
+          },
+          {
+            "type": "building",
+            "id": "pipe_storage_tank",
+            "name": "Fluid Buffer"
+          }
+        ]
+      },
+      {
+        "name": "Enhanced Asset Security",
+        "schematic": "Schematic_4-2_C",
+        "cost": [
+          {
+            "itemId": "reinforced_iron_plate",
+            "name": "Reinforced Iron Plate",
+            "amount": 100.0
+          },
+          {
+            "itemId": "iron_rod",
+            "name": "Iron Rod",
+            "amount": 600.0
+          },
+          {
+            "itemId": "wire",
+            "name": "Wire",
+            "amount": 1500.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "item",
+            "id": "xeno_basher",
+            "name": "Xeno-Basher"
+          }
+        ]
+      },
+      {
+        "name": "Vehicular Transport",
+        "schematic": "Schematic_3-3_C",
+        "cost": [
+          {
+            "itemId": "modular_frame",
+            "name": "Modular Frame",
+            "amount": 25.0
+          },
+          {
+            "itemId": "rotor",
+            "name": "Rotor",
+            "amount": 100.0
+          },
+          {
+            "itemId": "cable",
+            "name": "Cable",
+            "amount": 200.0
+          },
+          {
+            "itemId": "iron_plate",
+            "name": "Iron Plate",
+            "amount": 400.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "tractor",
+            "name": "Tractor"
+          },
+          {
+            "type": "building",
+            "id": "truck_station",
+            "name": "Truck Station"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "tier": 4,
+    "milestones": [
+      {
+        "name": "Advanced Steel Production",
+        "schematic": "Schematic_4-1_C",
+        "cost": [
+          {
+            "itemId": "steel_pipe",
+            "name": "Steel Pipe",
+            "amount": 100.0
+          },
+          {
+            "itemId": "modular_frame",
+            "name": "Modular Frame",
+            "amount": 100.0
+          },
+          {
+            "itemId": "rotor",
+            "name": "Rotor",
+            "amount": 200.0
+          },
+          {
+            "itemId": "concrete",
+            "name": "Concrete",
+            "amount": 500.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "miner_mk2",
+            "name": "Miner Mk.2"
+          },
+          {
+            "type": "item",
+            "id": "encased_industrial_beam",
+            "name": "Encased Industrial Beam"
+          },
+          {
+            "type": "item",
+            "id": "stator",
+            "name": "Stator"
+          },
+          {
+            "type": "item",
+            "id": "motor",
+            "name": "Motor"
+          },
+          {
+            "type": "item",
+            "id": "automated_wiring",
+            "name": "Automated Wiring"
+          }
+        ]
+      },
+      {
+        "name": "Expanded Power Infrastructure",
+        "schematic": "Schematic_4-3_C",
+        "cost": [
+          {
+            "itemId": "encased_industrial_beam",
+            "name": "Encased Industrial Beam",
+            "amount": 50.0
+          },
+          {
+            "itemId": "steel_beam",
+            "name": "Steel Beam",
+            "amount": 100.0
+          },
+          {
+            "itemId": "modular_frame",
+            "name": "Modular Frame",
+            "amount": 200.0
+          },
+          {
+            "itemId": "wire",
+            "name": "Wire",
+            "amount": 2000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "power_storage_mk1",
+            "name": "Power Storage"
+          },
+          {
+            "type": "building",
+            "id": "power_tower",
+            "name": "Power Tower"
+          },
+          {
+            "type": "building",
+            "id": "power_tower_platform",
+            "name": "Power Tower Platform"
+          }
+        ]
+      },
+      {
+        "name": "FICSIT Blueprints",
+        "schematic": "Schematic_4-5_C",
+        "cost": [
+          {
+            "itemId": "modular_frame",
+            "name": "Modular Frame",
+            "amount": 100.0
+          },
+          {
+            "itemId": "steel_beam",
+            "name": "Steel Beam",
+            "amount": 200.0
+          },
+          {
+            "itemId": "cable",
+            "name": "Cable",
+            "amount": 500.0
+          },
+          {
+            "itemId": "concrete",
+            "name": "Concrete",
+            "amount": 1000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "blueprint_designer",
+            "name": "Blueprint Designer Mk.1"
+          }
+        ]
+      },
+      {
+        "name": "Hypertubes",
+        "schematic": "Schematic_4-4_C",
+        "cost": [
+          {
+            "itemId": "encased_industrial_beam",
+            "name": "Encased Industrial Beam",
+            "amount": 50.0
+          },
+          {
+            "itemId": "steel_pipe",
+            "name": "Steel Pipe",
+            "amount": 300.0
+          },
+          {
+            "itemId": "copper_sheet",
+            "name": "Copper Sheet",
+            "amount": 500.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "pipe_hyper_start",
+            "name": "Hypertube Entrance"
+          },
+          {
+            "type": "building",
+            "id": "pipe_hyper",
+            "name": "Hypertube"
+          },
+          {
+            "type": "building",
+            "id": "pipe_hyper_support",
+            "name": "Hypertube Support"
+          },
+          {
+            "type": "building",
+            "id": "hyper_pole_stackable",
+            "name": "Stackable Hypertube Support"
+          },
+          {
+            "type": "building",
+            "id": "hyper_tube_junction",
+            "name": "Hypertube Junction"
+          },
+          {
+            "type": "building",
+            "id": "hypertube_tjunction",
+            "name": "Hypertube Branch"
+          }
+        ]
+      },
+      {
+        "name": "Logistics Mk.3",
+        "schematic": "Schematic_5-3_C",
+        "cost": [
+          {
+            "itemId": "steel_beam",
+            "name": "Steel Beam",
+            "amount": 200.0
+          },
+          {
+            "itemId": "steel_pipe",
+            "name": "Steel Pipe",
+            "amount": 200.0
+          },
+          {
+            "itemId": "reinforced_iron_plate",
+            "name": "Reinforced Iron Plate",
+            "amount": 400.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "storage_container_mk2",
+            "name": "Industrial Storage Container"
+          },
+          {
+            "type": "building",
+            "id": "conveyor_belt_mk3",
+            "name": "Conveyor Belt Mk.3"
+          },
+          {
+            "type": "building",
+            "id": "conveyor_lift_mk3",
+            "name": "Conveyor Lift Mk.3"
+          },
+          {
+            "type": "building",
+            "id": "pipe_support_stackable",
+            "name": "Stackable Pipeline Support"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "tier": 5,
+    "milestones": [
+      {
+        "name": "Fluid Packaging",
+        "schematic": "Schematic_5-4_C",
+        "cost": [
+          {
+            "itemId": "plastic",
+            "name": "Plastic",
+            "amount": 200.0
+          },
+          {
+            "itemId": "steel_beam",
+            "name": "Steel Beam",
+            "amount": 400.0
+          },
+          {
+            "itemId": "copper_sheet",
+            "name": "Copper Sheet",
+            "amount": 1000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "packager",
+            "name": "Packager"
+          },
+          {
+            "type": "item",
+            "id": "empty_canister",
+            "name": "Empty Canister"
+          },
+          {
+            "type": "item",
+            "id": "packaged_water",
+            "name": "Packaged Water"
+          },
+          {
+            "type": "item",
+            "id": "packaged_oil",
+            "name": "Packaged Oil"
+          },
+          {
+            "type": "item",
+            "id": "packaged_fuel",
+            "name": "Packaged Fuel"
+          },
+          {
+            "type": "item",
+            "id": "packaged_heavy_oil_residue",
+            "name": "Packaged Heavy Oil Residue"
+          },
+          {
+            "type": "item",
+            "id": "packaged_liquid_biofuel",
+            "name": "Packaged Liquid Biofuel"
+          },
+          {
+            "type": "item",
+            "id": "liquid_biofuel",
+            "name": "Liquid Biofuel"
+          }
+        ]
+      },
+      {
+        "name": "Jetpack",
+        "schematic": "Schematic_6-2_C",
+        "cost": [
+          {
+            "itemId": "motor",
+            "name": "Motor",
+            "amount": 50.0
+          },
+          {
+            "itemId": "cable",
+            "name": "Cable",
+            "amount": 1000.0
+          },
+          {
+            "itemId": "iron_plate",
+            "name": "Iron Plate",
+            "amount": 1000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "item",
+            "id": "jetpack",
+            "name": "Jetpack"
+          }
+        ]
+      },
+      {
+        "name": "Logistics Mk.4",
+        "schematic": "Schematic_6-1_C",
+        "cost": [
+          {
+            "itemId": "rubber",
+            "name": "Rubber",
+            "amount": 200.0
+          },
+          {
+            "itemId": "encased_industrial_beam",
+            "name": "Encased Industrial Beam",
+            "amount": 300.0
+          },
+          {
+            "itemId": "modular_frame",
+            "name": "Modular Frame",
+            "amount": 400.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "conveyor_belt_mk4",
+            "name": "Conveyor Belt Mk.4"
+          },
+          {
+            "type": "building",
+            "id": "conveyor_lift_mk4",
+            "name": "Conveyor Lift Mk.4"
+          },
+          {
+            "type": "building",
+            "id": "truck",
+            "name": "Truck"
+          }
+        ]
+      },
+      {
+        "name": "Oil Processing",
+        "schematic": "Schematic_5-1_C",
+        "cost": [
+          {
+            "itemId": "motor",
+            "name": "Motor",
+            "amount": 50.0
+          },
+          {
+            "itemId": "encased_industrial_beam",
+            "name": "Encased Industrial Beam",
+            "amount": 100.0
+          },
+          {
+            "itemId": "steel_pipe",
+            "name": "Steel Pipe",
+            "amount": 500.0
+          },
+          {
+            "itemId": "copper_sheet",
+            "name": "Copper Sheet",
+            "amount": 500.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "item",
+            "id": "petroleum_coke",
+            "name": "Petroleum Coke"
+          },
+          {
+            "type": "item",
+            "id": "circuit_board",
+            "name": "Circuit Board"
+          },
+          {
+            "type": "building",
+            "id": "oil_pump",
+            "name": "Oil Extractor"
+          },
+          {
+            "type": "building",
+            "id": "oil_refinery",
+            "name": "Refinery"
+          },
+          {
+            "type": "building",
+            "id": "valve",
+            "name": "Valve"
+          },
+          {
+            "type": "item",
+            "id": "plastic",
+            "name": "Plastic"
+          },
+          {
+            "type": "item",
+            "id": "rubber",
+            "name": "Rubber"
+          },
+          {
+            "type": "item",
+            "id": "fuel",
+            "name": "Fuel"
+          }
+        ]
+      },
+      {
+        "name": "Petroleum Power",
+        "schematic": "Schematic_5-5_C",
+        "cost": [
+          {
+            "itemId": "motor",
+            "name": "Motor",
+            "amount": 100.0
+          },
+          {
+            "itemId": "encased_industrial_beam",
+            "name": "Encased Industrial Beam",
+            "amount": 100.0
+          },
+          {
+            "itemId": "rubber",
+            "name": "Rubber",
+            "amount": 200.0
+          },
+          {
+            "itemId": "plastic",
+            "name": "Plastic",
+            "amount": 200.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "generator_fuel",
+            "name": "Fuel-Powered Generator"
+          },
+          {
+            "type": "building",
+            "id": "industrial_tank",
+            "name": "Industrial Fluid Buffer"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "tier": 6,
+    "milestones": [
+      {
+        "name": "FICSIT Blueprints Mk.2",
+        "schematic": "Schematic_6-6_C",
+        "cost": [
+          {
+            "itemId": "heavy_modular_frame",
+            "name": "Heavy Modular Frame",
+            "amount": 100.0
+          },
+          {
+            "itemId": "computer",
+            "name": "Computer",
+            "amount": 100.0
+          },
+          {
+            "itemId": "rubber",
+            "name": "Rubber",
+            "amount": 400.0
+          },
+          {
+            "itemId": "concrete",
+            "name": "Concrete",
+            "amount": 1500.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "blueprint_designer_mk2",
+            "name": "Blueprint Designer Mk.2"
+          }
+        ]
+      },
+      {
+        "name": "Industrial Manufacturing",
+        "schematic": "Schematic_5-2_C",
+        "cost": [
+          {
+            "itemId": "motor",
+            "name": "Motor",
+            "amount": 200.0
+          },
+          {
+            "itemId": "modular_frame",
+            "name": "Modular Frame",
+            "amount": 200.0
+          },
+          {
+            "itemId": "plastic",
+            "name": "Plastic",
+            "amount": 400.0
+          },
+          {
+            "itemId": "cable",
+            "name": "Cable",
+            "amount": 1000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "manufacturer_mk1",
+            "name": "Manufacturer"
+          },
+          {
+            "type": "item",
+            "id": "computer",
+            "name": "Computer"
+          },
+          {
+            "type": "item",
+            "id": "heavy_modular_frame",
+            "name": "Heavy Modular Frame"
+          },
+          {
+            "type": "item",
+            "id": "modular_engine",
+            "name": "Modular Engine"
+          },
+          {
+            "type": "item",
+            "id": "adaptive_control_unit",
+            "name": "Adaptive Control Unit"
+          }
+        ]
+      },
+      {
+        "name": "Monorail Train Technology",
+        "schematic": "Schematic_6-3_C",
+        "cost": [
+          {
+            "itemId": "motor",
+            "name": "Motor",
+            "amount": 250.0
+          },
+          {
+            "itemId": "encased_industrial_beam",
+            "name": "Encased Industrial Beam",
+            "amount": 500.0
+          },
+          {
+            "itemId": "steel_beam",
+            "name": "Steel Beam",
+            "amount": 1000.0
+          },
+          {
+            "itemId": "steel_pipe",
+            "name": "Steel Pipe",
+            "amount": 1000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "locomotive",
+            "name": "Electric Locomotive"
+          },
+          {
+            "type": "building",
+            "id": "freight_wagon",
+            "name": "Freight Car"
+          },
+          {
+            "type": "building",
+            "id": "railroad_track",
+            "name": "Railway"
+          },
+          {
+            "type": "building",
+            "id": "train_station",
+            "name": "Train Station"
+          },
+          {
+            "type": "building",
+            "id": "train_docking_station",
+            "name": "Freight Platform"
+          },
+          {
+            "type": "building",
+            "id": "train_docking_station_liquid",
+            "name": "Fluid Freight Platform"
+          },
+          {
+            "type": "building",
+            "id": "train_platform_empty",
+            "name": "Empty Platform"
+          },
+          {
+            "type": "building",
+            "id": "train_platform_empty_02",
+            "name": "Empty Platform With Catwalk"
+          },
+          {
+            "type": "building",
+            "id": "railroad_end_stop",
+            "name": "Buffer Stop"
+          }
+        ]
+      },
+      {
+        "name": "Pipeline Engineering Mk.2",
+        "schematic": "Schematic_6-5_C",
+        "cost": [
+          {
+            "itemId": "heavy_modular_frame",
+            "name": "Heavy Modular Frame",
+            "amount": 50.0
+          },
+          {
+            "itemId": "plastic",
+            "name": "Plastic",
+            "amount": 1000.0
+          },
+          {
+            "itemId": "rubber",
+            "name": "Rubber",
+            "amount": 1000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "pipeline_mk2",
+            "name": "Pipeline Mk.2"
+          },
+          {
+            "type": "building",
+            "id": "pipeline_pump_mk2",
+            "name": "Pipeline Pump Mk.2"
+          }
+        ]
+      },
+      {
+        "name": "Railway Signalling",
+        "schematic": "Schematic_6-7_C",
+        "cost": [
+          {
+            "itemId": "computer",
+            "name": "Computer",
+            "amount": 50.0
+          },
+          {
+            "itemId": "steel_pipe",
+            "name": "Steel Pipe",
+            "amount": 400.0
+          },
+          {
+            "itemId": "copper_sheet",
+            "name": "Copper Sheet",
+            "amount": 1000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "railroad_block_signal",
+            "name": "Block Signal"
+          },
+          {
+            "type": "building",
+            "id": "railroad_path_signal",
+            "name": "Path Signal"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "tier": 7,
+    "milestones": [
+      {
+        "name": "Bauxite Refinement",
+        "schematic": "Schematic_7-1_C",
+        "cost": [
+          {
+            "itemId": "computer",
+            "name": "Computer",
+            "amount": 100.0
+          },
+          {
+            "itemId": "heavy_modular_frame",
+            "name": "Heavy Modular Frame",
+            "amount": 100.0
+          },
+          {
+            "itemId": "motor",
+            "name": "Motor",
+            "amount": 250.0
+          },
+          {
+            "itemId": "rubber",
+            "name": "Rubber",
+            "amount": 500.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "item",
+            "id": "alumina_solution",
+            "name": "Alumina Solution"
+          },
+          {
+            "type": "item",
+            "id": "packaged_alumina_solution",
+            "name": "Packaged Alumina Solution"
+          },
+          {
+            "type": "item",
+            "id": "aluminum_scrap",
+            "name": "Aluminum Scrap"
+          },
+          {
+            "type": "item",
+            "id": "aluminum_ingot",
+            "name": "Aluminum Ingot"
+          },
+          {
+            "type": "item",
+            "id": "alclad_aluminum_sheet",
+            "name": "Alclad Aluminum Sheet"
+          },
+          {
+            "type": "item",
+            "id": "aluminum_casing",
+            "name": "Aluminum Casing"
+          }
+        ]
+      },
+      {
+        "name": "Control System Development",
+        "schematic": "Schematic_7-5_C",
+        "cost": [
+          {
+            "itemId": "alclad_aluminum_sheet",
+            "name": "Alclad Aluminum Sheet",
+            "amount": 200.0
+          },
+          {
+            "itemId": "aluminum_casing",
+            "name": "Aluminum Casing",
+            "amount": 400.0
+          },
+          {
+            "itemId": "computer",
+            "name": "Computer",
+            "amount": 200.0
+          },
+          {
+            "itemId": "plastic",
+            "name": "Plastic",
+            "amount": 1000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "item",
+            "id": "sulfuric_acid",
+            "name": "Sulfuric Acid"
+          },
+          {
+            "type": "item",
+            "id": "packaged_sulfuric_acid",
+            "name": "Packaged Sulfuric Acid"
+          },
+          {
+            "type": "item",
+            "id": "battery",
+            "name": "Battery"
+          },
+          {
+            "type": "item",
+            "id": "radio_control_unit",
+            "name": "Radio Control Unit"
+          },
+          {
+            "type": "item",
+            "id": "supercomputer",
+            "name": "Supercomputer"
+          },
+          {
+            "type": "item",
+            "id": "assembly_director_system",
+            "name": "Assembly Director System"
+          },
+          {
+            "type": "building",
+            "id": "blender",
+            "name": "Blender"
+          }
+        ]
+      },
+      {
+        "name": "Hazmat Suit",
+        "schematic": "Schematic_7-3_C",
+        "cost": [
+          {
+            "itemId": "gas_filter",
+            "name": "Gas Filter",
+            "amount": 50.0
+          },
+          {
+            "itemId": "aluminum_casing",
+            "name": "Aluminum Casing",
+            "amount": 100.0
+          },
+          {
+            "itemId": "quickwire",
+            "name": "Quickwire",
+            "amount": 500.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "item",
+            "id": "hazmat_suit",
+            "name": "Hazmat Suit"
+          },
+          {
+            "type": "item",
+            "id": "iodine_infused_filter",
+            "name": "Iodine-Infused Filter"
+          }
+        ]
+      },
+      {
+        "name": "Hoverpack",
+        "schematic": "Schematic_8-3_C",
+        "cost": [
+          {
+            "itemId": "alclad_aluminum_sheet",
+            "name": "Alclad Aluminum Sheet",
+            "amount": 100.0
+          },
+          {
+            "itemId": "heavy_modular_frame",
+            "name": "Heavy Modular Frame",
+            "amount": 100.0
+          },
+          {
+            "itemId": "computer",
+            "name": "Computer",
+            "amount": 100.0
+          },
+          {
+            "itemId": "motor",
+            "name": "Motor",
+            "amount": 250.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "item",
+            "id": "hoverpack",
+            "name": "Hoverpack"
+          }
+        ]
+      },
+      {
+        "name": "Logistics Mk.5",
+        "schematic": "Schematic_7-2_C",
+        "cost": [
+          {
+            "itemId": "alclad_aluminum_sheet",
+            "name": "Alclad Aluminum Sheet",
+            "amount": 200.0
+          },
+          {
+            "itemId": "encased_industrial_beam",
+            "name": "Encased Industrial Beam",
+            "amount": 400.0
+          },
+          {
+            "itemId": "reinforced_iron_plate",
+            "name": "Reinforced Iron Plate",
+            "amount": 600.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "conveyor_belt_mk5",
+            "name": "Conveyor Belt Mk.5"
+          },
+          {
+            "type": "building",
+            "id": "conveyor_lift_mk5",
+            "name": "Conveyor Lift Mk.5"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "tier": 8,
+    "milestones": [
+      {
+        "name": "Advanced Aluminum Production",
+        "schematic": "Schematic_8-2_C",
+        "cost": [
+          {
+            "itemId": "radio_control_unit",
+            "name": "Radio Control Unit",
+            "amount": 50.0
+          },
+          {
+            "itemId": "aluminum_casing",
+            "name": "Aluminum Casing",
+            "amount": 200.0
+          },
+          {
+            "itemId": "alclad_aluminum_sheet",
+            "name": "Alclad Aluminum Sheet",
+            "amount": 400.0
+          },
+          {
+            "itemId": "wire",
+            "name": "Wire",
+            "amount": 3000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "fracking_smasher",
+            "name": "Resource Well Pressurizer"
+          },
+          {
+            "type": "building",
+            "id": "fracking_extractor",
+            "name": "Resource Well Extractor"
+          },
+          {
+            "type": "item",
+            "id": "empty_fluid_tank",
+            "name": "Empty Fluid Tank"
+          },
+          {
+            "type": "item",
+            "id": "packaged_nitrogen_gas",
+            "name": "Packaged Nitrogen Gas"
+          },
+          {
+            "type": "item",
+            "id": "heat_sink",
+            "name": "Heat Sink"
+          },
+          {
+            "type": "item",
+            "id": "cooling_system",
+            "name": "Cooling System"
+          },
+          {
+            "type": "item",
+            "id": "fused_modular_frame",
+            "name": "Fused Modular Frame"
+          }
+        ]
+      },
+      {
+        "name": "Aeronautical Engineering",
+        "schematic": "Schematic_7-4_C",
+        "cost": [
+          {
+            "itemId": "radio_control_unit",
+            "name": "Radio Control Unit",
+            "amount": 50.0
+          },
+          {
+            "itemId": "alclad_aluminum_sheet",
+            "name": "Alclad Aluminum Sheet",
+            "amount": 100.0
+          },
+          {
+            "itemId": "aluminum_casing",
+            "name": "Aluminum Casing",
+            "amount": 200.0
+          },
+          {
+            "itemId": "motor",
+            "name": "Motor",
+            "amount": 300.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "drone_transport",
+            "name": "Drone"
+          },
+          {
+            "type": "building",
+            "id": "drone_station",
+            "name": "Drone Port"
+          }
+        ]
+      },
+      {
+        "name": "Leading-Edge Production",
+        "schematic": "Schematic_8-4_C",
+        "cost": [
+          {
+            "itemId": "fused_modular_frame",
+            "name": "Fused Modular Frame",
+            "amount": 50.0
+          },
+          {
+            "itemId": "supercomputer",
+            "name": "Supercomputer",
+            "amount": 100.0
+          },
+          {
+            "itemId": "steel_pipe",
+            "name": "Steel Pipe",
+            "amount": 1000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "item",
+            "id": "turbo_motor",
+            "name": "Turbo Motor"
+          },
+          {
+            "type": "building",
+            "id": "miner_mk3",
+            "name": "Miner Mk.3"
+          },
+          {
+            "type": "item",
+            "id": "thermal_propulsion_rocket",
+            "name": "Thermal Propulsion Rocket"
+          }
+        ]
+      },
+      {
+        "name": "Nuclear Power",
+        "schematic": "Schematic_8-1_C",
+        "cost": [
+          {
+            "itemId": "supercomputer",
+            "name": "Supercomputer",
+            "amount": 50.0
+          },
+          {
+            "itemId": "heavy_modular_frame",
+            "name": "Heavy Modular Frame",
+            "amount": 200.0
+          },
+          {
+            "itemId": "cable",
+            "name": "Cable",
+            "amount": 1000.0
+          },
+          {
+            "itemId": "concrete",
+            "name": "Concrete",
+            "amount": 2000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "item",
+            "id": "encased_uranium_cell",
+            "name": "Encased Uranium Cell"
+          },
+          {
+            "type": "item",
+            "id": "electromagnetic_control_rod",
+            "name": "Electromagnetic Control Rod"
+          },
+          {
+            "type": "item",
+            "id": "uranium_fuel_rod",
+            "name": "Uranium Fuel Rod"
+          },
+          {
+            "type": "building",
+            "id": "generator_nuclear",
+            "name": "Nuclear Power Plant"
+          },
+          {
+            "type": "item",
+            "id": "magnetic_field_generator",
+            "name": "Magnetic Field Generator"
+          }
+        ]
+      },
+      {
+        "name": "Particle Enrichment",
+        "schematic": "Schematic_8-5_C",
+        "cost": [
+          {
+            "itemId": "turbo_motor",
+            "name": "Turbo Motor",
+            "amount": 50.0
+          },
+          {
+            "itemId": "fused_modular_frame",
+            "name": "Fused Modular Frame",
+            "amount": 100.0
+          },
+          {
+            "itemId": "cooling_system",
+            "name": "Cooling System",
+            "amount": 200.0
+          },
+          {
+            "itemId": "quickwire",
+            "name": "Quickwire",
+            "amount": 2500.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "item",
+            "id": "nitric_acid",
+            "name": "Nitric Acid"
+          },
+          {
+            "type": "item",
+            "id": "packaged_nitric_acid",
+            "name": "Packaged Nitric Acid"
+          },
+          {
+            "type": "item",
+            "id": "non_fissile_uranium",
+            "name": "Non-Fissile Uranium"
+          },
+          {
+            "type": "item",
+            "id": "plutonium_pellet",
+            "name": "Plutonium Pellet"
+          },
+          {
+            "type": "item",
+            "id": "encased_plutonium_cell",
+            "name": "Encased Plutonium Cell"
+          },
+          {
+            "type": "item",
+            "id": "plutonium_fuel_rod",
+            "name": "Plutonium Fuel Rod"
+          },
+          {
+            "type": "building",
+            "id": "hadron_collider",
+            "name": "Particle Accelerator"
+          },
+          {
+            "type": "item",
+            "id": "copper_powder",
+            "name": "Copper Powder"
+          },
+          {
+            "type": "item",
+            "id": "pressure_conversion_cube",
+            "name": "Pressure Conversion Cube"
+          },
+          {
+            "type": "item",
+            "id": "nuclear_pasta",
+            "name": "Nuclear Pasta"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "tier": 9,
+    "milestones": [
+      {
+        "name": "FICSIT Blueprints Mk.3",
+        "schematic": "Schematic_9-3_C",
+        "cost": [
+          {
+            "itemId": "neural_quantum_processor",
+            "name": "Neural-Quantum Processor",
+            "amount": 100.0
+          },
+          {
+            "itemId": "time_crystal",
+            "name": "Time Crystal",
+            "amount": 250.0
+          },
+          {
+            "itemId": "ficsite_trigon",
+            "name": "Ficsite Trigon",
+            "amount": 500.0
+          },
+          {
+            "itemId": "fused_modular_frame",
+            "name": "Fused Modular Frame",
+            "amount": 500.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "blueprint_designer_mk3",
+            "name": "Blueprint Designer Mk.3"
+          }
+        ]
+      },
+      {
+        "name": "Matter Conversion",
+        "schematic": "Schematic_9-1_C",
+        "cost": [
+          {
+            "itemId": "fused_modular_frame",
+            "name": "Fused Modular Frame",
+            "amount": 100.0
+          },
+          {
+            "itemId": "radio_control_unit",
+            "name": "Radio Control Unit",
+            "amount": 250.0
+          },
+          {
+            "itemId": "cooling_system",
+            "name": "Cooling System",
+            "amount": 500.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "converter",
+            "name": "Converter"
+          },
+          {
+            "type": "item",
+            "id": "ficsite_ingot",
+            "name": "Ficsite Ingot"
+          },
+          {
+            "type": "item",
+            "id": "ficsite_trigon",
+            "name": "Ficsite Trigon"
+          },
+          {
+            "type": "item",
+            "id": "diamonds",
+            "name": "Diamonds"
+          },
+          {
+            "type": "item",
+            "id": "time_crystal",
+            "name": "Time Crystal"
+          },
+          {
+            "type": "item",
+            "id": "biochemical_sculptor",
+            "name": "Biochemical Sculptor"
+          },
+          {
+            "type": "item",
+            "id": "reanimated_sam",
+            "name": "Reanimated SAM"
+          },
+          {
+            "type": "item",
+            "id": "sam_fluctuator",
+            "name": "SAM Fluctuator"
+          }
+        ]
+      },
+      {
+        "name": "Peak Efficiency",
+        "schematic": "Schematic_9-5_C",
+        "cost": [
+          {
+            "itemId": "time_crystal",
+            "name": "Time Crystal",
+            "amount": 250.0
+          },
+          {
+            "itemId": "ficsite_trigon",
+            "name": "Ficsite Trigon",
+            "amount": 250.0
+          },
+          {
+            "itemId": "alclad_aluminum_sheet",
+            "name": "Alclad Aluminum Sheet",
+            "amount": 5000.0
+          },
+          {
+            "itemId": "iron_plate",
+            "name": "Iron Plate",
+            "amount": 10000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "conveyor_belt_mk6",
+            "name": "Conveyor Belt Mk.6"
+          },
+          {
+            "type": "building",
+            "id": "conveyor_lift_mk6",
+            "name": "Conveyor Lift Mk.6"
+          },
+          {
+            "type": "item",
+            "id": "ficsonium",
+            "name": "Ficsonium"
+          },
+          {
+            "type": "item",
+            "id": "ficsonium_fuel_rod",
+            "name": "Ficsonium Fuel Rod"
+          }
+        ]
+      },
+      {
+        "name": "Quantum Encoding",
+        "schematic": "Schematic_9-2_C",
+        "cost": [
+          {
+            "itemId": "time_crystal",
+            "name": "Time Crystal",
+            "amount": 50.0
+          },
+          {
+            "itemId": "ficsite_trigon",
+            "name": "Ficsite Trigon",
+            "amount": 100.0
+          },
+          {
+            "itemId": "turbo_motor",
+            "name": "Turbo Motor",
+            "amount": 200.0
+          },
+          {
+            "itemId": "supercomputer",
+            "name": "Supercomputer",
+            "amount": 400.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "quantum_encoder",
+            "name": "Quantum Encoder"
+          },
+          {
+            "type": "item",
+            "id": "excited_photonic_matter",
+            "name": "Excited Photonic Matter"
+          },
+          {
+            "type": "item",
+            "id": "dark_matter_residue",
+            "name": "Dark Matter Residue"
+          },
+          {
+            "type": "item",
+            "id": "dark_matter_crystal",
+            "name": "Dark Matter Crystal"
+          },
+          {
+            "type": "item",
+            "id": "superposition_oscillator",
+            "name": "Superposition Oscillator"
+          },
+          {
+            "type": "item",
+            "id": "neural_quantum_processor",
+            "name": "Neural-Quantum Processor"
+          },
+          {
+            "type": "item",
+            "id": "ai_expansion_server",
+            "name": "AI Expansion Server"
+          }
+        ]
+      },
+      {
+        "name": "Spatial Energy Regulation",
+        "schematic": "Schematic_9-4_C",
+        "cost": [
+          {
+            "itemId": "superposition_oscillator",
+            "name": "Superposition Oscillator",
+            "amount": 100.0
+          },
+          {
+            "itemId": "turbo_motor",
+            "name": "Turbo Motor",
+            "amount": 250.0
+          },
+          {
+            "itemId": "radio_control_unit",
+            "name": "Radio Control Unit",
+            "amount": 500.0
+          },
+          {
+            "itemId": "sam_fluctuator",
+            "name": "SAM Fluctuator",
+            "amount": 1000.0
+          }
+        ],
+        "unlocks": [
+          {
+            "type": "building",
+            "id": "portal",
+            "name": "Main Portal"
+          },
+          {
+            "type": "building",
+            "id": "portal_satellite",
+            "name": "Satellite Portal"
+          },
+          {
+            "type": "item",
+            "id": "singularity_cell",
+            "name": "Singularity Cell"
+          },
+          {
+            "type": "item",
+            "id": "ballistic_warp_drive",
+            "name": "Ballistic Warp Drive"
+          }
+        ]
+      }
+    ]
+  }
+]

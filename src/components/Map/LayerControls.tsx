@@ -23,6 +23,9 @@ export interface LayerState {
   drones: boolean;
   powerCircuits: boolean;
   diagnostics: boolean;
+  hardDrives: boolean;
+  somersloops: boolean;
+  consumables: boolean;
 }
 
 interface LayerControlsProps {
@@ -162,6 +165,27 @@ export function LayerControls({
             onChange={() => onChange({ ...layers, diagnostics: !layers.diagnostics })}
             className="map-layer-check" />
         </label>
+        <label className="map-layer-item">
+          <span className="map-layer-dot" style={{ background: '#60a5fa' }} />
+          <span className="map-layer-name">Hard Drives</span>
+          <input type="checkbox" checked={layers.hardDrives}
+            onChange={() => onChange({ ...layers, hardDrives: !layers.hardDrives })}
+            className="map-layer-check" />
+        </label>
+        <label className="map-layer-item">
+          <span className="map-layer-dot" style={{ background: '#a78bfa' }} />
+          <span className="map-layer-name">Somersloops & Spheres</span>
+          <input type="checkbox" checked={layers.somersloops}
+            onChange={() => onChange({ ...layers, somersloops: !layers.somersloops })}
+            className="map-layer-check" />
+        </label>
+        <label className="map-layer-item">
+          <span className="map-layer-dot" style={{ background: '#ef4444' }} />
+          <span className="map-layer-name">Paleberries & Nuts</span>
+          <input type="checkbox" checked={layers.consumables}
+            onChange={() => onChange({ ...layers, consumables: !layers.consumables })}
+            className="map-layer-check" />
+        </label>
       </div>
     </div>
   );
@@ -182,5 +206,8 @@ export function defaultLayerState(): LayerState {
     drones:       true,
     powerCircuits: false,
     diagnostics:  true,
+    hardDrives:   false,
+    somersloops:  false,
+    consumables:  false,
   };
 }

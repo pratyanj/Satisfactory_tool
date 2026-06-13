@@ -99,6 +99,12 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
                   </span>
                 </div>
                 <div className="sf-item-hero-row">
+                  <span className="sf-item-hero-label">SINK POINTS</span>
+                  <span className="sf-item-hero-val" style={{ color: item.sinkPoints ? '#22c55e' : undefined }}>
+                    {item.sinkPoints ? item.sinkPoints.toLocaleString() : '—'}
+                  </span>
+                </div>
+                <div className="sf-item-hero-row">
                   <span className="sf-item-hero-label">USED IN RECIPES</span>
                   <span className="sf-item-hero-val sf-item-hero-val--accent">{usedAsIngredient.length}</span>
                 </div>
@@ -154,7 +160,7 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
   );
 }
 
-function RecipeCard({ recipe, highlightId, onNavigate }: { recipe: Recipe; highlightId: string; onNavigate: (id: string) => void }) {
+export function RecipeCard({ recipe, highlightId, onNavigate }: { recipe: Recipe; highlightId: string; onNavigate: (id: string) => void }) {
   const machine = machines[recipe.machineId];
   const isAlternate = recipe.id.startsWith('recipe_alternate_');
   const recipeName = recipe.name ?? recipe.id
@@ -198,8 +204,10 @@ function RecipeCard({ recipe, highlightId, onNavigate }: { recipe: Recipe; highl
         )}
       </div>
 
-      {/* Flow area — height driven by item count, so SVG y=50 always = machine vertical center */}
-      <div className="sf-recipe-card-flow" style={{ height: flowHeight }}>
+      {/* Flow area — height driven by item count, so SVG y=50 always = machine vertical center.
+          Passed as a CSS var (not `height`) so the mobile media query can override it
+          to `auto` and let the stacked layout grow instead of clipping. */}
+      <div className="sf-recipe-card-flow" style={{ '--sf-flow-h': `${flowHeight}px` } as React.CSSProperties}>
 
         {/* 1. INPUTS column */}
         <div className="sf-recipe-card-block sf-recipe-card-block--inputs">
@@ -393,7 +401,7 @@ function ViewToggle({ viewMode, onChange }: { viewMode: 'flow' | 'table'; onChan
 // ============================================================
 // Table View Components
 // ============================================================
-function RecipeTable({ recipes, highlightId, onNavigate }: { recipes: Recipe[]; highlightId: string; onNavigate: (id: string) => void }) {
+export function RecipeTable({ recipes, highlightId, onNavigate }: { recipes: Recipe[]; highlightId: string; onNavigate: (id: string) => void }) {
   return (
     <div className="sf-rt">
       {/* Header row */}

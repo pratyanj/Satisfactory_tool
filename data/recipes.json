@@ -309,7 +309,7 @@
     "inputs": [
       {
         "itemId": "wood",
-        "rate": 60.0
+        "rate": 60
       }
     ],
     "machineId": "constructor"
@@ -425,7 +425,7 @@
       },
       {
         "itemId": "steel_pipe",
-        "rate": 40.0
+        "rate": 40
       },
       {
         "itemId": "encased_industrial_beam",
@@ -433,7 +433,7 @@
       },
       {
         "itemId": "screw",
-        "rate": 240.0
+        "rate": 240
       }
     ],
     "machineId": "manufacturer"
@@ -488,7 +488,7 @@
     "byproducts": [
       {
         "itemId": "heavy_oil_residue",
-        "rate": 10.0
+        "rate": 10
       }
     ]
   },
@@ -506,7 +506,7 @@
     "byproducts": [
       {
         "itemId": "heavy_oil_residue",
-        "rate": 20.0
+        "rate": 20
       }
     ]
   },
@@ -524,7 +524,7 @@
     "byproducts": [
       {
         "itemId": "polymer_resin",
-        "rate": 20.0
+        "rate": 20
       }
     ]
   },
@@ -554,7 +554,7 @@
     "byproducts": [
       {
         "itemId": "polymer_resin",
-        "rate": 30.0
+        "rate": 30
       }
     ]
   },
@@ -581,15 +581,15 @@
     "inputs": [
       {
         "itemId": "circuit_board",
-        "rate": 10.0
+        "rate": 10
       },
       {
         "itemId": "cable",
-        "rate": 20.0
+        "rate": 20
       },
       {
         "itemId": "plastic",
-        "rate": 40.0
+        "rate": 40
       }
     ],
     "machineId": "manufacturer"
@@ -648,7 +648,7 @@
     "byproducts": [
       {
         "itemId": "silica",
-        "rate": 50.0
+        "rate": 50
       }
     ]
   },
@@ -670,7 +670,7 @@
     "byproducts": [
       {
         "itemId": "water",
-        "rate": 120.0
+        "rate": 120
       }
     ]
   },
@@ -724,7 +724,7 @@
     "byproducts": [
       {
         "itemId": "water",
-        "rate": 30.0
+        "rate": 30
       }
     ]
   },
@@ -735,7 +735,7 @@
     "inputs": [
       {
         "itemId": "aluminum_casing",
-        "rate": 40.0
+        "rate": 40
       },
       {
         "itemId": "crystal_oscillator",
@@ -1015,7 +1015,7 @@
     "inputs": [
       {
         "itemId": "automated_wiring",
-        "rate": 5.0
+        "rate": 5
       },
       {
         "itemId": "circuit_board",
@@ -1027,7 +1027,7 @@
       },
       {
         "itemId": "computer",
-        "rate": 2.0
+        "rate": 2
       }
     ],
     "machineId": "manufacturer"
@@ -1067,7 +1067,7 @@
   {
     "id": "recipe_thermal_propulsion_rocket",
     "outputItemId": "thermal_propulsion_rocket",
-    "outputRate": 1.0,
+    "outputRate": 1,
     "inputs": [
       {
         "itemId": "modular_engine",
@@ -1075,15 +1075,15 @@
       },
       {
         "itemId": "turbo_motor",
-        "rate": 1.0
+        "rate": 1
       },
       {
         "itemId": "cooling_system",
-        "rate": 3.0
+        "rate": 3
       },
       {
         "itemId": "fused_modular_frame",
-        "rate": 1.0
+        "rate": 1
       }
     ],
     "machineId": "manufacturer"
@@ -1188,11 +1188,11 @@
   {
     "id": "recipe_diamonds",
     "outputItemId": "diamonds",
-    "outputRate": 30.0,
+    "outputRate": 30,
     "inputs": [
       {
         "itemId": "coal",
-        "rate": 600.0
+        "rate": 600
       }
     ],
     "machineId": "particle_accelerator"
@@ -1212,15 +1212,15 @@
   {
     "id": "recipe_dark_matter_crystal",
     "outputItemId": "dark_matter_crystal",
-    "outputRate": 30.0,
+    "outputRate": 30,
     "inputs": [
       {
         "itemId": "diamonds",
-        "rate": 30.0
+        "rate": 30
       },
       {
         "itemId": "dark_matter_residue",
-        "rate": 150.0
+        "rate": 150
       }
     ],
     "machineId": "particle_accelerator"
@@ -1312,7 +1312,7 @@
   {
     "id": "recipe_ficsite_trigon",
     "outputItemId": "ficsite_trigon",
-    "outputRate": 30.0,
+    "outputRate": 30,
     "inputs": [
       {
         "itemId": "ficsite_ingot",
@@ -1417,11 +1417,11 @@
   {
     "id": "recipe_encased_uranium_cell",
     "outputItemId": "encased_uranium_cell",
-    "outputRate": 25.0,
+    "outputRate": 25,
     "inputs": [
       {
         "itemId": "uranium",
-        "rate": 50.0
+        "rate": 50
       },
       {
         "itemId": "concrete",
@@ -1436,7 +1436,7 @@
     "byproducts": [
       {
         "itemId": "sulfuric_acid",
-        "rate": 10.0
+        "rate": 10
       }
     ]
   },
@@ -1486,7 +1486,7 @@
     "byproducts": [
       {
         "itemId": "water",
-        "rate": 15.0
+        "rate": 15
       }
     ]
   },
@@ -1509,15 +1509,15 @@
   {
     "id": "recipe_encased_plutonium_cell",
     "outputItemId": "encased_plutonium_cell",
-    "outputRate": 5.0,
+    "outputRate": 5,
     "inputs": [
       {
         "itemId": "plutonium_pellet",
-        "rate": 10.0
+        "rate": 10
       },
       {
         "itemId": "concrete",
-        "rate": 20.0
+        "rate": 20
       }
     ],
     "machineId": "assembler"
@@ -1747,15 +1747,15 @@
   {
     "id": "recipe_nobelisk",
     "outputItemId": "nobelisk",
-    "outputRate": 10.0,
+    "outputRate": 10,
     "inputs": [
       {
         "itemId": "black_powder",
-        "rate": 20.0
+        "rate": 20
       },
       {
         "itemId": "steel_pipe",
-        "rate": 20.0
+        "rate": 20
       }
     ],
     "machineId": "assembler"
@@ -1840,7 +1840,7 @@
     "byproducts": [
       {
         "itemId": "heavy_oil_residue",
-        "rate": 20.0
+        "rate": 20
       }
     ]
   },
@@ -3792,29 +3792,29 @@
     "id": "recipe_synthetic_power_shard",
     "name": "Synthetic Power Shard",
     "outputItemId": "power_shard",
-    "outputRate": 5.0,
+    "outputRate": 5,
     "inputs": [
       {
         "itemId": "time_crystal",
-        "rate": 10.0
+        "rate": 10
       },
       {
         "itemId": "dark_matter_crystal",
-        "rate": 10.0
+        "rate": 10
       },
       {
         "itemId": "quartz_crystal",
-        "rate": 60.0
+        "rate": 60
       },
       {
         "itemId": "excited_photonic_matter",
-        "rate": 60.0
+        "rate": 60
       }
     ],
     "byproducts": [
       {
         "itemId": "dark_matter_residue",
-        "rate": 60.0
+        "rate": 60
       }
     ],
     "machineId": "quantum_encoder"
@@ -3840,15 +3840,15 @@
     "id": "recipe_packaged_ionized_fuel",
     "name": "Packaged Ionized Fuel",
     "outputItemId": "packaged_ionized_fuel",
-    "outputRate": 40.0,
+    "outputRate": 40,
     "inputs": [
       {
         "itemId": "ionized_fuel",
-        "rate": 80.0
+        "rate": 80
       },
       {
         "itemId": "empty_fluid_tank",
-        "rate": 40.0
+        "rate": 40
       }
     ],
     "machineId": "packager"
@@ -3960,5 +3960,371 @@
     ],
     "machineId": "manufacturer",
     "isAlternate": true
+  },
+  {
+    "id": "recipe_liquid_biofuel",
+    "outputItemId": "liquid_biofuel",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "solid_biofuel",
+        "rate": 90
+      },
+      {
+        "itemId": "water",
+        "rate": 45
+      }
+    ],
+    "machineId": "refinery"
+  },
+  {
+    "id": "recipe_packaged_alumina_solution",
+    "outputItemId": "packaged_alumina_solution",
+    "outputRate": 120,
+    "inputs": [
+      {
+        "itemId": "alumina_solution",
+        "rate": 120
+      },
+      {
+        "itemId": "empty_canister",
+        "rate": 120
+      }
+    ],
+    "machineId": "packager"
+  },
+  {
+    "id": "recipe_packaged_sulfuric_acid",
+    "outputItemId": "packaged_sulfuric_acid",
+    "outputRate": 40,
+    "inputs": [
+      {
+        "itemId": "sulfuric_acid",
+        "rate": 40
+      },
+      {
+        "itemId": "empty_canister",
+        "rate": 40
+      }
+    ],
+    "machineId": "packager"
+  },
+  {
+    "id": "recipe_packaged_nitric_acid",
+    "outputItemId": "packaged_nitric_acid",
+    "outputRate": 30,
+    "inputs": [
+      {
+        "itemId": "nitric_acid",
+        "rate": 30
+      },
+      {
+        "itemId": "empty_fluid_tank",
+        "rate": 30
+      }
+    ],
+    "machineId": "packager"
+  },
+  {
+    "id": "recipe_packaged_nitrogen_gas",
+    "outputItemId": "packaged_nitrogen_gas",
+    "outputRate": 60,
+    "inputs": [
+      {
+        "itemId": "nitrogen_gas",
+        "rate": 240
+      },
+      {
+        "itemId": "empty_fluid_tank",
+        "rate": 60
+      }
+    ],
+    "machineId": "packager"
+  },
+  {
+    "id": "recipe_packaged_oil",
+    "outputItemId": "packaged_oil",
+    "outputRate": 30,
+    "inputs": [
+      {
+        "itemId": "crude_oil",
+        "rate": 30
+      },
+      {
+        "itemId": "empty_canister",
+        "rate": 30
+      }
+    ],
+    "machineId": "packager"
+  },
+  {
+    "id": "recipe_packaged_heavy_oil_residue",
+    "outputItemId": "packaged_heavy_oil_residue",
+    "outputRate": 30,
+    "inputs": [
+      {
+        "itemId": "heavy_oil_residue",
+        "rate": 30
+      },
+      {
+        "itemId": "empty_canister",
+        "rate": 30
+      }
+    ],
+    "machineId": "packager"
+  },
+  {
+    "id": "recipe_packaged_liquid_biofuel",
+    "outputItemId": "packaged_liquid_biofuel",
+    "outputRate": 40,
+    "inputs": [
+      {
+        "itemId": "liquid_biofuel",
+        "rate": 40
+      },
+      {
+        "itemId": "empty_canister",
+        "rate": 40
+      }
+    ],
+    "machineId": "packager"
+  },
+  {
+    "id": "recipe_packaged_turbofuel",
+    "outputItemId": "packaged_turbofuel",
+    "outputRate": 20,
+    "inputs": [
+      {
+        "itemId": "turbofuel",
+        "rate": 20
+      },
+      {
+        "itemId": "empty_canister",
+        "rate": 20
+      }
+    ],
+    "machineId": "packager"
+  },
+  {
+    "id": "recipe_gas_filter",
+    "outputItemId": "gas_filter",
+    "outputRate": 7.5,
+    "inputs": [
+      {
+        "itemId": "fabric",
+        "rate": 15
+      },
+      {
+        "itemId": "coal",
+        "rate": 30
+      },
+      {
+        "itemId": "iron_plate",
+        "rate": 15
+      }
+    ],
+    "machineId": "manufacturer"
+  },
+  {
+    "id": "recipe_iodine_infused_filter",
+    "outputItemId": "iodine_infused_filter",
+    "outputRate": 3.75,
+    "inputs": [
+      {
+        "itemId": "gas_filter",
+        "rate": 3.75
+      },
+      {
+        "itemId": "quickwire",
+        "rate": 30
+      },
+      {
+        "itemId": "aluminum_casing",
+        "rate": 3.75
+      }
+    ],
+    "machineId": "manufacturer"
+  },
+  {
+    "id": "recipe_stun_rebar",
+    "outputItemId": "stun_rebar",
+    "outputRate": 10,
+    "inputs": [
+      {
+        "itemId": "iron_rebar",
+        "rate": 10
+      },
+      {
+        "itemId": "quickwire",
+        "rate": 50
+      }
+    ],
+    "machineId": "assembler"
+  },
+  {
+    "id": "recipe_shatter_rebar",
+    "outputItemId": "shatter_rebar",
+    "outputRate": 5,
+    "inputs": [
+      {
+        "itemId": "iron_rebar",
+        "rate": 10
+      },
+      {
+        "itemId": "quartz_crystal",
+        "rate": 15
+      }
+    ],
+    "machineId": "assembler"
+  },
+  {
+    "id": "recipe_explosive_rebar",
+    "outputItemId": "explosive_rebar",
+    "outputRate": 5,
+    "inputs": [
+      {
+        "itemId": "iron_rebar",
+        "rate": 10
+      },
+      {
+        "itemId": "smokeless_powder",
+        "rate": 10
+      },
+      {
+        "itemId": "steel_pipe",
+        "rate": 10
+      }
+    ],
+    "machineId": "manufacturer"
+  },
+  {
+    "id": "recipe_homing_rifle_ammo",
+    "outputItemId": "homing_rifle_ammo",
+    "outputRate": 25,
+    "inputs": [
+      {
+        "itemId": "rifle_ammo",
+        "rate": 50
+      },
+      {
+        "itemId": "high_speed_connector",
+        "rate": 2.5
+      }
+    ],
+    "machineId": "assembler"
+  },
+  {
+    "id": "recipe_turbo_rifle_ammo",
+    "outputItemId": "turbo_rifle_ammo",
+    "outputRate": 250,
+    "inputs": [
+      {
+        "itemId": "rifle_ammo",
+        "rate": 125
+      },
+      {
+        "itemId": "aluminum_casing",
+        "rate": 15
+      },
+      {
+        "itemId": "packaged_turbofuel",
+        "rate": 15
+      }
+    ],
+    "machineId": "manufacturer"
+  },
+  {
+    "id": "recipe_cartridgechaos_c",
+    "outputItemId": "turbo_rifle_ammo",
+    "outputRate": 250,
+    "inputs": [
+      {
+        "itemId": "rifle_ammo",
+        "rate": 125
+      },
+      {
+        "itemId": "aluminum_casing",
+        "rate": 15
+      },
+      {
+        "itemId": "turbofuel",
+        "rate": 15
+      }
+    ],
+    "machineId": "blender",
+    "name": "Turbo Rifle Ammo",
+    "isAlternate": false
+  },
+  {
+    "id": "recipe_gas_nobelisk",
+    "outputItemId": "gas_nobelisk",
+    "outputRate": 5,
+    "inputs": [
+      {
+        "itemId": "nobelisk",
+        "rate": 5
+      },
+      {
+        "itemId": "biomass",
+        "rate": 50
+      }
+    ],
+    "machineId": "assembler"
+  },
+  {
+    "id": "recipe_pulse_nobelisk",
+    "outputItemId": "pulse_nobelisk",
+    "outputRate": 5,
+    "inputs": [
+      {
+        "itemId": "nobelisk",
+        "rate": 5
+      },
+      {
+        "itemId": "crystal_oscillator",
+        "rate": 1
+      }
+    ],
+    "machineId": "assembler"
+  },
+  {
+    "id": "recipe_cluster_nobelisk",
+    "outputItemId": "cluster_nobelisk",
+    "outputRate": 2.5,
+    "inputs": [
+      {
+        "itemId": "nobelisk",
+        "rate": 7.5
+      },
+      {
+        "itemId": "smokeless_powder",
+        "rate": 10
+      }
+    ],
+    "machineId": "assembler"
+  },
+  {
+    "id": "recipe_nuke_nobelisk",
+    "outputItemId": "nuke_nobelisk",
+    "outputRate": 0.5,
+    "inputs": [
+      {
+        "itemId": "nobelisk",
+        "rate": 2.5
+      },
+      {
+        "itemId": "encased_uranium_cell",
+        "rate": 10
+      },
+      {
+        "itemId": "smokeless_powder",
+        "rate": 5
+      },
+      {
+        "itemId": "ai_limiter",
+        "rate": 3
+      }
+    ],
+    "machineId": "manufacturer"
   }
 ]
