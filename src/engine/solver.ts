@@ -120,7 +120,10 @@ export function solve(
   globalOverclock: number = 100,
   somersloopMultiplier: number = 1,
   perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean }>,
-  wholeMachineMode: boolean = false
+  wholeMachineMode: boolean = false,
+  /** Items the user already supplies (rate/min). The solver consumes these as
+   *  free sources and only produces the shortfall for each. */
+  availableInputs: Record<ItemId, number> = {}
 ): SolverNode {
   const targets: Record<ItemId, number> = typeof itemIdOrTargets === 'string'
     ? { [itemIdOrTargets]: requiredRate ?? 0 }
@@ -129,10 +132,15 @@ export function solve(
   const activeStack = new Set<ItemId>();
   let byproductPool: Record<ItemId, number> = {};
   let finalRoot: SolverNode | null = null;
+  // Supply the user provided but the plan never consumed (captured from the
+  // final pass) — routed to the AWESOME Sink so it isn't silently dropped.
+  let unusedAvailable: Record<ItemId, number> = {};
 
   // Numerical Fixed-Point Convergence (converges within 5 passes)
   for (let pass = 0; pass < 5; pass++) {
     const poolCopy = { ...byproductPool };
+    // Per-pass copy of the user's available inputs, depleted as items consume it.
+    const availCopy: Record<ItemId, number> = { ...availableInputs };
     const solvedInputs: SolverNode[] = [];
 
     for (const [targetId, targetRate] of Object.entries(targets)) {
@@ -147,7 +155,17 @@ export function solve(
         try {
           const recipe = getRecipeForItem(currentId, recipeSelections);
           if (!recipe) {
-            throw new Error(`No recipe found for item: ${items[currentId]?.name || currentId}`);
+            // Foraged / collected items (Leaves, Mycelia, Wood, Power Slugs, …) have
+            // no production recipe. Treat them as a raw-input boundary instead of
+            // failing the whole plan — they surface in the Raw Inputs summary.
+            return {
+              itemId: currentId,
+              recipeId: `raw_${currentId}`,
+              rate,
+              machines: 0,
+              machineId: 'raw_input',
+              inputs: [],
+            };
           }
 
           let outputRate = recipe.outputRate;
@@ -192,6 +210,8 @@ export function solve(
             poolCopy[currentId] -= reusedFromPool;
           }
 
+          // User-supplied "available inputs" are consumed at the demand point
+          // (see solveDemand), so this node only ever produces what's asked of it.
           const remainingRate = rate - reusedFromPool;
           const exactMachineCount = remainingRate / outputRate;
 
@@ -232,7 +252,10 @@ export function solve(
             const machineInputRate = input.rate * (nodeOverclock / 100);
             const requiredInputRate = machineInputRate * inputScale;
             if (requiredInputRate > 0.001) {
-              nodeInputs.push(solveNode(input.itemId, requiredInputRate));
+              // solveDemand splits the input into a user-supplied "Imported X"
+              // source (if any) plus the produced remainder — both as direct
+              // children, so the import bubble wires straight to this machine.
+              nodeInputs.push(...solveDemand(input.itemId, requiredInputRate));
             }
           }
 
@@ -270,8 +293,36 @@ export function solve(
         }
       }
 
-      solvedInputs.push(solveNode(targetId, targetRate));
+      // Meet `rate` demand for an item: consume user-supplied "available inputs"
+      // first (emitted as an Imported source node that wires to the consumer),
+      // then produce only the shortfall.
+      function solveDemand(itemId: ItemId, rate: number): SolverNode[] {
+        const out: SolverNode[] = [];
+        let supplied = 0;
+        if (availCopy[itemId] > 0) {
+          supplied = Math.min(rate, availCopy[itemId]);
+          availCopy[itemId] -= supplied;
+        }
+        if (supplied > 0.001) {
+          out.push({
+            itemId,
+            recipeId: 'supplied_input',
+            rate: supplied,
+            machines: 0,
+            machineId: 'supplied_input',
+            inputs: [],
+          });
+        }
+        const toProduce = rate - supplied;
+        if (toProduce > 0.001) out.push(solveNode(itemId, toProduce));
+        return out;
+      }
+
+      solvedInputs.push(...solveDemand(targetId, targetRate));
     }
+
+    // Whatever supply remains after this pass consumed what it needed.
+    unusedAvailable = { ...availCopy };
 
     // Recalculate byproduct pool from output results
     const newByproducts: Record<ItemId, number> = {};
@@ -350,8 +401,24 @@ export function solve(
       }
     }
 
-    if (excessByproducts.length > 0) {
-      const sinkInputs = excessByproducts.map(ep => ({
+    // Unused user supply → its own "Imported X" source feeding the sink, so the
+    // player sees exactly which provided item went unused (not silently dropped).
+    const unusedInputSinks: SolverNode[] = [];
+    for (const [itemId, rate] of Object.entries(unusedAvailable)) {
+      if (rate > 0.01) {
+        unusedInputSinks.push({
+          itemId,
+          recipeId: 'supplied_input',
+          rate,
+          machines: 0,
+          machineId: 'supplied_input',
+          inputs: [],
+        });
+      }
+    }
+
+    if (excessByproducts.length > 0 || unusedInputSinks.length > 0) {
+      const sinkInputs: SolverNode[] = excessByproducts.map(ep => ({
         itemId: ep.itemId,
         recipeId: `sink_${ep.itemId}`,
         rate: ep.rate,
@@ -359,8 +426,9 @@ export function solve(
         machineId: 'awesome_sink',
         inputs: [],
       }));
+      const allSinkInputs = [...sinkInputs, ...unusedInputSinks];
 
-      const sinkTotalRate = excessByproducts.reduce((acc, ep) => acc + ep.rate, 0);
+      const sinkTotalRate = allSinkInputs.reduce((acc, s) => acc + s.rate, 0);
       finalRoot.inputs.push({
         itemId: 'awesome_sink',
         recipeId: 'recipe_awesome_sink',
@@ -369,7 +437,7 @@ export function solve(
         // sinks, never a confusing fraction — 1 sink for any normal overflow.
         machines: Math.max(1, Math.ceil(sinkTotalRate / 780)),
         machineId: 'awesome_sink',
-        inputs: sinkInputs,
+        inputs: allSinkInputs,
       });
     }
   }
@@ -427,7 +495,7 @@ export function calculateSummary(rootNode: SolverNode): SummaryData {
     if (node.overflowRate && node.overflowRate > 0.001) {
       overflowItems[node.itemId] = (overflowItems[node.itemId] || 0) + node.overflowRate;
     }
-    if (node.machineId !== 'planned_outputs' && node.machineId !== 'byproduct_reused') {
+    if (node.machineId !== 'planned_outputs' && node.machineId !== 'byproduct_reused' && node.machineId !== 'supplied_input' && node.machineId !== 'raw_input') {
       const machineInfo = machines[node.machineId] || { name: node.machineId, powerUsage: 0 };
       machineCounts[node.machineId] = (machineCounts[node.machineId] || 0) + node.machines;
       
@@ -469,7 +537,7 @@ export function calculateSummary(rootNode: SolverNode): SummaryData {
     }
 
     if (node.inputs.length === 0) {
-      if (node.machineId !== 'planned_outputs' && node.machineId !== 'byproduct_reused') {
+      if (node.machineId !== 'planned_outputs' && node.machineId !== 'byproduct_reused' && node.machineId !== 'supplied_input') {
         rawInputs[node.itemId] = (rawInputs[node.itemId] || 0) + node.rate;
       }
     } else {

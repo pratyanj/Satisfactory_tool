@@ -43,6 +43,46 @@ export const MachineNode = React.memo(function MachineNode({ id, data, selected 
   const inputDetails = (data.inputDetails as any[]) || [];
   const outputRatePerMachine = data.outputRatePerMachine as number || 0;
 
+  // Imported (user-supplied) and raw foraged inputs render as a SOURCE bubble
+  // (mirrors the product-output bubble) so they read as an entry point, not a
+  // production machine — and wire straight into the consumer.
+  if (data.machineId === 'supplied_input' || data.machineId === 'raw_input') {
+    const rate = data.rate as number;
+    const itemName = data.item as string;
+    const itemImageUrl = data.itemImageUrl as string;
+    const isImport = data.machineId === 'supplied_input';
+    const accent = isImport ? '#2dd4bf' : '#8b9099';
+    const accentRgb = isImport ? '45,212,191' : '139,144,153';
+    return (
+      <div className="relative group flex flex-col items-center justify-center p-2">
+        <div
+          className="w-24 h-24 rounded-full border-2 flex items-center justify-center hover:scale-110 transition-all duration-300 relative"
+          style={{
+            background: 'radial-gradient(circle, #252830 0%, #0f1013 100%)',
+            borderColor: `rgba(${accentRgb},0.55)`,
+            boxShadow: `0 0 20px rgba(${accentRgb},0.3)`,
+          }}
+        >
+          <div className="absolute inset-0 rounded-full border border-dashed animate-[spin_20s_linear_infinite]" style={{ borderColor: `rgba(${accentRgb},0.25)` }} />
+          {itemImageUrl && (
+            <AppImage idKey={data.itemId as string} fallbackUrl={itemImageUrl} className="w-[70%] h-[70%] object-contain filter drop-shadow(0 8px 12px rgba(0,0,0,0.7))" alt={itemName} />
+          )}
+        </div>
+        <div className="mt-3 text-center select-none font-mono text-[14px] font-bold text-white bg-[#0f1013]/90 px-3 py-1 rounded-full border border-[#23252a] shadow-[0_2px_8px_rgba(0,0,0,0.5)] tracking-wide">
+          <span className="block text-[8px] font-black tracking-[0.18em] uppercase" style={{ color: accent }}>{isImport ? 'Imported' : 'Raw Input'}</span>
+          <span style={{ color: accent }} className="font-black mr-1">{Number(rate.toFixed(2)).toString()}</span>
+          {itemName}
+        </div>
+        <Handle
+          key={`source-${isFlipped}`}
+          type="source"
+          position={isFlipped ? Position.Left : Position.Right}
+          className="w-3 h-3 bg-orange-500 border-none opacity-0 group-hover:opacity-100 transition-opacity z-30"
+        />
+      </div>
+    );
+  }
+
   if (data.machineId === 'product_output' || data.machineId === 'byproduct_output' || id.startsWith('product-output') || id.startsWith('byproduct-output')) {
     const rate = data.rate as number;
     const itemName = data.item as string;

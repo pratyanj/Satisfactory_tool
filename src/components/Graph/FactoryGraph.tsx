@@ -69,6 +69,24 @@ function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand
     const currentNodes = rfGetNodes();
     if (currentNodes.length === 0) { setIsExporting(false); return; }
 
+    // Derive output-specific filename
+    const outputNames = currentNodes
+      .filter(n => n.data?.machineId === 'product_output')
+      .map(n => n.data?.item as string)
+      .filter(Boolean);
+    const uniqueOutputs = Array.from(new Set(outputNames));
+
+    let filenameBase = 'ficsit-blueprint';
+    if (uniqueOutputs.length > 0) {
+      const cleanName = (name: string) =>
+        name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+      const slugified = uniqueOutputs.map(cleanName).join('-and-');
+      filenameBase = `ficsit-blueprint-${slugified}`;
+    }
+
     const bounds = getNodesBounds(currentNodes);
     const padding = 100;
     const innerWidth = bounds.width + padding * 2;
@@ -153,7 +171,7 @@ function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand
             style: { margin: '0', padding: '0' }
           }).then((finalDataUrl) => {
             const a = document.createElement('a');
-            a.setAttribute('download', `ficsit-blueprint.${format}`);
+            a.setAttribute('download', `${filenameBase}.${format}`);
             a.setAttribute('href', finalDataUrl);
             a.click();
             document.body.removeChild(wrapper);
@@ -161,7 +179,7 @@ function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand
           }).catch((err) => {
             console.error("Frame export failed", err);
             const a = document.createElement('a');
-            a.setAttribute('download', `factory-plan.${format}`);
+            a.setAttribute('download', `${filenameBase}-fallback.${format}`);
             a.setAttribute('href', dataUrl);
             a.click();
             document.body.removeChild(wrapper);
@@ -182,7 +200,7 @@ function TopToolbar({ nodes, setNodes, selectionMode, setSelectionMode, onExpand
         })
           .then((dataUrl2) => {
             const a = document.createElement('a');
-            a.setAttribute('download', `factory-plan-fallback.${format}`);
+            a.setAttribute('download', `${filenameBase}-fallback.${format}`);
             a.setAttribute('href', dataUrl2);
             a.click();
             setIsExporting(false);
@@ -301,7 +319,8 @@ function FactoryGraphInner({
     selectedNode.data.itemId &&
     selectedNode.data.machineId !== 'product_output' &&
     selectedNode.data.machineId !== 'planned_outputs' &&
-    selectedNode.data.machineId !== 'byproduct_reused');
+    selectedNode.data.machineId !== 'byproduct_reused' &&
+    selectedNode.data.machineId !== 'supplied_input');
 
   const itemId = selectedNode?.data?.itemId as string;
   const customConfig = perMachineSettings[itemId] || {};

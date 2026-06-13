@@ -143,30 +143,33 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       totalMachines: number;
     }>();
 
+    // User-supplied inputs consumed by a machine — rendered as their own
+    // "Imported X" source bubbles wired to the consumer (collected during walk).
+    const consumedImports: { item: string; rate: number; consumerItemId: string }[] = [];
+
     const walk = (n: SolverNode) => {
       const key = n.itemId;
-      if (key === 'planned_outputs') {
-        for (const input of n.inputs) {
-          walk(input);
-        }
+      if (key === 'awesome_sink' || n.machineId === 'awesome_sink') {
+        // Skip the sink collector — its inputs (excess + unused imports) are
+        // surfaced separately so they aren't aggregated as regular machines.
         return;
       }
-      // Excess byproducts are surfaced as their own "Byproduct: X" bubbles below,
-      // so skip the AWESOME Sink collector node and its sink inputs.
-      if (key === 'awesome_sink' || n.machineId === 'awesome_sink') return;
-
-      const existing = aggregatedNodes.get(key);
-      if (existing) {
-        existing.totalRate += n.rate;
-        existing.totalMachines += n.machines;
-      } else {
-        aggregatedNodes.set(key, {
-          node: n,
-          totalRate: n.rate,
-          totalMachines: n.machines,
-        });
+      if (key !== 'planned_outputs') {
+        const existing = aggregatedNodes.get(key);
+        if (existing) {
+          existing.totalRate += n.rate;
+          existing.totalMachines += n.machines;
+        } else {
+          aggregatedNodes.set(key, { node: n, totalRate: n.rate, totalMachines: n.machines });
+        }
       }
       for (const input of n.inputs) {
+        if (input.machineId === 'supplied_input') {
+          // Imported input → its own bubble feeding this consumer (not merged
+          // into the produced item's node).
+          consumedImports.push({ item: input.itemId, rate: input.rate, consumerItemId: n.itemId });
+          continue;
+        }
         walk(input);
       }
     };
@@ -179,14 +182,16 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       itemIdToNodeId.set(itemId, nodeId);
 
       const machineName = machines[data.node.machineId]?.name || (data.node.machineId === 'planned_outputs' ? 'Planned Outputs' : data.node.machineId);
+      const itemName = items[itemId]?.name || itemId;
+      const label =
+        data.node.machineId === 'planned_outputs' ? 'Planned Outputs'
+        : data.node.machineId === 'supplied_input' ? `Imported ${itemName}`
+        : data.node.machineId === 'raw_input' ? itemName
+        : data.node.machineId === 'byproduct_reused' ? `Recycled ${itemName}`
+        : `${machineName} x${Math.ceil(data.totalMachines * 10) / 10}`;
       nodeList.push({
         id: nodeId, type: 'machine', position: { x: 0, y: 0 },
-        data: buildNodeData(
-          data.node,
-          data.totalMachines,
-          data.totalRate,
-          data.node.machineId === 'planned_outputs' ? 'Planned Outputs' : `${machineName} x${Math.ceil(data.totalMachines * 10) / 10}`
-        ),
+        data: buildNodeData(data.node, data.totalMachines, data.totalRate, label),
       });
     });
 
@@ -205,6 +210,8 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
           walkEdges(input);
           continue;
         }
+        // Imported inputs are wired to the consumer separately (Imported bubbles).
+        if (input.machineId === 'supplied_input') continue;
 
         // The flow into a consumer is what it DEMANDS, not what the producer makes.
         // In whole-machine mode a producer over-produces; the surplus (overflowRate)
@@ -351,6 +358,25 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       }
     }
 
+    // 5b. Imported inputs the user supplied → "Imported X" source bubbles wired
+    //     straight to the machine that consumes them.
+    consumedImports.forEach((imp, i) => {
+      const consumerNodeId = itemIdToNodeId.get(imp.consumerItemId);
+      if (!consumerNodeId) return;
+      const impNodeId = `imported-${imp.item}-${i}`;
+      nodeList.push({
+        id: impNodeId, type: 'machine', position: { x: 0, y: 0 },
+        data: buildNodeData(
+          { itemId: imp.item, recipeId: 'supplied_input', rate: imp.rate, machines: 0, machineId: 'supplied_input', inputs: [] },
+          0, imp.rate, `Imported ${items[imp.item]?.name || imp.item}`
+        ),
+      });
+      edgeList.push(createEdge(
+        `e-${impNodeId}-to-${consumerNodeId}`, impNodeId, consumerNodeId,
+        getFlowLabel(imp.rate, imp.item), imp.item
+      ));
+    });
+
     // 6. AWESOME Sink — overflow / excess routed for ticket generation. Connect
     //    each surplus item's producer node into a single sink node.
     const sinkNode = rootNode.itemId === 'planned_outputs'
@@ -363,6 +389,19 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
         data: buildNodeData(sinkNode, sinkNode.machines, sinkNode.rate, `AWESOME Sink x${Math.ceil(sinkNode.machines * 10) / 10}`),
       });
       for (const sinkInput of sinkNode.inputs) {
+        // Unused user supply has no producer — render it as an Imported source.
+        if (sinkInput.machineId === 'supplied_input') {
+          const impNodeId = `imported-sink-${sinkInput.itemId}`;
+          nodeList.push({
+            id: impNodeId, type: 'machine', position: { x: 0, y: 0 },
+            data: buildNodeData(sinkInput, 0, sinkInput.rate, `Imported ${items[sinkInput.itemId]?.name || sinkInput.itemId}`),
+          });
+          edgeList.push(createEdge(
+            `e-${impNodeId}-to-sink`, impNodeId, sinkNodeId,
+            getFlowLabel(sinkInput.rate, sinkInput.itemId), sinkInput.itemId
+          ));
+          continue;
+        }
         const producerNodeId = itemIdToNodeId.get(sinkInput.itemId);
         if (producerNodeId) {
           edgeList.push(createEdge(
@@ -418,11 +457,15 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
 
     // Recycled byproduct pulled from the pool (machines: 0) — render as a single
     // source chunk so it can feed its consumer without dividing by zero machines.
-    if (node.recipeId === 'byproduct_reuse' || node.machineId === 'byproduct_reused' || node.machines <= 0) {
+    if (node.recipeId === 'byproduct_reuse' || node.machineId === 'byproduct_reused' || node.recipeId === 'supplied_input' || node.machineId === 'supplied_input' || node.machines <= 0) {
+      const itemName = items[node.itemId]?.name || node.itemId;
+      const isSupplied = node.recipeId === 'supplied_input' || node.machineId === 'supplied_input';
+      const isRaw = node.machineId === 'raw_input';
+      const chunkLabel = isSupplied ? `Imported ${itemName}` : isRaw ? itemName : `Recycled ${itemName}`;
       const nodeId = generateId();
       nodeList.push({
         id: nodeId, type: 'machine', position: { x: 0, y: 0 },
-        data: buildNodeData(node, 0, node.rate, `Recycled ${items[node.itemId]?.name || node.itemId}`),
+        data: buildNodeData(node, 0, node.rate, chunkLabel),
       });
       return [{ id: nodeId, rate: node.rate }];
     }
@@ -606,6 +649,19 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
         data: buildNodeData(sinkNode, sinkNode.machines, sinkNode.rate, `AWESOME Sink x${Math.ceil(sinkNode.machines * 10) / 10}`),
       });
       for (const sinkInput of sinkNode.inputs) {
+        // Unused user supply has no producer — render it as an Imported source.
+        if (sinkInput.machineId === 'supplied_input') {
+          const impId = generateId();
+          nodeList.push({
+            id: impId, type: 'machine', position: { x: 0, y: 0 },
+            data: buildNodeData(sinkInput, 0, sinkInput.rate, `Imported ${items[sinkInput.itemId]?.name || sinkInput.itemId}`),
+          });
+          edgeList.push(createEdge(
+            `e-${impId}-to-sink`, impId, sinkNodeId,
+            getFlowLabel(sinkInput.rate, sinkInput.itemId), sinkInput.itemId
+          ));
+          continue;
+        }
         const producers = itemProducerChunks.get(sinkInput.itemId) || [];
         if (producers.length === 0) continue;
         const perProducer = sinkInput.rate / producers.length;

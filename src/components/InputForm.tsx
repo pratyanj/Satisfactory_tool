@@ -35,7 +35,8 @@ interface InputFormProps {
     extractorTier?: string,
     overclock?: number,
     somersloopMultiplier?: number,
-    wholeMachineMode?: boolean
+    wholeMachineMode?: boolean,
+    availableInputs?: Record<string, number>
   ) => void;
   initialValues?: {
     itemId: string;
@@ -49,6 +50,7 @@ interface InputFormProps {
     overclock?: number;
     somersloopMultiplier?: number;
     wholeMachineMode?: boolean;
+    availableInputs?: Record<string, number>;
   };
 }
 
@@ -63,7 +65,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   const [targets, setTargets] = useState<TargetOutput[]>(
     initialValues?.targets || [
       {
-        itemId: initialValues?.itemId || 'copper_sheet',
+        itemId: initialValues?.itemId || 'reinforced_iron_plate',
         rate: initialValues?.rate || 120,
         mode: 'rate',
         machineCount: 1,
@@ -87,6 +89,14 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   const [somersloopMultiplier, setSomersloopMultiplier] = useState<number>(initialValues?.somersloopMultiplier ?? 1);
   const [wholeMachineMode, setWholeMachineMode] = useState<boolean>(initialValues?.wholeMachineMode ?? false);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+
+  // Items the user already has available (imports). The solver consumes these
+  // and only produces the shortfall. Stored as rows; sent as a {itemId: rate} map.
+  const [availableInputs, setAvailableInputs] = useState<{ itemId: string; rate: number }[]>(
+    () => Object.entries(initialValues?.availableInputs || {}).map(([itemId, rate]) => ({ itemId, rate }))
+  );
+  const [isInputsOpen, setIsInputsOpen] = useState((Object.keys(initialValues?.availableInputs || {}).length) > 0);
+  const [editingSupplyIndex, setEditingSupplyIndex] = useState<number | null>(null);
 
   const [recipeSelections, setRecipeSelections] = useState<RecipeSelectionMap>(initialValues?.recipeSelections || {});
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -149,12 +159,26 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
       if (initialValues.wholeMachineMode !== undefined && wholeMachineMode !== initialValues.wholeMachineMode) {
         setWholeMachineMode(initialValues.wholeMachineMode);
       }
+      // NOTE: availableInputs is intentionally NOT synced from initialValues here.
+      // It is user-driven local state pushed to the plan on Calculate; syncing it
+      // back would wipe a just-added row whenever App re-issues lastInput.
       const recipesMatch = JSON.stringify(recipeSelections) === JSON.stringify(initialValues.recipeSelections || {});
       if (!recipesMatch) {
         setRecipeSelections(initialValues.recipeSelections || {});
       }
     }
   }, [initialValues]);
+
+  // Collapse the supply rows into a {itemId: rate} map (last entry wins on dupes).
+  const buildAvailableInputsMap = (): Record<string, number> => {
+    const map: Record<string, number> = {};
+    for (const inp of availableInputs) {
+      if (inp.itemId && items[inp.itemId] && inp.rate > 0) {
+        map[inp.itemId] = (map[inp.itemId] || 0) + inp.rate;
+      }
+    }
+    return map;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,7 +194,8 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
         extractorTier,
         overclock,
         somersloopMultiplier,
-        wholeMachineMode
+        wholeMachineMode,
+        buildAvailableInputsMap()
       );
     }
   };
@@ -284,7 +309,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                     className="flex items-center gap-2 flex-1 min-w-0 group"
                     style={{ outline: 'none' }}
                   >
-                    <div className="w-6 h-6 rounded shrink-0 flex items-center justify-center" style={{ background: '#15171b', border: '1px solid #252830' }}>
+                    <div className="w-8 h-8 rounded shrink-0 flex items-center justify-center" style={{ background: '#15171b' }}>
                       {itemData?.imageUrl && (
                         <AppImage idKey={itemData.id} fallbackUrl={itemData.imageUrl} alt={itemData.name} className="w-full h-full object-contain" />
                       )}
@@ -449,6 +474,84 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
               );
             })}
           </div>
+        </div>
+
+        {/* ── Zone 1.5: Available Inputs (imports the user already has) ── */}
+        <div className="relative z-10 px-4 pb-2 flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => setIsInputsOpen(o => !o)}
+              className="flex items-center gap-1.5 text-[8px] font-mono tracking-[0.25em] uppercase transition-colors"
+              style={{ color: availableInputs.length > 0 ? '#2dd4bf' : '#555b66' }}
+            >
+              {isInputsOpen ? <ChevronDown size={9} /> : <ChevronRight size={9} />}
+              <span>Available Inputs</span>
+              {availableInputs.length > 0 && (
+                <span style={{ background: '#2dd4bf', color: '#000', fontSize: 8, fontWeight: 800, borderRadius: 2, padding: '0 4px' }}>{availableInputs.length}</span>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setIsInputsOpen(true); setAvailableInputs(prev => [...prev, { itemId: 'iron_ingot', rate: 60 }]); }}
+              className="flex items-center gap-1 text-[9px] font-mono tracking-widest uppercase text-[#2dd4bf] hover:text-[#5eead4] transition-colors"
+            >
+              <span style={{ fontSize: 13, lineHeight: 1 }}>+</span> Add Input
+            </button>
+          </div>
+
+          {isInputsOpen && (
+            <div className="flex flex-col gap-1.5 overflow-y-auto max-h-[160px] sf-tscroll">
+              {availableInputs.length === 0 ? (
+                <div className="text-[9px] font-mono text-[#555b66] leading-relaxed px-2.5 py-2 rounded" style={{ background: '#0d0f12', border: '1px solid #1e2128' }}>
+                  Declare items you already produce or import. The planner consumes them as free sources and only builds the shortfall.
+                </div>
+              ) : availableInputs.map((inp, idx) => {
+                const itemData = items[inp.itemId];
+                return (
+                  <div key={idx} className="sf-trow flex items-center gap-2 px-2.5 py-2 rounded" style={{ background: '#0d0f12', border: '1px solid #1e2128' }}>
+                    <button
+                      type="button"
+                      onClick={() => { setEditingSupplyIndex(idx); setIsModalOpen(true); }}
+                      className="flex items-center gap-2 flex-1 min-w-0 group"
+                      style={{ outline: 'none' }}
+                    >
+                      <div className="w-8 h-8 rounded shrink-0 flex items-center justify-center" style={{ background: '#15171b' }}>
+                        {itemData?.imageUrl && (
+                          <AppImage idKey={itemData.id} fallbackUrl={itemData.imageUrl} alt={itemData.name} className="w-full h-full object-contain" />
+                        )}
+                      </div>
+                      <span className="text-xs font-semibold text-[#d4d3d0] group-hover:text-white transition-colors truncate">{itemData?.name || 'Select Item'}</span>
+                      <ChevronDown size={10} className="text-[#555b66] group-hover:text-[#2dd4bf] transition-colors shrink-0 ml-auto" />
+                    </button>
+
+                    <div style={{ width: 1, height: 20, background: '#23262d', flexShrink: 0 }} />
+
+                    <input
+                      type="number" step="any" min="0.001" value={inp.rate}
+                      onChange={(e) => {
+                        const parsed = parseFloat(e.target.value);
+                        const n = [...availableInputs];
+                        n[idx].rate = isNaN(parsed) || parsed < 0 ? 0 : Math.round(parsed * 1000) / 1000;
+                        setAvailableInputs(n);
+                      }}
+                      className="w-16 text-right text-xs font-mono font-bold text-[#2dd4bf] bg-transparent border-none outline-none shrink-0"
+                    />
+                    <span className="text-[9px] text-[#555b66] font-mono shrink-0">/min</span>
+
+                    <button
+                      type="button"
+                      onClick={() => setAvailableInputs(availableInputs.filter((_, i) => i !== idx))}
+                      className="shrink-0 text-[#2e323b] hover:text-[#ef4444] transition-colors ml-1"
+                      title="Remove"
+                    >
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* ── Zone 2: Hardware Settings ── */}
@@ -683,9 +786,13 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
 
       <ItemModal
         isOpen={isModalOpen}
-        onClose={() => { setIsModalOpen(false); setEditingTargetIndex(null); }}
+        onClose={() => { setIsModalOpen(false); setEditingTargetIndex(null); setEditingSupplyIndex(null); }}
         onSelect={(id) => {
-          if (editingTargetIndex !== null) {
+          if (editingSupplyIndex !== null) {
+            const n = [...availableInputs];
+            n[editingSupplyIndex].itemId = id;
+            setAvailableInputs(n);
+          } else if (editingTargetIndex !== null) {
             const newTargets = [...targets];
             newTargets[editingTargetIndex].itemId = id;
             if (newTargets[editingTargetIndex].mode === 'machine') {

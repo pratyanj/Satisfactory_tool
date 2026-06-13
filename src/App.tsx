@@ -150,19 +150,21 @@ export default function App() {
     somersloopMultiplier?: number;
     perMachineSettings?: Record<string, { clockSpeed: number; somerslooped: boolean }>;
     wholeMachineMode?: boolean;
+    availableInputs?: Record<string, number>;
   }>({
-    itemId: 'copper_sheet',
+    itemId: 'reinforced_iron_plate',
     rate: 120,
     minerId: 'miner_mk1',
     beltId: 'mk1',
     recipeSelections: {},
-    targets: [{ itemId: 'copper_sheet', rate: 120, mode: 'rate' as const }],
+    targets: [{ itemId: 'reinforced_iron_plate', rate: 120, mode: 'rate' as const }],
     pipeTier: 'mk1',
     extractorTier: 'mk1',
     overclock: 100,
     somersloopMultiplier: 1,
     perMachineSettings: {},
     wholeMachineMode: false,
+    availableInputs: {},
   });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
   const [mainTab, setMainTab] = useState<MainTab>('network_graph');
@@ -209,6 +211,7 @@ export default function App() {
     // Only push to history if pathname is different to avoid duplicate history states
     if (window.location.pathname !== path) {
       window.history.pushState(null, '', path);
+      window.dispatchEvent(new PopStateEvent('popstate'));
     }
     sessionStorage.setItem('sf_tab', top);
     sessionStorage.setItem('sf_sub', sub);
@@ -218,9 +221,14 @@ export default function App() {
   }, []);
 
   const handleTopLevelTab = useCallback((tab: TopLevelTab) => {
-    setTopLevelTab(tab);
-    updatePath(tab, mainTab, tab === 'codex' ? selectedCodexItemId : null);
-  }, [mainTab, selectedCodexItemId, updatePath]);
+    if (tab === 'codex' && topLevelTab === 'codex') {
+      setSelectedCodexItemId(null);
+      updatePath(tab, mainTab, null);
+    } else {
+      setTopLevelTab(tab);
+      updatePath(tab, mainTab, tab === 'codex' ? selectedCodexItemId : null);
+    }
+  }, [topLevelTab, mainTab, selectedCodexItemId, updatePath]);
 
   const handleMainTab = useCallback((tab: MainTab) => {
     setMainTab(tab);
@@ -404,7 +412,8 @@ export default function App() {
     overclock: number = 100,
     somersloopMultiplier: number = 1,
     perMachineSettings?: Record<string, { clockSpeed: number; somerslooped: boolean }>,
-    wholeMachineMode: boolean = false
+    wholeMachineMode: boolean = false,
+    availableInputs: Record<string, number> = {}
   ) => {
     const targetsToUse = targets || [{
       itemId,
@@ -432,6 +441,7 @@ export default function App() {
       somersloopMultiplier,
       perMachineSettings: perMachineSettings || lastInput.perMachineSettings || {},
       wholeMachineMode,
+      availableInputs,
     });
     try {
       setError(null);
@@ -454,7 +464,8 @@ export default function App() {
         overclock,
         somersloopMultiplier,
         perMachineSettings || lastInput.perMachineSettings || {},
-        wholeMachineMode
+        wholeMachineMode,
+        availableInputs
       );
       const newSummary = calculateSummary(solvedRoot);
       const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(solvedRoot, mode, beltId, pipeTier);
@@ -502,9 +513,10 @@ export default function App() {
     extractorTier: string = 'mk1',
     overclock: number = 100,
     somersloopMultiplier: number = 1,
-    wholeMachineMode: boolean = false
+    wholeMachineMode: boolean = false,
+    availableInputs: Record<string, number> = {}
   ) => {
-    calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode, targets, pipeTier, extractorTier, overclock, somersloopMultiplier, lastInput.perMachineSettings, wholeMachineMode);
+    calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode, targets, pipeTier, extractorTier, overclock, somersloopMultiplier, lastInput.perMachineSettings, wholeMachineMode, availableInputs);
   };
 
   const handleResolveAction = useCallback((actionType: string, payload: any) => {
@@ -526,11 +538,12 @@ export default function App() {
   const targetsSignature = JSON.stringify(lastInput.targets);
   const recipeSelectionSignature = JSON.stringify(lastInput.recipeSelections);
   const perMachineSettingsSignature = JSON.stringify(lastInput.perMachineSettings);
+  const availableInputsSignature = JSON.stringify(lastInput.availableInputs);
 
   // Step 1: Immediately show the spinner when inputs or mode change
   useEffect(() => {
     setIsRecalculating(true);
-  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, lastInput.wholeMachineMode, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature]);
+  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, lastInput.wholeMachineMode, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature, availableInputsSignature]);
 
   // Step 2: Defer heavy graph calculations to the next tick (80ms), allowing the spinner to render and animate smoothly first!
   useEffect(() => {
@@ -549,12 +562,13 @@ export default function App() {
         lastInput.overclock ?? 100,
         lastInput.somersloopMultiplier ?? 1,
         lastInput.perMachineSettings || {},
-        lastInput.wholeMachineMode ?? false
+        lastInput.wholeMachineMode ?? false,
+        lastInput.availableInputs || {}
       );
       setIsRecalculating(false);
     }, 80);
     return () => clearTimeout(timer);
-  }, [isRecalculating, layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature]);
+  }, [isRecalculating, layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature, availableInputsSignature]);
 
 
   const renderTabContent = () => {
