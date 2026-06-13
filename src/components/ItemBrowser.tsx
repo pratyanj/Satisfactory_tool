@@ -10,8 +10,6 @@ const CATEGORY_ORDER = [
   'Ammos', 'Consumed', 'Waste', 'Special',
 ];
 
-const PAGE_SIZE = 60;
-
 interface ItemBrowserProps {
   /** Back to the Codex hub. */
   onBack: () => void;
@@ -23,6 +21,7 @@ export function ItemBrowser({ onBack, onSelect }: ItemBrowserProps) {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number>(20);
 
   const allItems = useMemo(() => Object.values(items).sort((a, b) => a.name.localeCompare(b.name)), []);
 
@@ -43,8 +42,8 @@ export function ItemBrowser({ onBack, onSelect }: ItemBrowserProps) {
   // Reset to the first page whenever the filter changes.
   useEffect(() => { setPage(1); }, [search, selectedCategory]);
 
-  const pageCount = Math.ceil(filtered.length / PAGE_SIZE);
-  const pageItems = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const pageCount = Math.ceil(filtered.length / pageSize);
+  const pageItems = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <div className="ib-root">
@@ -67,6 +66,23 @@ export function ItemBrowser({ onBack, onSelect }: ItemBrowserProps) {
           <input className="ib-search" placeholder="Search for an item…" value={search} onChange={e => setSearch(e.target.value)} />
           {search && <button className="ib-search-clear" onClick={() => setSearch('')}>✕</button>}
         </div>
+
+        <div className="ib-pagesize-selector">
+          <span className="ib-pagesize-label">Show:</span>
+          {[20, 40, 60].map(size => (
+            <button
+              key={size}
+              className={`ib-pagesize-btn ${pageSize === size ? 'ib-pagesize-btn--active' : ''}`}
+              onClick={() => {
+                setPageSize(size);
+                setPage(1);
+              }}
+            >
+              {size}
+            </button>
+          ))}
+        </div>
+
         <span className="ib-count">{filtered.length} items</span>
       </div>
 

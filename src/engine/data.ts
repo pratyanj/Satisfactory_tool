@@ -86,6 +86,37 @@ export const recipes = recipesData as Recipe[];
 export const belts = beltsData as Record<BeltId, Belt>;
 export const buildings = buildingsData as unknown as Record<string, Building>;
 
+/**
+ * Maps a production/extraction building (by its game className) to the recipe
+ * `machineId` it runs, so the building codex can list every recipe it can make.
+ * Returns null for passive structures (walls, foundations, …). All miner tiers
+ * share the `miner_mk1` ore recipes (the solver scales output by tier).
+ */
+const BUILDING_CLASS_TO_MACHINE: Record<string, MachineId> = {
+  Desc_ConstructorMk1_C: 'constructor',
+  Desc_AssemblerMk1_C: 'assembler',
+  Desc_ManufacturerMk1_C: 'manufacturer',
+  Desc_SmelterMk1_C: 'smelter',
+  Desc_FoundryMk1_C: 'foundry',
+  Desc_OilRefinery_C: 'refinery',
+  Desc_Packager_C: 'packager',
+  Desc_Blender_C: 'blender',
+  Desc_HadronCollider_C: 'particle_accelerator',
+  Desc_QuantumEncoder_C: 'quantum_encoder',
+  Desc_Converter_C: 'converter',
+  Desc_MinerMk1_C: 'miner_mk1',
+  Desc_MinerMk2_C: 'miner_mk1',
+  Desc_MinerMk3_C: 'miner_mk1',
+  Desc_WaterPump_C: 'water_extractor',
+  Desc_OilPump_C: 'oil_extractor',
+  Desc_FrackingExtractor_C: 'resource_well_pressurizer',
+};
+
+/** The recipe machineId a building runs, or null if it produces nothing. */
+export function getBuildingMachineId(building: Building): MachineId | null {
+  return BUILDING_CLASS_TO_MACHINE[building.className] ?? null;
+}
+
 /** A milestone unlock target — links to a building or item in the codex. */
 export interface TierUnlock {
   type: 'building' | 'item';

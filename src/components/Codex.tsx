@@ -51,7 +51,10 @@ export function Codex() {
   const nav = useCallback((section: Section, id: string | null = null) => {
     const next: CodexRoute = { section, id };
     const path = routeToPath(next);
-    if (window.location.pathname !== path) window.history.pushState(null, '', path);
+    if (window.location.pathname !== path) {
+      window.history.pushState(null, '', path);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
     setRoute(next);
   }, []);
 
@@ -117,22 +120,22 @@ function CodexHub({ counts, onOpen }: { counts: Record<string, number>; onOpen: 
   const cards: HubCard[] = [
     {
       id: 'items', name: 'Items', count: counts.items, color: '#34d399',
-      desc: 'Browse all producible items, resources, and materials.',
+      desc: 'Examine components, raw elements, and custom materials needed for factory assembly.',
       icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.3 7 12 12 20.7 7" /><line x1="12" y1="22" x2="12" y2="12" /></svg>,
     },
     {
       id: 'buildings', name: 'Buildings', count: counts.buildings, color: '#60a5fa',
-      desc: 'Explore production buildings, logistics, extractors, and power generators.',
+      desc: 'Review production machinery, power systems, and logistical frameworks.',
       icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="3" width="8" height="18" rx="1" /><rect x="13" y="8" width="8" height="13" rx="1" /><line x1="6" y1="7" x2="8" y2="7" /><line x1="6" y1="11" x2="8" y2="11" /><line x1="16" y1="12" x2="18" y2="12" /></svg>,
     },
     {
       id: 'recipes', name: 'Recipes', count: counts.recipes, color: '#f48721',
-      desc: 'View all recipes including default, alternate, and MAM research recipes.',
+      desc: 'Analyze manufacturing recipes, standard processes, and alternate MAM research schematics.',
       icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 0 0 2-2V2" /><line x1="5" y1="11" x2="5" y2="22" /><path d="M17 2v20M17 2c-2 0-3 2-3 5s1 5 3 5" /></svg>,
     },
     {
       id: 'tiers', name: 'Tiers', count: counts.tiers, color: '#a78bfa',
-      desc: 'Walk the HUB progression and see what each tier and milestone unlocks.',
+      desc: 'Track project milestones and progression tiers to see unlocked technologies.',
       icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="6" cy="6" r="2.5" /><circle cx="6" cy="18" r="2.5" /><circle cx="18" cy="12" r="2.5" /><path d="M8.5 6H13a2 2 0 0 1 2 2v2.5M8.5 18H13a2 2 0 0 0 2-2v-2.5" /></svg>,
     },
   ];
@@ -140,7 +143,7 @@ function CodexHub({ counts, onOpen }: { counts: Record<string, number>; onOpen: 
   return (
     <div className="cdx-hub">
       <h1 className="cdx-hub-title">Codex</h1>
-      <p className="cdx-hub-sub">A complete reference of all items, buildings, and recipes in Satisfactory.</p>
+      <p className="cdx-hub-sub">Your comprehensive directory for FICSIT items, schematics, and manufacturing structures.</p>
       <div className="cdx-hub-cards">
         {cards.map(c => (
           <button key={c.id} className="cdx-hub-card" onClick={() => onOpen(c.id)} style={{ '--cdx-accent': c.color } as React.CSSProperties}>

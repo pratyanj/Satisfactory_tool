@@ -1,6 +1,7 @@
 import React from 'react';
-import { buildings, items } from '../engine/data';
+import { buildings, items, recipes, getBuildingMachineId } from '../engine/data';
 import { AppImage } from './AppImage';
+import { RecipeTable } from './ItemDetail';
 
 interface Props {
   buildingId: string;
@@ -11,6 +12,10 @@ interface Props {
 export function BuildingDetail({ buildingId, onBack, onNavigateItem }: Props) {
   const b = buildings[buildingId];
   if (!b) return null;
+
+  // Every recipe this machine can run, so users see its full production menu.
+  const machineId = getBuildingMachineId(b);
+  const machineRecipes = machineId ? recipes.filter(r => r.machineId === machineId) : [];
 
   return (
     <div className="id-root">
@@ -121,6 +126,17 @@ export function BuildingDetail({ buildingId, onBack, onNavigateItem }: Props) {
             </div>
           )}
         </div>
+
+        {/* Full-width: every recipe this machine can produce */}
+        {machineRecipes.length > 0 && (
+          <div className="sf-recipes-section bld-recipes-full">
+            <div className="sf-recipes-sec-header">
+              <h3 className="sf-recipes-sec-title">PRODUCIBLE RECIPES</h3>
+              <span className="sf-recipes-sec-count">{machineRecipes.length}</span>
+            </div>
+            <RecipeTable recipes={machineRecipes} highlightId="" onNavigate={onNavigateItem} />
+          </div>
+        )}
       </div>
     </div>
   );

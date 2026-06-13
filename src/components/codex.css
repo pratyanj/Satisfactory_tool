@@ -125,6 +125,21 @@
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 10px;
 }
+
+/* Full-width "Producible Recipes" block spans both columns of the id-body grid. */
+.bld-recipes-full {
+  grid-column: 1 / -1;
+}
+.sf-recipes-sec-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #f48721;
+  background: rgba(244, 135, 33, 0.12);
+  border: 1px solid rgba(244, 135, 33, 0.3);
+  border-radius: 6px;
+  padding: 1px 8px;
+}
 .bld-cost-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
