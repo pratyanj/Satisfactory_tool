@@ -76,7 +76,7 @@ const RESOURCE_IMAGE_KEY: Record<string, string> = {
   'Nitrogen Gas': 'nitrogen_gas',
   'Water':        'water',
   'Caterium Ore': 'caterium_ore',
-  'Geyser':       '',
+  'Geyser':       'generator_geo_thermal',
 };
 
 const PURITIES: Purity[] = ['Impure', 'Normal', 'Pure'];
