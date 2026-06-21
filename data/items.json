@@ -969,6 +969,12 @@
     "category": "Special",
     "sinkPoints": 0
   },
+  "zipline": {
+    "id": "zipline",
+    "name": "Zipline",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Zipline.png",
+    "category": "Equipment"
+  },
   "smart_plating": {
     "id": "smart_plating",
     "name": "Smart Plating",

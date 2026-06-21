@@ -1,0 +1,942 @@
+[
+  {
+    "id": "factory_cart",
+    "name": "FICSIT Factory Cart™",
+    "category": "FICSIT Specials",
+    "cost": 10,
+    "description": "Fast, compact personal utility vehicle. Perfect for traversing factory floors.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/FICSIT_Factory_Cart.png",
+    "unlockType": "other",
+    "unlockId": "factory_cart"
+  },
+  {
+    "id": "cyber_wagon",
+    "name": "Cyber Wagon",
+    "category": "FICSIT Specials",
+    "cost": 20,
+    "description": "Absolutely indestructible, blocky experimental buggy. Unlocked by sinking a FICSIT Coupon.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Cyber_Wagon.png",
+    "unlockType": "other",
+    "unlockId": "cyber_wagon"
+  },
+  {
+    "id": "golden_cart",
+    "name": "Golden FICSIT Factory Cart™",
+    "category": "FICSIT Specials",
+    "cost": 50,
+    "description": "Shining golden version of the Factory Cart, unlocked by sinking an Employee of the Planet Cup.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Golden_FICSIT_Factory_Cart.png",
+    "unlockType": "other",
+    "unlockId": "golden_cart"
+  },
+  {
+    "id": "boombox",
+    "name": "Boombox",
+    "category": "FICSIT Specials",
+    "cost": 3,
+    "description": "Portable cassette tape player playing cool ambient FICSIT beats to boost pioneer morale.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Boombox.png",
+    "unlockType": "item",
+    "unlockId": "boombox"
+  },
+  {
+    "id": "hard_drive",
+    "name": "Hard Drive",
+    "category": "FICSIT Specials",
+    "cost": 100,
+    "description": "An extra hard drive containing alternate recipes, purchasable in Tier 8.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Hard_Drive.png",
+    "unlockType": "item",
+    "unlockId": "hard_drive"
+  },
+  {
+    "id": "statue_hog",
+    "name": "Silver Hog Statue",
+    "category": "FICSIT Specials",
+    "cost": 50,
+    "description": "Commemorative silver hog statue for outstanding field work.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Silver_Hog_Statue.png",
+    "unlockType": "other",
+    "unlockId": "statue_hog"
+  },
+  {
+    "id": "statue_doggo",
+    "name": "Lizard Doggo Statue",
+    "category": "FICSIT Specials",
+    "cost": 100,
+    "description": "A statue commemorating the cute native Lizard Doggo.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Lizard_Doggo_Statue.png",
+    "unlockType": "other",
+    "unlockId": "statue_doggo"
+  },
+  {
+    "id": "statue_creature",
+    "name": "Confusing Creature Statue",
+    "category": "FICSIT Specials",
+    "cost": 200,
+    "description": "A statue of a confusing creature found on Massage-2(AB)B.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Confusing_Creature_Statue.png",
+    "unlockType": "other",
+    "unlockId": "statue_creature"
+  },
+  {
+    "id": "statue_nut",
+    "name": "Golden Nut Statue",
+    "category": "FICSIT Specials",
+    "cost": 1000,
+    "description": "The ultimate FICSIT prestige statue. Cost: 1000 FICSIT Coupons.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Golden_Nut_Statue.png",
+    "unlockType": "other",
+    "unlockId": "statue_nut"
+  },
+  {
+    "id": "conveyor_wall_mount",
+    "name": "Conveyor Wall Mount",
+    "category": "Management",
+    "cost": 1,
+    "description": "Supports routing conveyor belts flat against walls, freeing up floor space.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Conveyor_Wall_Mount.png",
+    "unlockType": "building",
+    "unlockId": "conveyor_wall_mount"
+  },
+  {
+    "id": "conveyor_ceiling_mount",
+    "name": "Conveyor Ceiling Mount",
+    "category": "Management",
+    "cost": 1,
+    "description": "Supports routing conveyor belts flat against ceilings.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Conveyor_Ceiling_Mount.png",
+    "unlockType": "building",
+    "unlockId": "conveyor_ceiling_attachment"
+  },
+  {
+    "id": "conveyor_wall_hole",
+    "name": "Conveyor Wall Hole",
+    "category": "Management",
+    "cost": 1,
+    "description": "Create pass-through ports in walls for conveyor belts.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Conveyor_Wall_Hole.png",
+    "unlockType": "building",
+    "unlockId": "conveyor_wall_hole"
+  },
+  {
+    "id": "conveyor_lift_floor_hole",
+    "name": "Conveyor Lift Floor Hole",
+    "category": "Management",
+    "cost": 1,
+    "description": "Create pass-through ports in floors for conveyor lifts.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Conveyor_Lift_Floor_Hole.png",
+    "unlockType": "building",
+    "unlockId": "foundation_passthrough_lift"
+  },
+  {
+    "id": "conveyor_monitor",
+    "name": "Conveyor Throughput Monitor",
+    "category": "Management",
+    "cost": 1,
+    "description": "Measures actual throughput speed on conveyor belts.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Conveyor_Throughput_Monitor.png",
+    "unlockType": "building",
+    "unlockId": "conveyor_monitor"
+  },
+  {
+    "id": "wall_power_outlet_mk1",
+    "name": "Wall Power Outlet Mk.1",
+    "category": "Management",
+    "cost": 3,
+    "description": "Allows running electrical wiring directly flat along wall surfaces.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Wall_Power_Outlet_Mk.1.png",
+    "unlockType": "building",
+    "unlockId": "power_pole_wall"
+  },
+  {
+    "id": "wall_power_outlet_mk2",
+    "name": "Wall Power Outlet Mk.2",
+    "category": "Management",
+    "cost": 4,
+    "description": "Upgraded wall outlet for more electrical connections.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Wall_Power_Outlet_Mk.2.png",
+    "unlockType": "building",
+    "unlockId": "power_pole_wall_mk2"
+  },
+  {
+    "id": "wall_power_outlet_mk3",
+    "name": "Wall Power Outlet Mk.3",
+    "category": "Management",
+    "cost": 5,
+    "description": "High capacity wall outlet supporting maximum connections.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Wall_Power_Outlet_Mk.3.png",
+    "unlockType": "building",
+    "unlockId": "power_pole_wall_mk3"
+  },
+  {
+    "id": "pipeline_wall_attachment",
+    "name": "Pipeline Wall Attachments",
+    "category": "Management",
+    "cost": 2,
+    "description": "Supports routing pipelines along walls and passing them through walls.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Pipeline_Wall_Attachments.png",
+    "unlockType": "building",
+    "unlockId": "pipeline_support_wall"
+  },
+  {
+    "id": "pipeline_floor_hole",
+    "name": "Pipeline Floor Hole",
+    "category": "Management",
+    "cost": 1,
+    "description": "Floor pass-through for routing pipelines through foundations.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Pipeline_Floor_Hole.png",
+    "unlockType": "building",
+    "unlockId": "foundation_passthrough_pipe"
+  },
+  {
+    "id": "hypertube_wall_attachment",
+    "name": "Hypertube Wall Attachments",
+    "category": "Management",
+    "cost": 2,
+    "description": "Supports routing hypertubes along walls and passing them through walls.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Hypertube_Wall_Attachments.png",
+    "unlockType": "building",
+    "unlockId": "hyper_pole_wall"
+  },
+  {
+    "id": "hypertube_floor_hole",
+    "name": "Hypertube Floor Hole",
+    "category": "Management",
+    "cost": 1,
+    "description": "Floor pass-through for routing hypertubes through foundations.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Hypertube_Floor_Hole.png",
+    "unlockType": "building",
+    "unlockId": "foundation_passthrough_hypertube"
+  },
+  {
+    "id": "label_sign_bundle",
+    "name": "Label Sign Bundle",
+    "category": "Organization",
+    "cost": 2,
+    "description": "Pack of small signs for labeling storage boxes and walls.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Label_Sign_Bundle.png",
+    "unlockType": "building",
+    "unlockId": "standalone_widget_sign_small"
+  },
+  {
+    "id": "display_sign_bundle",
+    "name": "Display Sign Bundle",
+    "category": "Organization",
+    "cost": 5,
+    "description": "Pack of medium signs for labeling production areas and walls.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Display_Sign_Bundle.png",
+    "unlockType": "building",
+    "unlockId": "standalone_widget_sign_medium"
+  },
+  {
+    "id": "billboard_set",
+    "name": "Billboard Set",
+    "category": "Organization",
+    "cost": 10,
+    "description": "Pack of large billboards for factory signage.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Billboard_Set.png",
+    "unlockType": "building",
+    "unlockId": "standalone_widget_sign_huge"
+  },
+  {
+    "id": "street_light",
+    "name": "Street Light",
+    "category": "Organization",
+    "cost": 1,
+    "description": "Standalone light pole for illuminating outdoor paths and roads.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Street_Light.png",
+    "unlockType": "building",
+    "unlockId": "street_light"
+  },
+  {
+    "id": "flood_lights",
+    "name": "Flood Lights",
+    "category": "Organization",
+    "cost": 5,
+    "description": "High-intensity floodlight towers and wall mounts.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Flood_Lights.png",
+    "unlockType": "building",
+    "unlockId": "floodlight_pole"
+  },
+  {
+    "id": "indoor_lighting",
+    "name": "Indoor Lighting",
+    "category": "Organization",
+    "cost": 3,
+    "description": "Ceiling lights for factory interiors.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Indoor_Lighting.png",
+    "unlockType": "building",
+    "unlockId": "ceiling_light"
+  },
+  {
+    "id": "lights_control_panel",
+    "name": "Lights Control Panel",
+    "category": "Organization",
+    "cost": 2,
+    "description": "Central control console to adjust factory light colors and brightness.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Lights_Control_Panel.png",
+    "unlockType": "building",
+    "unlockId": "lights_control_panel"
+  },
+  {
+    "id": "medical_box_skin",
+    "name": "Medical Storage Box Skin",
+    "category": "Organization",
+    "cost": 1,
+    "description": "Decorative medical skin for personal storage boxes.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Medical_Box_Skin.png",
+    "unlockType": "building",
+    "unlockId": "storage_medkit"
+  },
+  {
+    "id": "hazard_box_skin",
+    "name": "Hazard Storage Box Skin",
+    "category": "Organization",
+    "cost": 1,
+    "description": "Decorative hazard skin for personal storage boxes.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Hazard_Box_Skin.png",
+    "unlockType": "building",
+    "unlockId": "storage_hazard"
+  },
+  {
+    "id": "shelf_unit",
+    "name": "Basic Shelf Unit",
+    "category": "Organization",
+    "cost": 1,
+    "description": "Basic shelving unit for organizing parts and aesthetics.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Shelf_Unit.png",
+    "unlockType": "building",
+    "unlockId": "stackable_shelf"
+  },
+  {
+    "id": "finish_unpainted",
+    "name": "Unpainted Paint Finish",
+    "category": "Customizer",
+    "cost": 3,
+    "description": "Gives structures a raw metal or concrete unpainted finish.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Unpainted_Finish.png",
+    "unlockType": "other",
+    "unlockId": "finish_unpainted"
+  },
+  {
+    "id": "finish_copper",
+    "name": "Copper Paint Finish",
+    "category": "Customizer",
+    "cost": 5,
+    "description": "Gives structures a copper metallic finish.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Copper_Paint_Finish.png",
+    "unlockType": "other",
+    "unlockId": "finish_copper"
+  },
+  {
+    "id": "finish_chrome",
+    "name": "Chrome Paint Finish",
+    "category": "Customizer",
+    "cost": 5,
+    "description": "Gives structures a polished chrome metallic finish.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Chrome_Paint_Finish.png",
+    "unlockType": "other",
+    "unlockId": "finish_chrome"
+  },
+  {
+    "id": "finish_steel",
+    "name": "Carbon Steel Finish",
+    "category": "Customizer",
+    "cost": 8,
+    "description": "Gives structures a dark carbon steel metallic finish.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Carbon_Steel_Finish.png",
+    "unlockType": "other",
+    "unlockId": "finish_steel"
+  },
+  {
+    "id": "finish_caterium",
+    "name": "Caterium Paint Finish",
+    "category": "Customizer",
+    "cost": 10,
+    "description": "Gives structures a shiny gold Caterium paint finish.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Caterium_Paint_Finish.png",
+    "unlockType": "other",
+    "unlockId": "finish_caterium"
+  },
+  {
+    "id": "material_coated_concrete",
+    "name": "Coated Concrete Foundation Material",
+    "category": "Customizer",
+    "cost": 6,
+    "description": "Customizer material for foundations giving them a shiny coated concrete look.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Coated_Concrete_Foundation_Material.png",
+    "unlockType": "other",
+    "unlockId": "material_coated_concrete"
+  },
+  {
+    "id": "material_concrete",
+    "name": "Concrete Foundation Material",
+    "category": "Customizer",
+    "cost": 3,
+    "description": "Customizer material for foundations giving them a solid concrete look.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Concrete_Foundation_Material.png",
+    "unlockType": "other",
+    "unlockId": "material_concrete"
+  },
+  {
+    "id": "material_grip_metal",
+    "name": "Grip Metal Foundation Material",
+    "category": "Customizer",
+    "cost": 5,
+    "description": "Customizer material for foundations giving them a steel grip plate look.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Grip_Metal_Foundation_Material.png",
+    "unlockType": "other",
+    "unlockId": "material_grip_metal"
+  },
+  {
+    "id": "material_asphalt",
+    "name": "Asphalt Foundation Material",
+    "category": "Customizer",
+    "cost": 4,
+    "description": "Customizer material for foundations giving them a black asphalt roadway look.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Asphalt_Material.png",
+    "unlockType": "other",
+    "unlockId": "material_asphalt"
+  },
+  {
+    "id": "material_concrete_wall",
+    "name": "Concrete Wall Material",
+    "category": "Customizer",
+    "cost": 3,
+    "description": "Customizer material for walls giving them a clean concrete texture.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Concrete_Wall_Material.png",
+    "unlockType": "other",
+    "unlockId": "material_concrete_wall"
+  },
+  {
+    "id": "material_steel_wall",
+    "name": "Steel Wall Material",
+    "category": "Customizer",
+    "cost": 5,
+    "description": "Customizer material for walls giving them a reinforced steel texture.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Steel_Wall_Material.png",
+    "unlockType": "other",
+    "unlockId": "material_steel_wall"
+  },
+  {
+    "id": "pattern_pathway",
+    "name": "Pathway Patterns",
+    "category": "Customizer",
+    "cost": 6,
+    "description": "Pack of lines and icons to paint pathways on foundations.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Pathway_Patterns.png",
+    "unlockType": "other",
+    "unlockId": "pattern_pathway"
+  },
+  {
+    "id": "pattern_factory_zone",
+    "name": "Factory Zone Patterns",
+    "category": "Customizer",
+    "cost": 2,
+    "description": "Pack of area indicators to paint storage or machine boundaries.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Factory_Zone_Patterns.png",
+    "unlockType": "other",
+    "unlockId": "pattern_factory_zone"
+  },
+  {
+    "id": "pattern_arrow",
+    "name": "Arrow Patterns",
+    "category": "Customizer",
+    "cost": 1,
+    "description": "Pack of directional arrows for factory transit.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Arrow_Patterns.png",
+    "unlockType": "other",
+    "unlockId": "pattern_arrow"
+  },
+  {
+    "id": "pattern_number",
+    "name": "Number Patterns",
+    "category": "Customizer",
+    "cost": 2,
+    "description": "Pack of numbers (0-9) to paint on foundations.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Number_Patterns.png",
+    "unlockType": "other",
+    "unlockId": "pattern_number"
+  },
+  {
+    "id": "double_ramp_pack",
+    "name": "Double Ramp Pack",
+    "category": "Foundations",
+    "cost": 3,
+    "description": "Blueprint for double-sided ramps (2m, 4m, 8m).",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Double_Ramp_Pack.png",
+    "unlockType": "building",
+    "unlockId": "ramp_double"
+  },
+  {
+    "id": "half_foundation_set",
+    "name": "Half Foundation Set",
+    "category": "Foundations",
+    "cost": 4,
+    "description": "Blueprints for half-width foundations (1m, 2m, 4m).",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Half_Foundation_Set.png",
+    "unlockType": "building",
+    "unlockId": "foundation_8x1_01"
+  },
+  {
+    "id": "foundation_stairs_set",
+    "name": "Foundation Stairs Set",
+    "category": "Foundations",
+    "cost": 2,
+    "description": "Blueprints for snaps-to-foundation modular stairs.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Foundation_Stairs_Set.png",
+    "unlockType": "building",
+    "unlockId": "catwalk_stairs"
+  },
+  {
+    "id": "quarter_pipes_pack",
+    "name": "Quarter Pipes Pack",
+    "category": "Foundations",
+    "cost": 6,
+    "description": "Pack of curved quarter-pipe foundations and corner pieces.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Quarter_Pipes_Pack.png",
+    "unlockType": "building",
+    "unlockId": "quarter_pipe"
+  },
+  {
+    "id": "inverted_ramp_set",
+    "name": "Inverted Ramp Set",
+    "category": "Foundations",
+    "cost": 2,
+    "description": "Blueprints for inverted ramps (1m, 2m, 4m).",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Inverted_Ramp_Set.png",
+    "unlockType": "building",
+    "unlockId": "inverted_ramp_concrete_8x4"
+  },
+  {
+    "id": "corner_ramp_pack",
+    "name": "Corner Ramp Pack",
+    "category": "Foundations",
+    "cost": 5,
+    "description": "Pack of outward-facing corner ramps (1m, 2m, 4m).",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Corner_Ramp_Pack.png",
+    "unlockType": "building",
+    "unlockId": "ramp_up_corner_concrete_8x4"
+  },
+  {
+    "id": "conveyor_walls",
+    "name": "Conveyor Walls",
+    "category": "Walls",
+    "cost": 5,
+    "description": "Wall blueprints with 1, 2, or 3 integrated conveyor outlets.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Conveyor_Walls.png",
+    "unlockType": "building",
+    "unlockId": "wall_conveyor_8x4_01"
+  },
+  {
+    "id": "door_walls",
+    "name": "Door Walls",
+    "category": "Walls",
+    "cost": 2,
+    "description": "Wall blueprints with integrated personnel doors.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Door_Walls.png",
+    "unlockType": "building",
+    "unlockId": "wall_door_8x4_01"
+  },
+  {
+    "id": "gates",
+    "name": "Gates",
+    "category": "Walls",
+    "cost": 3,
+    "description": "Automated gates and open wall holes.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Gates.png",
+    "unlockType": "building",
+    "unlockId": "wall_concrete_gate_8x4"
+  },
+  {
+    "id": "steel_framed_windows",
+    "name": "Steel-Framed Windows",
+    "category": "Walls",
+    "cost": 6,
+    "description": "Pack of window wall blueprints with structural steel grid designs.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Steel-Framed_Windows.png",
+    "unlockType": "building",
+    "unlockId": "wall_window_8x4_01"
+  },
+  {
+    "id": "windowed_walls",
+    "name": "Windowed Walls",
+    "category": "Walls",
+    "cost": 6,
+    "description": "Standard glass window wall blueprints.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Windowed_Walls.png",
+    "unlockType": "building",
+    "unlockId": "wall_concrete_window_01"
+  },
+  {
+    "id": "ladder",
+    "name": "Factory Ladder",
+    "category": "Architecture",
+    "cost": 3,
+    "description": "Vertical climbing ladder structure.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ladder.png",
+    "unlockType": "building",
+    "unlockId": "ladder"
+  },
+  {
+    "id": "catwalk_set",
+    "name": "Modern Catwalks",
+    "category": "Architecture",
+    "cost": 5,
+    "description": "Pack of modular metal catwalk structures with railings.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Modern_Catwalks.png",
+    "unlockType": "building",
+    "unlockId": "catwalk_straight"
+  },
+  {
+    "id": "walkway_set",
+    "name": "Industrial Walkways",
+    "category": "Architecture",
+    "cost": 5,
+    "description": "Pack of concrete-floored walkways.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Industrial_Walkways.png",
+    "unlockType": "building",
+    "unlockId": "walkway_ramp"
+  },
+  {
+    "id": "personnel_elevator",
+    "name": "Personnel Elevator",
+    "category": "Architecture",
+    "cost": 2,
+    "description": "Vertical personnel lift and stop floor plates.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Personnel_Elevator.png",
+    "unlockType": "building",
+    "unlockId": "elevator"
+  },
+  {
+    "id": "ficsit_roofs",
+    "name": "FICSIT Roofs",
+    "category": "Architecture",
+    "cost": 6,
+    "description": "Angled industrial roof structures.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/FICSIT_Roofs.png",
+    "unlockType": "building",
+    "unlockId": "roof_orange_01"
+  },
+  {
+    "id": "pillar_metal",
+    "name": "Metal Pillar Set",
+    "category": "Architecture",
+    "cost": 2,
+    "description": "Heavy metal pillars and supports.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Metal_Pillar_Set.png",
+    "unlockType": "building",
+    "unlockId": "pillar_middle"
+  },
+  {
+    "id": "pillar_concrete",
+    "name": "Concrete Pillar Set",
+    "category": "Architecture",
+    "cost": 2,
+    "description": "Concrete columns and support bases.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Concrete_Pillar_Set.png",
+    "unlockType": "building",
+    "unlockId": "pillar_middle_concrete"
+  },
+  {
+    "id": "structural_frame_set",
+    "name": "Structural Frame Set",
+    "category": "Architecture",
+    "cost": 10,
+    "description": "Open frame foundations, walls, and ramps.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Structural_Frame_Set.png",
+    "unlockType": "building",
+    "unlockId": "foundation_frame_01"
+  },
+  {
+    "id": "structural_beam_pack",
+    "name": "Structural Beam Pack",
+    "category": "Architecture",
+    "cost": 4,
+    "description": "Modular metal and painted beams.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Structural_Beam_Pack.png",
+    "unlockType": "building",
+    "unlockId": "beam"
+  },
+  {
+    "id": "modern_railing",
+    "name": "Modern Railing",
+    "category": "Architecture",
+    "cost": 1,
+    "description": "Clean glass safety railings.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Modern_Railing.png",
+    "unlockType": "building",
+    "unlockId": "railing_01"
+  },
+  {
+    "id": "road_barrier",
+    "name": "Road Barrier",
+    "category": "Architecture",
+    "cost": 1,
+    "description": "Concrete safety barrier.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Road_Barrier.png",
+    "unlockType": "building",
+    "unlockId": "barrier_low_01"
+  },
+  {
+    "id": "ventilation_bundle",
+    "name": "Ventilation Bundle",
+    "category": "Architecture",
+    "cost": 2,
+    "description": "Large decorative wall vents and rotating fans.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Ventilation_Bundle.png",
+    "unlockType": "building",
+    "unlockId": "large_fan"
+  },
+  {
+    "id": "coffee_cup",
+    "name": "FICSIT Coffee Cup",
+    "category": "Equipment",
+    "cost": 1,
+    "description": "Cosmetic cup of hot coffee.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Coffee_Cup.png",
+    "unlockType": "item",
+    "unlockId": "coffee_cup"
+  },
+  {
+    "id": "employee_cup",
+    "name": "Employee of the Planet Cup",
+    "category": "Equipment",
+    "cost": 1,
+    "description": "Golden mug showing ultimate completion of Phase 5.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Employee_of_the_Planet_Cup.png",
+    "unlockType": "item",
+    "unlockId": "employee_cup"
+  },
+  {
+    "id": "health_pack",
+    "name": "Health Pack",
+    "category": "Equipment",
+    "cost": 1,
+    "description": "Pack of 5 Medical Inhalers.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Health_Pack.png",
+    "unlockType": "item",
+    "unlockId": "medical_inhaler"
+  },
+  {
+    "id": "radiation_filters",
+    "name": "Radiation Filters",
+    "category": "Equipment",
+    "cost": 1,
+    "description": "Pack of 10 Iodine Infused Filters.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Radiation_Filters.png",
+    "unlockType": "item",
+    "unlockId": "iodine_infused_filter"
+  },
+  {
+    "id": "iron_rebar_pack",
+    "name": "Iron Rebar Pack",
+    "category": "Equipment",
+    "cost": 1,
+    "description": "Pack of 50 Iron Rebar cartridges.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Rebar_Pack.png",
+    "unlockType": "item",
+    "unlockId": "iron_rebar"
+  },
+  {
+    "id": "stun_rebar_pack",
+    "name": "Stun Rebar Pack",
+    "category": "Equipment",
+    "cost": 1,
+    "description": "Pack of 50 Stun Rebar cartridges.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Stun_Rebar_Pack.png",
+    "unlockType": "item",
+    "unlockId": "stun_rebar"
+  },
+  {
+    "id": "explosive_rebar_pack",
+    "name": "Explosive Rebar Pack",
+    "category": "Equipment",
+    "cost": 3,
+    "description": "Pack of 50 Explosive Rebar cartridges.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Explosive_Rebar_Pack.png",
+    "unlockType": "item",
+    "unlockId": "explosive_rebar"
+  },
+  {
+    "id": "nobelisk_pack",
+    "name": "Nobelisk Pack",
+    "category": "Equipment",
+    "cost": 1,
+    "description": "Pack of 25 standard Nobelisk explosives.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Nobelisk_Pack.png",
+    "unlockType": "item",
+    "unlockId": "nobelisk"
+  },
+  {
+    "id": "gas_nobelisk_pack",
+    "name": "Gas Nobelisk Pack",
+    "category": "Equipment",
+    "cost": 1,
+    "description": "Pack of 25 Toxic Gas Nobelisk explosives.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Gas_Nobelisk_Pack.png",
+    "unlockType": "item",
+    "unlockId": "gas_nobelisk"
+  },
+  {
+    "id": "rifle_ammo_pack",
+    "name": "Rifle Ammo Pack",
+    "category": "Equipment",
+    "cost": 1,
+    "description": "Pack of 250 standard Rifle cartridges.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Rifle_Ammo_Pack.png",
+    "unlockType": "item",
+    "unlockId": "rifle_ammo"
+  },
+  {
+    "id": "homing_rifle_ammo_pack",
+    "name": "Homing Rifle Ammo Pack",
+    "category": "Equipment",
+    "cost": 3,
+    "description": "Pack of 250 homing Rifle cartridges.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Homing_Rifle_Ammo_Pack.png",
+    "unlockType": "item",
+    "unlockId": "homing_rifle_ammo"
+  },
+  {
+    "id": "iron_plate_pack",
+    "name": "Iron Plate Pack",
+    "category": "Parts",
+    "cost": 1,
+    "description": "Pack of 200 Iron Plates.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Iron_Plate.png",
+    "unlockType": "item",
+    "unlockId": "iron_plate"
+  },
+  {
+    "id": "reinforced_plate_pack",
+    "name": "Reinforced Iron Plate Pack",
+    "category": "Parts",
+    "cost": 3,
+    "description": "Pack of 100 Reinforced Iron Plates.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Reinforced_Iron_Plate.png",
+    "unlockType": "item",
+    "unlockId": "reinforced_iron_plate"
+  },
+  {
+    "id": "modular_frame_pack",
+    "name": "Modular Frame Pack",
+    "category": "Parts",
+    "cost": 4,
+    "description": "Pack of 50 Modular Frames.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Modular_Frame.png",
+    "unlockType": "item",
+    "unlockId": "modular_frame"
+  },
+  {
+    "id": "steel_pipe_pack",
+    "name": "Steel Pipe Pack",
+    "category": "Parts",
+    "cost": 1,
+    "description": "Pack of 200 Steel Pipes.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Steel_Pipe.png",
+    "unlockType": "item",
+    "unlockId": "steel_pipe"
+  },
+  {
+    "id": "encased_beam_pack",
+    "name": "Encased Industrial Beam Pack",
+    "category": "Parts",
+    "cost": 3,
+    "description": "Pack of 100 Encased Industrial Beams.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Encased_Industrial_Beam.png",
+    "unlockType": "item",
+    "unlockId": "encased_industrial_beam"
+  },
+  {
+    "id": "heavy_frame_pack",
+    "name": "Heavy Modular Frame Pack",
+    "category": "Parts",
+    "cost": 6,
+    "description": "Pack of 50 Heavy Modular Frames.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Heavy_Modular_Frame.png",
+    "unlockType": "item",
+    "unlockId": "heavy_modular_frame"
+  },
+  {
+    "id": "quickwire_pack",
+    "name": "Quickwire Pack",
+    "category": "Parts",
+    "cost": 2,
+    "description": "Pack of 500 Quickwire.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Quickwire.png",
+    "unlockType": "item",
+    "unlockId": "quickwire"
+  },
+  {
+    "id": "ai_limiter_pack",
+    "name": "AI Limiter Pack",
+    "category": "Parts",
+    "cost": 3,
+    "description": "Pack of 100 AI Limiters.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/AI_Limiter.png",
+    "unlockType": "item",
+    "unlockId": "ai_limiter"
+  },
+  {
+    "id": "high_speed_connector_pack",
+    "name": "High-Speed Connector Pack",
+    "category": "Parts",
+    "cost": 4,
+    "description": "Pack of 100 High-Speed Connectors.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/High-Speed_Connector.png",
+    "unlockType": "item",
+    "unlockId": "high_speed_connector"
+  },
+  {
+    "id": "computer_pack",
+    "name": "Computer Pack",
+    "category": "Parts",
+    "cost": 6,
+    "description": "Pack of 50 Computers.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Computer.png",
+    "unlockType": "item",
+    "unlockId": "computer"
+  },
+  {
+    "id": "supercomputer_pack",
+    "name": "Supercomputer Pack",
+    "category": "Parts",
+    "cost": 8,
+    "description": "Pack of 50 Supercomputers.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Supercomputer.png",
+    "unlockType": "item",
+    "unlockId": "supercomputer"
+  },
+  {
+    "id": "quantum_processor_pack",
+    "name": "Neural-Quantum Processor Pack",
+    "category": "Parts",
+    "cost": 10,
+    "description": "Pack of 50 Neural-Quantum Processors.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Neural-Quantum_Processor.png",
+    "unlockType": "item",
+    "unlockId": "neural_quantum_processor"
+  },
+  {
+    "id": "motor_pack",
+    "name": "Motor Pack",
+    "category": "Parts",
+    "cost": 5,
+    "description": "Pack of 50 Motors.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Motor.png",
+    "unlockType": "item",
+    "unlockId": "motor"
+  },
+  {
+    "id": "turbo_motor_pack",
+    "name": "Turbo Motor Pack",
+    "category": "Parts",
+    "cost": 8,
+    "description": "Pack of 50 Turbo Motors.",
+    "imageUrl": "https://satisfactory.wiki.gg/wiki/Special:FilePath/Turbo_Motor.png",
+    "unlockType": "item",
+    "unlockId": "turbo_motor"
+  }
+]
