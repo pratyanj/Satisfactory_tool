@@ -318,3 +318,81 @@
   .cdx-hub-cards { grid-template-columns: 1fr; gap: 12px; }
   .tier-milestones { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   M.A.M. Research Tree visual enhancements
+   ============================================================ */
+.mam-container {
+  font-family: 'Inter', sans-serif;
+  height: 100%;
+}
+
+/* Custom subtle hex grid background for the MAM canvas */
+.mam-container .flex-1 {
+  background-color: #0d1117;
+  background-image: 
+    radial-gradient(circle, rgba(244, 135, 33, 0.02) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.005) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.005) 1px, transparent 1px);
+  background-size: 40px 40px, 20px 20px, 20px 20px;
+  background-position: center;
+}
+
+/* Custom scrollbars for sidebars and panels */
+.mam-sidebar::-webkit-scrollbar,
+.mam-inspector::-webkit-scrollbar,
+.shop-container .flex-grow-1::-webkit-scrollbar {
+  width: 6px;
+}
+.mam-sidebar::-webkit-scrollbar-thumb,
+.mam-inspector::-webkit-scrollbar-thumb,
+.shop-container .flex-grow-1::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 3px;
+}
+.mam-sidebar::-webkit-scrollbar-thumb:hover,
+.mam-inspector::-webkit-scrollbar-thumb:hover,
+.shop-container .flex-grow-1::-webkit-scrollbar-thumb:hover {
+  background: #f48721aa;
+}
+
+/* ============================================================
+   AWESOME Shop visual styles
+   ============================================================ */
+.shop-container {
+  font-family: 'Inter', sans-serif;
+  height: 100%;
+}
+
+.shop-container .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+/* Coupon design and styling */
+.shop-container .bg-\[\#f48721\]\/15 {
+  position: relative;
+  overflow: hidden;
+}
+.shop-container .bg-\[\#f48721\]\/15::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  background: #161b22;
+  border-radius: 50%;
+}
+.shop-container .bg-\[\#f48721\]\/15::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  background: #161b22;
+  border-radius: 50%;
+}
+
