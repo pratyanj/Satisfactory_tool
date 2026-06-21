@@ -33,3 +33,18 @@
 - **Web Workers for Heavy Tasks**: Move the save game parsing and complex graph calculation logic to background Web Workers so the main UI doesn't freeze when loading large (20MB+) save files.
 - **Global Quick Search**: Add a quick search bar (e.g., `Ctrl + K`) to easily search for any item, recipe, or building.
 - **Mobile Responsiveness**: Improve layout for tablets and mobile devices so users can keep the tool open on a secondary device while playing.
+
+## SCIM Roadmap (Progression & Workbench Extensions)
+
+### Phase 1: M.A.M. Research Browser & AWESOME Shop Catalog
+- [ ] Parse M.A.M. research trees from game data.
+- [ ] Create a `MamTrees.tsx` component to visualize research progress and unlocks.
+- [ ] Build an AWESOME Shop ticket catalog showing item costs and categories.
+- [ ] Connect M.A.M. and AWESOME Shop pages to the main `Codex.tsx` browser.
+
+### Phase 2: Workbench Tools & Codex Extensions
+- [ ] Create a Balancers guide page with visual SVG layouts for common splits/merges.
+- [ ] Build a list of all crash sites (Hard Drives) showing exact opening costs.
+- [ ] Add Vehicles and Hand Tools browsers to the Codex.
+- [ ] Add Fauna and Architecture sub-browsers to the Codex.
+
