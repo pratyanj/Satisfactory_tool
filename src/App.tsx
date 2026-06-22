@@ -148,7 +148,7 @@ export default function App() {
     extractorTier?: string;
     overclock?: number;
     somersloopMultiplier?: number;
-    perMachineSettings?: Record<string, { clockSpeed: number; somerslooped: boolean }>;
+    perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean; purity?: 'impure' | 'normal' | 'pure' }>;
     wholeMachineMode?: boolean;
     availableInputs?: Record<string, number>;
   }>({
@@ -378,17 +378,18 @@ export default function App() {
     });
   }, [lastInput, layoutMode, topLevelTab, mainTab]);
 
-  const handleUpdatePerMachineSettings = useCallback((itemId: string, settings: { clockSpeed?: number; somerslooped?: boolean }) => {
+  const handleUpdatePerMachineSettings = useCallback((itemId: string, settings: { clockSpeed?: number; somerslooped?: boolean; purity?: 'impure' | 'normal' | 'pure' }) => {
     setLastInput(prev => {
       const currentPm = prev.perMachineSettings || {};
       const newPm = { ...currentPm };
       
-      if (settings.clockSpeed === undefined && settings.somerslooped === undefined) {
+      if (settings.clockSpeed === undefined && settings.somerslooped === undefined && settings.purity === undefined) {
         delete newPm[itemId];
       } else {
         newPm[itemId] = {
           clockSpeed: settings.clockSpeed ?? currentPm[itemId]?.clockSpeed ?? 100,
           somerslooped: settings.somerslooped ?? currentPm[itemId]?.somerslooped ?? false,
+          purity: settings.purity ?? currentPm[itemId]?.purity ?? 'normal',
         };
       }
       
@@ -411,7 +412,7 @@ export default function App() {
     extractorTier: string = 'mk1',
     overclock: number = 100,
     somersloopMultiplier: number = 1,
-    perMachineSettings?: Record<string, { clockSpeed: number; somerslooped: boolean }>,
+    perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean; purity?: 'impure' | 'normal' | 'pure' }>,
     wholeMachineMode: boolean = false,
     availableInputs: Record<string, number> = {}
   ) => {

@@ -14,6 +14,7 @@ export interface SolverNode {
   overflowRate?: number;
   /** True when this node runs a single machine below 100% clock (fractional need). */
   isUnderclocked?: boolean;
+  purity?: 'impure' | 'normal' | 'pure';
 }
 
 export type RecipeSelectionMap = Partial<Record<ItemId, RecipeId>>;
@@ -119,7 +120,7 @@ export function solve(
   extractorOverclock: number = 100,
   globalOverclock: number = 100,
   somersloopMultiplier: number = 1,
-  perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean }>,
+  perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean; purity?: 'impure' | 'normal' | 'pure' }>,
   wholeMachineMode: boolean = false,
   /** Items the user already supplies (rate/min). The solver consumes these as
    *  free sources and only produces the shortfall for each. */
@@ -179,9 +180,11 @@ export function solve(
                 ? extractorOverclock
                 : globalOverclock
           );
-          const nodeSomersloop = customSettings?.somerslooped !== undefined
-            ? customSettings.somerslooped
-            : (somersloopMultiplier > 1 && recipe.inputs.length > 0);
+          const nodeSomersloop = recipe.inputs.length === 0 ? false : (
+            customSettings?.somerslooped !== undefined
+              ? customSettings.somerslooped
+              : (somersloopMultiplier > 1 && recipe.inputs.length > 0)
+          );
 
           const effectiveSomersloopMultiplier = nodeSomersloop ? 2 : 1;
 
@@ -191,6 +194,10 @@ export function solve(
               if (minerId === "miner_mk2") outputRate = 120;
               else if (minerId === "miner_mk3") outputRate = 240;
               else outputRate = 60;
+              
+              const purityVal = customSettings?.purity ?? 'normal';
+              const purityMult = purityVal === 'pure' ? 2.0 : purityVal === 'impure' ? 0.5 : 1.0;
+              outputRate = outputRate * purityMult;
               
               if (customSettings?.clockSpeed !== undefined) {
                 outputRate = outputRate * (nodeOverclock / 100);
@@ -287,6 +294,7 @@ export function solve(
             somerslooped: nodeSomersloop,
             overflowRate: overflowRate > 0.001 ? overflowRate : undefined,
             isUnderclocked: isUnderclocked || undefined,
+            purity: customSettings?.purity,
           };
         } finally {
           activeStack.delete(currentId);
