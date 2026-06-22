@@ -3,6 +3,61 @@ import dagre from 'dagre';
 import { belts, BeltId, items, machines, recipes, isFluidItem } from './data';
 import { SolverNode } from './solver';
 
+function consolidateLeafNodes(root: SolverNode): SolverNode {
+  const leafNodesByItem = new Map<string, SolverNode[]>();
+
+  const collectLeaves = (node: SolverNode) => {
+    if (node.inputs.length === 0 && node.machines > 0 && node.recipeId !== 'supplied_input') {
+      const list = leafNodesByItem.get(node.itemId) || [];
+      list.push(node);
+      leafNodesByItem.set(node.itemId, list);
+    }
+    for (const child of node.inputs) {
+      collectLeaves(child);
+    }
+  };
+
+  collectLeaves(root);
+
+  const consolidatedMap = new Map<string, SolverNode>();
+  leafNodesByItem.forEach((leaves, itemId) => {
+    if (leaves.length <= 1) {
+      consolidatedMap.set(itemId, leaves[0]);
+      return;
+    }
+    const first = leaves[0];
+    const totalRate = leaves.reduce((sum, l) => sum + l.rate, 0);
+    const totalMachines = leaves.reduce((sum, l) => sum + l.machines, 0);
+
+    const consolidatedNode: SolverNode = {
+      itemId: first.itemId,
+      recipeId: first.recipeId,
+      rate: totalRate,
+      machines: totalMachines,
+      machineId: first.machineId,
+      inputs: [],
+      clockSpeed: first.clockSpeed,
+      somerslooped: first.somerslooped,
+      overflowRate: first.overflowRate,
+      isUnderclocked: first.isUnderclocked,
+      purity: first.purity,
+    };
+    consolidatedMap.set(itemId, consolidatedNode);
+  });
+
+  const walkAndReplace = (node: SolverNode): SolverNode => {
+    if (node.inputs.length === 0 && node.machines > 0 && node.recipeId !== 'supplied_input') {
+      return consolidatedMap.get(node.itemId) || node;
+    }
+    return {
+      ...node,
+      inputs: node.inputs.map(walkAndReplace)
+    };
+  };
+
+  return walkAndReplace(root);
+}
+
 function generateId() {
   return Math.random().toString(36).substring(2, 9);
 }
@@ -10,8 +65,10 @@ function generateId() {
 export type LayoutMode = 'aggregated' | 'expanded';
 
 export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'aggregated', beltId: BeltId = 'mk1', pipeTier: 'mk1' | 'mk2' = 'mk1'): { nodes: Node[]; edges: Edge[] } {
+  const consolidatedRoot = consolidateLeafNodes(root);
   const nodeList: Node[] = [];
   const edgeList: Edge[] = [];
+  const expandedCache = new Map<string, { id: string; rate: number }[]>();
   // Producer chunk ids per item — used to wire overflow into the AWESOME Sink (expanded view).
   const itemProducerChunks = new Map<string, { id: string; rate: number }[]>();
   const beltCapacity = belts[beltId]?.capacity || 60;
@@ -116,6 +173,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       itemImageUrl: itemInfo?.imageUrl,
       clockSpeed: clock,
       somerslooped: isSomerslooped,
+      purity: node.purity || 'normal',
       // Recipe details for the expanded node card
       outputRatePerMachine: actualOutputRatePerMachine,
       inputDetails: (recipe?.inputs || []).map(inp => ({
@@ -415,6 +473,12 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
   }
 
   function traverseExpanded(node: SolverNode): { id: string; rate: number }[] {
+    const isLeafResource = node.inputs.length === 0 && node.machines > 0 && node.recipeId !== 'supplied_input';
+    const cacheKey = `${node.itemId}-${node.recipeId}`;
+    if (isLeafResource && expandedCache.has(cacheKey)) {
+      return expandedCache.get(cacheKey)!;
+    }
+
     if (node.itemId === 'planned_outputs') {
       node.inputs.forEach((child) => {
         if (child.itemId === 'awesome_sink') {
@@ -599,30 +663,33 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       }
     }
 
+    if (isLeafResource) {
+      expandedCache.set(cacheKey, myChunks);
+    }
     return myChunks;
   }
 
   if (mode === 'expanded') {
-    const rootChunks = traverseExpanded(root);
-    if (root.itemId !== 'planned_outputs') {
-      const productNodeId = `product-output-${root.itemId}`;
-      const itemInfo = items[root.itemId];
+    const rootChunks = traverseExpanded(consolidatedRoot);
+    if (consolidatedRoot.itemId !== 'planned_outputs') {
+      const productNodeId = `product-output-${consolidatedRoot.itemId}`;
+      const itemInfo = items[consolidatedRoot.itemId];
       nodeList.push({
         id: productNodeId,
         type: 'machine',
         position: { x: 0, y: 0 },
         data: buildNodeData(
           {
-            itemId: root.itemId,
+            itemId: consolidatedRoot.itemId,
             recipeId: 'product_output',
-            rate: root.rate,
+            rate: consolidatedRoot.rate,
             machines: 0,
             machineId: 'product_output',
             inputs: [],
           },
           0,
-          root.rate,
-          `${root.rate.toFixed(1)} ${itemInfo?.name || root.itemId}`
+          consolidatedRoot.rate,
+          `${consolidatedRoot.rate.toFixed(1)} ${itemInfo?.name || consolidatedRoot.itemId}`
         ),
       });
 
@@ -631,16 +698,16 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
           `e-${chunk.id}-${productNodeId}`,
           chunk.id,
           productNodeId,
-          getFlowLabel(chunk.rate, root.itemId),
-          root.itemId
+          getFlowLabel(chunk.rate, consolidatedRoot.itemId),
+          consolidatedRoot.itemId
         ));
       });
     }
 
     // AWESOME Sink — wire overflow into a single sink node from each surplus
     // item's producer chunks (machine view).
-    const sinkNode = root.itemId === 'planned_outputs'
-      ? root.inputs.find(i => i.itemId === 'awesome_sink')
+    const sinkNode = consolidatedRoot.itemId === 'planned_outputs'
+      ? consolidatedRoot.inputs.find(i => i.itemId === 'awesome_sink')
       : undefined;
     if (sinkNode && sinkNode.inputs.length > 0) {
       const sinkNodeId = 'awesome-sink';
@@ -675,7 +742,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       }
     }
   } else {
-    traverseAggregated(root);
+    traverseAggregated(consolidatedRoot);
   }
 
   // Apply Dagre layout — use taller nodes to accommodate recipe details
