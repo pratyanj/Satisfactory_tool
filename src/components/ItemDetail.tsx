@@ -19,9 +19,10 @@ interface Props {
   itemId: string;
   onBack: () => void;
   onNavigate: (id: string) => void;
+  onNavigateBuilding: (id: string) => void;
 }
 
-export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
+export function ItemDetail({ itemId, onBack, onNavigate, onNavigateBuilding }: Props) {
   const item = items[itemId];
   if (!item) return null;
 
@@ -125,11 +126,11 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
               {viewMode === 'flow' ? (
                 <div className="sf-recipes-list">
                   {producingRecipes.map(r => (
-                    <RecipeCard key={r.id} recipe={r} highlightId={itemId} onNavigate={onNavigate} />
+                    <RecipeCard key={r.id} recipe={r} highlightId={itemId} onNavigate={onNavigate} onNavigateBuilding={onNavigateBuilding} />
                   ))}
                 </div>
               ) : (
-                <RecipeTable recipes={producingRecipes} highlightId={itemId} onNavigate={onNavigate} />
+                <RecipeTable recipes={producingRecipes} highlightId={itemId} onNavigate={onNavigate} onNavigateBuilding={onNavigateBuilding} />
               )}
             </div>
           )}
@@ -146,11 +147,11 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
               {viewMode === 'flow' ? (
                 <div className="sf-recipes-list">
                   {usedAsIngredient.map(r => (
-                    <RecipeCard key={r.id} recipe={r} highlightId={itemId} onNavigate={onNavigate} />
+                    <RecipeCard key={r.id} recipe={r} highlightId={itemId} onNavigate={onNavigate} onNavigateBuilding={onNavigateBuilding} />
                   ))}
                 </div>
               ) : (
-                <RecipeTable recipes={usedAsIngredient} highlightId={itemId} onNavigate={onNavigate} />
+                <RecipeTable recipes={usedAsIngredient} highlightId={itemId} onNavigate={onNavigate} onNavigateBuilding={onNavigateBuilding} />
               )}
             </div>
           )}
@@ -160,7 +161,7 @@ export function ItemDetail({ itemId, onBack, onNavigate }: Props) {
   );
 }
 
-export function RecipeCard({ recipe, highlightId, onNavigate }: { recipe: Recipe; highlightId: string; onNavigate: (id: string) => void }) {
+export function RecipeCard({ recipe, highlightId, onNavigate, onNavigateBuilding }: { recipe: Recipe; highlightId: string; onNavigate: (id: string) => void; onNavigateBuilding: (id: string) => void }) {
   const machine = machines[recipe.machineId];
   const isAlternate = recipe.id.startsWith('recipe_alternate_');
   const recipeName = recipe.name ?? recipe.id
@@ -200,7 +201,14 @@ export function RecipeCard({ recipe, highlightId, onNavigate }: { recipe: Recipe
         
         {/* Machine name — plain medium text, no card/badge */}
         {machine && (
-          <span className="sf-recipe-card-machine-label">{machine.name}</span>
+          <button
+            type="button"
+            className="hover:text-[#f48721] transition-colors font-mono text-[9px] tracking-wider text-[#94a3b8] uppercase text-right outline-none cursor-pointer"
+            onClick={() => onNavigateBuilding(recipe.machineId)}
+            title={`View ${machine.name} specifications`}
+          >
+            {machine.name} {machine.powerUsage ? `(${machine.powerUsage} MW)` : ''}
+          </button>
         )}
       </div>
 
@@ -258,9 +266,15 @@ export function RecipeCard({ recipe, highlightId, onNavigate }: { recipe: Recipe
           </svg>
         </div>
 
-        {/* 3. Central Machine Node — transparent glassmorphic card, centered x & y */}
+        {/* 3. Central Machine Node — transparent glassmorphic card, clickable */}
         <div className="sf-recipe-flow-machine-wrap">
-          <div className="sf-recipe-flow-machine-node" title={machine?.name ?? 'Craft Bench'}>
+          <button
+            type="button"
+            className="sf-recipe-flow-machine-node outline-none cursor-pointer"
+            onClick={() => machine && onNavigateBuilding(recipe.machineId)}
+            title={machine ? `Click to view ${machine.name} specifications` : 'Craft Bench'}
+            style={{ border: 'none', background: 'transparent' }}
+          >
             <div className="sf-recipe-flow-machine-glow" />
             <div className="sf-recipe-flow-machine-core">
               {machine && machine.imageUrl ? (
@@ -269,7 +283,7 @@ export function RecipeCard({ recipe, highlightId, onNavigate }: { recipe: Recipe
                 <span className="sf-recipe-flow-machine-placeholder">🔨</span>
               )}
             </div>
-          </div>
+          </button>
         </div>
 
         {/* 4. Right SVG connector — threads from machine center to outputs with arrow tips */}
@@ -401,7 +415,7 @@ function ViewToggle({ viewMode, onChange }: { viewMode: 'flow' | 'table'; onChan
 // ============================================================
 // Table View Components
 // ============================================================
-export function RecipeTable({ recipes, highlightId, onNavigate }: { recipes: Recipe[]; highlightId: string; onNavigate: (id: string) => void }) {
+export function RecipeTable({ recipes, highlightId, onNavigate, onNavigateBuilding }: { recipes: Recipe[]; highlightId: string; onNavigate: (id: string) => void; onNavigateBuilding: (id: string) => void }) {
   return (
     <div className="sf-rt">
       {/* Header row */}
@@ -413,13 +427,13 @@ export function RecipeTable({ recipes, highlightId, onNavigate }: { recipes: Rec
       </div>
       {/* Data rows */}
       {recipes.map(r => (
-        <RecipeTableRow key={r.id} recipe={r} highlightId={highlightId} onNavigate={onNavigate} />
+        <RecipeTableRow key={r.id} recipe={r} highlightId={highlightId} onNavigate={onNavigate} onNavigateBuilding={onNavigateBuilding} />
       ))}
     </div>
   );
 }
 
-function RecipeTableRow({ recipe, highlightId, onNavigate }: { recipe: Recipe; highlightId: string; onNavigate: (id: string) => void }) {
+function RecipeTableRow({ recipe, highlightId, onNavigate, onNavigateBuilding }: { recipe: Recipe; highlightId: string; onNavigate: (id: string) => void; onNavigateBuilding: (id: string) => void }) {
   const machine = machines[recipe.machineId];
   const isAlternate = recipe.id.startsWith('recipe_alternate_');
   const recipeName = recipe.name ?? recipe.id
@@ -491,12 +505,17 @@ function RecipeTableRow({ recipe, highlightId, onNavigate }: { recipe: Recipe; h
       {/* Machine */}
       <div className="sf-rt-td sf-rt-td--machine">
         {machine ? (
-          <>
+          <button
+            type="button"
+            className="flex items-center gap-1.5 hover:text-[#f48721] transition-colors outline-none cursor-pointer bg-transparent border-none text-left"
+            onClick={() => onNavigateBuilding(recipe.machineId)}
+            title={`View ${machine.name} specifications`}
+          >
             {machine.imageUrl && (
               <img src={machine.imageUrl} alt={machine.name} className="sf-rt-machine-img" />
             )}
-            <span className="sf-rt-machine-name">{machine.name}</span>
-          </>
+            <span className="sf-rt-machine-name">{machine.name} {machine.powerUsage ? `(${machine.powerUsage} MW)` : ''}</span>
+          </button>
         ) : (
           <span className="sf-rt-machine-name" style={{ opacity: 0.4 }}>Craft Bench</span>
         )}

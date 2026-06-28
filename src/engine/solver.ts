@@ -124,7 +124,8 @@ export function solve(
   wholeMachineMode: boolean = false,
   /** Items the user already supplies (rate/min). The solver consumes these as
    *  free sources and only produces the shortfall for each. */
-  availableInputs: Record<ItemId, number> = {}
+  availableInputs: Record<ItemId, number> = {},
+  costMultiplier: number = 1
 ): SolverNode {
   const targets: Record<ItemId, number> = typeof itemIdOrTargets === 'string'
     ? { [itemIdOrTargets]: requiredRate ?? 0 }
@@ -257,7 +258,7 @@ export function solve(
           for (const input of recipe.inputs) {
             // Overclocking scales input rate linearly. Somerslooping does not increase input consumption!
             const machineInputRate = input.rate * (nodeOverclock / 100);
-            const requiredInputRate = machineInputRate * inputScale;
+            const requiredInputRate = machineInputRate * inputScale * costMultiplier;
             if (requiredInputRate > 0.001) {
               // solveDemand splits the input into a user-supplied "Imported X"
               // source (if any) plus the produced remainder — both as direct

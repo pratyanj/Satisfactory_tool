@@ -80,10 +80,11 @@ export function PowerPlannerTab({ parsedSave }: PowerPlannerTabProps) {
     allowAlternateRecipes: true,
     preferredComplexity: 'balanced',
     minerId: 'miner_mk3',
+    beltId: 'mk1',
   });
 
   const plan = useMemo(() => planPower(input), [input]);
-  const powerGraph = useMemo(() => mapPowerPlanToGraph(plan), [plan]);
+  const powerGraph = useMemo(() => mapPowerPlanToGraph(plan, input.beltId || 'mk1'), [plan, input.beltId]);
   const optimizer = useMemo(() => optimizeFuelStrategies(input, optimizeFor), [input, optimizeFor]);
   const saveAnalysis = useMemo(() => (parsedSave ? analyzeSavePowerGrid(parsedSave) : null), [parsedSave]);
   const nuclearPlan = useMemo(() => planNuclearPower({
@@ -244,6 +245,35 @@ export function PowerPlannerTab({ parsedSave }: PowerPlannerTabProps) {
               <option value="high">High</option>
             </select>
           </label>
+
+          <label className="text-xs text-[#8E9299] font-bold uppercase">
+            Miner Tier
+            <select
+              value={input.minerId}
+              onChange={(e) => setInput((prev) => ({ ...prev, minerId: e.target.value as any }))}
+              className="mt-1 w-full bg-[#0b0c0e] border border-[#2a2d33] rounded px-3 py-2 text-sm text-white"
+            >
+              <option value="miner_mk1">Miner Mk1 (60/m normal)</option>
+              <option value="miner_mk2">Miner Mk2 (120/m normal)</option>
+              <option value="miner_mk3">Miner Mk3 (240/m normal)</option>
+            </select>
+          </label>
+
+          <label className="text-xs text-[#8E9299] font-bold uppercase">
+            Belt Tier
+            <select
+              value={input.beltId || 'mk1'}
+              onChange={(e) => setInput((prev) => ({ ...prev, beltId: e.target.value as any }))}
+              className="mt-1 w-full bg-[#0b0c0e] border border-[#2a2d33] rounded px-3 py-2 text-sm text-white"
+            >
+              <option value="mk1">Mk.1 (60/min)</option>
+              <option value="mk2">Mk.2 (120/min)</option>
+              <option value="mk3">Mk.3 (270/min)</option>
+              <option value="mk4">Mk.4 (480/min)</option>
+              <option value="mk5">Mk.5 (780/min)</option>
+              <option value="mk6">Mk.6 (1200/min)</option>
+            </select>
+          </label>
         </div>
 
         <div className="xl:col-span-2 bg-[#101216] border border-[#22252c] rounded-xl p-4 flex flex-col gap-4">
@@ -343,7 +373,7 @@ export function PowerPlannerTab({ parsedSave }: PowerPlannerTabProps) {
                   <FactoryGraph
                     initialNodes={powerGraph.nodes}
                     initialEdges={powerGraph.edges}
-                    beltId="mk5"
+                    beltId={input.beltId || 'mk1'}
                   />
                 </div>
               ) : (

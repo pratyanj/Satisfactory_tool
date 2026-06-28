@@ -84,7 +84,7 @@ export function Codex() {
           <ItemBrowser onBack={goHub} onSelect={goItem} />
           {route.id && (
             <div className="cdx-detail-overlay">
-              <ItemDetail itemId={route.id} onBack={() => nav('items')} onNavigate={goItem} />
+              <ItemDetail itemId={route.id} onBack={() => nav('items')} onNavigate={goItem} onNavigateBuilding={goBuilding} />
             </div>
           )}
         </>
