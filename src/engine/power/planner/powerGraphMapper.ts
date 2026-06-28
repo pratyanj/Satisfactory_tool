@@ -1,5 +1,5 @@
 import type { Edge, Node } from '@xyflow/react';
-import { items } from '../../data';
+import { items, BeltId } from '../../data';
 import { mapSolverResultToGraph } from '../../graphMapper';
 import type { PowerPlanResult } from '../../../types/power';
 import { GENERATOR_IMAGE_BY_FUEL, LOCAL_GENERATOR_IMAGE_BY_FUEL } from '../powerAssets';
@@ -41,12 +41,12 @@ function buildNodeData(overrides: Record<string, unknown>): Record<string, unkno
   };
 }
 
-export function mapPowerPlanToGraph(plan: PowerPlanResult): { nodes: Node[]; edges: Edge[] } {
+export function mapPowerPlanToGraph(plan: PowerPlanResult, beltId: BeltId = 'mk1'): { nodes: Node[]; edges: Edge[] } {
   let nodes: Node[] = [];
   let edges: Edge[] = [];
 
   if (plan.fuelChainRoot) {
-    const mapped = mapSolverResultToGraph(plan.fuelChainRoot, 'aggregated', 'mk5');
+    const mapped = mapSolverResultToGraph(plan.fuelChainRoot, 'aggregated', beltId);
     nodes = mapped.nodes;
     edges = mapped.edges;
   }
@@ -134,13 +134,13 @@ export function mapPowerPlanToGraph(plan: PowerPlanResult): { nodes: Node[]; edg
 
   if (plan.generatorWaterRatePerMin > 0) {
     const waterNodeId = 'power-node-water-extractors';
-    const waterExtractorCount = Math.max(1, Math.ceil(plan.generatorWaterRatePerMin / 120));
+    const waterExtractorCount = plan.generatorWaterRatePerMin / 120;
     nodes.push({
       id: waterNodeId,
       type: 'machine',
       position: { x: generatorX - 460, y: generatorY + 180 },
       data: buildNodeData({
-        label: `Water Extractor x${waterExtractorCount}`,
+        label: `Water Extractor x${Number(waterExtractorCount.toFixed(2))}`,
         machineName: 'Water Extractor',
         machineId: 'water_extractor',
         machines: waterExtractorCount,

@@ -1,4 +1,4 @@
-import type { ItemId, MachineId } from '../engine/data';
+import type { ItemId, MachineId, BeltId } from '../engine/data';
 import type { RecipeSelectionMap, SolverNode, SummaryData } from '../engine/solver';
 
 export type PowerUnit = 'MW' | 'GW' | 'TW';
@@ -32,6 +32,7 @@ export interface PowerPlannerInput {
   allowAlternateRecipes: boolean;
   preferredComplexity: PowerComplexityPreference;
   minerId: MachineId;
+  beltId?: BeltId;
   maxResourceLimits?: Partial<Record<ItemId, number>>;
 }
 

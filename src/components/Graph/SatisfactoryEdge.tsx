@@ -74,18 +74,20 @@ export const SatisfactoryEdge = React.memo(function SatisfactoryEdge({
       />
 
       {/* Moving flow animation — keyframe is in index.css */}
-      <path
-        d={edgePath}
-        fill="none"
-        stroke={flowStroke}
-        strokeWidth={2}
-        strokeDasharray={flowDashArray}
-        strokeLinecap="round"
-        style={{
-          animation: `dash ${duration}s linear infinite`,
-          opacity: 0.8
-        }}
-      />
+      {!data?.disableAnimations && (
+        <path
+          d={edgePath}
+          fill="none"
+          stroke={flowStroke}
+          strokeWidth={2}
+          strokeDasharray={flowDashArray}
+          strokeLinecap="round"
+          style={{
+            animation: `dash ${duration}s linear infinite`,
+            opacity: 0.8
+          }}
+        />
+      )}
 
       {label && (
         <EdgeLabelRenderer>

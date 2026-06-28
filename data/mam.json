@@ -1,0 +1,1452 @@
+{
+  "caterium": {
+    "name": "Caterium Research",
+    "icon": "caterium_ore",
+    "nodes": [
+      {
+        "id": "caterium",
+        "name": "Caterium",
+        "description": "Analyze Caterium Ore to unlock its advanced electrical properties.",
+        "x": 0,
+        "y": 2,
+        "cost": [
+          { "itemId": "caterium_ore", "name": "Caterium Ore", "amount": 10 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "caterium_ore", "name": "Caterium Ore" }
+        ],
+        "parents": []
+      },
+      {
+        "id": "caterium_ingot",
+        "name": "Caterium Ingots",
+        "description": "Smelt Caterium Ore into highly conductive Caterium Ingots.",
+        "x": 1,
+        "y": 2,
+        "cost": [
+          { "itemId": "caterium_ore", "name": "Caterium Ore", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "recipe", "id": "recipe_caterium_ingot", "name": "Caterium Ingot" }
+        ],
+        "parents": ["caterium"]
+      },
+      {
+        "id": "quickwire",
+        "name": "Quickwire",
+        "description": "Draw Caterium Ingots into extremely thin Quickwire.",
+        "x": 2,
+        "y": 2,
+        "cost": [
+          { "itemId": "caterium_ingot", "name": "Caterium Ingot", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "quickwire", "name": "Quickwire" }
+        ],
+        "parents": ["caterium_ingot"]
+      },
+      {
+        "id": "zipline",
+        "name": "Zipline",
+        "description": "Unlocks the Zipline tool for traversing power lines.",
+        "x": 3,
+        "y": 1,
+        "cost": [
+          { "itemId": "quickwire", "name": "Quickwire", "amount": 100 },
+          { "itemId": "cable", "name": "Cable", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "zipline", "name": "Zipline" }
+        ],
+        "parents": ["quickwire"]
+      },
+      {
+        "id": "caterium_electronics",
+        "name": "Caterium Electronics",
+        "description": "Foundational Caterium electrical components.",
+        "x": 4,
+        "y": 2,
+        "icon": "mam_research_key",
+        "cost": [
+          { "itemId": "quickwire", "name": "Quickwire", "amount": 100 }
+        ],
+        "unlocks": [
+          { "type": "research", "name": "Unlocks Stun Rebar, Power Poles Mk.2, AI Limiter" }
+        ],
+        "parents": ["quickwire"]
+      },
+      {
+        "id": "stun_rebar",
+        "name": "Stun Rebar",
+        "description": "Unlocks Stun Rebar ammunition for the Rebar Gun.",
+        "x": 3,
+        "y": 3,
+        "cost": [
+          { "itemId": "quickwire", "name": "Quickwire", "amount": 50 },
+          { "itemId": "iron_rebar", "name": "Iron Rebar", "amount": 10 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "stun_rebar", "name": "Stun Rebar" }
+        ],
+        "parents": ["quickwire"]
+      },
+      {
+        "id": "power_poles_mk2",
+        "name": "Power Poles Mk.2",
+        "description": "Upgraded power poles that support up to 7 cable connections.",
+        "x": 5,
+        "y": 2,
+        "icon": "power_pole_mk2",
+        "cost": [
+          { "itemId": "quickwire", "name": "Quickwire", "amount": 300 }
+        ],
+        "unlocks": [
+          { "type": "building", "id": "build_power_pole_mk2", "name": "Power Pole Mk.2" }
+        ],
+        "parents": ["caterium_electronics"]
+      },
+      {
+        "id": "ai_limiter",
+        "name": "AI Limiter",
+        "description": "Electronic circuit governing advanced processors.",
+        "x": 5,
+        "y": 1,
+        "cost": [
+          { "itemId": "quickwire", "name": "Quickwire", "amount": 200 },
+          { "itemId": "copper_sheet", "name": "Copper Sheet", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "ai_limiter", "name": "AI Limiter" }
+        ],
+        "parents": ["caterium_electronics"]
+      },
+      {
+        "id": "power_poles_mk3",
+        "name": "Power Poles Mk.3",
+        "description": "State-of-the-art power poles supporting up to 10 connections.",
+        "x": 6,
+        "y": 2,
+        "icon": "power_pole_mk3",
+        "cost": [
+          { "itemId": "high_speed_connector", "name": "High-Speed Connector", "amount": 50 },
+          { "itemId": "steel_pipe", "name": "Steel Pipe", "amount": 200 }
+        ],
+        "unlocks": [
+          { "type": "building", "id": "build_power_pole_mk3", "name": "Power Pole Mk.3" }
+        ],
+        "parents": ["power_poles_mk2"]
+      },
+      {
+        "id": "smart_splitter",
+        "name": "Smart Splitter",
+        "description": "Unlocks the Smart Splitter for conveyor sorting.",
+        "x": 6,
+        "y": 1,
+        "cost": [
+          { "itemId": "ai_limiter", "name": "AI Limiter", "amount": 10 },
+          { "itemId": "reinforced_iron_plate", "name": "Reinforced Plate", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "building", "id": "conveyor_attachment_splitter_smart", "name": "Smart Splitter" }
+        ],
+        "parents": ["ai_limiter"]
+      },
+      {
+        "id": "high_speed_connector",
+        "name": "High-Speed Connector",
+        "description": "Unlocks High-Speed Connector communication components.",
+        "x": 5,
+        "y": 3,
+        "cost": [
+          { "itemId": "quickwire", "name": "Quickwire", "amount": 500 },
+          { "itemId": "plastic", "name": "Plastic", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "high_speed_connector", "name": "High-Speed Connector" }
+        ],
+        "parents": ["caterium_electronics"]
+      },
+      {
+        "id": "power_switch",
+        "name": "Power Switch",
+        "description": "Unlocks the Power Switch for managing separate power grids.",
+        "x": 7,
+        "y": 2,
+        "icon": "power_switch",
+        "cost": [
+          { "itemId": "steel_beam", "name": "Steel Beam", "amount": 100 },
+          { "itemId": "ai_limiter", "name": "AI Limiter", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "building", "id": "build_power_switch", "name": "Power Switch" }
+        ],
+        "parents": ["power_poles_mk3"]
+      },
+      {
+        "id": "programmable_splitter",
+        "name": "Programmable Splitter",
+        "description": "Allows advanced multi-item routing on conveyor belts.",
+        "x": 7,
+        "y": 1,
+        "cost": [
+          { "itemId": "ai_limiter", "name": "AI Limiter", "amount": 100 },
+          { "itemId": "computer", "name": "Computer", "amount": 50 },
+          { "itemId": "heavy_modular_frame", "name": "Heavy Frame", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "building", "id": "conveyor_attachment_splitter_programmable", "name": "Programmable Splitter" }
+        ],
+        "parents": ["smart_splitter"]
+      },
+      {
+        "id": "homing_rifle_ammo",
+        "name": "Bullet Guidance System",
+        "description": "Unlocks Homing Rifle Ammo that tracks targets.",
+        "x": 6,
+        "y": 3,
+        "cost": [
+          { "itemId": "high_speed_connector", "name": "High-Speed Connector", "amount": 10 },
+          { "itemId": "rifle_ammo", "name": "Rifle Ammo", "amount": 500 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "homing_rifle_ammo", "name": "Homing Rifle Ammo" }
+        ],
+        "parents": ["high_speed_connector"]
+      },
+      {
+        "id": "geothermal_generator",
+        "name": "Geothermal Generator",
+        "description": "Enables building Geothermal Generators on active Geysers.",
+        "x": 8,
+        "y": 3,
+        "icon": "generator_geo_thermal",
+        "cost": [
+          { "itemId": "high_speed_connector", "name": "High-Speed Connector", "amount": 100 },
+          { "itemId": "quickwire", "name": "Quickwire", "amount": 1000 },
+          { "itemId": "motor", "name": "Motor", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "building", "id": "generator_geothermal", "name": "Geothermal Generator" }
+        ],
+        "parents": ["high_speed_connector"]
+      },
+      {
+        "id": "priority_power_switch",
+        "name": "Priority Power Switch",
+        "description": "Unlocks the Priority Power Switch to automatically isolate grid segments on power failure.",
+        "x": 8,
+        "y": 2,
+        "icon": "priority_power_switch",
+        "cost": [
+          { "itemId": "high_speed_connector", "name": "High-Speed Connector", "amount": 25 },
+          { "itemId": "quickwire", "name": "Quickwire", "amount": 500 }
+        ],
+        "unlocks": [
+          { "type": "building", "id": "build_priority_power_switch", "name": "Priority Power Switch" }
+        ],
+        "parents": ["power_switch"]
+      }
+    ]
+  },
+  "nutrients": {
+    "name": "Nutrient Research",
+    "icon": "paleberry",
+    "nodes": [
+      {
+        "id": "beryl_nut",
+        "name": "Beryl Nut",
+        "description": "Analyze high-fiber Beryl Nuts.",
+        "x": 0,
+        "y": 0,
+        "cost": [
+          { "itemId": "beryl_nut", "name": "Beryl Nut", "amount": 5 }
+        ],
+        "unlocks": [
+          { "type": "scanner", "name": "Object Scanner: Beryl Nut Mode" }
+        ],
+        "parents": []
+      },
+      {
+        "id": "paleberry",
+        "name": "Paleberry",
+        "description": "Analyze sugar-packed Paleberries.",
+        "x": 0,
+        "y": 1,
+        "cost": [
+          { "itemId": "paleberry", "name": "Paleberry", "amount": 2 }
+        ],
+        "unlocks": [
+          { "type": "scanner", "name": "Object Scanner: Paleberry Mode" }
+        ],
+        "parents": []
+      },
+      {
+        "id": "bacon_agaric",
+        "name": "Bacon Agaric",
+        "description": "Analyze cave Bacon Agaric fungi.",
+        "x": 0,
+        "y": 2,
+        "cost": [
+          { "itemId": "bacon_agaric", "name": "Bacon Agaric", "amount": 1 }
+        ],
+        "unlocks": [
+          { "type": "scanner", "name": "Object Scanner: Bacon Agaric Mode" }
+        ],
+        "parents": []
+      },
+      {
+        "id": "nutritional_processor",
+        "name": "Nutritional Processor",
+        "description": "Unlocks processing algorithms for raw biological materials.",
+        "x": 1,
+        "y": 1,
+        "cost": [
+          { "itemId": "modular_frame", "name": "Modular Frame", "amount": 25 },
+          { "itemId": "steel_pipe", "name": "Steel Pipe", "amount": 50 },
+          { "itemId": "wire", "name": "Wire", "amount": 500 }
+        ],
+        "unlocks": [
+          { "type": "research", "name": "Unlocks Nutritional Inhaler research" }
+        ],
+        "parents": ["beryl_nut", "paleberry", "bacon_agaric"]
+      },
+      {
+        "id": "nutritional_inhaler",
+        "name": "Nutritional Inhaler",
+        "description": "Unlocks the Nutritional variant of the Medical Inhaler.",
+        "x": 2,
+        "y": 1,
+        "cost": [
+          { "itemId": "bacon_agaric", "name": "Bacon Agaric", "amount": 2 },
+          { "itemId": "paleberry", "name": "Paleberry", "amount": 4 },
+          { "itemId": "beryl_nut", "name": "Beryl Nut", "amount": 10 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "medical_inhaler", "name": "Medical Inhaler" }
+        ],
+        "parents": ["nutritional_processor"]
+      }
+    ]
+  },
+  "alien_organisms": {
+    "name": "Alien Organisms",
+    "icon": "hatcher_remains",
+    "nodes": [
+      {
+        "id": "hog_research",
+        "name": "Hog Research",
+        "description": "Analyze remains of native Fluffy-tail Hogs.",
+        "x": 0,
+        "y": 0,
+        "icon": "hog_carapace",
+        "cost": [
+          { "itemId": "hog_carapace", "name": "Hog Remains", "amount": 1 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "alien_protein", "name": "Alien Protein" }
+        ],
+        "parents": []
+      },
+      {
+        "id": "hatcher_research",
+        "name": "Hatcher Research",
+        "description": "Analyze remains of Spore Hatchers.",
+        "x": 0,
+        "y": 1,
+        "icon": "hatcher_remains",
+        "cost": [
+          { "itemId": "hatcher_remains", "name": "Hatcher Remains", "amount": 1 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "alien_protein", "name": "Alien Protein" }
+        ],
+        "parents": []
+      },
+      {
+        "id": "stinger_research",
+        "name": "Stinger Research",
+        "description": "Analyze remains of subterranean Stingers.",
+        "x": 0,
+        "y": 2,
+        "icon": "stinger_remains",
+        "cost": [
+          { "itemId": "stinger_remains", "name": "Stinger Remains", "amount": 1 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "alien_protein", "name": "Alien Protein" }
+        ],
+        "parents": []
+      },
+      {
+        "id": "spitter_research",
+        "name": "Spitter Research",
+        "description": "Analyze remains of fire-spitting creatures.",
+        "x": 0,
+        "y": 3,
+        "icon": "spitter_remains",
+        "cost": [
+          { "itemId": "spitter_remains", "name": "Spitter Remains", "amount": 1 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "alien_protein", "name": "Alien Protein" }
+        ],
+        "parents": []
+      },
+      {
+        "id": "bio_organic_properties",
+        "name": "Bio-Organic Properties",
+        "description": "Unlocks conversion of creature remains to protein and capsules.",
+        "x": 1,
+        "y": 2,
+        "cost": [
+          { "itemId": "alien_protein", "name": "Alien Protein", "amount": 5 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "alien_dna_capsule", "name": "Alien DNA Capsule" }
+        ],
+        "parents": ["hog_research", "hatcher_research", "stinger_research", "spitter_research"]
+      },
+      {
+        "id": "protein_inhaler",
+        "name": "Protein Inhaler",
+        "description": "Medicinal Inhaler formula synthesized from alien protein and nuts.",
+        "x": 2,
+        "y": 0,
+        "cost": [
+          { "itemId": "alien_protein", "name": "Alien Protein", "amount": 2 },
+          { "itemId": "beryl_nut", "name": "Beryl Nut", "amount": 20 },
+          { "itemId": "rotor", "name": "Rotor", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "medical_inhaler", "name": "Medical Inhaler" }
+        ],
+        "parents": ["bio_organic_properties"]
+      },
+      {
+        "id": "structural_analysis",
+        "name": "Structural Analysis",
+        "description": "Assessing creature chitin strength for weapon blueprints.",
+        "x": 2,
+        "y": 1,
+        "cost": [
+          { "itemId": "alien_dna_capsule", "name": "Alien DNA Capsule", "amount": 5 },
+          { "itemId": "iron_rod", "name": "Iron Rod", "amount": 100 }
+        ],
+        "unlocks": [],
+        "parents": ["bio_organic_properties"]
+      },
+      {
+        "id": "rebar_gun",
+        "name": "The Rebar Gun",
+        "description": "Unlocks the Rebar Gun combat weapon.",
+        "x": 3,
+        "y": 1,
+        "cost": [
+          { "itemId": "rotor", "name": "Rotor", "amount": 25 },
+          { "itemId": "reinforced_iron_plate", "name": "Reinforced Plate", "amount": 50 },
+          { "itemId": "screw", "name": "Screw", "amount": 500 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "rebar_gun", "name": "Rebar Gun" },
+          { "type": "item", "id": "iron_rebar", "name": "Iron Rebar" }
+        ],
+        "parents": ["structural_analysis"]
+      },
+      {
+        "id": "inflated_pocket_dimension",
+        "name": "Inflated Pocket Dimension",
+        "description": "Adds 6 slots to the pioneer personal inventory capacity.",
+        "x": 2,
+        "y": 3,
+        "icon": "character_upgrade",
+        "cost": [
+          { "itemId": "alien_protein", "name": "Alien Protein", "amount": 3 },
+          { "itemId": "cable", "name": "Cable", "amount": 1000 }
+        ],
+        "unlocks": [],
+        "parents": ["bio_organic_properties"]
+      },
+      {
+        "id": "expanded_toolbelt",
+        "name": "Expanded Toolbelt",
+        "description": "Adds +1 Hand Equipment Slot.",
+        "x": 3,
+        "y": 3,
+        "icon": "character_upgrade",
+        "cost": [
+          { "itemId": "alien_dna_capsule", "name": "Alien DNA Capsule", "amount": 5 },
+          { "itemId": "steel_beam", "name": "Steel Beam", "amount": 500 }
+        ],
+        "unlocks": [],
+        "parents": ["inflated_pocket_dimension"]
+      },
+      {
+        "id": "hostile_organism_detection",
+        "name": "Hostile Organism Detection",
+        "description": "Upgrades the Object Scanner to locate active hostile alien lifeforms.",
+        "x": 2,
+        "y": 4,
+        "icon": "hatcher_remains",
+        "cost": [
+          { "itemId": "alien_dna_capsule", "name": "Alien DNA Capsule", "amount": 10 },
+          { "itemId": "crystal_oscillator", "name": "Crystal Oscillator", "amount": 5 },
+          { "itemId": "high_speed_connector", "name": "High-Speed Connector", "amount": 5 }
+        ],
+        "unlocks": [],
+        "parents": ["bio_organic_properties"]
+      }
+    ]
+  },
+  "alien_technology": {
+    "name": "Alien Technology",
+    "icon": "sam",
+    "nodes": [
+      {
+        "id": "sam_analysis",
+        "name": "SAM Analysis",
+        "description": "Analyze Strange Alien Matter (SAM).",
+        "x": 0,
+        "y": 2,
+        "cost": [
+          { "itemId": "sam", "name": "SAM Ore", "amount": 10 }
+        ],
+        "unlocks": [],
+        "parents": []
+      },
+      {
+        "id": "mercer_sphere_analysis",
+        "name": "Mercer Sphere Analysis",
+        "description": "Analyze Mercer Sphere alien artifact.",
+        "x": 1,
+        "y": 0,
+        "cost": [
+          { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 1 }
+        ],
+        "unlocks": [],
+        "parents": ["sam_analysis"]
+      },
+      {
+        "id": "sam_reanimation",
+        "name": "SAM Reanimation",
+        "description": "Analyze reanimation properties of SAM.",
+        "x": 1,
+        "y": 2,
+        "cost": [
+          { "itemId": "sam", "name": "SAM Ore", "amount": 20 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "reanimated_sam", "name": "Reanimated SAM" }
+        ],
+        "parents": ["sam_analysis"]
+      },
+      {
+        "id": "somersloop_analysis",
+        "name": "Somersloop Analysis",
+        "description": "Analyze Somersloop alien artifact.",
+        "x": 1,
+        "y": 4,
+        "cost": [
+          { "itemId": "somersloop", "name": "Somersloop", "amount": 1 }
+        ],
+        "unlocks": [],
+        "parents": ["sam_analysis"]
+      },
+      {
+        "id": "sam_fluctuator",
+        "name": "SAM Fluctuator",
+        "description": "Research SAM Fluctuator components.",
+        "x": 2,
+        "y": 2,
+        "cost": [
+          { "itemId": "reanimated_sam", "name": "Reanimated SAM", "amount": 10 },
+          { "itemId": "steel_pipe", "name": "Steel Pipe", "amount": 100 },
+          { "itemId": "wire", "name": "Wire", "amount": 200 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "sam_fluctuator", "name": "SAM Fluctuator" }
+        ],
+        "parents": ["sam_reanimation"]
+      },
+      {
+        "id": "field_generator",
+        "name": "Field Generator",
+        "description": "Sub-spatial pocket field generator research.",
+        "x": 3,
+        "y": 2,
+        "cost": [],
+        "unlocks": [],
+        "parents": ["sam_fluctuator"]
+      },
+      {
+        "id": "awesome",
+        "name": "AWESOME",
+        "description": "Extra-dimensional energy harvesting.",
+        "x": 4,
+        "y": 2,
+        "cost": [],
+        "unlocks": [],
+        "parents": ["field_generator"]
+      },
+      {
+        "id": "alien_energy_harvesting",
+        "name": "Alien Energy Harvesting",
+        "description": "Unlocks advanced alien technology harvesting branches.",
+        "x": 5,
+        "y": 2,
+        "cost": [
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 10 }
+        ],
+        "unlocks": [],
+        "parents": ["sam_fluctuator"]
+      },
+      {
+        "id": "dimensional_depot",
+        "name": "Dimensional Depot",
+        "description": "Unlocks the sub-spatial pocket uploader building.",
+        "x": 6,
+        "y": 0,
+        "cost": [
+          { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 1 },
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 11 }
+        ],
+        "unlocks": [
+          { "type": "building", "id": "dimensional_depot_uploader", "name": "Dimensional Depot Uploader" }
+        ],
+        "parents": ["mercer_sphere_analysis", "awesome"]
+      },
+      {
+        "id": "manual_depot_uploader",
+        "name": "Manual Depot Uploader",
+        "description": "Enables uploading to the Dimensional Depot from the inventory.",
+        "x": 6,
+        "y": 1,
+        "cost": [
+          { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 3},
+          { "itemId": "computer", "name": "Computer", "amount": 17},
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 29}
+        ],
+        "unlocks": [],
+        "parents": ["mercer_sphere_analysis", "awesome"]
+      },
+      {
+        "id": "production_amplifier",
+        "name": "Production Amplifier",
+        "description": "Unlocks machine output doubling with Somersloops.",
+        "x": 6,
+        "y": 3,
+        "cost": [
+          { "itemId": "somersloop", "name": "Somersloop", "amount": 1 },
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 100 },
+          { "itemId": "circuit_board", "name": "Circuit Board", "amount": 50 }
+        ],
+        "unlocks": [],
+        "parents": ["somersloop_analysis", "alien_energy_harvesting"]
+      },
+      {
+        "id": "power_augmenter",
+        "name": "Power Augmenter",
+        "description": "Unlocks the Alien Power Augmenter building.",
+        "x": 6,
+        "y": 4,
+        "cost": [
+          { "itemId": "somersloop", "name": "Somersloop", "amount": 1 },
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 100 },
+          { "itemId": "computer", "name": "Computer", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "building", "id": "alien_power_augmenter", "name": "Alien Power Augmenter" }
+        ],
+        "parents": ["somersloop_analysis", "alien_energy_harvesting"]
+      },
+      {
+        "id": "depot_expansion_2",
+        "name": "Depot Expansion (200%)",
+        "description": "Expands Dimensional Depot storage to 2 stacks per item type.",
+        "x": 7,
+        "y": 0,
+        "cost": [
+          { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 3 },
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 47 }
+        ],
+        "unlocks": [],
+        "parents": ["dimensional_depot", "alien_energy_harvesting"]
+      },
+      {
+        "id": "upload_speed_30",
+        "name": "Upload Upgrade: 30/min",
+        "description": "Increases uploader speed to 30 items per minute.",
+        "x": 7,
+        "y": 1,
+        "cost": [
+          { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 3 },
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 47 }
+        ],
+        "unlocks": [],
+        "parents": ["manual_depot_uploader", "alien_energy_harvesting"]
+      },
+      {
+        "id": "alien_power_matrix",
+        "name": "Alien Power Matrix",
+        "description": "Unlocks advanced Alien Power Matrix fuel recipe for extra Power Augmenter boost.",
+        "x": 7,
+        "y": 4,
+        "cost": [
+          { "itemId": "singularity_cell", "name": "Singularity Cell", "amount": 50 },
+          { "itemId": "power_shard", "name": "Power Shard", "amount": 100 },
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 500 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "alien_power_matrix", "name": "Alien Power Matrix" }
+        ],
+        "parents": ["power_augmenter"]
+      },
+      {
+        "id": "depot_expansion_3",
+        "name": "Depot Expansion (300%)",
+        "description": "Expands Dimensional Depot storage to 3 stacks per item type.",
+        "x": 8,
+        "y": 0,
+        "cost": [
+          { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 7 },
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 103 }
+        ],
+        "unlocks": [],
+        "parents": ["depot_expansion_2"]
+      },
+      {
+        "id": "upload_speed_60",
+        "name": "Upload Upgrade: 60/min",
+        "description": "Increases uploader speed to 60 items per minute.",
+        "x": 8,
+        "y": 1,
+        "cost": [
+          { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 7 },
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 103 }
+        ],
+        "unlocks": [],
+        "parents": ["upload_speed_30"]
+      },
+      {
+        "id": "depot_expansion_4",
+        "name": "Depot Expansion (400%)",
+        "description": "Expands Dimensional Depot storage to 4 stacks per item type.",
+        "x": 9,
+        "y": 0,
+        "cost": [
+          { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 13 },
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 151 }
+        ],
+        "unlocks": [],
+        "parents": ["depot_expansion_3"]
+      },
+      {
+        "id": "upload_speed_120",
+        "name": "Upload Upgrade: 120/min",
+        "description": "Increases uploader speed to 120 items per minute.",
+        "x": 9,
+        "y": 1,
+        "cost": [
+          { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 13 },
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 151 }
+        ],
+        "unlocks": [],
+        "parents": ["upload_speed_60"]
+      },
+      {
+        "id": "depot_expansion_5",
+        "name": "Depot Expansion (500%)",
+        "description": "Expands Dimensional Depot storage to 5 stacks per item type.",
+        "x": 10,
+        "y": 0,
+        "cost": [
+          { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 23 },
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 199 }
+        ],
+        "unlocks": [],
+        "parents": ["depot_expansion_4"]
+      },
+      {
+        "id": "upload_speed_240",
+        "name": "Upload Upgrade: 240/min",
+        "description": "Increases uploader speed to 240 items per minute.",
+        "x": 10,
+        "y": 1,
+        "cost": [
+          { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 23 },
+          { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 199 }
+        ],
+        "unlocks": [],
+        "parents": ["upload_speed_120"]
+      }
+    ]
+  },
+  "mycelia": {
+    "name": "Mycelia Research",
+    "icon": "mycelia",
+    "nodes": [
+      {
+        "id": "mycelia_analysis",
+        "name": "Mycelia",
+        "description": "Analyze cave fungal threads.",
+        "x": 0,
+        "y": 2,
+        "cost": [
+          { "itemId": "mycelia", "name": "Mycelia", "amount": 5 }
+        ],
+        "unlocks": [],
+        "parents": []
+      },
+      {
+        "id": "fabric",
+        "name": "Fabric",
+        "description": "Synthesizing fabric using fungal mycelia and biomass.",
+        "x": 1,
+        "y": 1,
+        "cost": [
+          { "itemId": "mycelia", "name": "Mycelia", "amount": 25 },
+          { "itemId": "biomass", "name": "Biomass", "amount": 100 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "fabric", "name": "Fabric" }
+        ],
+        "parents": ["mycelia_analysis"]
+      },
+      {
+        "id": "toxic_cellular_modification",
+        "name": "Toxic Cellular Modification",
+        "description": "Researching toxic properties of mycelia for gas explosives.",
+        "x": 1,
+        "y": 2,
+        "cost": [
+          { "itemId": "nobelisk", "name": "Nobelisk", "amount": 10 },
+          { "itemId": "mycelia", "name": "Mycelia", "amount": 100 },
+          { "itemId": "biomass", "name": "Biomass", "amount": 200 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "gas_nobelisk", "name": "Gas Nobelisk" }
+        ],
+        "parents": ["mycelia_analysis"]
+      },
+      {
+        "id": "medical_properties",
+        "name": "Medical Properties",
+        "description": "Assess medical application of cave fungi.",
+        "x": 1,
+        "y": 3,
+        "cost": [
+          { "itemId": "mycelia", "name": "Mycelia", "amount": 25 },
+          { "itemId": "stator", "name": "Stator", "amount": 10 }
+        ],
+        "unlocks": [],
+        "parents": ["mycelia_analysis"]
+      },
+      {
+        "id": "parachute",
+        "name": "Parachute",
+        "description": "Glider utility tool utilizing fabric.",
+        "x": 2,
+        "y": 0,
+        "cost": [
+          { "itemId": "fabric", "name": "Fabric", "amount": 10 },
+          { "itemId": "cable", "name": "Cable", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "parachute", "name": "Parachute" }
+        ],
+        "parents": ["fabric"]
+      },
+      {
+        "id": "expanded_toolbelt_mycelia",
+        "name": "Expanded Toolbelt",
+        "description": "Adds +1 Hand Slot.",
+        "x": 2,
+        "y": 1,
+        "cost": [
+          { "itemId": "fabric", "name": "Fabric", "amount": 50 },
+          { "itemId": "rotor", "name": "Rotor", "amount": 100 }
+        ],
+        "unlocks": [],
+        "parents": ["fabric"]
+      },
+      {
+        "id": "synthetic_polyester_fabric",
+        "name": "Synthetic Polyester Fabric",
+        "description": "Craft fabric out of Polymer Resin.",
+        "x": 2,
+        "y": 2,
+        "cost": [
+          { "itemId": "fabric", "name": "Fabric", "amount": 25 },
+          { "itemId": "polymer_resin", "name": "Polymer Resin", "amount": 100 }
+        ],
+        "unlocks": [],
+        "parents": ["fabric"]
+      },
+      {
+        "id": "gas_mask",
+        "name": "Gas Mask",
+        "description": "Respiratory protection equipment filtering toxic gases.",
+        "x": 2,
+        "y": 3,
+        "cost": [
+          { "itemId": "coal", "name": "Coal", "amount": 10 },
+          { "itemId": "fabric", "name": "Fabric", "amount": 50 },
+          { "itemId": "steel_pipe", "name": "Steel Pipe", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "gas_mask", "name": "Gas Mask" },
+          { "type": "item", "id": "gas_filter", "name": "Gas Filter" }
+        ],
+        "parents": ["fabric"]
+      },
+      {
+        "id": "vitamin_inhaler",
+        "name": "Vitamin Inhaler",
+        "description": "Vitamin variant of the Medical Inhaler.",
+        "x": 2,
+        "y": 4,
+        "cost": [
+          { "itemId": "mycelia", "name": "Mycelia", "amount": 10 },
+          { "itemId": "paleberry", "name": "Paleberry", "amount": 5 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "medical_inhaler", "name": "Medical Inhaler" }
+        ],
+        "parents": ["medical_properties"]
+      },
+      {
+        "id": "therapeutic_inhaler",
+        "name": "Therapeutic Inhaler",
+        "description": "Advanced healing inhaler variant.",
+        "x": 2,
+        "y": 5,
+        "cost": [
+          { "itemId": "mycelia", "name": "Mycelia", "amount": 15 },
+          { "itemId": "bacon_agaric", "name": "Bacon Agaric", "amount": 1 },
+          { "itemId": "alien_protein", "name": "Alien Protein", "amount": 1 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "medical_inhaler", "name": "Medical Inhaler" }
+        ],
+        "parents": ["medical_properties"]
+      }
+    ]
+  },
+  "power_slugs": {
+    "name": "Power Slugs Research",
+    "icon": "blue_power_slug",
+    "nodes": [
+      {
+        "id": "blue_slug",
+        "name": "Blue Power Slugs",
+        "description": "Studying standard blue power crystals.",
+        "x": 0,
+        "y": 1,
+        "cost": [
+          { "itemId": "blue_power_slug", "name": "Blue Power Slug", "amount": 1 }
+        ],
+        "unlocks": [],
+        "parents": []
+      },
+      {
+        "id": "slug_scanning",
+        "name": "Slug Scanning",
+        "description": "Enables searching for Power Slugs with the Object Scanner.",
+        "x": 1,
+        "y": 1,
+        "cost": [
+          { "itemId": "iron_rod", "name": "Iron Rod", "amount": 50 },
+          { "itemId": "wire", "name": "Wire", "amount": 100 },
+          { "itemId": "screw", "name": "Screw", "amount": 200 }
+        ],
+        "unlocks": [],
+        "parents": ["blue_slug"]
+      },
+      {
+        "id": "yellow_slug",
+        "name": "Yellow Power Shards",
+        "description": "Extracting Power Shards from yellow power slugs.",
+        "x": 2,
+        "y": 1,
+        "cost": [
+          { "itemId": "yellow_power_slug", "name": "Yellow Power Slug", "amount": 1 },
+          { "itemId": "rotor", "name": "Rotor", "amount": 25 },
+          { "itemId": "cable", "name": "Cable", "amount": 100 }
+        ],
+        "unlocks": [],
+        "parents": ["slug_scanning"]
+      },
+      {
+        "id": "overclocking",
+        "name": "Overclock Production",
+        "description": "Enables the insertion of Power Shards into machines to boost speed up to 250%.",
+        "x": 3,
+        "y": 1,
+        "cost": [
+          { "itemId": "power_shard", "name": "Power Shard", "amount": 1 },
+          { "itemId": "iron_plate", "name": "Iron Plate", "amount": 50 },
+          { "itemId": "wire", "name": "Wire", "amount": 50 }
+        ],
+        "unlocks": [],
+        "parents": ["yellow_slug"]
+      },
+      {
+        "id": "purple_slug",
+        "name": "Purple Power Shards",
+        "description": "Extracting Power Shards from purple power slugs.",
+        "x": 4,
+        "y": 1,
+        "cost": [
+          { "itemId": "purple_power_slug", "name": "Purple Power Slug", "amount": 1 },
+          { "itemId": "modular_frame", "name": "Modular Frame", "amount": 25 },
+          { "itemId": "copper_sheet", "name": "Copper Sheet", "amount": 100 }
+        ],
+        "unlocks": [],
+        "parents": ["overclocking"]
+      },
+      {
+        "id": "synthetic_power_shards",
+        "name": "Synthetic Power Shards",
+        "description": "Allows automated synthesis of Power Shards in Tier 9.",
+        "x": 5,
+        "y": 1,
+        "cost": [
+          { "itemId": "power_shard", "name": "Power Shard", "amount": 10 },
+          { "itemId": "time_crystal", "name": "Time Crystal", "amount": 100 },
+          { "itemId": "quartz_crystal", "name": "Quartz Crystal", "amount": 200 }
+        ],
+        "unlocks": [],
+        "parents": ["purple_slug"]
+      }
+    ]
+  },
+  "quartz": {
+    "name": "Quartz Research",
+    "icon": "raw_quartz",
+    "nodes": [
+      {
+        "id": "quartz_analysis",
+        "name": "Quartz",
+        "description": "Analyzing crystalline raw quartz structures.",
+        "x": 0,
+        "y": 2,
+        "cost": [
+          { "itemId": "raw_quartz", "name": "Raw Quartz", "amount": 10 }
+        ],
+        "unlocks": [],
+        "parents": []
+      },
+      {
+        "id": "quartz_crystal",
+        "name": "Quartz Crystals",
+        "description": "Refining raw quartz crystals.",
+        "x": 1,
+        "y": 1,
+        "cost": [
+          { "itemId": "raw_quartz", "name": "Raw Quartz", "amount": 20 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "quartz_crystal", "name": "Quartz Crystal" }
+        ],
+        "parents": ["quartz_analysis"]
+      },
+      {
+        "id": "silica",
+        "name": "Silica",
+        "description": "Crushing quartz into fine silica powder.",
+        "x": 1,
+        "y": 3,
+        "cost": [
+          { "itemId": "raw_quartz", "name": "Raw Quartz", "amount": 20 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "silica", "name": "Silica" }
+        ],
+        "parents": ["quartz_analysis"]
+      },
+      {
+        "id": "shatter_rebar",
+        "name": "Shatter Rebar",
+        "description": "Shotgun-like rebar ammunition that shatters on firing.",
+        "x": 2,
+        "y": 0,
+        "cost": [
+          { "itemId": "quartz_crystal", "name": "Quartz Crystal", "amount": 30 },
+          { "itemId": "iron_rebar", "name": "Iron Rebar", "amount": 150 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "shatter_rebar", "name": "Shatter Rebar" }
+        ],
+        "parents": ["quartz_crystal"]
+      },
+      {
+        "id": "crystal_oscillator",
+        "name": "Crystal Oscillator",
+        "description": "High frequency resonance tracking crystal oscillator board.",
+        "x": 2,
+        "y": 1,
+        "cost": [
+          { "itemId": "quartz_crystal", "name": "Quartz Crystal", "amount": 100 },
+          { "itemId": "reinforced_iron_plate", "name": "Reinforced Plate", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "crystal_oscillator", "name": "Crystal Oscillator" }
+        ],
+        "parents": ["quartz_crystal"]
+      },
+      {
+        "id": "blade_runners",
+        "name": "Blade Runners",
+        "description": "Mobility exoskeleton that increases sprinting speed and jump height.",
+        "x": 2,
+        "y": 3,
+        "cost": [
+          { "itemId": "silica", "name": "Silica", "amount": 50 },
+          { "itemId": "modular_frame", "name": "Modular Frame", "amount": 10 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "blade_runners", "name": "Blade Runners" }
+        ],
+        "parents": ["silica"]
+      },
+      {
+        "id": "inflated_pocket_dimension_quartz",
+        "name": "Inflated Pocket Dimension",
+        "description": "Adds 6 slots to the pioneer personal inventory capacity.",
+        "x": 2,
+        "y": 4,
+        "cost": [
+          { "itemId": "silica", "name": "Silica", "amount": 200 }
+        ],
+        "unlocks": [],
+        "parents": ["silica"]
+      },
+      {
+        "id": "explorer",
+        "name": "The Explorer",
+        "description": "Fast all-terrain scouting buggy fitted with double wishbone suspension.",
+        "x": 3,
+        "y": 0,
+        "cost": [
+          { "itemId": "crystal_oscillator", "name": "Crystal Oscillator", "amount": 10 },
+          { "itemId": "modular_frame", "name": "Modular Frame", "amount": 100 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "explorer", "name": "Explorer Buggy" }
+        ],
+        "parents": ["crystal_oscillator"]
+      },
+      {
+        "id": "explosive_resonance",
+        "name": "Explosive Resonance Application",
+        "description": "Unlocks Pulse Nobelisk using resonance frequency detonation.",
+        "x": 3,
+        "y": 1,
+        "cost": [
+          { "itemId": "crystal_oscillator", "name": "Crystal Oscillator", "amount": 5 },
+          { "itemId": "nobelisk", "name": "Nobelisk", "amount": 100 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "pulse_nobelisk", "name": "Pulse Nobelisk" }
+        ],
+        "parents": ["crystal_oscillator"]
+      },
+      {
+        "id": "radio_signal_scanning",
+        "name": "Radio Signal Scanning",
+        "description": "Allows scanning for crash sites (Hard Drives).",
+        "x": 3,
+        "y": 2,
+        "cost": [
+          { "itemId": "crystal_oscillator", "name": "Crystal Oscillator", "amount": 100 },
+          { "itemId": "motor", "name": "Motor", "amount": 100 },
+          { "itemId": "object_scanner", "name": "Object Scanner", "amount": 1 }
+        ],
+        "unlocks": [],
+        "parents": ["crystal_oscillator"]
+      },
+      {
+        "id": "radar_technology",
+        "name": "Radar Technology",
+        "description": "High altitude scanning radar mapping nearby resources and landmarks.",
+        "x": 3,
+        "y": 3,
+        "cost": [
+          { "itemId": "crystal_oscillator", "name": "Crystal Oscillator", "amount": 50 },
+          { "itemId": "heavy_modular_frame", "name": "Heavy Frame", "amount": 50 },
+          { "itemId": "computer", "name": "Computer", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "building", "id": "build_radar_tower", "name": "Radar Tower" }
+        ],
+        "parents": ["crystal_oscillator"]
+      },
+      {
+        "id": "material_resonance_screening",
+        "name": "Material Resonance Screening",
+        "description": "Unlocks the Priority Merger.",
+        "x": 3,
+        "y": 4,
+        "cost": [
+          { "itemId": "crystal_oscillator", "name": "Crystal Oscillator", "amount": 15 },
+          { "itemId": "reinforced_iron_plate", "name": "Reinforced Plate", "amount": 100 }
+        ],
+        "unlocks": [
+          { "type": "building", "id": "conveyor_attachment_merger_priority", "name": "Priority Merger" }
+        ],
+        "parents": ["crystal_oscillator"]
+      }
+    ]
+  },
+  "sulfur": {
+    "name": "Sulfur Research",
+    "icon": "sulfur",
+    "nodes": [
+      {
+        "id": "sulfur_analysis",
+        "name": "Sulfur",
+        "description": "Chemical composition assessment of mineral sulfur.",
+        "x": 0,
+        "y": 3,
+        "cost": [
+          { "itemId": "sulfur", "name": "Sulfur", "amount": 10 }
+        ],
+        "unlocks": [],
+        "parents": []
+      },
+      {
+        "id": "black_powder",
+        "name": "Black Powder",
+        "description": "Standard propellant mixture of sulfur and coal.",
+        "x": 1,
+        "y": 2,
+        "cost": [
+          { "itemId": "sulfur", "name": "Sulfur", "amount": 50 },
+          { "itemId": "coal", "name": "Coal", "amount": 25 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "black_powder", "name": "Black Powder" }
+        ],
+        "parents": ["sulfur_analysis"]
+      },
+      {
+        "id": "experimental_power_generation",
+        "name": "Experimental Power Generation",
+        "description": "Researching high density carbon sulfur fuel options.",
+        "x": 1,
+        "y": 4,
+        "cost": [
+          { "itemId": "sulfur", "name": "Sulfur", "amount": 25 },
+          { "itemId": "modular_frame", "name": "Modular Frame", "amount": 50 },
+          { "itemId": "rotor", "name": "Rotor", "amount": 100 }
+        ],
+        "unlocks": [],
+        "parents": ["sulfur_analysis"]
+      },
+      {
+        "id": "expanded_toolbelt_sulfur",
+        "name": "Expanded Toolbelt",
+        "description": "Adds +1 Hand Slot.",
+        "x": 2,
+        "y": 1,
+        "cost": [
+          { "itemId": "black_powder", "name": "Black Powder", "amount": 100 },
+          { "itemId": "encased_industrial_beam", "name": "Encased Beam", "amount": 50 }
+        ],
+        "unlocks": [],
+        "parents": ["black_powder"]
+      },
+      {
+        "id": "nobelisk_detonator",
+        "name": "The Nobelisk Detonator",
+        "description": "Unlocks the Nobelisk Detonator and standard Nobelisk explosive charges.",
+        "x": 2,
+        "y": 2,
+        "cost": [
+          { "itemId": "black_powder", "name": "Black Powder", "amount": 50 },
+          { "itemId": "steel_pipe", "name": "Steel Pipe", "amount": 100 },
+          { "itemId": "cable", "name": "Cable", "amount": 200 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "nobelisk", "name": "Nobelisk" },
+          { "type": "item", "id": "nobelisk_detonator", "name": "Nobelisk Detonator" }
+        ],
+        "parents": ["black_powder"]
+      },
+      {
+        "id": "smokeless_powder",
+        "name": "Smokeless Powder",
+        "description": "Unlocks Smokeless Powder.",
+        "x": 2,
+        "y": 3,
+        "cost": [
+          { "itemId": "black_powder", "name": "Black Powder", "amount": 100 },
+          { "itemId": "plastic", "name": "Plastic", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "smokeless_powder", "name": "Smokeless Powder" }
+        ],
+        "parents": ["black_powder"]
+      },
+      {
+        "id": "compacted_coal",
+        "name": "Compacted Coal",
+        "description": "High-density energy fuel catalyst.",
+        "x": 2,
+        "y": 4,
+        "cost": [
+          { "itemId": "hard_drive", "name": "Hard Drive", "amount": 1 },
+          { "itemId": "sulfur", "name": "Sulfur", "amount": 25 },
+          { "itemId": "coal", "name": "Coal", "amount": 25 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "compacted_coal", "name": "Compacted Coal" }
+        ],
+        "parents": ["experimental_power_generation"]
+      },
+      {
+        "id": "cluster_nobelisk",
+        "name": "Cluster Nobelisk",
+        "description": "Releases multiple small explosive cluster charges on detonation.",
+        "x": 3,
+        "y": 1,
+        "cost": [
+          { "itemId": "smokeless_powder", "name": "Smokeless Powder", "amount": 100 },
+          { "itemId": "nobelisk", "name": "Nobelisk", "amount": 200 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "cluster_nobelisk", "name": "Cluster Nobelisk" }
+        ],
+        "parents": ["nobelisk_detonator"]
+      },
+      {
+        "id": "explosive_rebar",
+        "name": "Explosive Rebar",
+        "description": "High damage explosive rebar ammunition.",
+        "x": 3,
+        "y": 2,
+        "cost": [
+          { "itemId": "smokeless_powder", "name": "Smokeless Powder", "amount": 200 },
+          { "itemId": "iron_rebar", "name": "Iron Rebar", "amount": 200 },
+          { "itemId": "steel_beam", "name": "Steel Beam", "amount": 200 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "explosive_rebar", "name": "Explosive Rebar" }
+        ],
+        "parents": ["smokeless_powder"]
+      },
+      {
+        "id": "rifle",
+        "name": "The Rifle",
+        "description": "Standard Rifle combat weapon and ammo.",
+        "x": 3,
+        "y": 3,
+        "cost": [
+          { "itemId": "smokeless_powder", "name": "Smokeless Powder", "amount": 50 },
+          { "itemId": "motor", "name": "Motor", "amount": 100 },
+          { "itemId": "rubber", "name": "Rubber", "amount": 200 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "rifle", "name": "Rifle" },
+          { "type": "item", "id": "rifle_ammo", "name": "Rifle Ammo" }
+        ],
+        "parents": ["smokeless_powder"]
+      },
+      {
+        "id": "turbofuel",
+        "name": "Turbofuel",
+        "description": "Ultimate heavy internal combustion liquid fuel.",
+        "x": 3,
+        "y": 4,
+        "cost": [
+          { "itemId": "hard_drive", "name": "Hard Drive", "amount": 1 },
+          { "itemId": "compacted_coal", "name": "Compacted Coal", "amount": 15 },
+          { "itemId": "packaged_fuel", "name": "Packaged Fuel", "amount": 50 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "turbofuel", "name": "Turbofuel" },
+          { "type": "item", "id": "packaged_turbofuel", "name": "Packaged Turbofuel" }
+        ],
+        "parents": ["compacted_coal"]
+      },
+      {
+        "id": "nuke_nobelisk",
+        "name": "Nuclear Deterrent Development",
+        "description": "Releases a tiny nuclear explosion on detonation.",
+        "x": 4,
+        "y": 1,
+        "cost": [
+          { "itemId": "nobelisk", "name": "Nobelisk", "amount": 500 },
+          { "itemId": "encased_uranium_cell", "name": "Encased Uranium Cell", "amount": 10 },
+          { "itemId": "ai_limiter", "name": "AI Limiter", "amount": 100 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "nuke_nobelisk", "name": "Nuke Nobelisk" }
+        ],
+        "parents": ["cluster_nobelisk"]
+      },
+      {
+        "id": "inflated_pocket_dimension_sulfur",
+        "name": "Inflated Pocket Dimension",
+        "description": "Adds 6 slots to the pioneer personal inventory capacity.",
+        "x": 4,
+        "y": 2,
+        "cost": [
+          { "itemId": "smokeless_powder", "name": "Smokeless Powder", "amount": 50 },
+          { "itemId": "computer", "name": "Computer", "amount": 50 }
+        ],
+        "unlocks": [],
+        "parents": ["smokeless_powder"]
+      },
+      {
+        "id": "turbo_rifle_ammo",
+        "name": "Turbo Rifle Ammo",
+        "description": "Unlocks Turbo Rifle Ammo.",
+        "x": 4,
+        "y": 3,
+        "cost": [
+          { "itemId": "rifle_ammo", "name": "Rifle Ammo", "amount": 1000 },
+          { "itemId": "packaged_turbofuel", "name": "Packaged Turbofuel", "amount": 50 },
+          { "itemId": "aluminum_casing", "name": "Aluminum Casing", "amount": 100 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "turbo_rifle_ammo", "name": "Turbo Rifle Ammo" }
+        ],
+        "parents": ["rifle"]
+      },
+      {
+        "id": "rocket_fuel",
+        "name": "Rocket Fuel",
+        "description": "Unlocks Rocket Fuel.",
+        "x": 4,
+        "y": 4,
+        "cost": [
+          { "itemId": "hard_drive", "name": "Hard Drive", "amount": 1 },
+          { "itemId": "empty_fluid_tank", "name": "Empty Fluid Tank", "amount": 10 },
+          { "itemId": "packaged_turbofuel", "name": "Packaged Turbofuel", "amount": 100 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "rocket_fuel", "name": "Rocket Fuel" },
+          { "type": "item", "id": "packaged_rocket_fuel", "name": "Packaged Rocket Fuel" }
+        ],
+        "parents": ["turbofuel"]
+      },
+      {
+        "id": "ionized_fuel",
+        "name": "Ionized Fuel",
+        "description": "Unlocks Ionized Fuel.",
+        "x": 5,
+        "y": 4,
+        "cost": [
+          { "itemId": "hard_drive", "name": "Hard Drive", "amount": 1 },
+          { "itemId": "power_shard", "name": "Power Shard", "amount": 100 },
+          { "itemId": "packaged_rocket_fuel", "name": "Packaged Rocket Fuel", "amount": 200 }
+        ],
+        "unlocks": [
+          { "type": "item", "id": "ionized_fuel", "name": "Ionized Fuel" },
+          { "type": "item", "id": "packaged_ionized_fuel", "name": "Packaged Ionized Fuel" }
+        ],
+        "parents": ["rocket_fuel"]
+      }
+    ]
+  }
+}

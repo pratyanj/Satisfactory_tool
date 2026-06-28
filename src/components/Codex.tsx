@@ -1,15 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import './codex.css';
-import { items, recipes, buildings, tiers } from '../engine/data';
+import { items, recipes, buildings, tiers, mam, awesomeShop } from '../engine/data';
 import { ItemBrowser } from './ItemBrowser';
 import { ItemDetail } from './ItemDetail';
 import { BuildingBrowser } from './BuildingBrowser';
 import { BuildingDetail } from './BuildingDetail';
 import { RecipeBrowser } from './RecipeBrowser';
 import { TierBrowser } from './TierBrowser';
+import { MamBrowser } from './MamBrowser';
+import { AwesomeShopBrowser } from './AwesomeShopBrowser';
 
-type Section = 'hub' | 'items' | 'buildings' | 'recipes' | 'tiers';
-const SECTIONS: Section[] = ['items', 'buildings', 'recipes', 'tiers'];
+type Section = 'hub' | 'items' | 'buildings' | 'recipes' | 'tiers' | 'mam' | 'awesome_shop';
+const SECTIONS: Section[] = ['items', 'buildings', 'recipes', 'tiers', 'mam', 'awesome_shop'];
 
 interface CodexRoute {
   section: Section;
@@ -63,6 +65,8 @@ export function Codex() {
     buildings: Object.keys(buildings).length,
     recipes: recipes.length,
     tiers: tiers.length,
+    mam: Object.keys(mam).length,
+    awesome_shop: awesomeShop.length,
   }), []);
 
   const goHub = useCallback(() => nav('hub'), [nav]);
@@ -80,7 +84,7 @@ export function Codex() {
           <ItemBrowser onBack={goHub} onSelect={goItem} />
           {route.id && (
             <div className="cdx-detail-overlay">
-              <ItemDetail itemId={route.id} onBack={() => nav('items')} onNavigate={goItem} />
+              <ItemDetail itemId={route.id} onBack={() => nav('items')} onNavigate={goItem} onNavigateBuilding={goBuilding} />
             </div>
           )}
         </>
@@ -101,6 +105,14 @@ export function Codex() {
 
       {route.section === 'tiers' && (
         <TierBrowser onBack={goHub} onNavigateItem={goItem} onNavigateBuilding={goBuilding} />
+      )}
+
+      {route.section === 'mam' && (
+        <MamBrowser onBack={goHub} onNavigateItem={goItem} onNavigateBuilding={goBuilding} />
+      )}
+
+      {route.section === 'awesome_shop' && (
+        <AwesomeShopBrowser onBack={goHub} onNavigateItem={goItem} onNavigateBuilding={goBuilding} />
       )}
     </div>
   );
@@ -137,6 +149,16 @@ function CodexHub({ counts, onOpen }: { counts: Record<string, number>; onOpen: 
       id: 'tiers', name: 'Tiers', count: counts.tiers, color: '#a78bfa',
       desc: 'Track project milestones and progression tiers to see unlocked technologies.',
       icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="6" cy="6" r="2.5" /><circle cx="6" cy="18" r="2.5" /><circle cx="18" cy="12" r="2.5" /><path d="M8.5 6H13a2 2 0 0 1 2 2v2.5M8.5 18H13a2 2 0 0 0 2-2v-2.5" /></svg>,
+    },
+    {
+      id: 'mam', name: 'M.A.M. Research', count: counts.mam, color: '#fbbf24',
+      desc: 'Investigate exotic planetary flora, fauna, and minerals in the Molecular Analysis Machine.',
+      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H7" /><circle cx="12" cy="12" r="10" strokeDasharray="3,3" /></svg>,
+    },
+    {
+      id: 'awesome_shop', name: 'AWESOME Shop', count: counts.awesome_shop, color: '#fb923c',
+      desc: 'Unlock structural blueprints, cosmetic materials, and equipment catalogs using coupons.',
+      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" /></svg>,
     },
   ];
 

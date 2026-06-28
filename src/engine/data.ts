@@ -4,6 +4,8 @@ import recipesData from '../../data/recipes.json';
 import beltsData from '../../data/belts.json';
 import buildingsData from '../../data/buildings.json';
 import tiersData from '../../data/tiers.json';
+import mamData from '../../data/mam.json';
+import awesomeShopData from '../../data/awesome_shop.json';
 
 export type ItemId = string;
 export type MachineId = string;
@@ -139,6 +141,51 @@ export interface Tier {
 }
 
 export const tiers = tiersData as unknown as Tier[];
+
+export interface MamUnlock {
+  type: 'item' | 'recipe' | 'building' | 'other';
+  id: string | null;
+  name: string;
+}
+
+export interface MamCostItem {
+  itemId: ItemId | null;
+  name: string;
+  amount: number;
+}
+
+export interface MamNode {
+  id: string;
+  name: string;
+  description: string;
+  x: number;
+  y: number;
+  /** Optional explicit image key — overrides the automatic unlock-based icon resolution. */
+  icon?: string;
+  cost: MamCostItem[];
+  unlocks: MamUnlock[];
+  parents: string[];
+}
+
+export interface MamTree {
+  name: string;
+  icon: string;
+  nodes: MamNode[];
+}
+
+export interface AwesomeShopItem {
+  id: string;
+  name: string;
+  category: string;
+  cost: number;
+  description: string;
+  imageUrl: string;
+  unlockType: 'item' | 'building' | 'recipe' | 'other';
+  unlockId: string | null;
+}
+
+export const mam = mamData as Record<string, MamTree>;
+export const awesomeShop = awesomeShopData as AwesomeShopItem[];
 
 /** Item categories that are transported through pipes (fluids & gases) rather than belts. */
 export const FLUID_CATEGORIES: ReadonlySet<string> = new Set(['Liquids', 'Gas']);

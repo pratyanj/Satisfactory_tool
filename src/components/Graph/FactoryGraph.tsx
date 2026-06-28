@@ -31,8 +31,8 @@ interface FactoryGraphProps {
   beltId?: string;
   pipeTier?: 'mk1' | 'mk2';
   isFullscreen?: boolean;
-  perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean }>;
-  onUpdatePerMachineSettings?: (itemId: string, settings: { clockSpeed?: number; somerslooped?: boolean }) => void;
+  perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean; purity?: 'impure' | 'normal' | 'pure' }>;
+  onUpdatePerMachineSettings?: (itemId: string, settings: { clockSpeed?: number; somerslooped?: boolean; purity?: 'impure' | 'normal' | 'pure' }) => void;
 }
 
 const nodeTypes = {
@@ -327,29 +327,43 @@ function FactoryGraphInner({
 
   const [localClock, setLocalClock] = useState<number>(100);
   const [localSomersloop, setLocalSomersloop] = useState<boolean>(false);
+  const [localPurity, setLocalPurity] = useState<'impure' | 'normal' | 'pure'>('normal');
+
+  const isMinerNode = !!(isValidMachineNode && selectedNode?.data?.machineId?.toString().startsWith('miner'));
+  const isExtractorNode = !!(isValidMachineNode && (
+    selectedNode?.data?.machineId?.toString().startsWith('miner') ||
+    ['water_extractor', 'oil_extractor', 'resource_well_pressurizer'].includes(selectedNode?.data?.machineId as string)
+  ));
 
   useEffect(() => {
     if (isValidMachineNode && itemId) {
       setLocalClock(customConfig.clockSpeed ?? (selectedNode?.data?.clockSpeed as number) ?? 100);
-      setLocalSomersloop(customConfig.somerslooped ?? (selectedNode?.data?.somerslooped as boolean) ?? false);
+      setLocalSomersloop(!isExtractorNode && (customConfig.somerslooped ?? (selectedNode?.data?.somerslooped as boolean) ?? false));
+      setLocalPurity(customConfig.purity ?? (selectedNode?.data?.purity as 'impure' | 'normal' | 'pure') ?? 'normal');
     }
-  }, [itemId, isValidMachineNode, perMachineSettings]);
+  }, [itemId, isValidMachineNode, perMachineSettings, isExtractorNode]);
 
   const handleClockChange = (newVal: number) => {
     setLocalClock(newVal);
-    onUpdatePerMachineSettings?.(itemId, { clockSpeed: newVal, somerslooped: localSomersloop });
+    onUpdatePerMachineSettings?.(itemId, { clockSpeed: newVal, somerslooped: localSomersloop, purity: localPurity });
   };
 
   const handleSomersloopToggle = () => {
     const nextVal = !localSomersloop;
     setLocalSomersloop(nextVal);
-    onUpdatePerMachineSettings?.(itemId, { clockSpeed: localClock, somerslooped: nextVal });
+    onUpdatePerMachineSettings?.(itemId, { clockSpeed: localClock, somerslooped: nextVal, purity: localPurity });
+  };
+
+  const handlePurityChange = (newPurity: 'impure' | 'normal' | 'pure') => {
+    setLocalPurity(newPurity);
+    onUpdatePerMachineSettings?.(itemId, { clockSpeed: localClock, somerslooped: localSomersloop, purity: newPurity });
   };
 
   const handleResetNode = () => {
     setLocalClock(100);
     setLocalSomersloop(false);
-    onUpdatePerMachineSettings?.(itemId, { clockSpeed: undefined, somerslooped: undefined });
+    setLocalPurity('normal');
+    onUpdatePerMachineSettings?.(itemId, { clockSpeed: undefined, somerslooped: undefined, purity: undefined });
   };
 
   // ── Tuner live preview ──────────────────────────────────────────────────────
@@ -363,8 +377,13 @@ function FactoryGraphInner({
   const solvedMachines = (selectedNode?.data?.machines as number) ?? 0;
   const solvedSloopMult = (selectedNode?.data?.somerslooped as boolean) ? 2 : 1;
   const localSloopMult = localSomersloop ? 2 : 1;
+  
+  const solvedPurity = (selectedNode?.data?.purity as 'impure' | 'normal' | 'pure') ?? 'normal';
+  const solvedPurityMult = solvedPurity === 'pure' ? 2.0 : solvedPurity === 'impure' ? 0.5 : 1.0;
+  const localPurityMult = localPurity === 'pure' ? 2.0 : localPurity === 'impure' ? 0.5 : 1.0;
+
   const previewMachines = localClock > 0
-    ? solvedMachines * (solvedClock * solvedSloopMult) / (localClock * localSloopMult)
+    ? solvedMachines * (solvedClock * solvedSloopMult * solvedPurityMult) / (localClock * localSloopMult * localPurityMult)
     : solvedMachines;
   const previewBasePower = machines[selectedNode?.data?.machineId as string]?.powerUsage || 0;
   // Overclock power exponent log2(2.5) ≈ 1.321928 (Satisfactory 0.7.0.0+).
@@ -925,56 +944,83 @@ function FactoryGraphInner({
                 </div>
               </div>
 
-              {/* Somersloop Productivity Box */}
-              <div className="flex flex-col gap-2.5 shrink-0">
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-extrabold tracking-widest text-[#8E9299] uppercase font-mono">
-                      SOMERSLOOP SLOTS
-                    </span>
-                    <span className="text-[7.5px] text-[#8E9299]/80 font-mono mt-0.5">
-                      PRODUCTIVITY DOUBLE MULTIPLIER
-                    </span>
+              {/* Miner Node Purity Select */}
+              {isMinerNode && (
+                <div className="flex flex-col gap-2 shrink-0">
+                  <span className="text-[10px] font-extrabold tracking-widest text-[#8E9299] uppercase font-mono">
+                    NODE PURITY
+                  </span>
+                  <div className="grid grid-cols-3 gap-1 bg-[#121316] border border-[#2a2d33] rounded-lg p-0.5">
+                    {(['impure', 'normal', 'pure'] as const).map((p) => (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => handlePurityChange(p)}
+                        className={`text-[10px] font-bold font-mono py-1.5 rounded transition-all cursor-pointer ${
+                          localPurity === p
+                            ? 'bg-[#f48721] text-black shadow-md font-extrabold'
+                            : 'text-[#8E9299] hover:text-white hover:bg-[#1a1c20]'
+                        }`}
+                      >
+                        {p.toUpperCase()}
+                      </button>
+                    ))}
                   </div>
-                  
-                  {/* Custom Styled Premium Somersloop Toggle */}
-                  <button
-                    onClick={handleSomersloopToggle}
-                    className={`relative w-12 h-6 rounded-full transition-all duration-300 border flex items-center p-0.5 cursor-pointer ${
-                      localSomersloop 
-                        ? 'bg-purple-600/30 border-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.3)]' 
-                        : 'bg-[#121316] border-[#2a2d33]'
-                    }`}
-                  >
-                    <div 
-                      className={`rounded-full transition-all duration-300 flex items-center justify-center`}
-                      style={{
-                        width: '18px',
-                        height: '18px',
-                        backgroundColor: localSomersloop ? '#c084fc' : '#8e9299',
-                        transform: localSomersloop ? 'translateX(22px)' : 'translateX(0px)',
-                        boxShadow: localSomersloop ? '0 0 8px #c084fc' : 'none',
-                      }}
-                    >
-                      {localSomersloop && <span className="text-[8px]">🌀</span>}
-                    </div>
-                  </button>
                 </div>
+              )}
 
-                {/* Info Pill */}
-                <div className={`p-2 rounded border text-[9.5px] font-mono transition-all duration-300 leading-relaxed ${
-                  localSomersloop 
-                    ? 'bg-purple-950/20 border-purple-800/40 text-purple-300 animate-pulse' 
-                    : 'bg-[#121316] border-[#2a2d33] text-[#8E9299]'
-                }`}>
-                  <p>
-                    {localSomersloop 
-                      ? '🌀 Somersloop ACTIVE: Production rate is doubled (200% yield) without consuming extra inputs. Power usage multiplied by 4.0x.' 
-                      : 'ℹ️ Somerslooping uses alien technology to double machine outputs for free. Increases local power draw exponentially.'
-                    }
-                  </p>
+              {/* Somersloop Productivity Box */}
+              {!isExtractorNode && (
+                <div className="flex flex-col gap-2.5 shrink-0">
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-extrabold tracking-widest text-[#8E9299] uppercase font-mono">
+                        SOMERSLOOP SLOTS
+                      </span>
+                      <span className="text-[7.5px] text-[#8E9299]/80 font-mono mt-0.5">
+                        PRODUCTIVITY DOUBLE MULTIPLIER
+                      </span>
+                    </div>
+                    
+                    {/* Custom Styled Premium Somersloop Toggle */}
+                    <button
+                      onClick={handleSomersloopToggle}
+                      className={`relative w-12 h-6 rounded-full transition-all duration-300 border flex items-center p-0.5 cursor-pointer ${
+                        localSomersloop 
+                          ? 'bg-purple-600/30 border-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.3)]' 
+                          : 'bg-[#121316] border-[#2a2d33]'
+                      }`}
+                    >
+                      <div 
+                        className={`rounded-full transition-all duration-300 flex items-center justify-center`}
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          backgroundColor: localSomersloop ? '#c084fc' : '#8e9299',
+                          transform: localSomersloop ? 'translateX(22px)' : 'translateX(0px)',
+                          boxShadow: localSomersloop ? '0 0 8px #c084fc' : 'none',
+                        }}
+                      >
+                        {localSomersloop && <span className="text-[8px]">🌀</span>}
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Info Pill */}
+                  <div className={`p-2 rounded border text-[9.5px] font-mono transition-all duration-300 leading-relaxed ${
+                    localSomersloop 
+                      ? 'bg-purple-950/20 border-purple-800/40 text-purple-300 animate-pulse' 
+                      : 'bg-[#121316] border-[#2a2d33] text-[#8E9299]'
+                  }`}>
+                    <p>
+                      {localSomersloop 
+                        ? '🌀 Somersloop ACTIVE: Production rate is doubled (200% yield) without consuming extra inputs. Power usage multiplied by 4.0x.' 
+                        : 'ℹ️ Somerslooping uses alien technology to double machine outputs for free. Increases local power draw exponentially.'
+                      }
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Recipe Inputs details */}
               {selectedNode.data.inputDetails && (selectedNode.data.inputDetails as any[]).length > 0 && (

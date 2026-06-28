@@ -3,6 +3,46 @@ import { buildings, items, recipes, getBuildingMachineId } from '../engine/data'
 import { AppImage } from './AppImage';
 import { RecipeTable } from './ItemDetail';
 
+const GENERATOR_SPECS: Record<string, {
+  powerGen: string;
+  fuels: Array<{ itemId: string; rate: number; water?: number }>;
+}> = {
+  generator_biomass_automated: {
+    powerGen: '30 MW',
+    fuels: [
+      { itemId: 'solid_biofuel', rate: 4.5 },
+      { itemId: 'biomass', rate: 9 },
+    ],
+  },
+  generator_coal: {
+    powerGen: '75 MW',
+    fuels: [
+      { itemId: 'coal', rate: 15, water: 45 },
+      { itemId: 'compacted_coal', rate: 7.14, water: 45 },
+    ],
+  },
+  generator_fuel: {
+    powerGen: '250 MW',
+    fuels: [
+      { itemId: 'fuel', rate: 20 },
+      { itemId: 'turbofuel', rate: 7.5 },
+      { itemId: 'rocket_fuel', rate: 4.167 },
+      { itemId: 'ionized_fuel', rate: 3 },
+    ],
+  },
+  generator_nuclear: {
+    powerGen: '2500 MW',
+    fuels: [
+      { itemId: 'uranium_fuel_rod', rate: 0.2, water: 240 },
+      { itemId: 'plutonium_fuel_rod', rate: 0.1, water: 240 },
+    ],
+  },
+  generator_geo_thermal: {
+    powerGen: '50 - 150 MW (Fluctuates, Avg 100 MW)',
+    fuels: [],
+  },
+};
+
 interface Props {
   buildingId: string;
   onBack: () => void;
@@ -12,6 +52,8 @@ interface Props {
 export function BuildingDetail({ buildingId, onBack, onNavigateItem }: Props) {
   const b = buildings[buildingId];
   if (!b) return null;
+
+  const generatorInfo = GENERATOR_SPECS[b.id];
 
   // Every recipe this machine can run, so users see its full production menu.
   const machineId = getBuildingMachineId(b);
@@ -59,12 +101,21 @@ export function BuildingDetail({ buildingId, onBack, onNavigateItem }: Props) {
                   <span className="sf-item-hero-label">CATEGORY</span>
                   <span className="sf-item-hero-val">{b.category}</span>
                 </div>
-                <div className="sf-item-hero-row">
-                  <span className="sf-item-hero-label">POWER USE</span>
-                  <span className="sf-item-hero-val" style={{ color: b.powerConsumption ? '#f48721' : undefined }}>
-                    {b.powerConsumption ? `${b.powerConsumption} MW` : '—'}
-                  </span>
-                </div>
+                {GENERATOR_SPECS[b.id] ? (
+                  <div className="sf-item-hero-row">
+                    <span className="sf-item-hero-label">POWER GENERATED</span>
+                    <span className="sf-item-hero-val" style={{ color: '#22c55e' }}>
+                      {GENERATOR_SPECS[b.id].powerGen}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="sf-item-hero-row">
+                    <span className="sf-item-hero-label">POWER USE</span>
+                    <span className="sf-item-hero-val" style={{ color: b.powerConsumption ? '#f48721' : undefined }}>
+                      {b.powerConsumption ? `${b.powerConsumption} MW` : '—'}
+                    </span>
+                  </div>
+                )}
                 <div className="sf-item-hero-row">
                   <span className="sf-item-hero-label">UNLOCK TIER</span>
                   <span className="sf-item-hero-val sf-item-hero-val--accent">
@@ -107,6 +158,36 @@ export function BuildingDetail({ buildingId, onBack, onNavigateItem }: Props) {
                     </div>
                   </button>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {generatorInfo && generatorInfo.fuels.length > 0 && (
+            <div className="sf-recipes-section">
+              <div className="sf-recipes-sec-header">
+                <h3 className="sf-recipes-sec-title">SUPPORTED FUELS</h3>
+              </div>
+              <div className="bld-cost-grid">
+                {generatorInfo.fuels.map(f => {
+                  const it = items[f.itemId];
+                  if (!it) return null;
+                  return (
+                    <button
+                      key={f.itemId}
+                      className="sf-recipe-item-chip"
+                      onClick={() => onNavigateItem(f.itemId)}
+                      title={it.name}
+                    >
+                      <AppImage idKey={f.itemId} fallbackUrl={it.imageUrl} alt={it.name} className="sf-recipe-item-img" />
+                      <div className="sf-recipe-item-details">
+                        <span className="sf-recipe-item-name">{it.name}</span>
+                        <span className="sf-recipe-item-rate">
+                          {f.rate} /min {f.water ? `(+ ${f.water} Water/min)` : ''}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}

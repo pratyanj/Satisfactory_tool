@@ -21,3 +21,9 @@ uv.lock
 
 # Cached authoritative game data for recipe audits (re-downloaded on demand)
 scripts/satisfactory_docs.json
+
+# Scratch files
+scratch_copy.ps1 
+scratch_mam.*
+do_commits.bat
+do_commits_remaining.bat

@@ -36,7 +36,10 @@ interface InputFormProps {
     overclock?: number,
     somersloopMultiplier?: number,
     wholeMachineMode?: boolean,
-    availableInputs?: Record<string, number>
+    availableInputs?: Record<string, number>,
+    costMultiplier?: number,
+    powerMultiplier?: number,
+    disableAnimations?: boolean
   ) => void;
   initialValues?: {
     itemId: string;
@@ -51,6 +54,9 @@ interface InputFormProps {
     somersloopMultiplier?: number;
     wholeMachineMode?: boolean;
     availableInputs?: Record<string, number>;
+    costMultiplier?: number;
+    powerMultiplier?: number;
+    disableAnimations?: boolean;
   };
 }
 
@@ -88,6 +94,9 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   const [overclock, setOverclock] = useState<number>(initialValues?.overclock ?? 100);
   const [somersloopMultiplier, setSomersloopMultiplier] = useState<number>(initialValues?.somersloopMultiplier ?? 1);
   const [wholeMachineMode, setWholeMachineMode] = useState<boolean>(initialValues?.wholeMachineMode ?? false);
+  const [costMultiplier, setCostMultiplier] = useState<number>(initialValues?.costMultiplier ?? 1);
+  const [powerMultiplier, setPowerMultiplier] = useState<number>(initialValues?.powerMultiplier ?? 1);
+  const [disableAnimations, setDisableAnimations] = useState<boolean>(initialValues?.disableAnimations ?? false);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 
   // Items the user already has available (imports). The solver consumes these
@@ -159,6 +168,15 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
       if (initialValues.wholeMachineMode !== undefined && wholeMachineMode !== initialValues.wholeMachineMode) {
         setWholeMachineMode(initialValues.wholeMachineMode);
       }
+      if (initialValues.costMultiplier !== undefined && costMultiplier !== initialValues.costMultiplier) {
+        setCostMultiplier(initialValues.costMultiplier);
+      }
+      if (initialValues.powerMultiplier !== undefined && powerMultiplier !== initialValues.powerMultiplier) {
+        setPowerMultiplier(initialValues.powerMultiplier);
+      }
+      if (initialValues.disableAnimations !== undefined && disableAnimations !== initialValues.disableAnimations) {
+        setDisableAnimations(initialValues.disableAnimations);
+      }
       // NOTE: availableInputs is intentionally NOT synced from initialValues here.
       // It is user-driven local state pushed to the plan on Calculate; syncing it
       // back would wipe a just-added row whenever App re-issues lastInput.
@@ -195,7 +213,10 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
         overclock,
         somersloopMultiplier,
         wholeMachineMode,
-        buildAvailableInputsMap()
+        buildAvailableInputsMap(),
+        costMultiplier,
+        powerMultiplier,
+        disableAnimations
       );
     }
   };
@@ -665,11 +686,18 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                           <CustomSelect
                             value={candidate.selectedRecipeId}
                             onChange={(value) => handleAlternateRecipeChange(candidate.itemId, value)}
-                            options={candidate.recipes.map((recipe) => ({
-                              value: recipe.id,
-                              // Show the recipe's in-game name so users pick by name, not by inputs/outputs
-                              label: `${recipe.name || formatRecipeLabel(recipe.id)} (${recipe.outputRate}/min)`,
-                            }))}
+                            options={candidate.recipes.map((recipe) => {
+                              const rName = recipe.name || formatRecipeLabel(recipe.id);
+                              const machName = machines[recipe.machineId]?.name || recipe.machineId;
+                              const power = machines[recipe.machineId]?.powerUsage || 0;
+                              const inputsStr = recipe.inputs
+                                .map((inp) => `${inp.rate}/m ${items[inp.itemId]?.name || inp.itemId}`)
+                                .join(', ');
+                              return {
+                                value: recipe.id,
+                                label: `${rName} (${recipe.outputRate}/m) - In: ${inputsStr} (${machName}, ${power} MW)`,
+                              };
+                            })}
                           />
                         </div>
                       ))
@@ -732,54 +760,127 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
         {/* ── Zone 3: Advanced Tuning Panel ── */}
         {isAdvancedOpen && (
           <div
-            className="relative z-10 flex items-center gap-4 px-4 py-3 border-t border-[#1e2128]"
+            className="relative z-10 flex flex-col gap-4 px-4 py-3 border-t border-[#1e2128]"
             style={{ background: 'linear-gradient(180deg, #0e1014 0%, #0b0c0f 100%)' }}
           >
             <div style={{ position: 'absolute', top: 0, left: 24, right: 24, height: '1px', background: 'linear-gradient(90deg, transparent, #f4872130, transparent)' }} />
 
-            {/* Overclock value */}
-            <div className="flex flex-col gap-0.5 shrink-0" style={{ minWidth: 80 }}>
-              <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Overclock</span>
-              <span className="text-xl font-black font-mono leading-none" style={{ color: overclock > 100 ? '#f48721' : overclock < 100 ? '#22c55e' : '#8E9299' }}>
-                {overclock}<span className="text-[10px] text-[#445060]">%</span>
-              </span>
-            </div>
-
-            {/* Slider */}
-            <div className="flex items-center gap-2 flex-1">
-              <span className="text-[9px] font-mono text-[#333840]">1</span>
-              <input
-                type="range" min="1" max="250" value={overclock}
-                onChange={(e) => setOverclock(Number(e.target.value))}
-                className="flex-1 cursor-pointer"
-                style={{ accentColor: '#f48721', height: 4, outline: 'none' }}
-              />
-              <span className="text-[9px] font-mono text-[#333840]">250</span>
-            </div>
-
-            <div style={{ width: 1, height: 28, background: '#1e2128', flexShrink: 0 }} />
-
-            {/* Somersloop */}
-            <div className="flex flex-col gap-0.5 shrink-0" style={{ minWidth: 100 }}>
-              <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Somersloop</span>
-              <CustomSelect
-                value={String(somersloopMultiplier)}
-                onChange={(val) => setSomersloopMultiplier(Number(val))}
-                options={[
-                  { value: '1', label: '1× Standard' },
-                  { value: '2', label: '2× Boost' },
-                ]}
-              />
-            </div>
-
-            {somersloopMultiplier > 1 && (
-              <div
-                className="flex items-center gap-1.5 px-2 py-1 rounded shrink-0 text-[9px] font-mono"
-                style={{ background: 'rgba(244,135,33,0.07)', border: '1px solid rgba(244,135,33,0.15)', color: '#f48721' }}
-              >
-                <Zap size={9} /> 2× output · 4× power
+            {/* First Row: Overclock and Somersloop */}
+            <div className="flex flex-wrap items-center gap-4">
+              {/* Overclock value */}
+              <div className="flex flex-col gap-0.5 shrink-0" style={{ minWidth: 80 }}>
+                <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Overclock</span>
+                <span className="text-xl font-black font-mono leading-none" style={{ color: overclock > 100 ? '#f48721' : overclock < 100 ? '#22c55e' : '#8E9299' }}>
+                  {overclock}<span className="text-[10px] text-[#445060]">%</span>
+                </span>
               </div>
-            )}
+
+              {/* Slider */}
+              <div className="flex items-center gap-2 flex-grow min-w-[150px]">
+                <span className="text-[9px] font-mono text-[#333840]">1</span>
+                <input
+                  type="range" min="1" max="250" value={overclock}
+                  onChange={(e) => setOverclock(Number(e.target.value))}
+                  className="flex-grow cursor-pointer"
+                  style={{ accentColor: '#f48721', height: 4, outline: 'none' }}
+                />
+                <span className="text-[9px] font-mono text-[#333840]">250</span>
+              </div>
+
+              <div style={{ width: 1, height: 28, background: '#1e2128', flexShrink: 0 }} className="hidden md:block" />
+
+              {/* Somersloop */}
+              <div className="flex flex-col gap-0.5 shrink-0" style={{ minWidth: 100 }}>
+                <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Somersloop</span>
+                <CustomSelect
+                  value={String(somersloopMultiplier)}
+                  onChange={(val) => setSomersloopMultiplier(Number(val))}
+                  options={[
+                    { value: '1', label: '1× Standard' },
+                    { value: '2', label: '2× Boost' },
+                  ]}
+                />
+              </div>
+
+              {somersloopMultiplier > 1 && (
+                <div
+                  className="flex items-center gap-1.5 px-2 py-1 rounded shrink-0 text-[9px] font-mono"
+                  style={{ background: 'rgba(244,135,33,0.07)', border: '1px solid rgba(244,135,33,0.15)', color: '#f48721' }}
+                >
+                  <Zap size={9} /> 2× output · 4× power
+                </div>
+              )}
+            </div>
+
+            {/* Separator Line */}
+            <div className="h-px bg-[#1e2128] w-full" />
+
+            {/* Second Row: Game Mode settings & Animation Performance options */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+              {/* Cost Multiplier Slider */}
+              <div className="flex items-center gap-3">
+                <div className="flex flex-col gap-0.5 shrink-0" style={{ minWidth: 70 }}>
+                  <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Cost Mult.</span>
+                  <span className="text-sm font-black font-mono leading-none text-[#d4d3d0]">
+                    {costMultiplier.toFixed(1)}x
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 flex-1">
+                  <span className="text-[8px] font-mono text-[#333840]">0.5</span>
+                  <input
+                    type="range" min="0.5" max="10.0" step="0.5" value={costMultiplier}
+                    onChange={(e) => setCostMultiplier(Number(e.target.value))}
+                    className="flex-1 cursor-pointer"
+                    style={{ accentColor: '#f48721', height: 4, outline: 'none' }}
+                  />
+                  <span className="text-[8px] font-mono text-[#333840]">10</span>
+                </div>
+              </div>
+
+              {/* Power Multiplier Slider */}
+              <div className="flex items-center gap-3">
+                <div className="flex flex-col gap-0.5 shrink-0" style={{ minWidth: 70 }}>
+                  <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Power Mult.</span>
+                  <span className="text-sm font-black font-mono leading-none text-[#d4d3d0]">
+                    {powerMultiplier.toFixed(1)}x
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 flex-1">
+                  <span className="text-[8px] font-mono text-[#333840]">0.5</span>
+                  <input
+                    type="range" min="0.5" max="10.0" step="0.5" value={powerMultiplier}
+                    onChange={(e) => setPowerMultiplier(Number(e.target.value))}
+                    className="flex-1 cursor-pointer"
+                    style={{ accentColor: '#f48721', height: 4, outline: 'none' }}
+                  />
+                  <span className="text-[8px] font-mono text-[#333840]">10</span>
+                </div>
+              </div>
+
+              {/* Disable Animations Checkbox */}
+              <div className="flex items-center">
+                <button
+                  type="button"
+                  onClick={() => setDisableAnimations(v => !v)}
+                  className="flex items-center gap-2 px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded w-full justify-start text-left"
+                  style={{
+                    background: disableAnimations ? 'rgba(239,68,68,0.08)' : '#0d0f12',
+                    border: `1px solid ${disableAnimations ? '#ef444455' : '#1e2128'}`,
+                    color: disableAnimations ? '#ef4444' : '#555b66',
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 8, height: 8, borderRadius: 2, flexShrink: 0,
+                      background: disableAnimations ? '#ef4444' : 'transparent',
+                      border: `1px solid ${disableAnimations ? '#ef4444' : '#3a3d44'}`,
+                    }}
+                  />
+                  <span>Disable Edge Flow Animations</span>
+                </button>
+              </div>
+            </div>
+
           </div>
         )}
       </form>
