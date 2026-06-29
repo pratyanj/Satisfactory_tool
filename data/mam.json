@@ -432,7 +432,9 @@
           { "itemId": "alien_dna_capsule", "name": "Alien DNA Capsule", "amount": 5 },
           { "itemId": "iron_rod", "name": "Iron Rod", "amount": 100 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Unlocks Rebar Gun research" }
+        ],
         "parents": ["bio_organic_properties"]
       },
       {
@@ -463,7 +465,9 @@
           { "itemId": "alien_protein", "name": "Alien Protein", "amount": 3 },
           { "itemId": "cable", "name": "Cable", "amount": 1000 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "+6 Inventory Slots" }
+        ],
         "parents": ["bio_organic_properties"]
       },
       {
@@ -477,7 +481,9 @@
           { "itemId": "alien_dna_capsule", "name": "Alien DNA Capsule", "amount": 5 },
           { "itemId": "steel_beam", "name": "Steel Beam", "amount": 500 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "+1 Hand Equipment Slot" }
+        ],
         "parents": ["inflated_pocket_dimension"]
       },
       {
@@ -492,7 +498,9 @@
           { "itemId": "crystal_oscillator", "name": "Crystal Oscillator", "amount": 5 },
           { "itemId": "high_speed_connector", "name": "High-Speed Connector", "amount": 5 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Object Scanner: Hostile Creatures" }
+        ],
         "parents": ["bio_organic_properties"]
       }
     ]
@@ -510,7 +518,9 @@
         "cost": [
           { "itemId": "sam", "name": "SAM Ore", "amount": 10 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Object Scanner: SAM nodes" }
+        ],
         "parents": []
       },
       {
@@ -522,7 +532,9 @@
         "cost": [
           { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 1 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Unlocks Dimensional Depot research" }
+        ],
         "parents": ["sam_analysis"]
       },
       {
@@ -548,7 +560,9 @@
         "cost": [
           { "itemId": "somersloop", "name": "Somersloop", "amount": 1 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Unlocks Somersloop technology research" }
+        ],
         "parents": ["sam_analysis"]
       },
       {
@@ -574,7 +588,9 @@
         "x": 3,
         "y": 2,
         "cost": [],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Sub-spatial field generator research" }
+        ],
         "parents": ["sam_fluctuator"]
       },
       {
@@ -584,7 +600,9 @@
         "x": 4,
         "y": 2,
         "cost": [],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Unlocks Dimensional Depot & uploader research" }
+        ],
         "parents": ["field_generator"]
       },
       {
@@ -596,7 +614,9 @@
         "cost": [
           { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 10 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Unlocks Power Augmenter & Production Amplifier branches" }
+        ],
         "parents": ["sam_fluctuator"]
       },
       {
@@ -625,7 +645,9 @@
           { "itemId": "computer", "name": "Computer", "amount": 17},
           { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 29}
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Upload to Dimensional Depot from inventory" }
+        ],
         "parents": ["mercer_sphere_analysis", "awesome"]
       },
       {
@@ -639,7 +661,9 @@
           { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 100 },
           { "itemId": "circuit_board", "name": "Circuit Board", "amount": 50 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Somersloop production amplification (boost machine output)" }
+        ],
         "parents": ["somersloop_analysis", "alien_energy_harvesting"]
       },
       {
@@ -668,7 +692,9 @@
           { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 3 },
           { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 47 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Dimensional Depot: 2 stacks per item" }
+        ],
         "parents": ["dimensional_depot", "alien_energy_harvesting"]
       },
       {
@@ -681,7 +707,9 @@
           { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 3 },
           { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 47 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Depot upload rate: 30/min" }
+        ],
         "parents": ["manual_depot_uploader", "alien_energy_harvesting"]
       },
       {
@@ -710,7 +738,9 @@
           { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 7 },
           { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 103 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Dimensional Depot: 3 stacks per item" }
+        ],
         "parents": ["depot_expansion_2"]
       },
       {
@@ -723,7 +753,9 @@
           { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 7 },
           { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 103 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Depot upload rate: 60/min" }
+        ],
         "parents": ["upload_speed_30"]
       },
       {
@@ -736,7 +768,9 @@
           { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 13 },
           { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 151 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Dimensional Depot: 4 stacks per item" }
+        ],
         "parents": ["depot_expansion_3"]
       },
       {
@@ -749,7 +783,9 @@
           { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 13 },
           { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 151 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Depot upload rate: 120/min" }
+        ],
         "parents": ["upload_speed_60"]
       },
       {
@@ -762,7 +798,9 @@
           { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 23 },
           { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 199 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Dimensional Depot: 5 stacks per item" }
+        ],
         "parents": ["depot_expansion_4"]
       },
       {
@@ -775,7 +813,9 @@
           { "itemId": "mercer_sphere", "name": "Mercer Sphere", "amount": 23 },
           { "itemId": "sam_fluctuator", "name": "SAM Fluctuator", "amount": 199 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Depot upload rate: 240/min" }
+        ],
         "parents": ["upload_speed_120"]
       }
     ]
@@ -793,7 +833,9 @@
         "cost": [
           { "itemId": "mycelia", "name": "Mycelia", "amount": 5 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "item", "id": "biomass", "name": "Biomass" }
+        ],
         "parents": []
       },
       {
@@ -837,7 +879,9 @@
           { "itemId": "mycelia", "name": "Mycelia", "amount": 25 },
           { "itemId": "stator", "name": "Stator", "amount": 10 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Unlocks Medicinal Inhaler research" }
+        ],
         "parents": ["mycelia_analysis"]
       },
       {
@@ -865,7 +909,9 @@
           { "itemId": "fabric", "name": "Fabric", "amount": 50 },
           { "itemId": "rotor", "name": "Rotor", "amount": 100 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "+1 Hand Equipment Slot" }
+        ],
         "parents": ["fabric"]
       },
       {
@@ -878,7 +924,9 @@
           { "itemId": "fabric", "name": "Fabric", "amount": 25 },
           { "itemId": "polymer_resin", "name": "Polymer Resin", "amount": 100 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "recipe", "id": null, "name": "Alternate: Polyester Fabric" }
+        ],
         "parents": ["fabric"]
       },
       {
@@ -944,7 +992,9 @@
         "cost": [
           { "itemId": "blue_power_slug", "name": "Blue Power Slug", "amount": 1 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "item", "id": "power_shard", "name": "Power Shard" }
+        ],
         "parents": []
       },
       {
@@ -958,7 +1008,9 @@
           { "itemId": "wire", "name": "Wire", "amount": 100 },
           { "itemId": "screw", "name": "Screw", "amount": 200 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Object Scanner: Power Slugs" }
+        ],
         "parents": ["blue_slug"]
       },
       {
@@ -972,7 +1024,9 @@
           { "itemId": "rotor", "name": "Rotor", "amount": 25 },
           { "itemId": "cable", "name": "Cable", "amount": 100 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "recipe", "id": null, "name": "Power Shard (2× from Yellow Slug)" }
+        ],
         "parents": ["slug_scanning"]
       },
       {
@@ -986,7 +1040,9 @@
           { "itemId": "iron_plate", "name": "Iron Plate", "amount": 50 },
           { "itemId": "wire", "name": "Wire", "amount": 50 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Overclocking — Power Shards in machines (up to 250%)" }
+        ],
         "parents": ["yellow_slug"]
       },
       {
@@ -1000,7 +1056,9 @@
           { "itemId": "modular_frame", "name": "Modular Frame", "amount": 25 },
           { "itemId": "copper_sheet", "name": "Copper Sheet", "amount": 100 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "recipe", "id": null, "name": "Power Shard (5× from Purple Slug)" }
+        ],
         "parents": ["overclocking"]
       },
       {
@@ -1014,7 +1072,9 @@
           { "itemId": "time_crystal", "name": "Time Crystal", "amount": 100 },
           { "itemId": "quartz_crystal", "name": "Quartz Crystal", "amount": 200 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "recipe", "id": null, "name": "Synthetic Power Shard" }
+        ],
         "parents": ["purple_slug"]
       }
     ]
@@ -1032,7 +1092,9 @@
         "cost": [
           { "itemId": "raw_quartz", "name": "Raw Quartz", "amount": 10 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Unlocks Quartz Crystal & Silica research" }
+        ],
         "parents": []
       },
       {
@@ -1117,7 +1179,9 @@
         "cost": [
           { "itemId": "silica", "name": "Silica", "amount": 200 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "+6 Inventory Slots" }
+        ],
         "parents": ["silica"]
       },
       {
@@ -1161,7 +1225,9 @@
           { "itemId": "motor", "name": "Motor", "amount": 100 },
           { "itemId": "object_scanner", "name": "Object Scanner", "amount": 1 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Object Scanner: Crash Sites (Hard Drives)" }
+        ],
         "parents": ["crystal_oscillator"]
       },
       {
@@ -1210,7 +1276,9 @@
         "cost": [
           { "itemId": "sulfur", "name": "Sulfur", "amount": 10 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Unlocks Black Powder research" }
+        ],
         "parents": []
       },
       {
@@ -1239,7 +1307,9 @@
           { "itemId": "modular_frame", "name": "Modular Frame", "amount": 50 },
           { "itemId": "rotor", "name": "Rotor", "amount": 100 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "Unlocks alternative fuel research (Compacted Coal → Turbofuel)" }
+        ],
         "parents": ["sulfur_analysis"]
       },
       {
@@ -1252,7 +1322,9 @@
           { "itemId": "black_powder", "name": "Black Powder", "amount": 100 },
           { "itemId": "encased_industrial_beam", "name": "Encased Beam", "amount": 50 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "+1 Hand Equipment Slot" }
+        ],
         "parents": ["black_powder"]
       },
       {
@@ -1394,7 +1466,9 @@
           { "itemId": "smokeless_powder", "name": "Smokeless Powder", "amount": 50 },
           { "itemId": "computer", "name": "Computer", "amount": 50 }
         ],
-        "unlocks": [],
+        "unlocks": [
+          { "type": "other", "id": null, "name": "+6 Inventory Slots" }
+        ],
         "parents": ["smokeless_powder"]
       },
       {

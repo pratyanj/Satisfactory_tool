@@ -162,6 +162,8 @@ export interface MamNode {
   y: number;
   /** Optional explicit image key — overrides the automatic unlock-based icon resolution. */
   icon?: string;
+  /** Research completion time in seconds (optional; informational only). */
+  time?: number;
   cost: MamCostItem[];
   unlocks: MamUnlock[];
   parents: string[];
