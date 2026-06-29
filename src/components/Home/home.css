@@ -1,0 +1,509 @@
+/* ============================================================================
+   HOME / LANDING PAGE — FICSIT industrial theme
+   Hero centerpiece is a real Three.js (WebGL) scene (FactoryScene.tsx). The rest
+   reuses global tokens: orange #f48721, dark #0d0e11/#111214, borders #2a2d33,
+   text #e4e3e0, muted #8E9299, plus .sf-blueprint-bg / .sf-primary-btn /
+   .sf-secondary-btn / .sf-btn-scanner from index.css.
+   ============================================================================ */
+
+.sf-home-root {
+  width: 100%;
+  min-height: 100%;
+  color: #e4e3e0;
+  font-family: 'Inter', 'Roboto', sans-serif;
+  overflow-x: hidden;
+  background: #060709;
+}
+
+/* ---------- shared bits ---------- */
+.sf-home-caution-bar {
+  height: 10px;
+  width: 100%;
+  background: repeating-linear-gradient(45deg, #f48721, #f48721 12px, #111 12px, #111 24px);
+  border-bottom: 2px solid #000;
+  box-shadow: 0 0 14px rgba(244, 135, 33, 0.3);
+}
+.sf-home-caution-bar--bottom {
+  position: absolute;
+  bottom: 0; left: 0;
+  z-index: 3;
+  border-bottom: none;
+  border-top: 2px solid #000;
+}
+.sf-home-caution-bar--thin { height: 6px; border-bottom: none; border-top: 2px solid #000; }
+
+.sf-home-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #f48721;
+  background: linear-gradient(180deg, rgba(22, 24, 28, 0.85) 0%, rgba(12, 14, 17, 0.85) 100%);
+  border: 1px solid rgba(244, 135, 33, 0.35);
+  border-radius: 999px;
+  padding: 7px 15px;
+  backdrop-filter: blur(4px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+.sf-home-pulse {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  animation: sfHomePulse 1.8s ease-in-out infinite;
+}
+
+/* ============================ HERO ============================ */
+.sf-home-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(640px, 96vh, 1040px);
+  overflow: hidden;
+  background:
+    radial-gradient(1100px 520px at 58% 0%, rgba(244, 135, 33, 0.1), transparent 72%),
+    #06070a;
+  border-bottom: 1px solid #16181c;
+}
+
+/* top band — the WebGL graph, full and unobstructed */
+.sf-home-scene-band {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 44vh;
+  z-index: 0;
+}
+
+/* WebGL mount + canvas */
+.sf-home-scene { position: absolute; inset: 0; }
+.sf-home-canvas { width: 100%; height: 100%; }
+.sf-home-canvas canvas { display: block; width: 100% !important; height: 100% !important; }
+.sf-home-scene-loading {
+  position: absolute; inset: 0;
+  background: radial-gradient(600px 400px at 60% 40%, rgba(244, 135, 33, 0.08), transparent 70%);
+  animation: sfHomePulseBg 2.4s ease-in-out infinite;
+}
+/* WebGL-unsupported fallback (class is toggled by FactoryScene) */
+.sf-home-canvas.sf-scene--unsupported {
+  background:
+    linear-gradient(rgba(244, 135, 33, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 135, 33, 0.06) 1px, transparent 1px),
+    #07080b;
+  background-size: 60px 60px, 60px 60px;
+}
+
+/* fade the bottom of the graph band into the console bar */
+.sf-home-band-fade {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 96px;
+  pointer-events: none;
+  background: linear-gradient(0deg, #08090c 0%, rgba(8, 9, 12, 0) 100%);
+}
+
+/* ---- "drag to explore" tag (top-right of the graph band) ---- */
+.sf-home-drag-hint {
+  position: absolute;
+  top: 18px; right: 22px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: #d3a06a;
+  background: rgba(8, 9, 12, 0.55);
+  border: 1px solid rgba(244, 135, 33, 0.28);
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  animation: sfHomeHintFade 3s ease-in-out infinite;
+}
+.sf-home-drag-hint svg { color: #f48721; }
+
+/* ===== console bar (below the graph) ===== */
+.sf-home-console-bar {
+  position: relative;
+  flex: 0 0 auto;
+  z-index: 1;
+  padding: 30px 28px 42px;
+  border-top: 1px solid #23262d;
+  box-shadow: 0 -1px 0 rgba(244, 135, 33, 0.22);
+}
+.sf-home-console {
+  position: relative;
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 44px;
+  padding: 26px 32px;
+  background: linear-gradient(180deg, rgba(15, 17, 21, 0.92) 0%, rgba(9, 10, 13, 0.94) 100%);
+  border: 1px solid #2a2d33;
+  border-left: 3px solid #f48721;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.sf-home-console .sf-card-screw {
+  position: absolute;
+  width: 5px; height: 5px;
+  background: #050608;
+  border-radius: 50%;
+  box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.18);
+  z-index: 3;
+}
+.sf-home-console .sf-card-screw-tl { top: 9px; left: 9px; }
+.sf-home-console .sf-card-screw-tr { top: 9px; right: 9px; }
+.sf-home-console .sf-card-screw-bl { bottom: 9px; left: 9px; }
+.sf-home-console .sf-card-screw-br { bottom: 9px; right: 9px; }
+
+.sf-home-console-main { flex: 1 1 auto; min-width: 0; }
+.sf-home-console-side {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+}
+.sf-home-console-side .sf-home-cta-row { margin-top: 0; }
+.sf-home-console-side .sf-home-stats { margin-top: 0; }
+
+.sf-home-title {
+  font-family: 'Arial Black', Impact, sans-serif;
+  font-size: clamp(34px, 4.6vw, 56px);
+  line-height: 0.98;
+  letter-spacing: 1px;
+  color: #fff;
+  margin: 16px 0 0;
+  text-shadow: 0 2px 0 #000, 0 0 40px rgba(0, 0, 0, 0.7);
+}
+.sf-home-title-accent {
+  color: #f48721;
+  text-shadow: 0 0 24px rgba(244, 135, 33, 0.6), 0 2px 0 #000;
+}
+.sf-home-tagline {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 6px;
+  color: #9ba0a8;
+  text-transform: uppercase;
+}
+.sf-home-lead {
+  margin: 22px 0 0;
+  max-width: 500px;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: #c2c5cb;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+}
+
+.sf-home-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 30px;
+}
+.sf-home-cta { cursor: pointer; }
+
+.sf-home-stats {
+  display: flex;
+  gap: 14px;
+  margin-top: 36px;
+  flex-wrap: wrap;
+}
+.sf-home-stat {
+  position: relative;
+  min-width: 96px;
+  padding: 12px 18px 12px 16px;
+  background: linear-gradient(180deg, rgba(21, 23, 27, 0.82) 0%, rgba(12, 14, 17, 0.82) 100%);
+  border: 1px solid #23262d;
+  border-left: 3px solid #f48721;
+  backdrop-filter: blur(3px);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+}
+.sf-home-stat-num {
+  display: block;
+  font-family: 'Arial Black', Impact, sans-serif;
+  font-size: 26px;
+  line-height: 1;
+  color: #fff;
+}
+.sf-home-stat-label {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #8E9299;
+}
+
+/* ============================ SECTIONS ============================ */
+.sf-home-section {
+  padding: 56px 28px 4px;
+}
+.sf-home-section > * {
+  max-width: 1240px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.sf-home-section-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 26px;
+}
+.sf-home-section-hex {
+  width: 16px; height: 16px;
+  background: #f48721;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  box-shadow: 0 0 12px rgba(244, 135, 33, 0.6);
+  flex-shrink: 0;
+}
+.sf-home-section-title {
+  font-family: 'Arial Black', Impact, sans-serif;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: #fff;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.sf-home-section-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, #2a2d33, transparent);
+}
+
+/* ---------- module cards ---------- */
+.sf-home-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.sf-home-card {
+  position: relative;
+  text-align: left;
+  padding: 22px 20px 20px;
+  background: linear-gradient(180deg, #15171b 0%, #0d0f12 100%);
+  border: 1px solid #23262d;
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.18s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.sf-home-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(244, 135, 33, 0.5);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(244, 135, 33, 0.25);
+}
+.sf-home-card:focus-visible {
+  outline: 2px solid rgba(244, 135, 33, 0.6);
+  outline-offset: 2px;
+}
+/* top-left chamfer accent */
+.sf-home-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  border-top: 14px solid #2a2d33;
+  border-right: 14px solid transparent;
+  pointer-events: none;
+  transition: border-top-color 0.2s ease;
+}
+.sf-home-card:hover::before { border-top-color: #f48721; }
+
+.sf-home-card-sweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(244, 135, 33, 0.12) 50%, transparent 70%);
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+.sf-home-card:hover .sf-home-card-sweep { animation: sfHomeSweep 0.7s ease-out; }
+
+.sf-home-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.sf-home-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px; height: 46px;
+  color: #f48721;
+  background: linear-gradient(180deg, #1c1f24 0%, #101216 100%);
+  border: 1px solid #2a2d33;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.sf-home-card:hover .sf-home-card-icon {
+  color: #ffb15e;
+  background: linear-gradient(180deg, #241a10 0%, #16110a 100%);
+}
+.sf-home-card-code {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #5d6168;
+}
+.sf-home-card-title {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.sf-home-card-desc {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #9a9ea5;
+  margin-bottom: 16px;
+}
+.sf-home-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #f48721;
+}
+.sf-home-card-cta svg { transition: transform 0.2s ease; }
+.sf-home-card:hover .sf-home-card-cta svg { transform: translateX(4px); }
+
+/* corner screws */
+.sf-home-card .sf-card-screw {
+  position: absolute;
+  width: 5px; height: 5px;
+  background: #0a0b0d;
+  border-radius: 50%;
+  box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.15);
+  z-index: 2;
+}
+.sf-home-card .sf-card-screw-tl { top: 7px; left: 7px; }
+.sf-home-card .sf-card-screw-tr { top: 7px; right: 7px; }
+.sf-home-card .sf-card-screw-bl { bottom: 7px; left: 7px; }
+.sf-home-card .sf-card-screw-br { bottom: 7px; right: 7px; }
+
+/* ---------- features ---------- */
+.sf-home-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.sf-home-feature {
+  display: flex;
+  gap: 16px;
+  padding: 20px 22px;
+  background: linear-gradient(180deg, #131519 0%, #0c0e11 100%);
+  border: 1px solid #1f2228;
+  border-radius: 8px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.sf-home-feature:hover { border-color: #2f333b; transform: translateY(-2px); }
+.sf-home-feature-num {
+  font-family: 'Arial Black', Impact, sans-serif;
+  font-size: 26px;
+  line-height: 1;
+  color: rgba(244, 135, 33, 0.55);
+  flex-shrink: 0;
+}
+.sf-home-feature-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.sf-home-feature-desc {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #9a9ea5;
+}
+
+/* ============================ FOOTER ============================ */
+.sf-home-footer { margin-top: 56px; padding-bottom: 0; }
+.sf-home-footer-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 26px 28px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.sf-home-footer-brand {
+  font-family: 'Arial Black', Impact, sans-serif;
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: #a0a2a5;
+}
+.sf-home-footer-brand span { color: #f48721; }
+.sf-home-footer-note {
+  font-size: 11.5px;
+  color: #6b6f76;
+  letter-spacing: 0.3px;
+}
+
+/* ============================ KEYFRAMES ============================ */
+@keyframes sfHomePulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px #22c55e; }
+  50% { opacity: 0.45; box-shadow: 0 0 2px #22c55e; }
+}
+@keyframes sfHomePulseBg {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+@keyframes sfHomeSweep {
+  to { transform: translateX(120%); }
+}
+@keyframes sfHomeHintFade {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+/* ============================ RESPONSIVE ============================ */
+@media (max-width: 980px) {
+  /* console: stack the copy above the actions */
+  .sf-home-console {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .sf-home-console-side { width: 100%; }
+  .sf-home-cards { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 680px) {
+  .sf-home-hero { min-height: 92vh; }
+  .sf-home-scene-band { min-height: 40vh; }
+  .sf-home-title { font-size: 36px; letter-spacing: 0; }
+  .sf-home-tagline { letter-spacing: 4px; }
+  .sf-home-console-bar { padding: 22px 14px 34px; }
+  .sf-home-console { padding: 22px 18px; }
+  .sf-home-drag-hint { display: none; }
+  .sf-home-cards { grid-template-columns: 1fr; }
+  .sf-home-features { grid-template-columns: 1fr; }
+  .sf-home-cta-row { flex-direction: column; align-items: stretch; width: 100%; }
+  .sf-home-cta { width: 100%; }
+  .sf-home-section { padding-top: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-home-pulse,
+  .sf-home-scene-loading,
+  .sf-home-drag-hint,
+  .sf-home-card-sweep { animation: none !important; }
+  .sf-home-card,
+  .sf-home-feature { transition: none !important; }
+}
