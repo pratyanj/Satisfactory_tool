@@ -31,7 +31,14 @@ export function HeaderNav({
           
         </div>
 
-        <div className="sf-header-title-plate">
+        <div
+          className={`sf-header-title-plate sf-header-title-plate--home ${topLevelTab === 'home' ? 'is-home' : ''}`}
+          onClick={() => { handleTopLevelTab('home'); setIsMenuOpen(false); }}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleTopLevelTab('home'); setIsMenuOpen(false); } }}
+          role="button"
+          tabIndex={0}
+          aria-label="Go to home page"
+        >
           <div className="sf-screw sf-screw-tl" />
           <div className="sf-screw sf-screw-tr" />
           <div className="sf-screw sf-screw-bl" />

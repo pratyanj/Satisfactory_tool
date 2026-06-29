@@ -1,7 +1,17 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { mam, items, buildings, MamNode, MamTree } from '../engine/data';
 import { AppImage } from './AppImage';
-import { HelpCircle, ArrowLeft } from 'lucide-react';
+import { HelpCircle, ArrowLeft, Clock } from 'lucide-react';
+
+/** Format research time in seconds → compact "1m 30s" / "45s". */
+function formatResearchTime(seconds?: number): string | null {
+  if (seconds === undefined || seconds === null) return null;
+  if (seconds <= 0) return 'Instant';
+  const m = Math.floor(seconds / 60);
+  const s = Math.round(seconds % 60);
+  if (m > 0) return s > 0 ? `${m}m ${s}s` : `${m}m`;
+  return `${s}s`;
+}
 
 interface Props {
   onBack: () => void;
@@ -29,8 +39,12 @@ export function MamBrowser({ onBack, onNavigateItem, onNavigateBuilding }: Props
   }, [currentTree, selectedNodeId]);
 
   // Cell sizes for vertical layout: x = depth (rows, top→bottom), y = column (left→right)
-  const CELL_W = 210; // horizontal spacing per column (y-axis in data)
-  const CELL_H = 175; // vertical spacing per depth level (x-axis in data)
+  const CELL_W = 330; // horizontal spacing per column (y-axis in data) — wide so
+                      // opposing connector curves in multi-parent clusters spread
+                      // apart instead of bunching/crossing on top of each other.
+  const CELL_H = 260; // vertical spacing per depth level (x-axis in data) — generous
+                      // vertical gap so cross-column connector curves have room to
+                      // route between rows without overlapping the cards.
   const NODE_W = 180;
   const NODE_H = 135;
 
@@ -53,23 +67,26 @@ export function MamBrowser({ onBack, onNavigateItem, onNavigateBuilding }: Props
   // SVG connector lines math — now flowing top-to-bottom
   const svgLines = useMemo(() => {
     if (!currentTree) return [];
-    const lines: { id: string; x1: number; y1: number; x2: number; y2: number; unlocked: boolean }[] = [];
+    const lines: { id: string; x1: number; y1: number; x2: number; y2: number }[] = [];
     for (const node of currentTree.nodes) {
       for (const parentId of node.parents) {
         const parent = currentTree.nodes.find(n => n.id === parentId);
         if (parent) {
-          // data.x = depth row, data.y = column
-          const px = parent.y * CELL_W + NODE_W / 2;
-          const py = parent.x * CELL_H + NODE_H;
-          const cx = node.y * CELL_W + NODE_W / 2;
-          const cy = node.x * CELL_H;
+          // Endpoints must match the card geometry exactly. Cards are positioned
+          // with left = col*CELL_W + (CELL_W-NODE_W)/2, top = row*CELL_H +
+          // (CELL_H-NODE_H)/2 — so the center-X is col*CELL_W + CELL_W/2, the
+          // bottom edge is row*CELL_H + (CELL_H+NODE_H)/2, and the top edge is
+          // row*CELL_H + (CELL_H-NODE_H)/2. (data.x = row, data.y = column.)
+          const px = parent.y * CELL_W + CELL_W / 2;
+          const py = parent.x * CELL_H + (CELL_H + NODE_H) / 2;
+          const cx = node.y * CELL_W + CELL_W / 2;
+          const cy = node.x * CELL_H + (CELL_H - NODE_H) / 2;
           lines.push({
             id: `${parent.id}-${node.id}`,
             x1: px,
             y1: py,
             x2: cx,
             y2: cy,
-            unlocked: true,
           });
         }
       }
@@ -152,12 +169,11 @@ export function MamBrowser({ onBack, onNavigateItem, onNavigateBuilding }: Props
               }}
             >
               {svgLines.map((line) => {
-                const midY = (line.y1 + line.y2) / 2;
-                const d = line.x1 === line.x2
-                  // same column — straight vertical line
-                  ? `M ${line.x1} ${line.y1} L ${line.x2} ${line.y2}`
-                  // different columns — 90° elbow: down to midpoint, horizontal, then down to child
-                  : `M ${line.x1} ${line.y1} L ${line.x1} ${midY} L ${line.x2} ${midY} L ${line.x2} ${line.y2}`;
+                // Smooth vertical cubic Bézier from parent-bottom to child-top.
+                // Curves fan out naturally instead of overlapping like orthogonal
+                // elbows did, and tuck behind the nodes (which sit at a higher z).
+                const dy = Math.max(55, (line.y2 - line.y1) * 0.5);
+                const d = `M ${line.x1} ${line.y1} C ${line.x1} ${line.y1 + dy}, ${line.x2} ${line.y2 - dy}, ${line.x2} ${line.y2}`;
                 return (
                   <g key={line.id}>
                     {/* Conduit base drop shadow / structural thickness */}
@@ -233,10 +249,17 @@ export function MamBrowser({ onBack, onNavigateItem, onNavigateBuilding }: Props
                 }
               }
 
+              // Strip the build_ prefix so building-unlock ids match local
+              // image filenames (e.g. build_radar_tower → radar_tower.png).
+              if (nodeImageKey.startsWith('build_')) nodeImageKey = nodeImageKey.slice(6);
+
               // Lookup image URL from items/buildings database for remote fallback
               const itemInfo = items[nodeImageKey];
               const buildingInfo = buildings[nodeImageKey];
-              const resolvedFallbackUrl = itemInfo?.imageUrl || buildingInfo?.imageUrl || node.imageUrl;
+              const resolvedFallbackUrl = itemInfo?.imageUrl || buildingInfo?.imageUrl;
+              // Last-resort fallback: the tree's own icon (always present locally),
+              // so a missing node image degrades to a relevant icon, never raw text.
+              const treeIconFallback = `/images/${currentTree?.icon ?? 'mam'}.png`;
 
               return (
                 <button
@@ -316,17 +339,17 @@ export function MamBrowser({ onBack, onNavigateItem, onNavigateBuilding }: Props
                     }}
                   />
 
-                  {/* Top Bar Tech HUD */}
+                  {/* Top Bar HUD — node identifier + research time (informational only) */}
                   <div className="w-full flex items-center justify-between px-3 pt-1.5 z-10 select-none">
-                    <div className="flex items-center gap-1">
-                      <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${isSelected ? 'bg-[#f48721] animate-pulse shadow-[0_0_6px_#f48721]' : 'bg-[#2ea44f] shadow-[0_0_4px_#2ea44f]'}`} />
-                      <span className="text-[8px] font-mono text-gray-500 font-bold uppercase tracking-wider">
-                        {isSelected ? 'ACTIVE' : 'SYS_OK'}
-                      </span>
-                    </div>
                     <span className="text-[8px] font-mono text-[#f48721]/60 font-semibold transition-colors group-hover:text-[#f48721]/80">
                       NODE_{node.id.substring(0, 4).toUpperCase()}
                     </span>
+                    {formatResearchTime(node.time) && (
+                      <span className="flex items-center gap-0.5 text-[8px] font-mono text-gray-500 font-bold">
+                        <Clock className="w-2 h-2" />
+                        {formatResearchTime(node.time)}
+                      </span>
+                    )}
                   </div>
 
                   {/* Analyzer Reticle Frame */}
@@ -345,7 +368,7 @@ export function MamBrowser({ onBack, onNavigateItem, onNavigateBuilding }: Props
 
                     {/* Node Image */}
                     <div className="w-10 h-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                      <AppImage idKey={nodeImageKey} fallbackUrl={resolvedFallbackUrl} alt={node.name} className="w-full h-full object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
+                      <AppImage idKey={nodeImageKey} fallbackUrl={resolvedFallbackUrl} secondaryFallbackUrl={treeIconFallback} alt={node.name} className="w-full h-full object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
                     </div>
                   </div>
 
@@ -401,12 +424,20 @@ export function MamBrowser({ onBack, onNavigateItem, onNavigateBuilding }: Props
             {/* Header */}
             <div className="p-4 border-b border-[#30363d]">
               <h3 className="text-sm font-black text-white">{selectedNode.name}</h3>
-              <div className="text-[10px] font-mono text-[#f48721] font-bold mt-1">RESEARCH NODE</div>
+              <div className="flex items-center justify-between mt-1">
+                <div className="text-[10px] font-mono text-[#f48721] font-bold">RESEARCH NODE</div>
+                {formatResearchTime(selectedNode.time) && (
+                  <div className="flex items-center gap-1 text-[10px] font-mono text-[#8b949e]">
+                    <Clock className="w-3 h-3" />
+                    {formatResearchTime(selectedNode.time)}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Content scroll */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              
+
               {/* Description */}
               <div className="space-y-1">
                 <span className="text-[10px] font-mono uppercase text-[#8b949e]">Description</span>

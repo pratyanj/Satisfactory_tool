@@ -15,6 +15,7 @@ import { WorldMapTab } from './components/Map/WorldMapTab';
 import { Codex } from './components/Codex';
 import { PowerPlannerTab } from './components/PowerPlanner/PowerPlannerTab';
 import { SandboxTab } from './components/Sandbox/SandboxTab';
+import { HomeTab } from './components/Home/HomeTab';
 import { HeaderNav } from './components/Layout/Header/HeaderNav';
 import { BodyFrame } from './components/Layout/BodyFrame/BodyFrame';
 import { ParsedSave } from './types/save';
@@ -77,7 +78,9 @@ const TAB_CONFIG: { id: MainTab; label: string; icon: React.ReactNode }[] = [
 ];
 
 
-type TopLevelTab = 'planner' | 'power_planner' | 'world_map' | 'codex' | 'sandbox';
+type TopLevelTab = 'home' | 'planner' | 'power_planner' | 'world_map' | 'codex' | 'sandbox';
+
+const TOP_LEVEL_TABS: TopLevelTab[] = ['home', 'planner', 'power_planner', 'world_map', 'codex', 'sandbox'];
 
 function parseRecipeSelections(value: unknown): RecipeSelectionMap {
   if (!value || typeof value !== 'object') return {};
@@ -175,7 +178,7 @@ export default function App() {
   });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
   const [mainTab, setMainTab] = useState<MainTab>('network_graph');
-  const [topLevelTab, setTopLevelTab] = useState<TopLevelTab>('planner');
+  const [topLevelTab, setTopLevelTab] = useState<TopLevelTab>('home');
   const [selectedCodexItemId, setSelectedCodexItemId] = useState<string | null>(null);
 
   const [copied, setCopied] = useState(false);
@@ -282,7 +285,7 @@ export default function App() {
       if (cleanHash && !cleanHash.startsWith('plan=') && !cleanHash.startsWith('tab=')) {
         const parts = cleanHash.split('/');
         const top = parts[0] as TopLevelTab;
-        if (['planner', 'power_planner', 'world_map', 'codex', 'sandbox'].includes(top)) {
+        if (TOP_LEVEL_TABS.includes(top)) {
           setTopLevelTab(top);
           let sub: MainTab = 'network_graph';
           if (top === 'planner' && parts[1]) {
@@ -303,7 +306,7 @@ export default function App() {
       if (pathname && pathname !== '/') {
         const parts = pathname.slice(1).split('/');
         const top = parts[0] as TopLevelTab;
-        if (['planner', 'power_planner', 'world_map', 'codex', 'sandbox'].includes(top)) {
+        if (TOP_LEVEL_TABS.includes(top)) {
           setTopLevelTab(top);
           if (top === 'planner' && parts[1]) {
             const sub = parts[1] as MainTab;
@@ -321,7 +324,7 @@ export default function App() {
         const params = new URLSearchParams(hash.slice(1));
         const top = (params.get('tab') ?? '') as TopLevelTab;
         const sub = (params.get('sub') ?? '') as MainTab;
-        if (['planner', 'power_planner', 'world_map', 'codex', 'sandbox'].includes(top)) setTopLevelTab(top);
+        if (TOP_LEVEL_TABS.includes(top)) setTopLevelTab(top);
         if (['network_graph', 'tree_list', 'items', 'buildings'].includes(sub)) setMainTab(sub);
         setSelectedCodexItemId(null);
         
@@ -336,7 +339,7 @@ export default function App() {
       const storedSub = sessionStorage.getItem('sf_sub') as MainTab | null;
       const storedCodexItem = sessionStorage.getItem('sf_codex_item');
       
-      const resolvedTop = (storedTop && ['planner', 'power_planner', 'world_map', 'codex', 'sandbox'].includes(storedTop)) ? storedTop : 'planner';
+      const resolvedTop = (storedTop && TOP_LEVEL_TABS.includes(storedTop)) ? storedTop : 'home';
       const resolvedSub = (storedSub && ['network_graph', 'tree_list', 'items', 'buildings'].includes(storedSub)) ? storedSub : 'network_graph';
       const resolvedCodexItem = resolvedTop === 'codex' ? (storedCodexItem || null) : null;
       
@@ -718,7 +721,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans ${topLevelTab === 'planner' ? 'overflow-y-auto' : 'h-screen overflow-hidden'}`}>
+    <div className={`min-h-screen bg-[#050505] text-[#e4e3e0] flex flex-col font-sans ${topLevelTab === 'planner' || topLevelTab === 'home' ? 'overflow-y-auto' : 'h-screen overflow-hidden'}`}>
       <HeaderNav
         topLevelTab={topLevelTab}
         handleTopLevelTab={handleTopLevelTab}
@@ -727,7 +730,9 @@ export default function App() {
       />
       <div className="flex-grow flex flex-col w-full min-h-0">
         <BodyFrame>
-          {topLevelTab === 'planner' ? (
+          {topLevelTab === 'home' ? (
+            <HomeTab onNavigate={(tab) => handleTopLevelTab(tab as TopLevelTab)} />
+          ) : topLevelTab === 'planner' ? (
             <main className="w-full flex flex-col gap-4 p-4">
               
               {/* Top Side: Settings & Summary — collapsible */}
