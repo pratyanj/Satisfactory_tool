@@ -205,6 +205,50 @@ export default function App() {
     };
   }, []);
 
+  // Update document title and meta description dynamically for SEO and browser history
+  useEffect(() => {
+    let title = 'Satisfactory Tool | Visual Factory Planner, Save Game Analyzer & Interactive Map';
+    let description = 'Free Satisfactory 1.0 companion utility: Visual factory planner with belt load calculation, in-browser .sav save game analyzer & diagnostics, interactive cartography map, power grid calculator, and 1.0 codex.';
+
+    if (topLevelTab === 'planner') {
+      const subLabels: Record<MainTab, string> = {
+        network_graph: 'Network Graph',
+        tree_list: 'Tree List',
+        items: 'Items Breakdown',
+        buildings: 'Buildings Breakdown',
+        world_map: 'World Map View',
+        diagnostics: 'Diagnostics & Bottleneck Audits',
+      };
+      const subName = subLabels[mainTab] || 'Factory Planner';
+      title = `${subName} | Satisfactory Factory Planner & Production Calculator`;
+      description = `Calculate and visualize optimal factory production lines with interactive node graphs, alternate recipes, and multi-tier belt saturation for Satisfactory 1.0.`;
+    } else if (topLevelTab === 'power_planner') {
+      title = 'Power Grid Planner & Generator Calculator | Satisfactory Tool';
+      description = 'Plan your Satisfactory power generation infrastructure: calculate coal, fuel, nuclear, biomass, and alien power matrix grid outputs and consumption.';
+    } else if (topLevelTab === 'world_map') {
+      title = 'Interactive World Map & Resource Coordinates | Satisfactory Tool';
+      description = 'Explore the full Satisfactory 1.0 world map with interactive resource nodes, node purities, crash sites, power slugs, and Unreal Engine coordinates.';
+    } else if (topLevelTab === 'codex') {
+      if (selectedCodexItemId && items[selectedCodexItemId as keyof typeof items]) {
+        const itemName = items[selectedCodexItemId as keyof typeof items].name;
+        title = `${itemName} - Recipes & Production | Satisfactory Tool Codex`;
+        description = `View crafting recipes, alternate recipes, production rates, and machine requirements for ${itemName} in Satisfactory 1.0.`;
+      } else {
+        title = 'Satisfactory 1.0 Codex | Items, Buildings & Alternate Recipes';
+        description = 'Browse all Satisfactory 1.0 items, buildings, and alternate recipes with full production metrics, Somersloop multipliers, and unlock milestones.';
+      }
+    } else if (topLevelTab === 'sandbox') {
+      title = 'FICSIT Blueprint Sandbox & Logistics CAD | Satisfactory Tool';
+      description = 'Design factory layouts with 8m x 8m foundation snapping, logistics manifold auto-routing, and blueprint simulations.';
+    }
+
+    document.title = title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', description);
+    }
+  }, [topLevelTab, mainTab, selectedCodexItemId]);
+
   // Sync URL path whenever navigation state changes (supports browser history navigation!)
   const updatePath = useCallback((top: TopLevelTab, sub: MainTab, codexItemId?: string | null) => {
     let path = '';

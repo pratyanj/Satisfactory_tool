@@ -353,7 +353,6 @@ function FactoryGraphInner({
     setLocalSomersloop(nextVal);
     onUpdatePerMachineSettings?.(itemId, { clockSpeed: localClock, somerslooped: nextVal, purity: localPurity });
   };
-
   const handlePurityChange = (newPurity: 'impure' | 'normal' | 'pure') => {
     setLocalPurity(newPurity);
     onUpdatePerMachineSettings?.(itemId, { clockSpeed: localClock, somerslooped: localSomersloop, purity: newPurity });

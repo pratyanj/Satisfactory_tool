@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Exclude potential sensitive or non-content routes
+Disallow: /api/
+Disallow: /*?*homescreen=
+
+# Sitemaps
+Sitemap: https://satisfactory-tool.vercel.app/sitemap.xml
+Sitemap: /sitemap.xml
+
