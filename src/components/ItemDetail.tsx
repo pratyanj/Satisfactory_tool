@@ -277,8 +277,8 @@ export function RecipeCard({ recipe, highlightId, onNavigate, onNavigateBuilding
           >
             <div className="sf-recipe-flow-machine-glow" />
             <div className="sf-recipe-flow-machine-core">
-              {machine && machine.imageUrl ? (
-                <img src={machine.imageUrl} alt={machine.name} className="sf-recipe-flow-machine-img" />
+              {machine ? (
+                <AppImage idKey={machine.id} fallbackUrl={machine.imageUrl} alt={machine.name} className="sf-recipe-flow-machine-img" />
               ) : (
                 <span className="sf-recipe-flow-machine-placeholder">🔨</span>
               )}
@@ -511,9 +511,7 @@ function RecipeTableRow({ recipe, highlightId, onNavigate, onNavigateBuilding }:
             onClick={() => onNavigateBuilding(recipe.machineId)}
             title={`View ${machine.name} specifications`}
           >
-            {machine.imageUrl && (
-              <img src={machine.imageUrl} alt={machine.name} className="sf-rt-machine-img" />
-            )}
+            <AppImage idKey={machine.id} fallbackUrl={machine.imageUrl} alt={machine.name} className="sf-rt-machine-img" />
             <span className="sf-rt-machine-name">{machine.name} {machine.powerUsage ? `(${machine.powerUsage} MW)` : ''}</span>
           </button>
         ) : (
