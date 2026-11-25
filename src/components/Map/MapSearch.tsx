@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Search, X } from 'lucide-react';
 import type { SaveBuilding } from '../../types/save';
 import { classifyBuilding } from '../../engine/buildingClassifier';
 import { gameToLatLng } from './mapUtils';
@@ -35,7 +36,7 @@ export function MapSearch({ buildings, mapRef }: MapSearchProps) {
   return (
     <div className="map-search-wrap">
       <div className="map-search-box">
-        <span className="map-search-icon">🔍</span>
+        <Search size={13} className="map-search-icon" />
         <input
           type="text"
           placeholder="Search buildings…"
@@ -46,7 +47,9 @@ export function MapSearch({ buildings, mapRef }: MapSearchProps) {
           className="map-search-input"
         />
         {query && (
-          <button className="map-search-clear" onClick={() => setQuery('')}>✕</button>
+          <button type="button" className="map-search-clear" onClick={() => setQuery('')} aria-label="Clear search">
+            <X size={13} />
+          </button>
         )}
       </div>
       {isOpen && results.length > 0 && (

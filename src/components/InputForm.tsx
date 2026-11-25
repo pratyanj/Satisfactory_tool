@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, Globe, RotateCcw, Zap } from 'lucide-react';
+import { ChevronDown, ChevronRight, Globe, Plus, RotateCcw, Sparkles, X, Zap } from 'lucide-react';
 import { AppImage } from './AppImage';
 import { items, belts, machines, recipes, BeltId, MachineId, RecipeId } from '../engine/data';
 import {
@@ -10,6 +10,7 @@ import {
   POWER_MULTIPLIER_PRESETS,
   RECIPE_COST_PRESETS,
   formatMultiplier,
+  getNodePurityMultiplier,
   hasActiveWorldSettings,
   normalizeMultiplier,
   type NodePurity,
@@ -218,14 +219,17 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   const [powerMultiplier, setPowerMultiplier] = useState<number>(initialValues?.powerMultiplier ?? DEFAULT_WORLD_SETTINGS.powerMultiplier);
   const [defaultNodePurity, setDefaultNodePurity] = useState<NodePurity>(initialValues?.defaultNodePurity ?? DEFAULT_WORLD_SETTINGS.defaultNodePurity);
   const [disableAnimations, setDisableAnimations] = useState<boolean>(initialValues?.disableAnimations ?? false);
-  const [isWorldSettingsOpen, setIsWorldSettingsOpen] = useState<boolean>(() =>
+  const [activeDrawer, setActiveDrawer] = useState<'alt' | 'world' | 'tuning' | null>(() =>
     hasActiveWorldSettings({
       recipeCostMultiplier: initialValues?.costMultiplier,
       powerMultiplier: initialValues?.powerMultiplier,
       defaultNodePurity: initialValues?.defaultNodePurity,
     })
+      ? 'world'
+      : null
   );
-  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+  const toggleDrawer = (drawer: 'alt' | 'world' | 'tuning') =>
+    setActiveDrawer((prev) => (prev === drawer ? null : drawer));
 
   // Items the user already has available (imports). The solver consumes these
   // and only produces the shortfall. Stored as rows; sent as a {itemId: rate} map.
@@ -238,7 +242,6 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   const [recipeSelections, setRecipeSelections] = useState<RecipeSelectionMap>(initialValues?.recipeSelections || {});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTargetIndex, setEditingTargetIndex] = useState<number | null>(null);
-  const [showAltRecipes, setShowAltRecipes] = useState(false);
 
   // Synchronize local state when inputs, targets, or selections are modified
   const updateFormState = (
@@ -390,9 +393,14 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
 
   const altCount = Object.keys(recipeSelections).length;
 
+  const minerBaseRate = (minerId === 'miner_mk3' ? 240 : minerId === 'miner_mk2' ? 120 : 60) * getNodePurityMultiplier(defaultNodePurity);
+  const extractorSpec = extractorTier === 'mk3' ? '250%' : extractorTier === 'mk2' ? '200%' : '100%';
+  const beltSpec = `${belts[beltId]?.capacity ?? 60}/m`;
+  const pipeSpec = pipeTier === 'mk2' ? '600 m³/m' : '300 m³/m';
+
   return (
-    <div className="relative w-full">
-      <form onSubmit={handleSubmit} className="relative w-full text-white bg-transparent">
+    <div className="relative w-full h-full">
+      <form onSubmit={handleSubmit} className="relative w-full h-full flex flex-col text-white bg-transparent">
 
         {/* Panel background */}
         <div style={{
@@ -403,7 +411,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 32px rgba(0,0,0,0.7)',
           zIndex: 0, pointerEvents: 'none',
         }} />
-        <div style={{ position: 'absolute', top: 0, left: 40, right: 40, height: '2px', background: 'linear-gradient(90deg, transparent, #f48721, transparent)', opacity: 0.6, zIndex: 10 }} />
+        <div style={{ position: 'absolute', top: 0, left: 40, right: 40, height: '2px', background: 'linear-gradient(90deg, transparent, #f48721, transparent)', opacity: 0.7, zIndex: 10 }} />
         <div style={{ position: 'absolute', top: 0, left: 0, width: 0, height: 0, borderTop: '12px solid #f48721', borderRight: '12px solid transparent', zIndex: 10 }} />
         <div style={{ position: 'absolute', bottom: 0, right: 0, width: 0, height: 0, borderBottom: '12px solid #f4872115', borderLeft: '12px solid transparent', zIndex: 10 }} />
 
@@ -412,11 +420,14 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           <div style={{ width: 3, height: 14, background: 'linear-gradient(180deg, #f48721, #c45700)', borderRadius: 2 }} />
           <span className="text-[9px] font-mono tracking-[0.25em] text-[#f48721] uppercase font-bold">FICSIT // Production Control</span>
           <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, #f4872125, transparent)' }} />
-          <Zap size={10} className="text-[#f48721] opacity-50" />
+          <span className="text-[8px] font-mono tracking-widest uppercase text-[#6b7280]">
+            {targets.length} {targets.length === 1 ? 'target' : 'targets'}
+          </span>
+          <Zap size={10} className="text-[#f48721] opacity-60" />
         </div>
 
         {/* ── Zone 1: Target Outputs ── */}
-        <div className="relative z-10 px-4 pt-3 pb-2 flex flex-col gap-2">
+        <div className="relative z-10 px-4 pt-3 pb-2.5 flex flex-col gap-2">
           <style dangerouslySetInnerHTML={{ __html: `
             .sf-tscroll::-webkit-scrollbar { width: 3px; }
             .sf-tscroll::-webkit-scrollbar-track { background: transparent; }
@@ -427,7 +438,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           ` }} />
 
           <div className="flex items-center justify-between">
-            <span className="text-[8px] font-mono tracking-[0.25em] text-[#555b66] uppercase">Target Outputs</span>
+            <span className="text-[8px] font-mono tracking-[0.22em] text-[#6b7280] uppercase font-bold">Target Outputs</span>
             <button
               type="button"
               onClick={() => {
@@ -439,9 +450,10 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                 }];
                 updateFormState(newTargets, minerId, beltId, recipeSelections);
               }}
-              className="flex items-center gap-1 text-[9px] font-mono tracking-widest uppercase text-[#f48721] hover:text-[#ffaa55] transition-colors"
+              className="flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-mono tracking-widest uppercase text-[#f48721] hover:text-[#ffaa55] transition-colors cursor-pointer"
+              style={{ background: 'rgba(244,135,33,0.08)', border: '1px solid rgba(244,135,33,0.22)' }}
             >
-              <span style={{ fontSize: 13, lineHeight: 1 }}>+</span> Add Target
+              <Plus size={10} /> Add Target
             </button>
           </div>
 
@@ -451,177 +463,201 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
               return (
                 <div
                   key={idx}
-                  className="sf-trow flex items-center gap-2 px-2.5 py-2 rounded"
+                  className="sf-trow shrink-0 flex flex-wrap sm:flex-nowrap items-center gap-2 px-2.5 py-2 rounded"
                   style={{ background: '#0d0f12', border: '1px solid #1e2128' }}
                 >
                   {/* Item picker button */}
                   <button
                     type="button"
                     onClick={() => { setEditingTargetIndex(idx); setIsModalOpen(true); }}
-                    className="flex items-center gap-2 flex-1 min-w-0 group"
+                    className="flex items-center gap-2.5 flex-1 min-w-[160px] group cursor-pointer"
                     style={{ outline: 'none' }}
+                    title="Change target item"
                   >
-                    <div className="w-8 h-8 rounded shrink-0 flex items-center justify-center" style={{ background: '#15171b' }}>
+                    <div
+                      className="w-9 h-9 rounded shrink-0 flex items-center justify-center overflow-hidden"
+                      style={{ background: '#15171c', border: '1px solid #262a34' }}
+                    >
                       {itemData?.imageUrl && (
-                        <AppImage idKey={itemData.id} fallbackUrl={itemData.imageUrl} alt={itemData.name} className="w-full h-full object-contain" />
+                        <AppImage idKey={itemData.id} fallbackUrl={itemData.imageUrl} alt={itemData.name} className="w-7 h-7 object-contain" />
                       )}
                     </div>
-                    <span className="text-xs font-semibold text-[#d4d3d0] group-hover:text-white transition-colors truncate">{itemData?.name || 'Select Item'}</span>
-                    <ChevronDown size={10} className="text-[#555b66] group-hover:text-[#f48721] transition-colors shrink-0 ml-auto" />
+                    <span className="text-xs font-bold text-[#e4e3e0] group-hover:text-white transition-colors truncate">
+                      {itemData?.name || 'Select Item'}
+                    </span>
+                    <ChevronDown size={12} className="text-[#555b66] group-hover:text-[#f48721] transition-colors shrink-0 ml-auto" />
                   </button>
 
-                  <div style={{ width: 1, height: 20, background: '#23262d', flexShrink: 0 }} />
-
-                  {/* Mode selector */}
-                  <select
-                    value={target.mode || 'rate'}
-                    onChange={(e) => {
-                      const newTargets = [...targets];
-                      const mode = e.target.value as TargetMode;
-                      newTargets[idx].mode = mode;
-                      if (mode === 'machine' && !newTargets[idx].recipeId) {
-                        newTargets[idx].machineCount = 1;
-                        const ar = recipes.filter(r => r.outputItemId === target.itemId);
-                        newTargets[idx].recipeId = ar[0]?.id || '';
-                      } else if (mode === 'belt' && !newTargets[idx].beltTier) {
-                        newTargets[idx].beltTier = 'mk1'; newTargets[idx].beltCount = 1;
-                      } else if (mode === 'pipe' && !newTargets[idx].pipeTier) {
-                        newTargets[idx].pipeTier = 'mk1'; newTargets[idx].pipeCount = 1;
-                      } else if (mode === 'resource' && !newTargets[idx].nodeMinerId) {
-                        newTargets[idx].nodeMinerId = 'miner_mk1'; newTargets[idx].nodeClockSpeed = 100;
-                      }
-                      updateFormState(newTargets, minerId, beltId, recipeSelections);
-                    }}
-                    className="text-[10px] font-mono text-[#8E9299] bg-transparent border-none outline-none cursor-pointer shrink-0"
-                    style={{ WebkitAppearance: 'none' }}
-                  >
-                    <option value="rate">Items/min</option>
-                    <option value="machine">Machines</option>
-                    <option value="belt">Belts</option>
-                    <option value="pipe">Pipes</option>
-                    <option value="resource">Resource Node</option>
-                  </select>
-
-                  {/* Rate value — accepts both integers (120) and decimals (10.8) */}
-                  {(target.mode === 'rate' || !target.mode) && (
-                    <input
-                      type="number"
-                      step="any"
-                      min="0.001"
-                      value={target.rate}
-                      onChange={(e) => {
-                        const parsed = parseFloat(e.target.value);
-                        if (isNaN(parsed) || parsed <= 0) return;
-                        const n = [...targets];
-                        n[idx].rate = Math.round(parsed * 1000) / 1000;
-                        updateFormState(n, minerId, beltId, recipeSelections);
-                      }}
-                      className="w-16 text-right text-xs font-mono font-bold text-[#f48721] bg-transparent border-none outline-none shrink-0"
-                    />
-                  )}
-
-                  {/* Machine mode */}
-                  {target.mode === 'machine' && (
-                    <>
-                      <select
-                        value={target.recipeId || ''}
-                        onChange={(e) => { const n = [...targets]; n[idx].recipeId = e.target.value; updateFormState(n, minerId, beltId, recipeSelections); }}
-                        className="text-[10px] font-mono text-[#8E9299] bg-transparent border-none outline-none cursor-pointer flex-1 min-w-0"
-                        style={{ WebkitAppearance: 'none' }}
-                      >
-                        {recipes.filter(r => r.outputItemId === target.itemId).map(r => (
-                          <option key={r.id} value={r.id}>{r.name || formatRecipeLabel(r.id)} ({r.outputRate}/m)</option>
-                        ))}
-                        {recipes.filter(r => r.outputItemId === target.itemId).length === 0 && <option value="">No recipes</option>}
-                      </select>
-                      <input
-                        type="number" step="0.1" min="0.1" value={target.machineCount ?? 1}
-                        onChange={(e) => { const n = [...targets]; n[idx].machineCount = Math.max(0.1, Number(e.target.value)); updateFormState(n, minerId, beltId, recipeSelections); }}
-                        className="w-12 text-right text-xs font-mono font-bold text-[#f48721] bg-transparent border-none outline-none shrink-0"
-                      />
-                    </>
-                  )}
-
-                  {/* Belt mode */}
-                  {target.mode === 'belt' && (
-                    <>
-                      <select
-                        value={target.beltTier || 'mk1'}
-                        onChange={(e) => { const n = [...targets]; n[idx].beltTier = e.target.value as BeltId; updateFormState(n, minerId, beltId, recipeSelections); }}
-                        className="text-[10px] font-mono text-[#8E9299] bg-transparent border-none outline-none cursor-pointer shrink-0"
-                        style={{ WebkitAppearance: 'none' }}
-                      >
-                        {availableBelts.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                      </select>
-                      <input
-                        type="number" step="0.1" min="0.1" value={target.beltCount ?? 1}
-                        onChange={(e) => { const n = [...targets]; n[idx].beltCount = Math.max(0.1, Number(e.target.value)); updateFormState(n, minerId, beltId, recipeSelections); }}
-                        className="w-12 text-right text-xs font-mono font-bold text-[#f48721] bg-transparent border-none outline-none shrink-0"
-                      />
-                    </>
-                  )}
-
-                  {/* Pipe mode */}
-                  {target.mode === 'pipe' && (
-                    <>
-                      <select
-                        value={target.pipeTier || 'mk1'}
-                        onChange={(e) => { const n = [...targets]; n[idx].pipeTier = e.target.value as 'mk1' | 'mk2'; updateFormState(n, minerId, beltId, recipeSelections); }}
-                        className="text-[10px] font-mono text-[#8E9299] bg-transparent border-none outline-none cursor-pointer shrink-0"
-                        style={{ WebkitAppearance: 'none' }}
-                      >
-                        <option value="mk1">Mk.1 (300/m)</option>
-                        <option value="mk2">Mk.2 (600/m)</option>
-                      </select>
-                      <input
-                        type="number" step="0.1" min="0.1" value={target.pipeCount ?? 1}
-                        onChange={(e) => { const n = [...targets]; n[idx].pipeCount = Math.max(0.1, Number(e.target.value)); updateFormState(n, minerId, beltId, recipeSelections); }}
-                        className="w-12 text-right text-xs font-mono font-bold text-[#f48721] bg-transparent border-none outline-none shrink-0"
-                      />
-                    </>
-                  )}
-
-                  {/* Resource mode */}
-                  {target.mode === 'resource' && (
-                    <>
-                      <select
-                        value={target.nodePurity || defaultNodePurity}
-                        onChange={(e) => { const n = [...targets]; n[idx].nodePurity = e.target.value as NodePurity; updateFormState(n, minerId, beltId, recipeSelections); }}
-                        className="text-[10px] font-mono text-[#8E9299] bg-transparent border-none outline-none cursor-pointer shrink-0"
-                        style={{ WebkitAppearance: 'none' }}
-                      >
-                        <option value="impure">Impure</option>
-                        <option value="normal">Normal</option>
-                        <option value="pure">Pure</option>
-                      </select>
-                      <select
-                        value={target.nodeMinerId || 'miner_mk1'}
-                        onChange={(e) => { const n = [...targets]; n[idx].nodeMinerId = e.target.value as MachineId; updateFormState(n, minerId, beltId, recipeSelections); }}
-                        className="text-[10px] font-mono text-[#8E9299] bg-transparent border-none outline-none cursor-pointer shrink-0"
-                        style={{ WebkitAppearance: 'none' }}
-                      >
-                        {availableMiners.map(m => <option key={m.id} value={m.id}>{m.name.replace('Miner ', '')}</option>)}
-                      </select>
-                      <input
-                        type="number" step="25" min="1" max="250" value={target.nodeClockSpeed ?? 100}
-                        onChange={(e) => { const n = [...targets]; n[idx].nodeClockSpeed = Math.max(1, Number(e.target.value)); updateFormState(n, minerId, beltId, recipeSelections); }}
-                        className="w-12 text-right text-xs font-mono font-bold text-[#f48721] bg-transparent border-none outline-none shrink-0"
-                      />
-                      <span className="text-[9px] text-[#555b66] font-mono shrink-0">%</span>
-                    </>
-                  )}
-
-                  {/* Remove */}
-                  {targets.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => { const n = targets.filter((_, i) => i !== idx); updateFormState(n, minerId, beltId, recipeSelections); }}
-                      className="shrink-0 text-[#2e323b] hover:text-[#ef4444] transition-colors ml-1"
-                      title="Remove"
+                  {/* Interactive Mode + Value Controls */}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {/* Mode selector pill */}
+                    <div
+                      className="relative flex items-center rounded px-2 py-1"
+                      style={{ background: '#14161b', border: '1px solid #262a34' }}
                     >
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg>
-                    </button>
-                  )}
+                      <select
+                        value={target.mode || 'rate'}
+                        onChange={(e) => {
+                          const newTargets = [...targets];
+                          const mode = e.target.value as TargetMode;
+                          newTargets[idx].mode = mode;
+                          if (mode === 'machine' && !newTargets[idx].recipeId) {
+                            newTargets[idx].machineCount = 1;
+                            const ar = recipes.filter(r => r.outputItemId === target.itemId);
+                            newTargets[idx].recipeId = ar[0]?.id || '';
+                          } else if (mode === 'belt' && !newTargets[idx].beltTier) {
+                            newTargets[idx].beltTier = 'mk1'; newTargets[idx].beltCount = 1;
+                          } else if (mode === 'pipe' && !newTargets[idx].pipeTier) {
+                            newTargets[idx].pipeTier = 'mk1'; newTargets[idx].pipeCount = 1;
+                          } else if (mode === 'resource' && !newTargets[idx].nodeMinerId) {
+                            newTargets[idx].nodeMinerId = 'miner_mk1'; newTargets[idx].nodeClockSpeed = 100;
+                          }
+                          updateFormState(newTargets, minerId, beltId, recipeSelections);
+                        }}
+                        className="text-[10px] font-mono text-[#c4c7cd] bg-transparent border-none outline-none cursor-pointer pr-4 appearance-none"
+                      >
+                        <option value="rate" className="bg-[#111214]">Items/min</option>
+                        <option value="machine" className="bg-[#111214]">Machines</option>
+                        <option value="belt" className="bg-[#111214]">Belts</option>
+                        <option value="pipe" className="bg-[#111214]">Pipes</option>
+                        <option value="resource" className="bg-[#111214]">Resource Node</option>
+                      </select>
+                      <ChevronDown size={10} className="text-[#6b7280] pointer-events-none absolute right-1.5" />
+                    </div>
+
+                    {/* Rate value */}
+                    {(target.mode === 'rate' || !target.mode) && (
+                      <div
+                        className="flex items-center gap-1 rounded px-2 py-1 focus-within:border-[#f48721]"
+                        style={{ background: '#08090c', border: '1px solid #262a34' }}
+                      >
+                        <input
+                          type="number"
+                          step="any"
+                          min="0.001"
+                          value={target.rate}
+                          onChange={(e) => {
+                            const parsed = parseFloat(e.target.value);
+                            if (isNaN(parsed) || parsed <= 0) return;
+                            const n = [...targets];
+                            n[idx].rate = Math.round(parsed * 1000) / 1000;
+                            updateFormState(n, minerId, beltId, recipeSelections);
+                          }}
+                          className="w-16 text-right text-xs font-mono font-bold text-[#f48721] bg-transparent border-none outline-none"
+                        />
+                        <span className="text-[9px] font-mono text-[#6b7280]">/m</span>
+                      </div>
+                    )}
+
+                    {/* Machine mode */}
+                    {target.mode === 'machine' && (
+                      <>
+                        <select
+                          value={target.recipeId || ''}
+                          onChange={(e) => { const n = [...targets]; n[idx].recipeId = e.target.value; updateFormState(n, minerId, beltId, recipeSelections); }}
+                          className="text-[10px] font-mono text-[#c4c7cd] bg-[#14161b] border border-[#262a34] rounded px-2 py-1 outline-none cursor-pointer max-w-[150px]"
+                        >
+                          {recipes.filter(r => r.outputItemId === target.itemId).map(r => (
+                            <option key={r.id} value={r.id} className="bg-[#111214]">{r.name || formatRecipeLabel(r.id)} ({r.outputRate}/m)</option>
+                          ))}
+                          {recipes.filter(r => r.outputItemId === target.itemId).length === 0 && <option value="" className="bg-[#111214]">No recipes</option>}
+                        </select>
+                        <div className="flex items-center gap-1 rounded px-2 py-1" style={{ background: '#08090c', border: '1px solid #262a34' }}>
+                          <span className="text-[9px] font-mono text-[#6b7280]">×</span>
+                          <input
+                            type="number" step="0.1" min="0.1" value={target.machineCount ?? 1}
+                            onChange={(e) => { const n = [...targets]; n[idx].machineCount = Math.max(0.1, Number(e.target.value)); updateFormState(n, minerId, beltId, recipeSelections); }}
+                            className="w-12 text-right text-xs font-mono font-bold text-[#f48721] bg-transparent border-none outline-none"
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    {/* Belt mode */}
+                    {target.mode === 'belt' && (
+                      <>
+                        <select
+                          value={target.beltTier || 'mk1'}
+                          onChange={(e) => { const n = [...targets]; n[idx].beltTier = e.target.value as BeltId; updateFormState(n, minerId, beltId, recipeSelections); }}
+                          className="text-[10px] font-mono text-[#c4c7cd] bg-[#14161b] border border-[#262a34] rounded px-2 py-1 outline-none cursor-pointer"
+                        >
+                          {availableBelts.map(b => <option key={b.id} value={b.id} className="bg-[#111214]">{b.name}</option>)}
+                        </select>
+                        <div className="flex items-center gap-1 rounded px-2 py-1" style={{ background: '#08090c', border: '1px solid #262a34' }}>
+                          <span className="text-[9px] font-mono text-[#6b7280]">×</span>
+                          <input
+                            type="number" step="0.1" min="0.1" value={target.beltCount ?? 1}
+                            onChange={(e) => { const n = [...targets]; n[idx].beltCount = Math.max(0.1, Number(e.target.value)); updateFormState(n, minerId, beltId, recipeSelections); }}
+                            className="w-12 text-right text-xs font-mono font-bold text-[#f48721] bg-transparent border-none outline-none"
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    {/* Pipe mode */}
+                    {target.mode === 'pipe' && (
+                      <>
+                        <select
+                          value={target.pipeTier || 'mk1'}
+                          onChange={(e) => { const n = [...targets]; n[idx].pipeTier = e.target.value as 'mk1' | 'mk2'; updateFormState(n, minerId, beltId, recipeSelections); }}
+                          className="text-[10px] font-mono text-[#c4c7cd] bg-[#14161b] border border-[#262a34] rounded px-2 py-1 outline-none cursor-pointer"
+                        >
+                          <option value="mk1" className="bg-[#111214]">Mk.1 (300/m)</option>
+                          <option value="mk2" className="bg-[#111214]">Mk.2 (600/m)</option>
+                        </select>
+                        <div className="flex items-center gap-1 rounded px-2 py-1" style={{ background: '#08090c', border: '1px solid #262a34' }}>
+                          <span className="text-[9px] font-mono text-[#6b7280]">×</span>
+                          <input
+                            type="number" step="0.1" min="0.1" value={target.pipeCount ?? 1}
+                            onChange={(e) => { const n = [...targets]; n[idx].pipeCount = Math.max(0.1, Number(e.target.value)); updateFormState(n, minerId, beltId, recipeSelections); }}
+                            className="w-12 text-right text-xs font-mono font-bold text-[#f48721] bg-transparent border-none outline-none"
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    {/* Resource mode */}
+                    {target.mode === 'resource' && (
+                      <>
+                        <select
+                          value={target.nodePurity || defaultNodePurity}
+                          onChange={(e) => { const n = [...targets]; n[idx].nodePurity = e.target.value as NodePurity; updateFormState(n, minerId, beltId, recipeSelections); }}
+                          className="text-[10px] font-mono text-[#c4c7cd] bg-[#14161b] border border-[#262a34] rounded px-1.5 py-1 outline-none cursor-pointer"
+                        >
+                          <option value="impure" className="bg-[#111214]">Impure</option>
+                          <option value="normal" className="bg-[#111214]">Normal</option>
+                          <option value="pure" className="bg-[#111214]">Pure</option>
+                        </select>
+                        <select
+                          value={target.nodeMinerId || 'miner_mk1'}
+                          onChange={(e) => { const n = [...targets]; n[idx].nodeMinerId = e.target.value as MachineId; updateFormState(n, minerId, beltId, recipeSelections); }}
+                          className="text-[10px] font-mono text-[#c4c7cd] bg-[#14161b] border border-[#262a34] rounded px-1.5 py-1 outline-none cursor-pointer"
+                        >
+                          {availableMiners.map(m => <option key={m.id} value={m.id} className="bg-[#111214]">{m.name.replace('Miner ', '')}</option>)}
+                        </select>
+                        <div className="flex items-center gap-0.5 rounded px-2 py-1" style={{ background: '#08090c', border: '1px solid #262a34' }}>
+                          <input
+                            type="number" step="25" min="1" max="250" value={target.nodeClockSpeed ?? 100}
+                            onChange={(e) => { const n = [...targets]; n[idx].nodeClockSpeed = Math.max(1, Number(e.target.value)); updateFormState(n, minerId, beltId, recipeSelections); }}
+                            className="w-10 text-right text-xs font-mono font-bold text-[#f48721] bg-transparent border-none outline-none"
+                          />
+                          <span className="text-[9px] text-[#6b7280] font-mono">%</span>
+                        </div>
+                      </>
+                    )}
+
+                    {/* Remove */}
+                    {targets.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => { const n = targets.filter((_, i) => i !== idx); updateFormState(n, minerId, beltId, recipeSelections); }}
+                        className="p-1 text-[#4b5563] hover:text-[#ef4444] transition-colors cursor-pointer"
+                        title="Remove target"
+                      >
+                        <X size={12} />
+                      </button>
+                    )}
+                  </div>
                 </div>
               );
             })}
@@ -629,75 +665,80 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
         </div>
 
         {/* ── Zone 1.5: Available Inputs (imports the user already has) ── */}
-        <div className="relative z-10 px-4 pb-2 flex flex-col gap-2">
-          <div className="flex items-center justify-between">
+        <div className="relative z-10 px-4 pb-2.5 flex flex-col gap-2">
+          <div
+            className="flex items-center justify-between px-2.5 py-1.5 rounded"
+            style={{ background: 'rgba(255,255,255,0.015)', border: '1px solid #1b1e25' }}
+          >
             <button
               type="button"
               onClick={() => setIsInputsOpen(o => !o)}
-              className="flex items-center gap-1.5 text-[8px] font-mono tracking-[0.25em] uppercase transition-colors"
-              style={{ color: availableInputs.length > 0 ? '#2dd4bf' : '#555b66' }}
+              className="flex items-center gap-1.5 text-[9px] font-mono tracking-[0.2em] uppercase transition-colors cursor-pointer"
+              style={{ color: availableInputs.length > 0 ? '#2dd4bf' : '#6b7280' }}
             >
-              {isInputsOpen ? <ChevronDown size={9} /> : <ChevronRight size={9} />}
+              {isInputsOpen ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
               <span>Available Inputs</span>
               {availableInputs.length > 0 && (
-                <span style={{ background: '#2dd4bf', color: '#000', fontSize: 8, fontWeight: 800, borderRadius: 2, padding: '0 4px' }}>{availableInputs.length}</span>
+                <span style={{ background: '#2dd4bf', color: '#000', fontSize: 8, fontWeight: 800, borderRadius: 2, padding: '0 4px' }}>
+                  {availableInputs.length}
+                </span>
               )}
             </button>
             <button
               type="button"
               onClick={() => { setIsInputsOpen(true); setAvailableInputs(prev => [...prev, { itemId: 'iron_ingot', rate: 60 }]); }}
-              className="flex items-center gap-1 text-[9px] font-mono tracking-widest uppercase text-[#2dd4bf] hover:text-[#5eead4] transition-colors"
+              className="flex items-center gap-1 text-[9px] font-mono tracking-widest uppercase text-[#2dd4bf] hover:text-[#5eead4] transition-colors cursor-pointer"
             >
-              <span style={{ fontSize: 13, lineHeight: 1 }}>+</span> Add Input
+              <Plus size={10} /> Add Input
             </button>
           </div>
 
           {isInputsOpen && (
             <div className="flex flex-col gap-1.5 overflow-y-auto max-h-[160px] sf-tscroll">
               {availableInputs.length === 0 ? (
-                <div className="text-[9px] font-mono text-[#555b66] leading-relaxed px-2.5 py-2 rounded" style={{ background: '#0d0f12', border: '1px solid #1e2128' }}>
+                <div className="text-[9px] font-mono text-[#6b7280] leading-relaxed px-2.5 py-2 rounded" style={{ background: '#0d0f12', border: '1px solid #1e2128' }}>
                   Declare items you already produce or import. The planner consumes them as free sources and only builds the shortfall.
                 </div>
               ) : availableInputs.map((inp, idx) => {
                 const itemData = items[inp.itemId];
                 return (
-                  <div key={idx} className="sf-trow flex items-center gap-2 px-2.5 py-2 rounded" style={{ background: '#0d0f12', border: '1px solid #1e2128' }}>
+                  <div key={idx} className="sf-trow shrink-0 flex items-center gap-2 px-2.5 py-1.5 rounded" style={{ background: '#0d0f12', border: '1px solid #1e2128' }}>
                     <button
                       type="button"
                       onClick={() => { setEditingSupplyIndex(idx); setIsModalOpen(true); }}
-                      className="flex items-center gap-2 flex-1 min-w-0 group"
+                      className="flex items-center gap-2 flex-1 min-w-0 group cursor-pointer"
                       style={{ outline: 'none' }}
                     >
-                      <div className="w-8 h-8 rounded shrink-0 flex items-center justify-center" style={{ background: '#15171b' }}>
+                      <div className="w-7 h-7 rounded shrink-0 flex items-center justify-center overflow-hidden" style={{ background: '#15171c', border: '1px solid #262a34' }}>
                         {itemData?.imageUrl && (
-                          <AppImage idKey={itemData.id} fallbackUrl={itemData.imageUrl} alt={itemData.name} className="w-full h-full object-contain" />
+                          <AppImage idKey={itemData.id} fallbackUrl={itemData.imageUrl} alt={itemData.name} className="w-5 h-5 object-contain" />
                         )}
                       </div>
                       <span className="text-xs font-semibold text-[#d4d3d0] group-hover:text-white transition-colors truncate">{itemData?.name || 'Select Item'}</span>
                       <ChevronDown size={10} className="text-[#555b66] group-hover:text-[#2dd4bf] transition-colors shrink-0 ml-auto" />
                     </button>
 
-                    <div style={{ width: 1, height: 20, background: '#23262d', flexShrink: 0 }} />
-
-                    <input
-                      type="number" step="any" min="0.001" value={inp.rate}
-                      onChange={(e) => {
-                        const parsed = parseFloat(e.target.value);
-                        const n = [...availableInputs];
-                        n[idx].rate = isNaN(parsed) || parsed < 0 ? 0 : Math.round(parsed * 1000) / 1000;
-                        setAvailableInputs(n);
-                      }}
-                      className="w-16 text-right text-xs font-mono font-bold text-[#2dd4bf] bg-transparent border-none outline-none shrink-0"
-                    />
-                    <span className="text-[9px] text-[#555b66] font-mono shrink-0">/min</span>
+                    <div className="flex items-center gap-1 rounded px-2 py-1 focus-within:border-[#2dd4bf]" style={{ background: '#08090c', border: '1px solid #262a34' }}>
+                      <input
+                        type="number" step="any" min="0.001" value={inp.rate}
+                        onChange={(e) => {
+                          const parsed = parseFloat(e.target.value);
+                          const n = [...availableInputs];
+                          n[idx].rate = isNaN(parsed) || parsed < 0 ? 0 : Math.round(parsed * 1000) / 1000;
+                          setAvailableInputs(n);
+                        }}
+                        className="w-16 text-right text-xs font-mono font-bold text-[#2dd4bf] bg-transparent border-none outline-none"
+                      />
+                      <span className="text-[9px] text-[#6b7280] font-mono">/m</span>
+                    </div>
 
                     <button
                       type="button"
                       onClick={() => setAvailableInputs(availableInputs.filter((_, i) => i !== idx))}
-                      className="shrink-0 text-[#2e323b] hover:text-[#ef4444] transition-colors ml-1"
-                      title="Remove"
+                      className="p-1 text-[#4b5563] hover:text-[#ef4444] transition-colors cursor-pointer"
+                      title="Remove input"
                     >
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg>
+                      <X size={12} />
                     </button>
                   </div>
                 );
@@ -706,21 +747,27 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           )}
         </div>
 
-        {/* ── Zone 2: Hardware Settings ── */}
-        <div className="relative z-10 px-4 py-3 border-t border-[#1e2128]" style={{ background: 'rgba(0,0,0,0.15)' }}>
-          {/* Hardware tier grid — Extractor & Pipe appear only when the chain uses them */}
-          <div className="grid gap-2 mb-2.5" style={{ gridTemplateColumns: `repeat(${hardwareColumns}, minmax(0, 1fr))` }}>
-            <div className="flex flex-col gap-1">
-              <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Miner</span>
+        {/* ── Zone 2: Hardware Baseline Cards ── */}
+        <div className="relative z-10 px-4 py-3 border-t border-[#1e2128] mt-auto" style={{ background: 'rgba(0,0,0,0.18)' }}>
+          <div className="grid gap-2 mb-3" style={{ gridTemplateColumns: `repeat(${hardwareColumns}, minmax(0, 1fr))` }}>
+            <div className="flex flex-col gap-1.5 p-2 rounded" style={{ background: '#0d0f12', border: '1px solid #1e2128' }}>
+              <div className="flex items-center justify-between gap-1">
+                <span className="text-[8px] font-mono tracking-[0.2em] text-[#6b7280] uppercase font-bold">Miner</span>
+                <span className="text-[8px] font-mono text-[#f48721]">{minerBaseRate}/m</span>
+              </div>
               <CustomSelect
                 value={minerId}
                 onChange={(val) => updateFormState(targets, val as MachineId, beltId, recipeSelections)}
                 options={availableMiners.map(m => ({ value: m.id, label: m.name }))}
               />
             </div>
+
             {chainUsage.usesExtractor && (
-              <div className="flex flex-col gap-1">
-                <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Extractor</span>
+              <div className="flex flex-col gap-1.5 p-2 rounded" style={{ background: '#0d0f12', border: '1px solid #1e2128' }}>
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-[8px] font-mono tracking-[0.2em] text-[#6b7280] uppercase font-bold">Extractor</span>
+                  <span className="text-[8px] font-mono text-[#38bdf8]">{extractorSpec}</span>
+                </div>
                 <CustomSelect
                   value={extractorTier}
                   onChange={(val) => setExtractorTier(val)}
@@ -732,17 +779,25 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                 />
               </div>
             )}
-            <div className="flex flex-col gap-1">
-              <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Belt</span>
+
+            <div className="flex flex-col gap-1.5 p-2 rounded" style={{ background: '#0d0f12', border: '1px solid #1e2128' }}>
+              <div className="flex items-center justify-between gap-1">
+                <span className="text-[8px] font-mono tracking-[0.2em] text-[#6b7280] uppercase font-bold">Belt</span>
+                <span className="text-[8px] font-mono text-[#00e676]">{beltSpec}</span>
+              </div>
               <CustomSelect
                 value={beltId}
                 onChange={(val) => updateFormState(targets, minerId, val as BeltId, recipeSelections)}
                 options={availableBelts.map(b => ({ value: b.id, label: b.name }))}
               />
             </div>
+
             {chainUsage.usesFluid && (
-              <div className="flex flex-col gap-1">
-                <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Pipe</span>
+              <div className="flex flex-col gap-1.5 p-2 rounded" style={{ background: '#0d0f12', border: '1px solid #1e2128' }}>
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-[8px] font-mono tracking-[0.2em] text-[#6b7280] uppercase font-bold">Pipe</span>
+                  <span className="text-[8px] font-mono text-[#38bdf8]">{pipeSpec}</span>
+                </div>
                 <CustomSelect
                   value={pipeTier}
                   onChange={(val) => setPipeTier(val as 'mk1' | 'mk2')}
@@ -755,90 +810,42 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
             )}
           </div>
 
-          {/* Action row */}
+          {/* Unified Control Dock & Primary CTA */}
           <div className="flex flex-wrap items-center gap-2">
             {/* Alt Recipes */}
-            <div className="relative z-20">
-              <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => toggleDrawer('alt')}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded cursor-pointer"
+                style={{
+                  background: activeDrawer === 'alt' || altCount > 0 ? 'rgba(244,135,33,0.10)' : '#0d0f12',
+                  border: `1px solid ${activeDrawer === 'alt' || altCount > 0 ? '#f4872150' : '#1e2128'}`,
+                  color: activeDrawer === 'alt' || altCount > 0 ? '#f48721' : '#8E9299',
+                }}
+              >
+                <Sparkles size={10} />
+                <span>Alt Recipes</span>
+                {altCount > 0 && (
+                  <span style={{ background: '#f48721', color: '#000', fontSize: 8, fontWeight: 800, borderRadius: 2, padding: '0 4px' }}>
+                    {altCount}
+                  </span>
+                )}
+                {activeDrawer === 'alt' ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
+              </button>
+              {altCount > 0 && (
                 <button
                   type="button"
-                  onClick={() => setShowAltRecipes(!showAltRecipes)}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-colors rounded"
-                  style={{
-                    background: '#0d0f12', border: '1px solid #1e2128',
-                    color: altCount > 0 ? '#f48721' : '#555b66',
-                  }}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setRecipeSelections({}); }}
+                  className="p-1 text-[#6b7280] hover:text-[#f48721] transition-colors cursor-pointer"
+                  title="Reset alt recipes"
                 >
-                  {altCount > 0 && (
-                    <span style={{ background: '#f48721', color: '#000', fontSize: 8, fontWeight: 800, borderRadius: 2, padding: '0 4px' }}>{altCount}</span>
-                  )}
-                  <span>Alt Recipes</span>
-                  {showAltRecipes ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
+                  <RotateCcw size={11} />
                 </button>
-                {altCount > 0 && (
-                  <button
-                    type="button"
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setRecipeSelections({}); }}
-                    className="p-1 text-[#445060] hover:text-[#f48721] transition-colors"
-                    title="Reset alt recipes"
-                  >
-                    <RotateCcw size={11} />
-                  </button>
-                )}
-              </div>
-
-              {showAltRecipes && (
-                <div
-                  className="absolute shadow-2xl z-50"
-                  style={{
-                    bottom: 'calc(100% + 6px)', left: 0, width: 320,
-                    background: 'linear-gradient(180deg, #1a1c20 0%, #111315 100%)',
-                    border: '1px solid #2a2d33',
-                    clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)',
-                    boxShadow: '0 8px 40px rgba(0,0,0,0.9)',
-                  }}
-                >
-                  <div style={{ position: 'absolute', top: 0, left: 0, width: 0, height: 0, borderTop: '10px solid #f48721', borderRight: '10px solid transparent' }} />
-                  <div className="flex items-center gap-2 px-3 py-2 border-b border-[#2a2d33]">
-                    <div style={{ width: 2, height: 10, background: '#f48721', borderRadius: 1 }} />
-                    <span className="text-[9px] font-mono tracking-widest text-[#f48721] uppercase">Alternate Recipes</span>
-                  </div>
-                  <div className="p-3 flex flex-col gap-2.5 max-h-64 overflow-y-auto">
-                    {alternateRecipeCandidates.length === 0 ? (
-                      <div className="text-[10px] text-[#555b66] font-mono px-2 py-2" style={{ border: '1px solid #1e2128', background: '#0d0f11' }}>
-                        No alternate recipes available for this production chain.
-                      </div>
-                    ) : (
-                      alternateRecipeCandidates.map((candidate) => (
-                        <div key={candidate.itemId} className="flex flex-col gap-1">
-                          <label className="text-[9px] font-mono tracking-widest text-[#8E9299] uppercase">
-                            {items[candidate.itemId]?.name || candidate.itemId}
-                          </label>
-                          <CustomSelect
-                            value={candidate.selectedRecipeId}
-                            onChange={(value) => handleAlternateRecipeChange(candidate.itemId, value)}
-                            options={candidate.recipes.map((recipe) => {
-                              const rName = recipe.name || formatRecipeLabel(recipe.id);
-                              const machName = machines[recipe.machineId]?.name || recipe.machineId;
-                              const power = machines[recipe.machineId]?.powerUsage || 0;
-                              const inputsStr = recipe.inputs
-                                .map((inp) => `${inp.rate}/m ${items[inp.itemId]?.name || inp.itemId}`)
-                                .join(', ');
-                              return {
-                                value: recipe.id,
-                                label: `${rName} (${recipe.outputRate}/m) - In: ${inputsStr} (${machName}, ${power} MW)`,
-                              };
-                            })}
-                          />
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
               )}
             </div>
 
-            {/* World Settings (Satisfactory 1.2 Game Modes) toggle */}
+            {/* World Settings (Satisfactory 1.2 Game Modes) */}
             {(() => {
               const worldActive = hasActiveWorldSettings({
                 recipeCostMultiplier: costMultiplier,
@@ -852,13 +859,13 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
               return (
                 <button
                   type="button"
-                  onClick={() => setIsWorldSettingsOpen(v => !v)}
+                  onClick={() => toggleDrawer('world')}
                   title="Satisfactory 1.2 World Settings / Game Mode Multipliers (Recipe Cost, Power Consumption, Node Purity)"
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded shrink-0"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded shrink-0 cursor-pointer"
                   style={{
-                    background: isWorldSettingsOpen || worldActive ? 'rgba(244,135,33,0.10)' : '#0d0f12',
-                    border: `1px solid ${isWorldSettingsOpen || worldActive ? '#f4872150' : '#1e2128'}`,
-                    color: isWorldSettingsOpen || worldActive ? '#f48721' : '#8E9299',
+                    background: activeDrawer === 'world' || worldActive ? 'rgba(244,135,33,0.10)' : '#0d0f12',
+                    border: `1px solid ${activeDrawer === 'world' || worldActive ? '#f4872150' : '#1e2128'}`,
+                    color: activeDrawer === 'world' || worldActive ? '#f48721' : '#8E9299',
                   }}
                 >
                   <Globe size={10} />
@@ -877,7 +884,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                       {activeSummaryParts.join(' · ')}
                     </span>
                   )}
-                  {isWorldSettingsOpen ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
+                  {activeDrawer === 'world' ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
                 </button>
               );
             })()}
@@ -888,17 +895,17 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
               return (
                 <button
                   type="button"
-                  onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded shrink-0"
+                  onClick={() => toggleDrawer('tuning')}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded shrink-0 cursor-pointer"
                   style={{
-                    background: isAdvancedOpen ? 'rgba(244,135,33,0.08)' : '#0d0f12',
-                    border: `1px solid ${isAdvancedOpen ? '#f4872140' : '#1e2128'}`,
-                    color: isAdvancedOpen ? '#f48721' : (isTuned ? '#f4872190' : '#555b66'),
+                    background: activeDrawer === 'tuning' || isTuned ? 'rgba(244,135,33,0.08)' : '#0d0f12',
+                    border: `1px solid ${activeDrawer === 'tuning' || isTuned ? '#f4872145' : '#1e2128'}`,
+                    color: activeDrawer === 'tuning' || isTuned ? '#f48721' : '#8E9299',
                   }}
                 >
                   <Zap size={10} />
                   <span>{isTuned ? 'Tuned' : 'Tuning'}</span>
-                  {isAdvancedOpen ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
+                  {activeDrawer === 'tuning' ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
                 </button>
               );
             })()}
@@ -908,11 +915,11 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
               type="button"
               onClick={() => setWholeMachineMode(v => !v)}
               title="Round every machine up to a whole unit (no fractional clocks); route the surplus to an Awesome Sink"
-              className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded shrink-0"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded shrink-0 cursor-pointer"
               style={{
                 background: wholeMachineMode ? 'rgba(34,197,94,0.10)' : '#0d0f12',
                 border: `1px solid ${wholeMachineMode ? '#22c55e55' : '#1e2128'}`,
-                color: wholeMachineMode ? '#22c55e' : '#555b66',
+                color: wholeMachineMode ? '#22c55e' : '#8E9299',
               }}
             >
               <span
@@ -928,7 +935,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
             {/* Calculate */}
             <button
               type="submit"
-              className="sf-primary-btn font-bold tracking-[0.15em] uppercase relative overflow-hidden shrink-0 w-full sm:w-auto sm:ml-auto"
+              className="sf-primary-btn font-bold tracking-[0.15em] uppercase relative overflow-hidden shrink-0 w-full sm:w-auto sm:ml-auto cursor-pointer"
               style={{ padding: '7px 20px', fontSize: 11 }}
             >
               <span className="sf-btn-scanner absolute inset-0 pointer-events-none z-10" />
@@ -937,8 +944,67 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           </div>
         </div>
 
-        {/* ── Zone 2.5: World Settings Panel (Satisfactory 1.2 Game Modes) ── */}
-        {isWorldSettingsOpen && (
+        {/* ── Drawer: Alternate Recipes ── */}
+        {activeDrawer === 'alt' && (
+          <div
+            className="relative z-10 flex flex-col gap-3 px-4 py-3 border-t border-[#1e2128]"
+            style={{ background: 'linear-gradient(180deg, #101217 0%, #0b0c0f 100%)' }}
+          >
+            <div style={{ position: 'absolute', top: 0, left: 24, right: 24, height: '1px', background: 'linear-gradient(90deg, transparent, #f4872145, transparent)' }} />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Sparkles size={11} className="text-[#f48721]" />
+                <span className="text-[9px] font-mono tracking-[0.22em] text-[#f48721] uppercase font-bold">
+                  Alternate Recipes ({alternateRecipeCandidates.length})
+                </span>
+              </div>
+              {altCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setRecipeSelections({})}
+                  className="flex items-center gap-1 text-[9px] font-mono uppercase tracking-wider text-[#8E9299] hover:text-[#f48721] transition-colors cursor-pointer"
+                >
+                  <RotateCcw size={10} />
+                  <span>Reset Defaults</span>
+                </button>
+              )}
+            </div>
+            {alternateRecipeCandidates.length === 0 ? (
+              <div className="text-[10px] text-[#6b7280] font-mono px-2.5 py-2 rounded" style={{ border: '1px solid #1e2128', background: '#0d0f12' }}>
+                No alternate recipes available for this production chain.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 max-h-56 overflow-y-auto pr-1 sf-tscroll">
+                {alternateRecipeCandidates.map((candidate) => (
+                  <div key={candidate.itemId} className="flex flex-col gap-1">
+                    <label className="text-[9px] font-mono tracking-widest text-[#8E9299] uppercase">
+                      {items[candidate.itemId]?.name || candidate.itemId}
+                    </label>
+                    <CustomSelect
+                      value={candidate.selectedRecipeId}
+                      onChange={(value) => handleAlternateRecipeChange(candidate.itemId, value)}
+                      options={candidate.recipes.map((recipe) => {
+                        const rName = recipe.name || formatRecipeLabel(recipe.id);
+                        const machName = machines[recipe.machineId]?.name || recipe.machineId;
+                        const power = machines[recipe.machineId]?.powerUsage || 0;
+                        const inputsStr = recipe.inputs
+                          .map((inp) => `${inp.rate}/m ${items[inp.itemId]?.name || inp.itemId}`)
+                          .join(', ');
+                        return {
+                          value: recipe.id,
+                          label: `${rName} (${recipe.outputRate}/m) - In: ${inputsStr} (${machName}, ${power} MW)`,
+                        };
+                      })}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Drawer: World Settings (Satisfactory 1.2 Game Modes) ── */}
+        {activeDrawer === 'world' && (
           <div
             className="relative z-10 flex flex-col gap-3.5 px-4 py-3 border-t border-[#1e2128]"
             style={{ background: 'linear-gradient(180deg, #101217 0%, #0b0c0f 100%)' }}
@@ -1041,8 +1107,8 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           </div>
         )}
 
-        {/* ── Zone 3: Machine Tuning Panel ── */}
-        {isAdvancedOpen && (
+        {/* ── Drawer: Machine Tuning Panel ── */}
+        {activeDrawer === 'tuning' && (
           <div
             className="relative z-10 flex flex-col gap-3.5 px-4 py-3 border-t border-[#1e2128]"
             style={{ background: 'linear-gradient(180deg, #0e1014 0%, #0b0c0f 100%)' }}

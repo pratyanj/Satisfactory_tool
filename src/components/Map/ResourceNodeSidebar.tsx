@@ -1,12 +1,26 @@
 /**
- * ResourceNodeSidebar.tsx — Repurposed as World Map Sidebar
+ * ResourceNodeSidebar.tsx — FICSIT World Map Telemetry Sidebar
  *
- * Implements top tab panel (Map layers, Resource nodes, Resource wells)
- * and bottom tab panel (Power Slugs, Artifacts, Collectibles).
+ * Provides save telemetry & layer controls, resource node/well purity filtering,
+ * search filtering, and a collapsible collectibles dock.
  */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  ChevronDown,
+  ChevronUp,
+  Cpu,
+  Droplets,
+  HardDrive,
+  Layers,
+  Radar,
+  Search,
+  Sparkles,
+  Upload,
+  X,
+} from 'lucide-react';
 import type { ParsedSave } from '../../types/save';
 import type { ParseProgress } from '../../engine/saveParser';
+import { AppImage } from '../AppImage';
 import { LayerControls, LayerState } from './LayerControls';
 import { collectibleImg } from './CollectibleLayer';
 
@@ -22,7 +36,6 @@ export interface ResourceCounts {
 }
 
 interface ResourceNodeSidebarProps {
-  // Save uploads
   save: ParsedSave | null;
   progress: ParseProgress | null;
   error: string | null;
@@ -31,11 +44,9 @@ interface ResourceNodeSidebarProps {
   onOpenPicker: () => void;
   fileInputRef: React.RefObject<HTMLInputElement>;
 
-  // Layer switches
   layers: LayerState;
   onLayersChange: (layers: LayerState) => void;
 
-  // Resource nodes / wells lists
   nodeCounts: ResourceCounts;
   wellCounts: ResourceCounts;
   activeFilters: Map<string, Set<string>>;
@@ -44,57 +55,82 @@ interface ResourceNodeSidebarProps {
   onShowPurityOnly: (purity: Purity) => void;
   onClearAll: () => void;
 
-  // Collectibles set
   activeCollectibles: Set<string>;
   onToggleCollectible: (type: string) => void;
 }
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-const PURITY_COLORS: Record<Purity, string> = {
-  Impure: '#dc2626',
-  Normal: '#f97316',
-  Pure:   '#22c55e',
-};
+type TopTab = 'layers' | 'nodes' | 'wells';
+type BottomTab = 'slugs' | 'artifacts' | 'collectibles';
 
-const PURITY_LABEL: Record<Purity, string> = {
-  Impure: 'I',
-  Normal: 'N',
-  Pure:   'P',
+interface CollectibleItemMeta {
+  type: string;
+  label: string;
+  shortLabel: string;
+  count: number;
+  accent: string;
+}
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+const PURITIES: Purity[] = ['Impure', 'Normal', 'Pure'];
+
+const PURITY_META: Record<Purity, { code: string; color: string; bg: string; border: string }> = {
+  Impure: {
+    code: 'I',
+    color: '#f87171',
+    bg: 'rgba(220, 38, 38, 0.16)',
+    border: 'rgba(248, 113, 113, 0.65)',
+  },
+  Normal: {
+    code: 'N',
+    color: '#fb923c',
+    bg: 'rgba(249, 115, 22, 0.16)',
+    border: 'rgba(251, 146, 60, 0.65)',
+  },
+  Pure: {
+    code: 'P',
+    color: '#4ade80',
+    bg: 'rgba(34, 197, 94, 0.16)',
+    border: 'rgba(74, 222, 128, 0.65)',
+  },
 };
 
 const RESOURCE_IMAGE_KEY: Record<string, string> = {
-  'Iron Ore':     'iron_ore',
-  'Copper Ore':   'copper_ore',
-  'Limestone':    'limestone',
-  'Coal':         'coal',
-  'Crude Oil':    'crude_oil',
-  'Sulfur':       'sulfur',
-  'Bauxite':      'bauxite',
-  'Raw Quartz':   'raw_quartz',
-  'Uranium':      'uranium',
-  'SAM Ore':      'sam',
+  'Iron Ore': 'iron_ore',
+  'Copper Ore': 'copper_ore',
+  'Limestone': 'limestone',
+  'Coal': 'coal',
+  'Crude Oil': 'crude_oil',
+  'Sulfur': 'sulfur',
+  'Bauxite': 'bauxite',
+  'Raw Quartz': 'raw_quartz',
+  'Uranium': 'uranium',
+  'SAM Ore': 'sam',
   'Nitrogen Gas': 'nitrogen_gas',
-  'Water':        'water',
+  'Water': 'water',
   'Caterium Ore': 'caterium_ore',
-  'Geyser':       'generator_geo_thermal',
+  'Geyser': 'generator_geo_thermal',
 };
 
-const PURITIES: Purity[] = ['Impure', 'Normal', 'Pure'];
-
-const COLLECTIBLE_COUNTS: Record<string, number> = {
-  blue_slug: 596,
-  yellow_slug: 389,
-  purple_slug: 257,
-  mercer_sphere: 298,
-  somersloop: 106,
-  hard_drive: 118,
-  paleberry: 2154,
-  beryl_nut: 1515,
-  bacon_agaric: 1615,
+const COLLECTIBLE_GROUPS: Record<BottomTab, CollectibleItemMeta[]> = {
+  slugs: [
+    { type: 'blue_slug', label: 'Blue Power Slug', shortLabel: 'Blue Slug', count: 596, accent: '#3b82f6' },
+    { type: 'yellow_slug', label: 'Yellow Power Slug', shortLabel: 'Yellow Slug', count: 389, accent: '#eab308' },
+    { type: 'purple_slug', label: 'Purple Power Slug', shortLabel: 'Purple Slug', count: 257, accent: '#a855f7' },
+  ],
+  artifacts: [
+    { type: 'mercer_sphere', label: 'Mercer Sphere', shortLabel: 'Mercer Sphere', count: 298, accent: '#f43f5e' },
+    { type: 'somersloop', label: 'Somersloop', shortLabel: 'Somersloop', count: 106, accent: '#f48721' },
+  ],
+  collectibles: [
+    { type: 'hard_drive', label: 'Hard Drive', shortLabel: 'Hard Drive', count: 118, accent: '#f48721' },
+    { type: 'paleberry', label: 'Paleberry', shortLabel: 'Paleberry', count: 2154, accent: '#ef4444' },
+    { type: 'beryl_nut', label: 'Beryl Nut', shortLabel: 'Beryl Nut', count: 1515, accent: '#d97706' },
+    { type: 'bacon_agaric', label: 'Bacon Agaric', shortLabel: 'Bacon Agaric', count: 1615, accent: '#ec4899' },
+  ],
 };
 
-// ─── Sub-component: Purity Circle Button ──────────────────────────────────────
-function PurityButton({
+// ─── Sub-component: Purity Pill Button ────────────────────────────────────────
+function PurityPill({
   resource,
   purity,
   count,
@@ -107,93 +143,68 @@ function PurityButton({
   active: boolean;
   onToggle: () => void;
 }) {
-  const color   = PURITY_COLORS[purity];
-  const label   = PURITY_LABEL[purity];
+  const meta = PURITY_META[purity];
+  const disabled = count === 0;
 
   return (
     <button
-      className={`rn-purity-btn ${active ? 'active' : 'inactive'}`}
-      style={{ '--ring-color': color } as React.CSSProperties}
+      type="button"
+      className={`rn-purity-pill ${active ? 'is-active' : 'is-inactive'}`}
+      style={{
+        '--purity-color': meta.color,
+        '--purity-bg': meta.bg,
+        '--purity-border': meta.border,
+      } as React.CSSProperties}
       onClick={onToggle}
-      title={`${resource} — ${purity} (${count} nodes)`}
+      title={disabled ? `${resource} — No ${purity} nodes` : `${resource} — ${purity} (${count})`}
       aria-pressed={active}
-      disabled={count === 0}
+      disabled={disabled}
     >
-      <span className="rn-btn-inner">
-        <span className="rn-btn-text" style={{ color: active ? '#fff' : color }}>
-          {label}
-        </span>
-      </span>
-      {count > 0 && <span className="rn-badge">{count}</span>}
+      <span className="rn-purity-code">{meta.code}</span>
+      <span className="rn-purity-count">{disabled ? '—' : count}</span>
     </button>
   );
 }
 
-// ─── Sub-component: Collectible Circle Button ─────────────────────────────────
-function CollectibleButton({
-  type,
-  label,
-  count,
+// ─── Sub-component: Collectible Telemetry Chip ────────────────────────────────
+function CollectibleChip({
+  item,
   active,
   onToggle,
 }: {
-  type: string;
-  label: string;
-  count: number;
+  item: CollectibleItemMeta;
   active: boolean;
   onToggle: () => void;
 }) {
-  const emojis: Record<string, string> = {
-    blue_slug: '🐌',
-    yellow_slug: '🐌',
-    purple_slug: '🐌',
-    mercer_sphere: '🔮',
-    somersloop: '🌀',
-    hard_drive: '💾',
-    paleberry: '🍓',
-    beryl_nut: '🌰',
-    bacon_agaric: '🍄',
-  };
-  const colors: Record<string, string> = {
-    blue_slug: '#3b82f6',
-    yellow_slug: '#f59e0b',
-    purple_slug: '#a78bfa',
-    mercer_sphere: '#f43f5e',
-    somersloop: '#f48721',
-    hard_drive: '#f48721',
-    paleberry: '#ef4444',
-    beryl_nut: '#d97706',
-    bacon_agaric: '#ec4899',
-  };
-
-  const color = colors[type] || '#6b7280';
-  const emoji = emojis[type] || '❓';
-  const imgSrc = collectibleImg(type);
+  const imgSrc = collectibleImg(item.type);
 
   return (
     <button
-      className={`rn-purity-btn ${active ? 'active' : 'inactive'}`}
-      style={{ '--ring-color': color } as React.CSSProperties}
+      type="button"
+      className={`wmt-collectible-chip ${active ? 'is-active' : ''}`}
+      style={{ '--chip-accent': item.accent } as React.CSSProperties}
       onClick={onToggle}
-      title={`${label} (${count} locations)`}
+      title={`${item.label} (${item.count.toLocaleString()} locations)`}
       aria-pressed={active}
-      disabled={count === 0}
     >
-      <span className="rn-btn-inner">
+      <span className="wmt-collectible-chip-icon">
         {imgSrc ? (
           <img
             src={imgSrc}
-            alt={label}
-            className="rn-btn-img"
+            alt={item.label}
             draggable={false}
-            style={{ width: 20, height: 20, objectFit: 'contain' }}
-            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = 'none';
+            }}
           />
         ) : (
-          <span className="rn-btn-emoji" style={{ fontSize: '15px' }}>{emoji}</span>
+          <Sparkles size={14} />
         )}
       </span>
-      {count > 0 && <span className="rn-badge">{count}</span>}
+      <span className="wmt-collectible-chip-meta">
+        <span className="wmt-collectible-chip-name">{item.shortLabel}</span>
+        <span className="wmt-collectible-chip-count">{item.count.toLocaleString()}</span>
+      </span>
     </button>
   );
 }
@@ -219,9 +230,10 @@ export function ResourceNodeSidebar({
   activeCollectibles,
   onToggleCollectible,
 }: ResourceNodeSidebarProps) {
-  // Navigation Tabs
-  const [topTab, setTopTab] = useState<'layers' | 'nodes' | 'wells'>('nodes');
-  const [bottomTab, setBottomTab] = useState<'slugs' | 'artifacts' | 'collectibles'>('slugs');
+  const [topTab, setTopTab] = useState<TopTab>('nodes');
+  const [bottomTab, setBottomTab] = useState<BottomTab>('slugs');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [collectiblesOpen, setCollectiblesOpen] = useState(true);
 
   useEffect(() => {
     if (!save && topTab === 'layers') {
@@ -229,19 +241,45 @@ export function ResourceNodeSidebar({
     }
   }, [save, topTab]);
 
-  // Sort resources by total node count descending
-  const getSortedResources = (counts: ResourceCounts) => {
-    return Object.entries(counts).sort(([, a], [, b]) => {
-      const totalA = a.Impure + a.Normal + a.Pure;
-      const totalB = b.Impure + b.Normal + b.Pure;
-      return totalB - totalA;
-    });
-  };
+  const sortedNodes = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return Object.entries(nodeCounts)
+      .filter(([name]) => !q || name.toLowerCase().includes(q))
+      .sort(([, a], [, b]) => b.Impure + b.Normal + b.Pure - (a.Impure + a.Normal + a.Pure));
+  }, [nodeCounts, searchQuery]);
 
-  const sortedNodes = getSortedResources(nodeCounts);
-  const sortedWells = getSortedResources(wellCounts);
+  const sortedWells = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return Object.entries(wellCounts)
+      .filter(([name]) => !q || name.toLowerCase().includes(q))
+      .sort(([, a], [, b]) => b.Impure + b.Normal + b.Pure - (a.Impure + a.Normal + a.Pure));
+  }, [wellCounts, searchQuery]);
+
+  const activeNodeFilterCount = useMemo(() => {
+    let count = 0;
+    for (const [key, set] of activeFilters.entries()) {
+      const isWell = key.endsWith(' (Well)');
+      if ((topTab === 'wells' && isWell) || (topTab !== 'wells' && !isWell)) {
+        count += set.size;
+      }
+    }
+    return count;
+  }, [activeFilters, topTab]);
+
+  const totalActiveFilters = useMemo(() => {
+    let count = 0;
+    for (const set of activeFilters.values()) {
+      count += set.size;
+    }
+    return count;
+  }, [activeFilters]);
 
   const pct = progress ? Math.round(progress.progress * 100) : 0;
+  const activeResourceKeys = topTab === 'wells'
+    ? Object.keys(wellCounts).map((k) => `${k} (Well)`)
+    : Object.keys(nodeCounts);
+
+  const displayedList = topTab === 'wells' ? sortedWells : sortedNodes;
 
   return (
     <aside className="rn-sidebar">
@@ -252,302 +290,380 @@ export function ResourceNodeSidebar({
         style={{ display: 'none' }}
         onChange={onFileChange}
       />
-      {/* ── Top Tabs Bar ─────────────────────────────────── */}
-      <div className="wmt-tab-bar">
-        {save && (
-          <button
-            className={`wmt-tab-btn ${topTab === 'layers' ? 'active' : ''}`}
-            onClick={() => setTopTab('layers')}
-          >
-            Map layers
-          </button>
-        )}
+
+      {/* ── FICSIT Header + Save Status Strip ── */}
+      <div className="rn-header">
+        <div className="rn-header-top">
+          <div className="rn-header-title">
+            <span className="rn-header-accent" />
+            <Radar size={13} className="rn-header-icon" />
+            <span>FICSIT // SECTOR ATLAS</span>
+          </div>
+          <span className="rn-active-summary">
+            {totalActiveFilters + activeCollectibles.size} ACTIVE
+          </span>
+        </div>
+
+        {/* Save file control strip */}
+        <div className="rn-save-bar">
+          {!save ? (
+            <div className="rn-save-empty">
+              <div className="rn-save-empty-info">
+                <HardDrive size={13} className="rn-save-empty-icon" />
+                <span>Save Overlay</span>
+                <span className="rn-save-empty-hint">.SAV</span>
+              </div>
+              <button
+                type="button"
+                className="rn-save-upload-btn"
+                onClick={onOpenPicker}
+                disabled={!!progress}
+              >
+                <Upload size={12} />
+                <span>Load Save</span>
+              </button>
+            </div>
+          ) : (
+            <div className="rn-save-loaded">
+              <div className="rn-save-loaded-top">
+                <span className="rn-save-loaded-name" title={save.saveName}>
+                  <span className="rn-save-dot" />
+                  {save.saveName}
+                </span>
+                <div className="rn-save-loaded-actions">
+                  <button
+                    type="button"
+                    className="rn-save-mini-btn"
+                    onClick={onOpenPicker}
+                    title="Load different save"
+                  >
+                    Swap
+                  </button>
+                  <button
+                    type="button"
+                    className="rn-save-clear-btn"
+                    onClick={onClearSave}
+                    title="Unload save"
+                    aria-label="Unload save"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              </div>
+              <div className="rn-save-telemetry-row">
+                <span>{save.buildings.length.toLocaleString()} bldgs</span>
+                <span>{save.conveyors.length.toLocaleString()} belts</span>
+                <span>{save.pipes.length.toLocaleString()} pipes</span>
+                <span>{save.powerLines.length.toLocaleString()} pwr</span>
+              </div>
+            </div>
+          )}
+
+          {progress && (
+            <div className="wmt-progress">
+              <div className="wmt-progress-msg">{progress.message}</div>
+              <div className="wmt-progress-track">
+                <div className="wmt-progress-fill" style={{ width: `${pct}%` }} />
+              </div>
+            </div>
+          )}
+
+          {error && <div className="wmt-save-error">{error}</div>}
+        </div>
+      </div>
+
+      {/* ── Navigation Segmented Bar ── */}
+      <div className="wmt-tab-bar" role="tablist">
         <button
+          type="button"
+          role="tab"
+          aria-selected={topTab === 'nodes'}
           className={`wmt-tab-btn ${topTab === 'nodes' ? 'active' : ''}`}
           onClick={() => setTopTab('nodes')}
         >
-          Resource nodes
+          <Cpu size={12} />
+          <span>Nodes</span>
+          <span className="wmt-tab-count">{Object.keys(nodeCounts).length}</span>
         </button>
+
         <button
+          type="button"
+          role="tab"
+          aria-selected={topTab === 'wells'}
           className={`wmt-tab-btn ${topTab === 'wells' ? 'active' : ''}`}
           onClick={() => setTopTab('wells')}
         >
-          Resource wells
+          <Droplets size={12} />
+          <span>Wells</span>
+          <span className="wmt-tab-count">{Object.keys(wellCounts).length}</span>
         </button>
+
+        {save && (
+          <button
+            type="button"
+            role="tab"
+            aria-selected={topTab === 'layers'}
+            className={`wmt-tab-btn ${topTab === 'layers' ? 'active' : ''}`}
+            onClick={() => setTopTab('layers')}
+          >
+            <Layers size={12} />
+            <span>Layers</span>
+          </button>
+        )}
       </div>
 
-      {/* ── Top Panel View ───────────────────────────────── */}
+      {/* ── Top Panel View ── */}
       <div className="wmt-panel-content">
-        {topTab === 'layers' && save && (
-          <div className="wmt-side-top" style={{ borderBottom: 'none', flex: 1, minHeight: 0, overflowY: 'auto' }}>
-            <div className="wmt-save-card">
-              <div className="wmt-save-head">
-                <span className="wmt-save-name" title={save.saveName}>💾 {save.saveName}</span>
-                <button className="wmt-save-clear" title="Clear save" onClick={onClearSave}>✕</button>
-              </div>
-              <div className="wmt-save-stats">
-                <span>{save.buildings.length.toLocaleString()} buildings</span>
-                <span>{save.conveyors.length.toLocaleString()} belts</span>
-                <span>{save.pipes.length.toLocaleString()} pipes</span>
-                <span>{save.powerLines.length.toLocaleString()} power</span>
-              </div>
-              <div className="wmt-save-actions" style={{ marginTop: '8px' }}>
-                <button onClick={onOpenPicker}>Load different</button>
-              </div>
-            </div>
-
-            {progress && (
-              <div className="wmt-progress" style={{ marginTop: '8px' }}>
-                <div className="wmt-progress-msg">{progress.message}</div>
-                <div className="wmt-progress-track">
-                  <div className="wmt-progress-fill" style={{ width: `${pct}%` }} />
-                </div>
-              </div>
-            )}
-
-            {error && <div className="wmt-save-error" style={{ marginTop: '8px' }}>⚠ {error}</div>}
-
-            <div className="wmt-layers-panel" style={{ marginTop: '8px', border: 'none', boxShadow: 'none' }}>
+        {topTab === 'layers' && save ? (
+          <div className="wmt-side-top">
+            <div className="wmt-layers-panel">
               <LayerControls
                 layers={layers}
                 onChange={onLayersChange}
-                buildingCount={save?.buildings?.length ?? 0}
-                conveyorCount={save?.conveyors?.length ?? 0}
-                pipeCount={save?.pipes?.length ?? 0}
-                powerLineCount={save?.powerLines?.length ?? 0}
+                buildingCount={save.buildings.length}
+                conveyorCount={save.conveyors.length}
+                pipeCount={save.pipes.length}
+                powerLineCount={save.powerLines.length}
               />
             </div>
           </div>
-        )}
+        ) : (
+          <div className="wmt-nodes-panel">
+            {/* Search & Purity Quick Toolbar */}
+            <div className="wmt-filter-deck">
+              <div className="wmt-search-row">
+                <div className="wmt-search-box">
+                  <Search size={12} className="wmt-search-icon" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder={`Filter ${topTab === 'wells' ? 'resource wells' : 'resource nodes'}...`}
+                    className="wmt-search-input"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      className="wmt-search-clear"
+                      onClick={() => setSearchQuery('')}
+                      aria-label="Clear filter"
+                    >
+                      <X size={12} />
+                    </button>
+                  )}
+                </div>
 
-        {(topTab === 'nodes' || topTab === 'wells') && (
-          <div className="wmt-nodes-panel" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflow: 'hidden' }}>
-            {/* Save uploader on resource nodes tab if not loaded */}
-            {topTab === 'nodes' && !save && (
-              <div className="wmt-inline-loader" style={{ padding: '12px', borderBottom: '1px solid #1c1e26', flexShrink: 0 }}>
-                <button className="wmt-load-btn" onClick={onOpenPicker} disabled={!!progress}>
-                  📁 Load Save&nbsp;(.sav)
+                <button
+                  type="button"
+                  className={`wmt-clear-btn ${totalActiveFilters > 0 ? 'has-active' : ''}`}
+                  onClick={onClearAll}
+                  disabled={totalActiveFilters === 0}
+                  title="Clear all active resource & well filters"
+                >
+                  <X size={11} />
+                  <span>Clear</span>
                 </button>
-                {progress && (
-                  <div className="wmt-progress" style={{ marginTop: '8px' }}>
-                    <div className="wmt-progress-msg">{progress.message}</div>
-                    <div className="wmt-progress-track">
-                      <div className="wmt-progress-fill" style={{ width: `${pct}%` }} />
-                    </div>
-                  </div>
-                )}
-                {error && <div className="wmt-save-error" style={{ marginTop: '8px' }}>⚠ {error}</div>}
               </div>
-            )}
 
-            {/* Bulk Actions */}
-            <div className="wmt-bulk-actions">
-              <button className="wmt-bulk-btn wmt-bulk-unselect" onClick={onClearAll}>
-                UNSELECT ALL LAYERS
-              </button>
-              <div className="wmt-bulk-row">
-                <button className="wmt-bulk-btn" onClick={() => onShowPurityOnly('Impure')}>SHOW IMPURE</button>
-                <button className="wmt-bulk-btn" onClick={() => onShowPurityOnly('Normal')}>SHOW NORMAL</button>
-                <button className="wmt-bulk-btn" onClick={() => onShowPurityOnly('Pure')}>SHOW PURE</button>
-              </div>
-              <div className="wmt-bulk-row">
-                <button className="wmt-bulk-btn" onClick={() => onTogglePurityAll('Impure')}>TOGGLE IMPURE</button>
-                <button className="wmt-bulk-btn" onClick={() => onTogglePurityAll('Normal')}>TOGGLE NORMAL</button>
-                <button className="wmt-bulk-btn" onClick={() => onTogglePurityAll('Pure')}>TOGGLE PURE</button>
+              <div className="wmt-purity-bar">
+                <div className="wmt-purity-group">
+                  <span className="wmt-purity-group-label">Toggle</span>
+                  <div className="wmt-purity-chip-row">
+                    {PURITIES.map((p) => {
+                      const meta = PURITY_META[p];
+                      const isAllActive =
+                        activeResourceKeys.length > 0 &&
+                        activeResourceKeys.every((res) => activeFilters.get(res)?.has(p) ?? false);
+                      return (
+                        <button
+                          key={`toggle-${p}`}
+                          type="button"
+                          className={`wmt-purity-chip ${isAllActive ? 'is-active' : ''}`}
+                          style={{
+                            '--purity-color': meta.color,
+                            '--purity-bg': meta.bg,
+                            '--purity-border': meta.border,
+                          } as React.CSSProperties}
+                          onClick={() => onTogglePurityAll(p)}
+                          title={`Toggle all ${p} nodes & wells`}
+                        >
+                          {meta.code}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <span className="wmt-purity-divider" />
+
+                <div className="wmt-purity-group">
+                  <span className="wmt-purity-group-label">Solo</span>
+                  <div className="wmt-purity-chip-row">
+                    {PURITIES.map((p) => {
+                      const meta = PURITY_META[p];
+                      return (
+                        <button
+                          key={`solo-${p}`}
+                          type="button"
+                          className="wmt-purity-chip wmt-purity-chip--solo"
+                          style={{
+                            '--purity-color': meta.color,
+                            '--purity-bg': meta.bg,
+                            '--purity-border': meta.border,
+                          } as React.CSSProperties}
+                          onClick={() => onShowPurityOnly(p)}
+                          title={`Show only ${p} nodes & wells`}
+                        >
+                          {meta.code}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Column Headers */}
+            {/* Table Column Header */}
             <div className="rn-col-headers">
-              <span className="rn-col-resource-label">Resource</span>
-              <span className="rn-col-purity-labels">
-                {PURITIES.map(p => {
-                  const resources = topTab === 'nodes' ? Object.keys(nodeCounts) : Object.keys(wellCounts).map(k => `${k} (Well)`);
-                  const isAllActive = resources.length > 0 && resources.every(res => {
-                    const activeSet = activeFilters.get(res);
-                    return activeSet?.has(p) ?? false;
-                  });
+              <span className="rn-col-resource-label">
+                {topTab === 'wells' ? 'Well Resource' : 'Node Resource'}
+                {activeNodeFilterCount > 0 && (
+                  <span className="rn-col-active-pill">{activeNodeFilterCount} on</span>
+                )}
+              </span>
+              <div className="rn-col-purity-grid">
+                {PURITIES.map((p) => (
+                  <span
+                    key={p}
+                    className="rn-col-purity-label"
+                    style={{ color: PURITY_META[p].color }}
+                  >
+                    {p}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Resource Cards List */}
+            <div className="rn-resource-list">
+              {displayedList.length === 0 ? (
+                <div className="rn-empty-state">
+                  No resources match "{searchQuery}"
+                </div>
+              ) : (
+                displayedList.map(([resource, purityCounts]) => {
+                  const mapKey = topTab === 'wells' ? `${resource} (Well)` : resource;
+                  const activeSet = activeFilters.get(mapKey);
+                  const hasAnyActive = (activeSet?.size ?? 0) > 0;
+                  const total = purityCounts.Impure + purityCounts.Normal + purityCounts.Pure;
+                  const nodeType = topTab === 'wells' ? 'well' : 'node';
+                  const imgKey = RESOURCE_IMAGE_KEY[resource] ?? '';
 
                   return (
-                    <button
-                      key={p}
-                      className={`rn-col-purity-header-btn ${isAllActive ? 'is-active' : ''}`}
-                      style={{ '--purity-color': PURITY_COLORS[p] } as React.CSSProperties}
-                      onClick={() => onTogglePurityAll(p)}
-                      title={`Toggle all ${p} ${topTab}`}
+                    <div
+                      key={resource}
+                      className={`rn-resource-row ${hasAnyActive ? 'is-selected' : ''}`}
                     >
-                      {PURITY_LABEL[p]}
-                    </button>
-                  );
-                })}
-              </span>
-            </div>
+                      <div className="rn-resource-left">
+                        <div className="rn-resource-icon-col">
+                          {imgKey ? (
+                            <AppImage
+                              idKey={imgKey}
+                              alt={resource}
+                              className="rn-row-img"
+                              draggable={false}
+                            />
+                          ) : (
+                            <Droplets size={16} />
+                          )}
+                        </div>
+                        <div className="rn-resource-meta">
+                          <span className="rn-resource-name" title={resource}>{resource}</span>
+                          <span className="rn-resource-total-badge">{total} nodes</span>
+                        </div>
+                      </div>
 
-            {/* List */}
-            <div className="rn-resource-list">
-              {(topTab === 'nodes' ? sortedNodes : sortedWells).map(([resource, purityCounts]) => {
-                const mapKey = topTab === 'wells' ? `${resource} (Well)` : resource;
-                const activeSet = activeFilters.get(mapKey);
-                const total = purityCounts.Impure + purityCounts.Normal + purityCounts.Pure;
-                const nodeType = topTab === 'wells' ? 'well' : 'node';
-
-                const imgKey  = RESOURCE_IMAGE_KEY[resource] ?? '';
-                const imgSrc  = imgKey ? `/images/${imgKey}.png` : '';
-
-                return (
-                  <div key={resource} className="rn-resource-row">
-                    <div className="rn-resource-icon-col">
-                      {imgSrc ? (
-                        <img src={imgSrc} alt={resource} className="rn-row-img" draggable={false} />
-                      ) : (
-                        <span className="rn-row-emoji">♨️</span>
-                      )}
-                    </div>
-
-                    <div className="rn-resource-name-col">
-                      <span className="rn-resource-name">{resource}</span>
-                      <span className="rn-resource-total-badge">{total}</span>
-                    </div>
-
-                    <div className="rn-purity-btns">
-                      {PURITIES.map(purity => (
-                        <React.Fragment key={purity}>
-                          <PurityButton
+                      <div className="rn-purity-grid">
+                        {PURITIES.map((purity) => (
+                          <PurityPill
+                            key={purity}
                             resource={resource}
                             purity={purity}
                             count={purityCounts[purity]}
                             active={activeSet?.has(purity) ?? false}
                             onToggle={() => onToggle(resource, purity, nodeType)}
                           />
-                        </React.Fragment>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           </div>
         )}
       </div>
 
-      {/* ── Bottom Panel (Slugs, Artifacts, Collectibles) ─────────────────── */}
-      <div className="wmt-bottom-collectibles">
-        <div className="wmt-tab-bar wmt-bottom-tab-bar">
+      {/* ── Collapsible Bottom Collectibles Dock ── */}
+      <div className={`wmt-bottom-collectibles ${collectiblesOpen ? 'is-open' : 'is-collapsed'}`}>
+        <div className="wmt-bottom-header">
+          <div className="wmt-bottom-tabs" role="tablist">
+            {(
+              [
+                { id: 'slugs', label: 'Slugs' },
+                { id: 'artifacts', label: 'Artifacts' },
+                { id: 'collectibles', label: 'World' },
+              ] as const
+            ).map((tab) => {
+              const activeInGroup = COLLECTIBLE_GROUPS[tab.id].filter((c) =>
+                activeCollectibles.has(c.type)
+              ).length;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={bottomTab === tab.id}
+                  className={`wmt-bottom-tab-btn ${bottomTab === tab.id ? 'active' : ''}`}
+                  onClick={() => {
+                    setBottomTab(tab.id);
+                    if (!collectiblesOpen) setCollectiblesOpen(true);
+                  }}
+                >
+                  <span>{tab.label}</span>
+                  {activeInGroup > 0 && (
+                    <span className="wmt-bottom-tab-dot">{activeInGroup}</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
           <button
-            className={`wmt-tab-btn ${bottomTab === 'slugs' ? 'active' : ''}`}
-            onClick={() => setBottomTab('slugs')}
+            type="button"
+            className="wmt-collapse-btn"
+            onClick={() => setCollectiblesOpen((prev) => !prev)}
+            title={collectiblesOpen ? 'Collapse collectibles panel' : 'Expand collectibles panel'}
+            aria-label={collectiblesOpen ? 'Collapse collectibles panel' : 'Expand collectibles panel'}
           >
-            Power Slugs
-          </button>
-          <button
-            className={`wmt-tab-btn ${bottomTab === 'artifacts' ? 'active' : ''}`}
-            onClick={() => setBottomTab('artifacts')}
-          >
-            Artifacts
-          </button>
-          <button
-            className={`wmt-tab-btn ${bottomTab === 'collectibles' ? 'active' : ''}`}
-            onClick={() => setBottomTab('collectibles')}
-          >
-            Collectibles
+            {collectiblesOpen ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
           </button>
         </div>
 
-        <div className="wmt-bottom-panel-content">
-          {bottomTab === 'slugs' && (
-            <div className="wmt-collectible-row">
-              <span className="wmt-collectible-row-label">POWER SLUGS</span>
-              <div className="rn-purity-btns">
-                <CollectibleButton
-                  type="blue_slug"
-                  label="Blue Power Slug"
-                  count={COLLECTIBLE_COUNTS.blue_slug}
-                  active={activeCollectibles.has('blue_slug')}
-                  onToggle={() => onToggleCollectible('blue_slug')}
+        {collectiblesOpen && (
+          <div className="wmt-bottom-panel-content">
+            <div className="wmt-collectible-grid">
+              {COLLECTIBLE_GROUPS[bottomTab].map((item) => (
+                <CollectibleChip
+                  key={item.type}
+                  item={item}
+                  active={activeCollectibles.has(item.type)}
+                  onToggle={() => onToggleCollectible(item.type)}
                 />
-                <CollectibleButton
-                  type="yellow_slug"
-                  label="Yellow Power Slug"
-                  count={COLLECTIBLE_COUNTS.yellow_slug}
-                  active={activeCollectibles.has('yellow_slug')}
-                  onToggle={() => onToggleCollectible('yellow_slug')}
-                />
-                <CollectibleButton
-                  type="purple_slug"
-                  label="Purple Power Slug"
-                  count={COLLECTIBLE_COUNTS.purple_slug}
-                  active={activeCollectibles.has('purple_slug')}
-                  onToggle={() => onToggleCollectible('purple_slug')}
-                />
-              </div>
+              ))}
             </div>
-          )}
-
-          {bottomTab === 'artifacts' && (
-            <div className="wmt-collectible-row">
-              <span className="wmt-collectible-row-label">ARTIFACTS</span>
-              <div className="rn-purity-btns">
-                <CollectibleButton
-                  type="mercer_sphere"
-                  label="Mercer Sphere"
-                  count={COLLECTIBLE_COUNTS.mercer_sphere}
-                  active={activeCollectibles.has('mercer_sphere')}
-                  onToggle={() => onToggleCollectible('mercer_sphere')}
-                />
-                <CollectibleButton
-                  type="somersloop"
-                  label="Somersloop"
-                  count={COLLECTIBLE_COUNTS.somersloop}
-                  active={activeCollectibles.has('somersloop')}
-                  onToggle={() => onToggleCollectible('somersloop')}
-                />
-              </div>
-            </div>
-          )}
-
-          {bottomTab === 'collectibles' && (
-            <div className="wmt-collectible-stack">
-              <div className="wmt-collectible-row">
-                <span className="wmt-collectible-row-label">DROP-PODS</span>
-                <div className="rn-purity-btns">
-                  <CollectibleButton
-                    type="hard_drive"
-                    label="Hard Drive"
-                    count={COLLECTIBLE_COUNTS.hard_drive}
-                    active={activeCollectibles.has('hard_drive')}
-                    onToggle={() => onToggleCollectible('hard_drive')}
-                  />
-                </div>
-              </div>
-              <div className="wmt-collectible-row" style={{ marginTop: '4px' }}>
-                <span className="wmt-collectible-row-label">CONSUMABLE</span>
-                <div className="rn-purity-btns">
-                  <CollectibleButton
-                    type="paleberry"
-                    label="Paleberry"
-                    count={COLLECTIBLE_COUNTS.paleberry}
-                    active={activeCollectibles.has('paleberry')}
-                    onToggle={() => onToggleCollectible('paleberry')}
-                  />
-                  <CollectibleButton
-                    type="beryl_nut"
-                    label="Beryl Nut"
-                    count={COLLECTIBLE_COUNTS.beryl_nut}
-                    active={activeCollectibles.has('beryl_nut')}
-                    onToggle={() => onToggleCollectible('beryl_nut')}
-                  />
-                  <CollectibleButton
-                    type="bacon_agaric"
-                    label="Bacon Agaric"
-                    count={COLLECTIBLE_COUNTS.bacon_agaric}
-                    active={activeCollectibles.has('bacon_agaric')}
-                    onToggle={() => onToggleCollectible('bacon_agaric')}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </aside>
   );
