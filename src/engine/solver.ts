@@ -1,4 +1,5 @@
 import { ItemId, MachineId, Recipe, RecipeId, items, machines, recipes, isFluidItem } from './data';
+import { getEffectiveInputRate, getMachinePowerMW, getNodePurityMultiplier, type NodePurity } from './worldSettings';
 
 export interface SolverNode {
   itemId: ItemId;
@@ -10,11 +11,13 @@ export interface SolverNode {
   byproducts?: { itemId: ItemId; rate: number }[];
   clockSpeed?: number;      // e.g. 100, 150, 200, 250
   somerslooped?: boolean;   // if true, 2x output
+  /** Effective power per machine (MW) including overclock, Somersloop, and world power multiplier. */
+  powerPerMachine?: number;
   /** In whole-machine mode: units/min produced ABOVE what downstream needs. */
   overflowRate?: number;
   /** True when this node runs a single machine below 100% clock (fractional need). */
   isUnderclocked?: boolean;
-  purity?: 'impure' | 'normal' | 'pure';
+  purity?: NodePurity;
 }
 
 export type RecipeSelectionMap = Partial<Record<ItemId, RecipeId>>;
@@ -120,12 +123,14 @@ export function solve(
   extractorOverclock: number = 100,
   globalOverclock: number = 100,
   somersloopMultiplier: number = 1,
-  perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean; purity?: 'impure' | 'normal' | 'pure' }>,
+  perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean; purity?: NodePurity }>,
   wholeMachineMode: boolean = false,
   /** Items the user already supplies (rate/min). The solver consumes these as
    *  free sources and only produces the shortfall for each. */
   availableInputs: Record<ItemId, number> = {},
-  costMultiplier: number = 1
+  costMultiplier: number = 1,
+  defaultNodePurity: NodePurity = 'normal',
+  powerMultiplier: number = 1
 ): SolverNode {
   const targets: Record<ItemId, number> = typeof itemIdOrTargets === 'string'
     ? { [itemIdOrTargets]: requiredRate ?? 0 }
@@ -196,8 +201,8 @@ export function solve(
               else if (minerId === "miner_mk3") outputRate = 240;
               else outputRate = 60;
               
-              const purityVal = customSettings?.purity ?? 'normal';
-              const purityMult = purityVal === 'pure' ? 2.0 : purityVal === 'impure' ? 0.5 : 1.0;
+              const purityVal = customSettings?.purity ?? defaultNodePurity;
+              const purityMult = getNodePurityMultiplier(purityVal);
               outputRate = outputRate * purityMult;
               
               if (customSettings?.clockSpeed !== undefined) {
@@ -257,8 +262,9 @@ export function solve(
           const inputScale = nodeRate / outputRate; // == nodeMachines for production machines
           for (const input of recipe.inputs) {
             // Overclocking scales input rate linearly. Somerslooping does not increase input consumption!
-            const machineInputRate = input.rate * (nodeOverclock / 100);
-            const requiredInputRate = machineInputRate * inputScale * costMultiplier;
+            const effectiveBaseInputRate = getEffectiveInputRate(input, recipe.cycleTime, costMultiplier);
+            const machineInputRate = effectiveBaseInputRate * (nodeOverclock / 100);
+            const requiredInputRate = machineInputRate * inputScale;
             if (requiredInputRate > 0.001) {
               // solveDemand splits the input into a user-supplied "Imported X"
               // source (if any) plus the produced remainder — both as direct
@@ -283,6 +289,12 @@ export function solve(
             rate: bp.rate * (nodeOverclock / 100) * effectiveSomersloopMultiplier * inputScale
           }));
 
+          const machineBasePower = machines[machineIdToUse]?.powerUsage ?? 0;
+          const nodePowerPerMachine = getMachinePowerMW(machineBasePower, nodeClock, nodeSomersloop, powerMultiplier);
+          const resolvedPurity = recipe.inputs.length === 0 && machineIdToUse.startsWith('miner')
+            ? (customSettings?.purity ?? defaultNodePurity)
+            : customSettings?.purity;
+
           return {
             itemId: currentId,
             recipeId: recipe.id,
@@ -293,9 +305,10 @@ export function solve(
             byproducts,
             clockSpeed: nodeClock,
             somerslooped: nodeSomersloop,
+            powerPerMachine: nodePowerPerMachine,
             overflowRate: overflowRate > 0.001 ? overflowRate : undefined,
             isUnderclocked: isUnderclocked || undefined,
-            purity: customSettings?.purity,
+            purity: resolvedPurity,
           };
         } finally {
           activeStack.delete(currentId);
@@ -446,6 +459,7 @@ export function solve(
         // sinks, never a confusing fraction — 1 sink for any normal overflow.
         machines: Math.max(1, Math.ceil(sinkTotalRate / 780)),
         machineId: 'awesome_sink',
+        powerPerMachine: getMachinePowerMW(machines.awesome_sink?.powerUsage ?? 30, 100, false, powerMultiplier),
         inputs: allSinkInputs,
       });
     }
@@ -489,7 +503,7 @@ export interface SummaryData {
   overflowItems: Record<string, number>;
 }
 
-export function calculateSummary(rootNode: SolverNode): SummaryData {
+export function calculateSummary(rootNode: SolverNode, powerMultiplier: number = 1): SummaryData {
   const machineCounts: Record<string, number> = Object.create(null);
   const rawInputs: Record<string, number> = Object.create(null);
   const producedItems: Record<string, number> = Object.create(null);
@@ -510,14 +524,7 @@ export function calculateSummary(rootNode: SolverNode): SummaryData {
       
       const clock = node.clockSpeed ?? 100;
       const isSomerslooped = node.somerslooped ?? false;
-      
-      // Power = basePower * (clockSpeed / 100)^1.6
-      // Overclock power exponent is log2(2.5) ≈ 1.321928 (Satisfactory 0.7.0.0+),
-      // so 250% clock = 2.5× power (not 4.33× under the old 1.6 exponent).
-      let powerPerMachine = machineInfo.powerUsage * Math.pow(clock / 100, Math.log2(2.5));
-      if (isSomerslooped) {
-        powerPerMachine *= 4; // Somerslooping costs 4x power!
-      }
+      const powerPerMachine = getMachinePowerMW(machineInfo.powerUsage, clock, isSomerslooped, powerMultiplier);
       
       totalPower += node.machines * powerPerMachine;
 

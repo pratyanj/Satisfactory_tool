@@ -25,6 +25,13 @@ import { DiagnosticsTab } from './components/DiagnosticsTab';
 import { solve, calculateSummary, SummaryData, SolverNode, RecipeSelectionMap } from './engine/solver';
 import { mapSolverResultToGraph, LayoutMode } from './engine/graphMapper';
 import { BeltId, MachineId, items, machines, belts, recipes } from './engine/data';
+import {
+  DEFAULT_WORLD_SETTINGS,
+  getNodePurityMultiplier,
+  isValidNodePurity,
+  normalizeMultiplier,
+  type NodePurity,
+} from './engine/worldSettings';
 import { Edge, Node } from '@xyflow/react';
 
 type MainTab = 'network_graph' | 'tree_list' | 'items' | 'buildings' | 'world_map' | 'diagnostics';
@@ -90,7 +97,7 @@ function parseRecipeSelections(value: unknown): RecipeSelectionMap {
   return result;
 }
 
-function convertTargetToRate(target: TargetOutput): number {
+function convertTargetToRate(target: TargetOutput, defaultPurity: NodePurity = 'normal'): number {
   if (target.mode === 'machine') {
     const recipeId = target.recipeId;
     const recipe = recipes.find(r => r.id === recipeId);
@@ -114,8 +121,8 @@ function convertTargetToRate(target: TargetOutput): number {
   }
   
   if (target.mode === 'resource') {
-    const purity = target.nodePurity || 'normal';
-    const baseRate = purity === 'pure' ? 120 : purity === 'impure' ? 30 : 60;
+    const purity = target.nodePurity || defaultPurity;
+    const baseRate = 60 * getNodePurityMultiplier(purity);
     const minerId = target.nodeMinerId || 'miner_mk1';
     
     let minerMult = 1;
@@ -149,11 +156,12 @@ export default function App() {
     extractorTier?: string;
     overclock?: number;
     somersloopMultiplier?: number;
-    perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean; purity?: 'impure' | 'normal' | 'pure' }>;
+    perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean; purity?: NodePurity }>;
     wholeMachineMode?: boolean;
     availableInputs?: Record<string, number>;
     costMultiplier?: number;
     powerMultiplier?: number;
+    defaultNodePurity?: NodePurity;
     disableAnimations?: boolean;
   }>({
     itemId: 'reinforced_iron_plate',
@@ -169,8 +177,9 @@ export default function App() {
     perMachineSettings: {},
     wholeMachineMode: false,
     availableInputs: {},
-    costMultiplier: 1,
-    powerMultiplier: 1,
+    costMultiplier: DEFAULT_WORLD_SETTINGS.recipeCostMultiplier,
+    powerMultiplier: DEFAULT_WORLD_SETTINGS.powerMultiplier,
+    defaultNodePurity: DEFAULT_WORLD_SETTINGS.defaultNodePurity,
     disableAnimations: false,
   });
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('aggregated');
@@ -306,6 +315,15 @@ export default function App() {
             recipeSelections: parseRecipeSelections(decoded.ar),
             targets: targets,
             perMachineSettings: decoded.pm || {},
+            pipeTier: decoded.pt === 'mk2' ? 'mk2' : 'mk1',
+            extractorTier: typeof decoded.ex === 'string' ? decoded.ex : 'mk1',
+            overclock: typeof decoded.oc === 'number' && decoded.oc > 0 ? decoded.oc : 100,
+            somersloopMultiplier: decoded.sl === 2 ? 2 : 1,
+            wholeMachineMode: Boolean(decoded.wm),
+            availableInputs: decoded.ai && typeof decoded.ai === 'object' ? decoded.ai : {},
+            costMultiplier: normalizeMultiplier(decoded.cm, DEFAULT_WORLD_SETTINGS.recipeCostMultiplier),
+            powerMultiplier: normalizeMultiplier(decoded.pmu, DEFAULT_WORLD_SETTINGS.powerMultiplier),
+            defaultNodePurity: isValidNodePurity(decoded.np) ? decoded.np : DEFAULT_WORLD_SETTINGS.defaultNodePurity,
           });
           setLayoutMode(decoded.l);
           const top: TopLevelTab = decoded.t ?? 'planner';
@@ -407,7 +425,7 @@ export default function App() {
   }, [parseAndApplyRoute]);
 
   const generateShareLink = useCallback(() => {
-    const payload = {
+    const payload: Record<string, unknown> = {
       i: lastInput.itemId,
       r: lastInput.rate,
       m: lastInput.minerId,
@@ -419,6 +437,17 @@ export default function App() {
       tg: lastInput.targets || [{ itemId: lastInput.itemId, rate: lastInput.rate }],
       pm: lastInput.perMachineSettings || {},
     };
+    if ((lastInput.costMultiplier ?? 1) !== 1) payload.cm = lastInput.costMultiplier;
+    if ((lastInput.powerMultiplier ?? 1) !== 1) payload.pmu = lastInput.powerMultiplier;
+    if ((lastInput.defaultNodePurity ?? 'normal') !== 'normal') payload.np = lastInput.defaultNodePurity;
+    if ((lastInput.overclock ?? 100) !== 100) payload.oc = lastInput.overclock;
+    if ((lastInput.somersloopMultiplier ?? 1) !== 1) payload.sl = lastInput.somersloopMultiplier;
+    if (lastInput.wholeMachineMode) payload.wm = true;
+    if (lastInput.pipeTier && lastInput.pipeTier !== 'mk1') payload.pt = lastInput.pipeTier;
+    if (lastInput.extractorTier && lastInput.extractorTier !== 'mk1') payload.ex = lastInput.extractorTier;
+    if (lastInput.availableInputs && Object.keys(lastInput.availableInputs).length > 0) {
+      payload.ai = lastInput.availableInputs;
+    }
 
     const encoded = encodeURIComponent(btoa(JSON.stringify(payload)));
     const url = `${window.location.origin}${window.location.pathname}#plan=${encoded}`;
@@ -429,7 +458,7 @@ export default function App() {
     });
   }, [lastInput, layoutMode, topLevelTab, mainTab]);
 
-  const handleUpdatePerMachineSettings = useCallback((itemId: string, settings: { clockSpeed?: number; somerslooped?: boolean; purity?: 'impure' | 'normal' | 'pure' }) => {
+  const handleUpdatePerMachineSettings = useCallback((itemId: string, settings: { clockSpeed?: number; somerslooped?: boolean; purity?: NodePurity }) => {
     setLastInput(prev => {
       const currentPm = prev.perMachineSettings || {};
       const newPm = { ...currentPm };
@@ -440,7 +469,7 @@ export default function App() {
         newPm[itemId] = {
           clockSpeed: settings.clockSpeed ?? currentPm[itemId]?.clockSpeed ?? 100,
           somerslooped: settings.somerslooped ?? currentPm[itemId]?.somerslooped ?? false,
-          purity: settings.purity ?? currentPm[itemId]?.purity ?? 'normal',
+          purity: settings.purity ?? currentPm[itemId]?.purity ?? (prev.defaultNodePurity ?? 'normal'),
         };
       }
       
@@ -461,13 +490,17 @@ export default function App() {
     extractorTier: string = 'mk1',
     overclock: number = 100,
     somersloopMultiplier: number = 1,
-    perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean; purity?: 'impure' | 'normal' | 'pure' }>,
+    perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean; purity?: NodePurity }>,
     wholeMachineMode: boolean = false,
     availableInputs: Record<string, number> = {},
     costMultiplier: number = 1,
     powerMultiplier: number = 1,
-    disableAnimations: boolean = false
+    disableAnimations: boolean = false,
+    defaultNodePurity: NodePurity = 'normal'
   ) => {
+    const safeCostMult = normalizeMultiplier(costMultiplier, 1);
+    const safePowerMult = normalizeMultiplier(powerMultiplier, 1);
+    const safePurity: NodePurity = isValidNodePurity(defaultNodePurity) ? defaultNodePurity : 'normal';
     const targetsToUse = targets || [{
       itemId,
       rate,
@@ -477,7 +510,7 @@ export default function App() {
       beltCount: 1,
       pipeTier: 'mk1' as const,
       pipeCount: 1,
-      nodePurity: 'normal' as const,
+      nodePurity: safePurity,
       nodeMinerId: 'miner_mk1' as const,
       nodeClockSpeed: 100,
     }];
@@ -495,8 +528,9 @@ export default function App() {
       perMachineSettings: perMachineSettings || lastInput.perMachineSettings || {},
       wholeMachineMode,
       availableInputs,
-      costMultiplier,
-      powerMultiplier,
+      costMultiplier: safeCostMult,
+      powerMultiplier: safePowerMult,
+      defaultNodePurity: safePurity,
       disableAnimations,
     });
     try {
@@ -504,7 +538,7 @@ export default function App() {
       
       const targetsMap: Record<string, number> = {};
       for (const t of targetsToUse) {
-        const computedRate = convertTargetToRate(t);
+        const computedRate = convertTargetToRate(t, safePurity);
         targetsMap[t.itemId] = (targetsMap[t.itemId] || 0) + computedRate;
       }
  
@@ -522,10 +556,19 @@ export default function App() {
         perMachineSettings || lastInput.perMachineSettings || {},
         wholeMachineMode,
         availableInputs,
-        costMultiplier
+        safeCostMult,
+        safePurity,
+        safePowerMult
       );
-      const newSummary = calculateSummary(solvedRoot);
-      const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(solvedRoot, mode, beltId, pipeTier, powerMultiplier);
+      const newSummary = calculateSummary(solvedRoot, safePowerMult);
+      const { nodes: newNodes, edges: newEdges } = mapSolverResultToGraph(
+        solvedRoot,
+        mode,
+        beltId,
+        pipeTier,
+        safePowerMult,
+        safeCostMult
+      );
 
       // Integrate Diagnostics overlay directly on the ReactFlow graph
       const diag = aggregateDiagnosticsFlowA(solvedRoot, newSummary, beltId, pipeTier);
@@ -582,9 +625,10 @@ export default function App() {
     availableInputs: Record<string, number> = {},
     costMultiplier: number = 1,
     powerMultiplier: number = 1,
-    disableAnimations: boolean = false
+    disableAnimations: boolean = false,
+    defaultNodePurity: NodePurity = 'normal'
   ) => {
-    calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode, targets, pipeTier, extractorTier, overclock, somersloopMultiplier, lastInput.perMachineSettings, wholeMachineMode, availableInputs, costMultiplier, powerMultiplier, disableAnimations);
+    calculatePlan(itemId, rate, minerId, beltId, recipeSelections, layoutMode, targets, pipeTier, extractorTier, overclock, somersloopMultiplier, lastInput.perMachineSettings, wholeMachineMode, availableInputs, costMultiplier, powerMultiplier, disableAnimations, defaultNodePurity);
   };
 
   const handleResolveAction = useCallback((actionType: string, payload: any) => {
@@ -611,7 +655,7 @@ export default function App() {
   // Step 1: Immediately show the spinner when inputs or mode change
   useEffect(() => {
     setIsRecalculating(true);
-  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, lastInput.wholeMachineMode, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature, availableInputsSignature, lastInput.costMultiplier, lastInput.powerMultiplier, lastInput.disableAnimations]);
+  }, [layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, lastInput.wholeMachineMode, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature, availableInputsSignature, lastInput.costMultiplier, lastInput.powerMultiplier, lastInput.defaultNodePurity, lastInput.disableAnimations]);
 
   // Step 2: Defer heavy graph calculations to the next tick (80ms), allowing the spinner to render and animate smoothly first!
   useEffect(() => {
@@ -634,12 +678,13 @@ export default function App() {
         lastInput.availableInputs || {},
         lastInput.costMultiplier ?? 1,
         lastInput.powerMultiplier ?? 1,
-        lastInput.disableAnimations ?? false
+        lastInput.disableAnimations ?? false,
+        lastInput.defaultNodePurity ?? 'normal'
       );
       setIsRecalculating(false);
     }, 80);
     return () => clearTimeout(timer);
-  }, [isRecalculating, layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature, availableInputsSignature, lastInput.costMultiplier, lastInput.powerMultiplier, lastInput.disableAnimations]);
+  }, [isRecalculating, layoutMode, lastInput.itemId, lastInput.rate, lastInput.minerId, lastInput.beltId, lastInput.pipeTier, lastInput.extractorTier, lastInput.overclock, lastInput.somersloopMultiplier, recipeSelectionSignature, targetsSignature, perMachineSettingsSignature, availableInputsSignature, lastInput.costMultiplier, lastInput.powerMultiplier, lastInput.defaultNodePurity, lastInput.disableAnimations]);
 
 
   const renderTabContent = () => {
@@ -732,6 +777,8 @@ export default function App() {
                 isFullscreen={isGraphFullscreen}
                 perMachineSettings={lastInput.perMachineSettings || {}}
                 onUpdatePerMachineSettings={handleUpdatePerMachineSettings}
+                powerMultiplier={lastInput.powerMultiplier ?? 1}
+                defaultNodePurity={lastInput.defaultNodePurity ?? 'normal'}
                 disableAnimations={lastInput.disableAnimations ?? false}
               />
             </div>
@@ -787,7 +834,14 @@ export default function App() {
                 </div>
                 {summary && (
                   <div className="flex-1 min-w-[30%]">
-                    <Summary summary={summary} />
+                    <Summary
+                      summary={summary}
+                      worldSettings={{
+                        recipeCostMultiplier: lastInput.costMultiplier ?? 1,
+                        powerMultiplier: lastInput.powerMultiplier ?? 1,
+                        defaultNodePurity: lastInput.defaultNodePurity ?? 'normal',
+                      }}
+                    />
                   </div>
                 )}
               </div>

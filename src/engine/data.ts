@@ -23,6 +23,8 @@ export interface Item {
 export interface ResourceInput {
   itemId: ItemId;
   rate: number; // per minute
+  /** Base per-cycle ingredient quantity (used by Satisfactory 1.2 cost multiplier integer rounding). */
+  amount?: number;
 }
 
 export interface Recipe {
@@ -30,6 +32,8 @@ export interface Recipe {
   name?: string;
   outputItemId: ItemId;
   outputRate: number; // per minute
+  /** Craft cycle duration in seconds (60 / cycleTime = cycles per minute). */
+  cycleTime?: number;
   inputs: ResourceInput[];
   byproducts?: ResourceInput[];
   machineId: MachineId;

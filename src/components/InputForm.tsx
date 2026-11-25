@@ -1,7 +1,19 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, RotateCcw, Zap } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronDown, ChevronRight, Globe, RotateCcw, Zap } from 'lucide-react';
 import { AppImage } from './AppImage';
 import { items, belts, machines, recipes, BeltId, MachineId, RecipeId } from '../engine/data';
+import {
+  DEFAULT_WORLD_SETTINGS,
+  MAX_WORLD_MULTIPLIER,
+  MIN_WORLD_MULTIPLIER,
+  NODE_PURITY_OPTIONS,
+  POWER_MULTIPLIER_PRESETS,
+  RECIPE_COST_PRESETS,
+  formatMultiplier,
+  hasActiveWorldSettings,
+  normalizeMultiplier,
+  type NodePurity,
+} from '../engine/worldSettings';
 import { ItemModal } from './ItemModal';
 import { CustomSelect } from './CustomSelect';
 import { getAlternateRecipeCandidates, analyzeChainUsage, RecipeSelectionMap } from '../engine/solver';
@@ -39,7 +51,8 @@ interface InputFormProps {
     availableInputs?: Record<string, number>,
     costMultiplier?: number,
     powerMultiplier?: number,
-    disableAnimations?: boolean
+    disableAnimations?: boolean,
+    defaultNodePurity?: NodePurity
   ) => void;
   initialValues?: {
     itemId: string;
@@ -57,7 +70,115 @@ interface InputFormProps {
     costMultiplier?: number;
     powerMultiplier?: number;
     disableAnimations?: boolean;
+    defaultNodePurity?: NodePurity;
   };
+}
+
+interface MultiplierSelectorProps {
+  label: string;
+  hint: string;
+  value: number;
+  presets: readonly number[];
+  onChange: (next: number) => void;
+}
+
+/** Shared preset + custom multiplier control for World Settings (DRY). */
+function MultiplierSelector({ label, hint, value, presets, onChange }: MultiplierSelectorProps) {
+  const [draft, setDraft] = useState<string>(formatMultiplier(value));
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    if (!isEditing) {
+      setDraft(formatMultiplier(value));
+    }
+  }, [value, isEditing]);
+
+  const commitDraft = (raw: string) => {
+    const parsed = parseFloat(raw);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      const normalized = normalizeMultiplier(parsed, 1);
+      onChange(normalized);
+      setDraft(formatMultiplier(normalized));
+    } else {
+      setDraft(formatMultiplier(value));
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-col">
+          <span className="text-[9px] font-mono tracking-[0.18em] text-[#8E9299] uppercase font-semibold">{label}</span>
+          <span className="text-[9px] font-mono text-[#555b66]">{hint}</span>
+        </div>
+        <span
+          className="text-xs font-black font-mono px-1.5 py-0.5 rounded"
+          style={{
+            background: Math.abs(value - 1) > 1e-9 ? 'rgba(244,135,33,0.14)' : '#121418',
+            border: `1px solid ${Math.abs(value - 1) > 1e-9 ? '#f4872150' : '#23262d'}`,
+            color: Math.abs(value - 1) > 1e-9 ? '#f48721' : '#d4d3d0',
+          }}
+        >
+          {formatMultiplier(value)}×
+        </span>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-1">
+        {presets.map((preset) => {
+          const isActive = Math.abs(value - preset) < 1e-6;
+          return (
+            <button
+              key={preset}
+              type="button"
+              onClick={() => onChange(preset)}
+              className="px-2 py-1 text-[10px] font-mono font-bold rounded transition-colors cursor-pointer"
+              style={{
+                background: isActive ? '#f48721' : '#0d0f12',
+                border: `1px solid ${isActive ? '#f48721' : '#23262d'}`,
+                color: isActive ? '#000' : '#8E9299',
+              }}
+            >
+              {formatMultiplier(preset)}×
+            </button>
+          );
+        })}
+
+        <div className="flex items-center gap-1 ml-auto px-2 py-0.5 rounded" style={{ background: '#0d0f12', border: '1px solid #23262d' }}>
+          <span className="text-[8px] font-mono uppercase tracking-wider text-[#555b66]">Custom</span>
+          <input
+            type="number"
+            min={MIN_WORLD_MULTIPLIER}
+            max={MAX_WORLD_MULTIPLIER}
+            step="any"
+            value={draft}
+            aria-label={`${label} custom value`}
+            onFocus={() => setIsEditing(true)}
+            onChange={(e) => {
+              const raw = e.target.value;
+              setDraft(raw);
+              const parsed = parseFloat(raw);
+              if (Number.isFinite(parsed) && parsed >= MIN_WORLD_MULTIPLIER && parsed <= MAX_WORLD_MULTIPLIER) {
+                onChange(normalizeMultiplier(parsed, 1));
+              }
+            }}
+            onBlur={() => {
+              setIsEditing(false);
+              commitDraft(draft);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                setIsEditing(false);
+                commitDraft(draft);
+              }
+            }}
+            className="w-12 text-right text-[10px] font-mono font-bold text-[#e4e3e0] bg-transparent border-none outline-none"
+          />
+          <span className="text-[9px] font-mono text-[#555b66]">×</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function formatRecipeLabel(recipeId: RecipeId): string {
@@ -79,7 +200,6 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
         beltCount: 1,
         pipeTier: 'mk1',
         pipeCount: 1,
-        nodePurity: 'normal',
         nodeMinerId: 'miner_mk1',
         nodeClockSpeed: 100,
       }
@@ -94,9 +214,17 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
   const [overclock, setOverclock] = useState<number>(initialValues?.overclock ?? 100);
   const [somersloopMultiplier, setSomersloopMultiplier] = useState<number>(initialValues?.somersloopMultiplier ?? 1);
   const [wholeMachineMode, setWholeMachineMode] = useState<boolean>(initialValues?.wholeMachineMode ?? false);
-  const [costMultiplier, setCostMultiplier] = useState<number>(initialValues?.costMultiplier ?? 1);
-  const [powerMultiplier, setPowerMultiplier] = useState<number>(initialValues?.powerMultiplier ?? 1);
+  const [costMultiplier, setCostMultiplier] = useState<number>(initialValues?.costMultiplier ?? DEFAULT_WORLD_SETTINGS.recipeCostMultiplier);
+  const [powerMultiplier, setPowerMultiplier] = useState<number>(initialValues?.powerMultiplier ?? DEFAULT_WORLD_SETTINGS.powerMultiplier);
+  const [defaultNodePurity, setDefaultNodePurity] = useState<NodePurity>(initialValues?.defaultNodePurity ?? DEFAULT_WORLD_SETTINGS.defaultNodePurity);
   const [disableAnimations, setDisableAnimations] = useState<boolean>(initialValues?.disableAnimations ?? false);
+  const [isWorldSettingsOpen, setIsWorldSettingsOpen] = useState<boolean>(() =>
+    hasActiveWorldSettings({
+      recipeCostMultiplier: initialValues?.costMultiplier,
+      powerMultiplier: initialValues?.powerMultiplier,
+      defaultNodePurity: initialValues?.defaultNodePurity,
+    })
+  );
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 
   // Items the user already has available (imports). The solver consumes these
@@ -137,7 +265,6 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           beltCount: 1,
           pipeTier: 'mk1',
           pipeCount: 1,
-          nodePurity: 'normal',
           nodeMinerId: 'miner_mk1',
           nodeClockSpeed: 100,
         }
@@ -173,6 +300,9 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
       }
       if (initialValues.powerMultiplier !== undefined && powerMultiplier !== initialValues.powerMultiplier) {
         setPowerMultiplier(initialValues.powerMultiplier);
+      }
+      if (initialValues.defaultNodePurity !== undefined && defaultNodePurity !== initialValues.defaultNodePurity) {
+        setDefaultNodePurity(initialValues.defaultNodePurity);
       }
       if (initialValues.disableAnimations !== undefined && disableAnimations !== initialValues.disableAnimations) {
         setDisableAnimations(initialValues.disableAnimations);
@@ -216,7 +346,8 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
         buildAvailableInputsMap(),
         costMultiplier,
         powerMultiplier,
-        disableAnimations
+        disableAnimations,
+        defaultNodePurity
       );
     }
   };
@@ -303,7 +434,7 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                 const newTargets = [...targets, {
                   itemId: 'iron_plate', rate: 60, mode: 'rate' as const,
                   machineCount: 1, beltTier: 'mk1' as const, beltCount: 1,
-                  pipeTier: 'mk1' as const, pipeCount: 1, nodePurity: 'normal' as const,
+                  pipeTier: 'mk1' as const, pipeCount: 1,
                   nodeMinerId: 'miner_mk1' as const, nodeClockSpeed: 100,
                 }];
                 updateFormState(newTargets, minerId, beltId, recipeSelections);
@@ -356,8 +487,8 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                         newTargets[idx].beltTier = 'mk1'; newTargets[idx].beltCount = 1;
                       } else if (mode === 'pipe' && !newTargets[idx].pipeTier) {
                         newTargets[idx].pipeTier = 'mk1'; newTargets[idx].pipeCount = 1;
-                      } else if (mode === 'resource' && !newTargets[idx].nodePurity) {
-                        newTargets[idx].nodePurity = 'normal'; newTargets[idx].nodeMinerId = 'miner_mk1'; newTargets[idx].nodeClockSpeed = 100;
+                      } else if (mode === 'resource' && !newTargets[idx].nodeMinerId) {
+                        newTargets[idx].nodeMinerId = 'miner_mk1'; newTargets[idx].nodeClockSpeed = 100;
                       }
                       updateFormState(newTargets, minerId, beltId, recipeSelections);
                     }}
@@ -454,8 +585,8 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
                   {target.mode === 'resource' && (
                     <>
                       <select
-                        value={target.nodePurity || 'normal'}
-                        onChange={(e) => { const n = [...targets]; n[idx].nodePurity = e.target.value as 'impure' | 'normal' | 'pure'; updateFormState(n, minerId, beltId, recipeSelections); }}
+                        value={target.nodePurity || defaultNodePurity}
+                        onChange={(e) => { const n = [...targets]; n[idx].nodePurity = e.target.value as NodePurity; updateFormState(n, minerId, beltId, recipeSelections); }}
                         className="text-[10px] font-mono text-[#8E9299] bg-transparent border-none outline-none cursor-pointer shrink-0"
                         style={{ WebkitAppearance: 'none' }}
                       >
@@ -707,21 +838,70 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
               )}
             </div>
 
-            {/* Advanced Tuning toggle */}
-            <button
-              type="button"
-              onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded shrink-0"
-              style={{
-                background: isAdvancedOpen ? 'rgba(244,135,33,0.08)' : '#0d0f12',
-                border: `1px solid ${isAdvancedOpen ? '#f4872140' : '#1e2128'}`,
-                color: isAdvancedOpen ? '#f48721' : (overclock !== 100 || somersloopMultiplier !== 1 ? '#f4872190' : '#555b66'),
-              }}
-            >
-              <Zap size={10} />
-              <span>{overclock !== 100 || somersloopMultiplier !== 1 ? 'Tuned' : 'Tuning'}</span>
-              {isAdvancedOpen ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
-            </button>
+            {/* World Settings (Satisfactory 1.2 Game Modes) toggle */}
+            {(() => {
+              const worldActive = hasActiveWorldSettings({
+                recipeCostMultiplier: costMultiplier,
+                powerMultiplier,
+                defaultNodePurity,
+              });
+              const activeSummaryParts: string[] = [];
+              if (Math.abs(costMultiplier - 1) > 1e-9) activeSummaryParts.push(`${formatMultiplier(costMultiplier)}× Cost`);
+              if (Math.abs(powerMultiplier - 1) > 1e-9) activeSummaryParts.push(`${formatMultiplier(powerMultiplier)}× Pwr`);
+              if (defaultNodePurity !== 'normal') activeSummaryParts.push(defaultNodePurity.toUpperCase());
+              return (
+                <button
+                  type="button"
+                  onClick={() => setIsWorldSettingsOpen(v => !v)}
+                  title="Satisfactory 1.2 World Settings / Game Mode Multipliers (Recipe Cost, Power Consumption, Node Purity)"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded shrink-0"
+                  style={{
+                    background: isWorldSettingsOpen || worldActive ? 'rgba(244,135,33,0.10)' : '#0d0f12',
+                    border: `1px solid ${isWorldSettingsOpen || worldActive ? '#f4872150' : '#1e2128'}`,
+                    color: isWorldSettingsOpen || worldActive ? '#f48721' : '#8E9299',
+                  }}
+                >
+                  <Globe size={10} />
+                  <span>World Settings</span>
+                  {activeSummaryParts.length > 0 && (
+                    <span
+                      style={{
+                        background: '#f48721',
+                        color: '#000',
+                        fontSize: 8,
+                        fontWeight: 800,
+                        borderRadius: 2,
+                        padding: '0 4px',
+                      }}
+                    >
+                      {activeSummaryParts.join(' · ')}
+                    </span>
+                  )}
+                  {isWorldSettingsOpen ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
+                </button>
+              );
+            })()}
+
+            {/* Machine Tuning toggle */}
+            {(() => {
+              const isTuned = overclock !== 100 || somersloopMultiplier !== 1 || disableAnimations;
+              return (
+                <button
+                  type="button"
+                  onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded shrink-0"
+                  style={{
+                    background: isAdvancedOpen ? 'rgba(244,135,33,0.08)' : '#0d0f12',
+                    border: `1px solid ${isAdvancedOpen ? '#f4872140' : '#1e2128'}`,
+                    color: isAdvancedOpen ? '#f48721' : (isTuned ? '#f4872190' : '#555b66'),
+                  }}
+                >
+                  <Zap size={10} />
+                  <span>{isTuned ? 'Tuned' : 'Tuning'}</span>
+                  {isAdvancedOpen ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
+                </button>
+              );
+            })()}
 
             {/* Whole Machines toggle — round machines up to whole units and sink the surplus */}
             <button
@@ -757,10 +937,114 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
           </div>
         </div>
 
-        {/* ── Zone 3: Advanced Tuning Panel ── */}
+        {/* ── Zone 2.5: World Settings Panel (Satisfactory 1.2 Game Modes) ── */}
+        {isWorldSettingsOpen && (
+          <div
+            className="relative z-10 flex flex-col gap-3.5 px-4 py-3 border-t border-[#1e2128]"
+            style={{ background: 'linear-gradient(180deg, #101217 0%, #0b0c0f 100%)' }}
+          >
+            <div style={{ position: 'absolute', top: 0, left: 24, right: 24, height: '1px', background: 'linear-gradient(90deg, transparent, #f4872145, transparent)' }} />
+
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Globe size={11} className="text-[#f48721]" />
+                <span className="text-[9px] font-mono tracking-[0.22em] text-[#f48721] uppercase font-bold">
+                  World Settings // Game Mode Multipliers (1.2)
+                </span>
+              </div>
+              {hasActiveWorldSettings({
+                recipeCostMultiplier: costMultiplier,
+                powerMultiplier,
+                defaultNodePurity,
+              }) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCostMultiplier(DEFAULT_WORLD_SETTINGS.recipeCostMultiplier);
+                    setPowerMultiplier(DEFAULT_WORLD_SETTINGS.powerMultiplier);
+                    setDefaultNodePurity(DEFAULT_WORLD_SETTINGS.defaultNodePurity);
+                  }}
+                  className="flex items-center gap-1 text-[9px] font-mono uppercase tracking-wider text-[#8E9299] hover:text-[#f48721] transition-colors cursor-pointer"
+                  title="Reset World Settings to 1× Vanilla defaults"
+                >
+                  <RotateCcw size={10} />
+                  <span>Reset 1×</span>
+                </button>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <MultiplierSelector
+                label="Recipe Parts Cost Multiplier"
+                hint="Scales recipe inputs (solids round per cycle, min 1; fluids scale continuously; outputs stay 1×)"
+                value={costMultiplier}
+                presets={RECIPE_COST_PRESETS}
+                onChange={setCostMultiplier}
+              />
+
+              <div className="h-px bg-[#1e2128] w-full" />
+
+              <MultiplierSelector
+                label="Power Consumption Multiplier"
+                hint="Scales power draw across all production buildings and extractors"
+                value={powerMultiplier}
+                presets={POWER_MULTIPLIER_PRESETS}
+                onChange={setPowerMultiplier}
+              />
+
+              <div className="h-px bg-[#1e2128] w-full" />
+
+              {/* Default Resource Node Purity */}
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-mono tracking-[0.18em] text-[#8E9299] uppercase font-semibold">
+                    Default Resource Node Purity
+                  </span>
+                  <span className="text-[9px] font-mono text-[#555b66]">
+                    Baseline purity for miners when no per-node override is set
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 bg-[#0d0f12] border border-[#23262d] rounded p-0.5">
+                  {NODE_PURITY_OPTIONS.map((opt) => {
+                    const isActive = defaultNodePurity === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setDefaultNodePurity(opt.value)}
+                        className="px-2.5 py-1 text-[10px] font-mono font-bold rounded transition-colors cursor-pointer"
+                        style={{
+                          background: isActive ? '#f48721' : 'transparent',
+                          color: isActive ? '#000' : '#8E9299',
+                        }}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {Math.abs(costMultiplier - 1) > 1e-9 && (
+              <div
+                className="text-[9px] font-mono leading-relaxed px-2.5 py-1.5 rounded"
+                style={{
+                  background: 'rgba(244,135,33,0.06)',
+                  border: '1px solid rgba(244,135,33,0.2)',
+                  color: '#d4a373',
+                }}
+              >
+                Satisfactory 1.2 rule: Solid inputs round per craft cycle to whole integers (min 1) while fluids scale continuously; outputs &amp; byproducts remain 1×. Click <strong>Calculate Flow</strong> to apply changes.
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Zone 3: Machine Tuning Panel ── */}
         {isAdvancedOpen && (
           <div
-            className="relative z-10 flex flex-col gap-4 px-4 py-3 border-t border-[#1e2128]"
+            className="relative z-10 flex flex-col gap-3.5 px-4 py-3 border-t border-[#1e2128]"
             style={{ background: 'linear-gradient(180deg, #0e1014 0%, #0b0c0f 100%)' }}
           >
             <div style={{ position: 'absolute', top: 0, left: 24, right: 24, height: '1px', background: 'linear-gradient(90deg, transparent, #f4872130, transparent)' }} />
@@ -815,70 +1099,27 @@ export function InputForm({ onCalculate, initialValues }: InputFormProps) {
             {/* Separator Line */}
             <div className="h-px bg-[#1e2128] w-full" />
 
-            {/* Second Row: Game Mode settings & Animation Performance options */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-              {/* Cost Multiplier Slider */}
-              <div className="flex items-center gap-3">
-                <div className="flex flex-col gap-0.5 shrink-0" style={{ minWidth: 70 }}>
-                  <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Cost Mult.</span>
-                  <span className="text-sm font-black font-mono leading-none text-[#d4d3d0]">
-                    {costMultiplier.toFixed(1)}x
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5 flex-1">
-                  <span className="text-[8px] font-mono text-[#333840]">0.5</span>
-                  <input
-                    type="range" min="0.5" max="10.0" step="0.5" value={costMultiplier}
-                    onChange={(e) => setCostMultiplier(Number(e.target.value))}
-                    className="flex-1 cursor-pointer"
-                    style={{ accentColor: '#f48721', height: 4, outline: 'none' }}
-                  />
-                  <span className="text-[8px] font-mono text-[#333840]">10</span>
-                </div>
-              </div>
-
-              {/* Power Multiplier Slider */}
-              <div className="flex items-center gap-3">
-                <div className="flex flex-col gap-0.5 shrink-0" style={{ minWidth: 70 }}>
-                  <span className="text-[8px] font-mono tracking-[0.2em] text-[#445060] uppercase">Power Mult.</span>
-                  <span className="text-sm font-black font-mono leading-none text-[#d4d3d0]">
-                    {powerMultiplier.toFixed(1)}x
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5 flex-1">
-                  <span className="text-[8px] font-mono text-[#333840]">0.5</span>
-                  <input
-                    type="range" min="0.5" max="10.0" step="0.5" value={powerMultiplier}
-                    onChange={(e) => setPowerMultiplier(Number(e.target.value))}
-                    className="flex-1 cursor-pointer"
-                    style={{ accentColor: '#f48721', height: 4, outline: 'none' }}
-                  />
-                  <span className="text-[8px] font-mono text-[#333840]">10</span>
-                </div>
-              </div>
-
-              {/* Disable Animations Checkbox */}
-              <div className="flex items-center">
-                <button
-                  type="button"
-                  onClick={() => setDisableAnimations(v => !v)}
-                  className="flex items-center gap-2 px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded w-full justify-start text-left"
+            {/* Second Row: Edge Flow Animation Option */}
+            <div className="flex items-center">
+              <button
+                type="button"
+                onClick={() => setDisableAnimations(v => !v)}
+                className="flex items-center gap-2 px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all rounded justify-start text-left"
+                style={{
+                  background: disableAnimations ? 'rgba(239,68,68,0.08)' : '#0d0f12',
+                  border: `1px solid ${disableAnimations ? '#ef444455' : '#1e2128'}`,
+                  color: disableAnimations ? '#ef4444' : '#555b66',
+                }}
+              >
+                <span
                   style={{
-                    background: disableAnimations ? 'rgba(239,68,68,0.08)' : '#0d0f12',
-                    border: `1px solid ${disableAnimations ? '#ef444455' : '#1e2128'}`,
-                    color: disableAnimations ? '#ef4444' : '#555b66',
+                    width: 8, height: 8, borderRadius: 2, flexShrink: 0,
+                    background: disableAnimations ? '#ef4444' : 'transparent',
+                    border: `1px solid ${disableAnimations ? '#ef4444' : '#3a3d44'}`,
                   }}
-                >
-                  <span
-                    style={{
-                      width: 8, height: 8, borderRadius: 2, flexShrink: 0,
-                      background: disableAnimations ? '#ef4444' : 'transparent',
-                      border: `1px solid ${disableAnimations ? '#ef4444' : '#3a3d44'}`,
-                    }}
-                  />
-                  <span>Disable Edge Flow Animations</span>
-                </button>
-              </div>
+                />
+                <span>Disable Edge Flow Animations</span>
+              </button>
             </div>
 
           </div>

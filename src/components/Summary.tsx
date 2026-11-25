@@ -1,12 +1,27 @@
 import React from 'react';
 import { SummaryData } from '../engine/solver';
 import { items, machines } from '../engine/data';
+import { formatMultiplier, hasActiveWorldSettings, type WorldSettings } from '../engine/worldSettings';
 
 interface SummaryProps {
   summary: SummaryData;
+  worldSettings?: Partial<WorldSettings>;
 }
 
-export function Summary({ summary }: SummaryProps) {
+export function Summary({ summary, worldSettings }: SummaryProps) {
+  const activeWorld = worldSettings ? hasActiveWorldSettings(worldSettings) : false;
+  const worldBadges: string[] = [];
+  if (worldSettings) {
+    if ((worldSettings.recipeCostMultiplier ?? 1) !== 1) {
+      worldBadges.push(`${formatMultiplier(worldSettings.recipeCostMultiplier!)}× Cost`);
+    }
+    if ((worldSettings.powerMultiplier ?? 1) !== 1) {
+      worldBadges.push(`${formatMultiplier(worldSettings.powerMultiplier!)}× Power`);
+    }
+    if (worldSettings.defaultNodePurity && worldSettings.defaultNodePurity !== 'normal') {
+      worldBadges.push(`${worldSettings.defaultNodePurity.toUpperCase()} Nodes`);
+    }
+  }
   return (
     <div
       className="relative w-full h-full text-white flex flex-col"
@@ -41,6 +56,23 @@ export function Summary({ summary }: SummaryProps) {
           FICSIT // Production Summary
         </span>
         <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, #f4872130, transparent)' }} />
+        {activeWorld && worldBadges.length > 0 && (
+          <div className="flex items-center gap-1 shrink-0">
+            {worldBadges.map((badge) => (
+              <span
+                key={badge}
+                className="text-[8px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded font-bold"
+                style={{
+                  background: 'rgba(244,135,33,0.12)',
+                  border: '1px solid rgba(244,135,33,0.35)',
+                  color: '#f48721',
+                }}
+              >
+                {badge}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Content */}

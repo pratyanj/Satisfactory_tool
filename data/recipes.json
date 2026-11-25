@@ -97,10 +97,12 @@
     "inputs": [
       {
         "itemId": "copper_ore",
-        "rate": 30
+        "rate": 30,
+        "amount": 1
       }
     ],
-    "machineId": "smelter"
+    "machineId": "smelter",
+    "cycleTime": 2
   },
   {
     "id": "recipe_iron_ingot",
@@ -109,10 +111,12 @@
     "inputs": [
       {
         "itemId": "iron_ore",
-        "rate": 30
+        "rate": 30,
+        "amount": 1
       }
     ],
-    "machineId": "smelter"
+    "machineId": "smelter",
+    "cycleTime": 2
   },
   {
     "id": "recipe_caterium_ingot",
@@ -121,10 +125,12 @@
     "inputs": [
       {
         "itemId": "caterium_ore",
-        "rate": 45
+        "rate": 45,
+        "amount": 3
       }
     ],
-    "machineId": "smelter"
+    "machineId": "smelter",
+    "cycleTime": 4
   },
   {
     "id": "recipe_steel_ingot",
@@ -133,14 +139,17 @@
     "inputs": [
       {
         "itemId": "iron_ore",
-        "rate": 45
+        "rate": 45,
+        "amount": 3
       },
       {
         "itemId": "coal",
-        "rate": 45
+        "rate": 45,
+        "amount": 3
       }
     ],
-    "machineId": "foundry"
+    "machineId": "foundry",
+    "cycleTime": 4
   },
   {
     "id": "recipe_aluminum_ingot",
@@ -149,14 +158,17 @@
     "inputs": [
       {
         "itemId": "aluminum_scrap",
-        "rate": 90
+        "rate": 90,
+        "amount": 6
       },
       {
         "itemId": "silica",
-        "rate": 75
+        "rate": 75,
+        "amount": 5
       }
     ],
-    "machineId": "foundry"
+    "machineId": "foundry",
+    "cycleTime": 4
   },
   {
     "id": "recipe_ficsite_ingot",
@@ -165,14 +177,17 @@
     "inputs": [
       {
         "itemId": "reanimated_sam",
-        "rate": 40
+        "rate": 40,
+        "amount": 4
       },
       {
         "itemId": "iron_ingot",
-        "rate": 240
+        "rate": 240,
+        "amount": 24
       }
     ],
-    "machineId": "converter"
+    "machineId": "converter",
+    "cycleTime": 6
   },
   {
     "id": "recipe_iron_plate",
@@ -181,10 +196,12 @@
     "inputs": [
       {
         "itemId": "iron_ingot",
-        "rate": 30
+        "rate": 30,
+        "amount": 3
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 6
   },
   {
     "id": "recipe_iron_rod",
@@ -193,10 +210,12 @@
     "inputs": [
       {
         "itemId": "iron_ingot",
-        "rate": 15
+        "rate": 15,
+        "amount": 1
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 4
   },
   {
     "id": "recipe_screw",
@@ -205,10 +224,12 @@
     "inputs": [
       {
         "itemId": "iron_rod",
-        "rate": 10
+        "rate": 10,
+        "amount": 1
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 6
   },
   {
     "id": "recipe_wire",
@@ -217,10 +238,12 @@
     "inputs": [
       {
         "itemId": "copper_ingot",
-        "rate": 15
+        "rate": 15,
+        "amount": 1
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 4
   },
   {
     "id": "recipe_cable",
@@ -229,10 +252,12 @@
     "inputs": [
       {
         "itemId": "wire",
-        "rate": 60
+        "rate": 60,
+        "amount": 2
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 2
   },
   {
     "id": "recipe_copper_sheet",
@@ -241,10 +266,12 @@
     "inputs": [
       {
         "itemId": "copper_ingot",
-        "rate": 20
+        "rate": 20,
+        "amount": 2
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 6
   },
   {
     "id": "recipe_concrete",
@@ -253,10 +280,12 @@
     "inputs": [
       {
         "itemId": "limestone",
-        "rate": 45
+        "rate": 45,
+        "amount": 3
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 4
   },
   {
     "id": "recipe_reinforced_iron_plate",
@@ -265,14 +294,17 @@
     "inputs": [
       {
         "itemId": "iron_plate",
-        "rate": 30
+        "rate": 30,
+        "amount": 6
       },
       {
         "itemId": "screw",
-        "rate": 60
+        "rate": 60,
+        "amount": 12
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 12
   },
   {
     "id": "recipe_rotor",
@@ -281,14 +313,17 @@
     "inputs": [
       {
         "itemId": "iron_rod",
-        "rate": 20
+        "rate": 20,
+        "amount": 5
       },
       {
         "itemId": "screw",
-        "rate": 100
+        "rate": 100,
+        "amount": 25
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 15
   },
   {
     "id": "recipe_biomass_leaves",
@@ -297,10 +332,12 @@
     "inputs": [
       {
         "itemId": "leaves",
-        "rate": 120
+        "rate": 120,
+        "amount": 10
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 5
   },
   {
     "id": "recipe_biomass_wood",
@@ -309,10 +346,12 @@
     "inputs": [
       {
         "itemId": "wood",
-        "rate": 60
+        "rate": 60,
+        "amount": 4
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 4
   },
   {
     "id": "recipe_solid_biofuel",
@@ -321,10 +360,12 @@
     "inputs": [
       {
         "itemId": "biomass",
-        "rate": 120
+        "rate": 120,
+        "amount": 8
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 4
   },
   {
     "id": "recipe_steel_beam",
@@ -333,10 +374,12 @@
     "inputs": [
       {
         "itemId": "steel_ingot",
-        "rate": 60
+        "rate": 60,
+        "amount": 4
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 4
   },
   {
     "id": "recipe_steel_pipe",
@@ -345,10 +388,12 @@
     "inputs": [
       {
         "itemId": "steel_ingot",
-        "rate": 30
+        "rate": 30,
+        "amount": 3
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 6
   },
   {
     "id": "recipe_encased_industrial_beam",
@@ -357,14 +402,17 @@
     "inputs": [
       {
         "itemId": "steel_beam",
-        "rate": 18
+        "rate": 18,
+        "amount": 3
       },
       {
         "itemId": "concrete",
-        "rate": 36
+        "rate": 36,
+        "amount": 6
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 10
   },
   {
     "id": "recipe_stator",
@@ -373,14 +421,17 @@
     "inputs": [
       {
         "itemId": "steel_pipe",
-        "rate": 15
+        "rate": 15,
+        "amount": 3
       },
       {
         "itemId": "wire",
-        "rate": 40
+        "rate": 40,
+        "amount": 8
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 12
   },
   {
     "id": "recipe_motor",
@@ -389,14 +440,17 @@
     "inputs": [
       {
         "itemId": "rotor",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       },
       {
         "itemId": "stator",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 12
   },
   {
     "id": "recipe_modular_frame",
@@ -405,14 +459,17 @@
     "inputs": [
       {
         "itemId": "reinforced_iron_plate",
-        "rate": 3
+        "rate": 3,
+        "amount": 3
       },
       {
         "itemId": "iron_rod",
-        "rate": 12
+        "rate": 12,
+        "amount": 12
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 60
   },
   {
     "id": "recipe_heavy_modular_frame",
@@ -421,22 +478,27 @@
     "inputs": [
       {
         "itemId": "modular_frame",
-        "rate": 10
+        "rate": 10,
+        "amount": 5
       },
       {
         "itemId": "steel_pipe",
-        "rate": 40
+        "rate": 40,
+        "amount": 20
       },
       {
         "itemId": "encased_industrial_beam",
-        "rate": 10
+        "rate": 10,
+        "amount": 5
       },
       {
         "itemId": "screw",
-        "rate": 240
+        "rate": 240,
+        "amount": 120
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 30
   },
   {
     "id": "recipe_quickwire",
@@ -445,10 +507,12 @@
     "inputs": [
       {
         "itemId": "caterium_ingot",
-        "rate": 12
+        "rate": 12,
+        "amount": 1
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 5
   },
   {
     "id": "recipe_silica",
@@ -457,10 +521,12 @@
     "inputs": [
       {
         "itemId": "raw_quartz",
-        "rate": 22.5
+        "rate": 22.5,
+        "amount": 3
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 8
   },
   {
     "id": "recipe_quartz_crystal",
@@ -469,10 +535,12 @@
     "inputs": [
       {
         "itemId": "raw_quartz",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 5
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 8
   },
   {
     "id": "recipe_plastic",
@@ -481,7 +549,8 @@
     "inputs": [
       {
         "itemId": "crude_oil",
-        "rate": 30
+        "rate": 30,
+        "amount": 3
       }
     ],
     "machineId": "refinery",
@@ -490,7 +559,8 @@
         "itemId": "heavy_oil_residue",
         "rate": 10
       }
-    ]
+    ],
+    "cycleTime": 6
   },
   {
     "id": "recipe_rubber",
@@ -499,7 +569,8 @@
     "inputs": [
       {
         "itemId": "crude_oil",
-        "rate": 30
+        "rate": 30,
+        "amount": 3
       }
     ],
     "machineId": "refinery",
@@ -508,7 +579,8 @@
         "itemId": "heavy_oil_residue",
         "rate": 20
       }
-    ]
+    ],
+    "cycleTime": 6
   },
   {
     "id": "recipe_heavy_oil_residue",
@@ -517,7 +589,8 @@
     "inputs": [
       {
         "itemId": "crude_oil",
-        "rate": 30
+        "rate": 30,
+        "amount": 3
       }
     ],
     "machineId": "refinery",
@@ -526,7 +599,8 @@
         "itemId": "polymer_resin",
         "rate": 20
       }
-    ]
+    ],
+    "cycleTime": 6
   },
   {
     "id": "recipe_petroleum_coke",
@@ -535,10 +609,12 @@
     "inputs": [
       {
         "itemId": "heavy_oil_residue",
-        "rate": 40
+        "rate": 40,
+        "amount": 4
       }
     ],
-    "machineId": "refinery"
+    "machineId": "refinery",
+    "cycleTime": 6
   },
   {
     "id": "recipe_fuel",
@@ -547,7 +623,8 @@
     "inputs": [
       {
         "itemId": "crude_oil",
-        "rate": 60
+        "rate": 60,
+        "amount": 6
       }
     ],
     "machineId": "refinery",
@@ -556,7 +633,8 @@
         "itemId": "polymer_resin",
         "rate": 30
       }
-    ]
+    ],
+    "cycleTime": 6
   },
   {
     "id": "recipe_circuit_board",
@@ -565,14 +643,17 @@
     "inputs": [
       {
         "itemId": "copper_sheet",
-        "rate": 15
+        "rate": 15,
+        "amount": 2
       },
       {
         "itemId": "plastic",
-        "rate": 30
+        "rate": 30,
+        "amount": 4
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 8
   },
   {
     "id": "recipe_computer",
@@ -581,18 +662,22 @@
     "inputs": [
       {
         "itemId": "circuit_board",
-        "rate": 10
+        "rate": 10,
+        "amount": 4
       },
       {
         "itemId": "cable",
-        "rate": 20
+        "rate": 20,
+        "amount": 8
       },
       {
         "itemId": "plastic",
-        "rate": 40
+        "rate": 40,
+        "amount": 16
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 24
   },
   {
     "id": "recipe_ai_limiter",
@@ -601,14 +686,17 @@
     "inputs": [
       {
         "itemId": "copper_sheet",
-        "rate": 25
+        "rate": 25,
+        "amount": 5
       },
       {
         "itemId": "quickwire",
-        "rate": 100
+        "rate": 100,
+        "amount": 20
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 12
   },
   {
     "id": "recipe_high_speed_connector",
@@ -617,18 +705,22 @@
     "inputs": [
       {
         "itemId": "quickwire",
-        "rate": 210
+        "rate": 210,
+        "amount": 56
       },
       {
         "itemId": "cable",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 10
       },
       {
         "itemId": "circuit_board",
-        "rate": 3.75
+        "rate": 3.75,
+        "amount": 1
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 16
   },
   {
     "id": "recipe_alumina_solution",
@@ -637,11 +729,13 @@
     "inputs": [
       {
         "itemId": "bauxite",
-        "rate": 120
+        "rate": 120,
+        "amount": 12
       },
       {
         "itemId": "water",
-        "rate": 180
+        "rate": 180,
+        "amount": 18
       }
     ],
     "machineId": "refinery",
@@ -650,7 +744,8 @@
         "itemId": "silica",
         "rate": 50
       }
-    ]
+    ],
+    "cycleTime": 6
   },
   {
     "id": "recipe_aluminum_scrap",
@@ -659,11 +754,13 @@
     "inputs": [
       {
         "itemId": "alumina_solution",
-        "rate": 240
+        "rate": 240,
+        "amount": 4
       },
       {
         "itemId": "coal",
-        "rate": 120
+        "rate": 120,
+        "amount": 2
       }
     ],
     "machineId": "refinery",
@@ -672,7 +769,8 @@
         "itemId": "water",
         "rate": 120
       }
-    ]
+    ],
+    "cycleTime": 1
   },
   {
     "id": "recipe_aluminum_casing",
@@ -681,10 +779,12 @@
     "inputs": [
       {
         "itemId": "aluminum_ingot",
-        "rate": 90
+        "rate": 90,
+        "amount": 3
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 2
   },
   {
     "id": "recipe_alclad_aluminum_sheet",
@@ -693,14 +793,17 @@
     "inputs": [
       {
         "itemId": "aluminum_ingot",
-        "rate": 30
+        "rate": 30,
+        "amount": 3
       },
       {
         "itemId": "copper_ingot",
-        "rate": 10
+        "rate": 10,
+        "amount": 1
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 6
   },
   {
     "id": "recipe_battery",
@@ -709,15 +812,18 @@
     "inputs": [
       {
         "itemId": "sulfuric_acid",
-        "rate": 50
+        "rate": 50,
+        "amount": 2.5
       },
       {
         "itemId": "alumina_solution",
-        "rate": 40
+        "rate": 40,
+        "amount": 2
       },
       {
         "itemId": "aluminum_casing",
-        "rate": 20
+        "rate": 20,
+        "amount": 1
       }
     ],
     "machineId": "blender",
@@ -726,7 +832,8 @@
         "itemId": "water",
         "rate": 30
       }
-    ]
+    ],
+    "cycleTime": 3
   },
   {
     "id": "recipe_radio_control_unit",
@@ -735,18 +842,22 @@
     "inputs": [
       {
         "itemId": "aluminum_casing",
-        "rate": 40
+        "rate": 40,
+        "amount": 32
       },
       {
         "itemId": "crystal_oscillator",
-        "rate": 1.25
+        "rate": 1.25,
+        "amount": 1
       },
       {
         "itemId": "computer",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 2
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 48
   },
   {
     "id": "recipe_sulfuric_acid",
@@ -755,14 +866,17 @@
     "inputs": [
       {
         "itemId": "sulfur",
-        "rate": 50
+        "rate": 50,
+        "amount": 5
       },
       {
         "itemId": "water",
-        "rate": 50
+        "rate": 50,
+        "amount": 5
       }
     ],
-    "machineId": "refinery"
+    "machineId": "refinery",
+    "cycleTime": 6
   },
   {
     "id": "recipe_nitric_acid",
@@ -771,18 +885,22 @@
     "inputs": [
       {
         "itemId": "nitrogen_gas",
-        "rate": 120
+        "rate": 120,
+        "amount": 12
       },
       {
         "itemId": "water",
-        "rate": 30
+        "rate": 30,
+        "amount": 3
       },
       {
         "itemId": "iron_plate",
-        "rate": 10
+        "rate": 10,
+        "amount": 1
       }
     ],
-    "machineId": "blender"
+    "machineId": "blender",
+    "cycleTime": 6
   },
   {
     "id": "recipe_copper_powder",
@@ -791,10 +909,12 @@
     "inputs": [
       {
         "itemId": "copper_ingot",
-        "rate": 300
+        "rate": 300,
+        "amount": 30
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 6
   },
   {
     "id": "recipe_crystal_oscillator",
@@ -803,18 +923,22 @@
     "inputs": [
       {
         "itemId": "quartz_crystal",
-        "rate": 18
+        "rate": 18,
+        "amount": 36
       },
       {
         "itemId": "cable",
-        "rate": 14
+        "rate": 14,
+        "amount": 28
       },
       {
         "itemId": "reinforced_iron_plate",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 5
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 120
   },
   {
     "id": "recipe_cooling_system",
@@ -823,22 +947,27 @@
     "inputs": [
       {
         "itemId": "heat_sink",
-        "rate": 12
+        "rate": 12,
+        "amount": 2
       },
       {
         "itemId": "rubber",
-        "rate": 12
+        "rate": 12,
+        "amount": 2
       },
       {
         "itemId": "water",
-        "rate": 30
+        "rate": 30,
+        "amount": 5
       },
       {
         "itemId": "nitrogen_gas",
-        "rate": 150
+        "rate": 150,
+        "amount": 25
       }
     ],
-    "machineId": "blender"
+    "machineId": "blender",
+    "cycleTime": 10
   },
   {
     "id": "recipe_heat_sink",
@@ -847,14 +976,17 @@
     "inputs": [
       {
         "itemId": "alclad_aluminum_sheet",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 5
       },
       {
         "itemId": "copper_sheet",
-        "rate": 22.5
+        "rate": 22.5,
+        "amount": 3
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 8
   },
   {
     "id": "recipe_fused_modular_frame",
@@ -863,18 +995,22 @@
     "inputs": [
       {
         "itemId": "heavy_modular_frame",
-        "rate": 1.5
+        "rate": 1.5,
+        "amount": 1
       },
       {
         "itemId": "aluminum_casing",
-        "rate": 75
+        "rate": 75,
+        "amount": 50
       },
       {
         "itemId": "nitrogen_gas",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 25
       }
     ],
-    "machineId": "blender"
+    "machineId": "blender",
+    "cycleTime": 40
   },
   {
     "id": "recipe_turbo_motor",
@@ -883,22 +1019,27 @@
     "inputs": [
       {
         "itemId": "cooling_system",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 4
       },
       {
         "itemId": "radio_control_unit",
-        "rate": 3.75
+        "rate": 3.75,
+        "amount": 2
       },
       {
         "itemId": "motor",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 4
       },
       {
         "itemId": "rubber",
-        "rate": 45
+        "rate": 45,
+        "amount": 24
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 32
   },
   {
     "id": "recipe_supercomputer",
@@ -907,22 +1048,27 @@
     "inputs": [
       {
         "itemId": "computer",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 4
       },
       {
         "itemId": "ai_limiter",
-        "rate": 3.75
+        "rate": 3.75,
+        "amount": 2
       },
       {
         "itemId": "high_speed_connector",
-        "rate": 5.625
+        "rate": 5.625,
+        "amount": 3
       },
       {
         "itemId": "plastic",
-        "rate": 52.5
+        "rate": 52.5,
+        "amount": 28
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 32
   },
   {
     "id": "recipe_electromagnetic_control_rod",
@@ -931,14 +1077,17 @@
     "inputs": [
       {
         "itemId": "stator",
-        "rate": 6
+        "rate": 6,
+        "amount": 3
       },
       {
         "itemId": "ai_limiter",
-        "rate": 4
+        "rate": 4,
+        "amount": 2
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 30
   },
   {
     "id": "recipe_smart_plating",
@@ -947,14 +1096,17 @@
     "inputs": [
       {
         "itemId": "reinforced_iron_plate",
-        "rate": 2
+        "rate": 2,
+        "amount": 1
       },
       {
         "itemId": "rotor",
-        "rate": 2
+        "rate": 2,
+        "amount": 1
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 30
   },
   {
     "id": "recipe_versatile_framework",
@@ -963,14 +1115,17 @@
     "inputs": [
       {
         "itemId": "modular_frame",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 1
       },
       {
         "itemId": "steel_beam",
-        "rate": 30
+        "rate": 30,
+        "amount": 12
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 24
   },
   {
     "id": "recipe_automated_wiring",
@@ -979,14 +1134,17 @@
     "inputs": [
       {
         "itemId": "stator",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 1
       },
       {
         "itemId": "cable",
-        "rate": 50
+        "rate": 50,
+        "amount": 20
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 24
   },
   {
     "id": "recipe_modular_engine",
@@ -995,18 +1153,22 @@
     "inputs": [
       {
         "itemId": "motor",
-        "rate": 2
+        "rate": 2,
+        "amount": 2
       },
       {
         "itemId": "rubber",
-        "rate": 15
+        "rate": 15,
+        "amount": 15
       },
       {
         "itemId": "smart_plating",
-        "rate": 2
+        "rate": 2,
+        "amount": 2
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 60
   },
   {
     "id": "recipe_adaptive_control_unit",
@@ -1015,22 +1177,27 @@
     "inputs": [
       {
         "itemId": "automated_wiring",
-        "rate": 5
+        "rate": 5,
+        "amount": 5
       },
       {
         "itemId": "circuit_board",
-        "rate": 5
+        "rate": 5,
+        "amount": 5
       },
       {
         "itemId": "heavy_modular_frame",
-        "rate": 1
+        "rate": 1,
+        "amount": 1
       },
       {
         "itemId": "computer",
-        "rate": 2
+        "rate": 2,
+        "amount": 2
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 60
   },
   {
     "id": "recipe_assembly_director_system",
@@ -1039,14 +1206,17 @@
     "inputs": [
       {
         "itemId": "adaptive_control_unit",
-        "rate": 1.5
+        "rate": 1.5,
+        "amount": 2
       },
       {
         "itemId": "supercomputer",
-        "rate": 0.75
+        "rate": 0.75,
+        "amount": 1
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 80
   },
   {
     "id": "recipe_magnetic_field_generator",
@@ -1055,14 +1225,17 @@
     "inputs": [
       {
         "itemId": "versatile_framework",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 5
       },
       {
         "itemId": "electromagnetic_control_rod",
-        "rate": 1
+        "rate": 1,
+        "amount": 2
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 120
   },
   {
     "id": "recipe_thermal_propulsion_rocket",
@@ -1071,22 +1244,27 @@
     "inputs": [
       {
         "itemId": "modular_engine",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 5
       },
       {
         "itemId": "turbo_motor",
-        "rate": 1
+        "rate": 1,
+        "amount": 2
       },
       {
         "itemId": "cooling_system",
-        "rate": 3
+        "rate": 3,
+        "amount": 6
       },
       {
         "itemId": "fused_modular_frame",
-        "rate": 1
+        "rate": 1,
+        "amount": 2
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 120
   },
   {
     "id": "recipe_nuclear_pasta",
@@ -1095,14 +1273,17 @@
     "inputs": [
       {
         "itemId": "copper_powder",
-        "rate": 100
+        "rate": 100,
+        "amount": 200
       },
       {
         "itemId": "pressure_conversion_cube",
-        "rate": 0.5
+        "rate": 0.5,
+        "amount": 1
       }
     ],
-    "machineId": "particle_accelerator"
+    "machineId": "particle_accelerator",
+    "cycleTime": 120
   },
   {
     "id": "recipe_alien_protein",
@@ -1118,10 +1299,12 @@
     "inputs": [
       {
         "itemId": "alien_protein",
-        "rate": 10
+        "rate": 10,
+        "amount": 1
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 6
   },
   {
     "id": "recipe_reanimated_sam",
@@ -1130,10 +1313,12 @@
     "inputs": [
       {
         "itemId": "sam",
-        "rate": 120
+        "rate": 120,
+        "amount": 4
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 2
   },
   {
     "id": "recipe_sam_fluctuator",
@@ -1142,18 +1327,22 @@
     "inputs": [
       {
         "itemId": "reanimated_sam",
-        "rate": 60
+        "rate": 60,
+        "amount": 6
       },
       {
         "itemId": "wire",
-        "rate": 50
+        "rate": 50,
+        "amount": 5
       },
       {
         "itemId": "steel_pipe",
-        "rate": 30
+        "rate": 30,
+        "amount": 3
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 6
   },
   {
     "id": "recipe_superposition_oscillator",
@@ -1162,19 +1351,23 @@
     "inputs": [
       {
         "itemId": "dark_matter_crystal",
-        "rate": 30
+        "rate": 30,
+        "amount": 6
       },
       {
         "itemId": "crystal_oscillator",
-        "rate": 5
+        "rate": 5,
+        "amount": 1
       },
       {
         "itemId": "alclad_aluminum_sheet",
-        "rate": 45
+        "rate": 45,
+        "amount": 9
       },
       {
         "itemId": "excited_photonic_matter",
-        "rate": 125
+        "rate": 125,
+        "amount": 25
       }
     ],
     "machineId": "quantum_encoder",
@@ -1183,7 +1376,8 @@
         "itemId": "dark_matter_residue",
         "rate": 125
       }
-    ]
+    ],
+    "cycleTime": 12
   },
   {
     "id": "recipe_diamonds",
@@ -1192,10 +1386,12 @@
     "inputs": [
       {
         "itemId": "coal",
-        "rate": 600
+        "rate": 600,
+        "amount": 20
       }
     ],
-    "machineId": "particle_accelerator"
+    "machineId": "particle_accelerator",
+    "cycleTime": 2
   },
   {
     "id": "recipe_time_crystal",
@@ -1204,10 +1400,12 @@
     "inputs": [
       {
         "itemId": "diamonds",
-        "rate": 12
+        "rate": 12,
+        "amount": 2
       }
     ],
-    "machineId": "converter"
+    "machineId": "converter",
+    "cycleTime": 10
   },
   {
     "id": "recipe_dark_matter_crystal",
@@ -1216,14 +1414,17 @@
     "inputs": [
       {
         "itemId": "diamonds",
-        "rate": 30
+        "rate": 30,
+        "amount": 1
       },
       {
         "itemId": "dark_matter_residue",
-        "rate": 150
+        "rate": 150,
+        "amount": 5
       }
     ],
-    "machineId": "particle_accelerator"
+    "machineId": "particle_accelerator",
+    "cycleTime": 2
   },
   {
     "id": "recipe_singularity_cell",
@@ -1232,22 +1433,27 @@
     "inputs": [
       {
         "itemId": "nuclear_pasta",
-        "rate": 1
+        "rate": 1,
+        "amount": 1
       },
       {
         "itemId": "dark_matter_crystal",
-        "rate": 20
+        "rate": 20,
+        "amount": 20
       },
       {
         "itemId": "iron_plate",
-        "rate": 100
+        "rate": 100,
+        "amount": 100
       },
       {
         "itemId": "concrete",
-        "rate": 200
+        "rate": 200,
+        "amount": 200
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 60
   },
   {
     "id": "recipe_neural_quantum_processor",
@@ -1256,19 +1462,23 @@
     "inputs": [
       {
         "itemId": "time_crystal",
-        "rate": 15
+        "rate": 15,
+        "amount": 5
       },
       {
         "itemId": "supercomputer",
-        "rate": 3
+        "rate": 3,
+        "amount": 1
       },
       {
         "itemId": "ficsite_trigon",
-        "rate": 45
+        "rate": 45,
+        "amount": 15
       },
       {
         "itemId": "excited_photonic_matter",
-        "rate": 75
+        "rate": 75,
+        "amount": 25
       }
     ],
     "machineId": "quantum_encoder",
@@ -1277,7 +1487,8 @@
         "itemId": "dark_matter_residue",
         "rate": 75
       }
-    ]
+    ],
+    "cycleTime": 20
   },
   {
     "id": "recipe_alien_power_matrix",
@@ -1286,19 +1497,23 @@
     "inputs": [
       {
         "itemId": "sam_fluctuator",
-        "rate": 12.5
+        "rate": 12.5,
+        "amount": 5
       },
       {
         "itemId": "power_shard",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 3
       },
       {
         "itemId": "superposition_oscillator",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 3
       },
       {
         "itemId": "excited_photonic_matter",
-        "rate": 60
+        "rate": 60,
+        "amount": 24
       }
     ],
     "machineId": "quantum_encoder",
@@ -1307,7 +1522,8 @@
         "itemId": "dark_matter_residue",
         "rate": 60
       }
-    ]
+    ],
+    "cycleTime": 24
   },
   {
     "id": "recipe_ficsite_trigon",
@@ -1316,10 +1532,12 @@
     "inputs": [
       {
         "itemId": "ficsite_ingot",
-        "rate": 10
+        "rate": 10,
+        "amount": 1
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 6
   },
   {
     "id": "recipe_biochemical_sculptor",
@@ -1328,18 +1546,22 @@
     "inputs": [
       {
         "itemId": "assembly_director_system",
-        "rate": 0.5
+        "rate": 0.5,
+        "amount": 1
       },
       {
         "itemId": "ficsite_trigon",
-        "rate": 40
+        "rate": 40,
+        "amount": 80
       },
       {
         "itemId": "water",
-        "rate": 10
+        "rate": 10,
+        "amount": 20
       }
     ],
-    "machineId": "blender"
+    "machineId": "blender",
+    "cycleTime": 120
   },
   {
     "id": "recipe_ballistic_warp_drive",
@@ -1348,22 +1570,27 @@
     "inputs": [
       {
         "itemId": "thermal_propulsion_rocket",
-        "rate": 1
+        "rate": 1,
+        "amount": 1
       },
       {
         "itemId": "singularity_cell",
-        "rate": 5
+        "rate": 5,
+        "amount": 5
       },
       {
         "itemId": "superposition_oscillator",
-        "rate": 2
+        "rate": 2,
+        "amount": 2
       },
       {
         "itemId": "dark_matter_crystal",
-        "rate": 40
+        "rate": 40,
+        "amount": 40
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 60
   },
   {
     "id": "recipe_ai_expansion_server",
@@ -1372,19 +1599,23 @@
     "inputs": [
       {
         "itemId": "magnetic_field_generator",
-        "rate": 4
+        "rate": 4,
+        "amount": 1
       },
       {
         "itemId": "neural_quantum_processor",
-        "rate": 4
+        "rate": 4,
+        "amount": 1
       },
       {
         "itemId": "superposition_oscillator",
-        "rate": 4
+        "rate": 4,
+        "amount": 1
       },
       {
         "itemId": "excited_photonic_matter",
-        "rate": 100
+        "rate": 100,
+        "amount": 25
       }
     ],
     "machineId": "quantum_encoder",
@@ -1393,7 +1624,8 @@
         "itemId": "dark_matter_residue",
         "rate": 100
       }
-    ]
+    ],
+    "cycleTime": 15
   },
   {
     "id": "recipe_excited_photonic_matter",
@@ -1409,10 +1641,12 @@
     "inputs": [
       {
         "itemId": "reanimated_sam",
-        "rate": 50
+        "rate": 50,
+        "amount": 5
       }
     ],
-    "machineId": "converter"
+    "machineId": "converter",
+    "cycleTime": 6
   },
   {
     "id": "recipe_encased_uranium_cell",
@@ -1421,15 +1655,18 @@
     "inputs": [
       {
         "itemId": "uranium",
-        "rate": 50
+        "rate": 50,
+        "amount": 10
       },
       {
         "itemId": "concrete",
-        "rate": 15
+        "rate": 15,
+        "amount": 3
       },
       {
         "itemId": "sulfuric_acid",
-        "rate": 40
+        "rate": 40,
+        "amount": 8
       }
     ],
     "machineId": "blender",
@@ -1438,7 +1675,8 @@
         "itemId": "sulfuric_acid",
         "rate": 10
       }
-    ]
+    ],
+    "cycleTime": 12
   },
   {
     "id": "recipe_uranium_fuel_rod",
@@ -1447,18 +1685,22 @@
     "inputs": [
       {
         "itemId": "encased_uranium_cell",
-        "rate": 20
+        "rate": 20,
+        "amount": 50
       },
       {
         "itemId": "encased_industrial_beam",
-        "rate": 1.2
+        "rate": 1.2,
+        "amount": 3
       },
       {
         "itemId": "electromagnetic_control_rod",
-        "rate": 2
+        "rate": 2,
+        "amount": 5
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 150
   },
   {
     "id": "recipe_non_fissile_uranium",
@@ -1467,19 +1709,23 @@
     "inputs": [
       {
         "itemId": "uranium_waste",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 15
       },
       {
         "itemId": "silica",
-        "rate": 25
+        "rate": 25,
+        "amount": 10
       },
       {
         "itemId": "nitric_acid",
-        "rate": 15
+        "rate": 15,
+        "amount": 6
       },
       {
         "itemId": "sulfuric_acid",
-        "rate": 15
+        "rate": 15,
+        "amount": 6
       }
     ],
     "machineId": "blender",
@@ -1488,7 +1734,8 @@
         "itemId": "water",
         "rate": 15
       }
-    ]
+    ],
+    "cycleTime": 24
   },
   {
     "id": "recipe_plutonium_pellet",
@@ -1497,14 +1744,17 @@
     "inputs": [
       {
         "itemId": "non_fissile_uranium",
-        "rate": 100
+        "rate": 100,
+        "amount": 100
       },
       {
         "itemId": "uranium_waste",
-        "rate": 25
+        "rate": 25,
+        "amount": 25
       }
     ],
-    "machineId": "particle_accelerator"
+    "machineId": "particle_accelerator",
+    "cycleTime": 60
   },
   {
     "id": "recipe_encased_plutonium_cell",
@@ -1513,14 +1763,17 @@
     "inputs": [
       {
         "itemId": "plutonium_pellet",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       },
       {
         "itemId": "concrete",
-        "rate": 20
+        "rate": 20,
+        "amount": 4
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 12
   },
   {
     "id": "recipe_plutonium_fuel_rod",
@@ -1529,22 +1782,27 @@
     "inputs": [
       {
         "itemId": "encased_plutonium_cell",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 30
       },
       {
         "itemId": "steel_beam",
-        "rate": 4.5
+        "rate": 4.5,
+        "amount": 18
       },
       {
         "itemId": "electromagnetic_control_rod",
-        "rate": 1.5
+        "rate": 1.5,
+        "amount": 6
       },
       {
         "itemId": "heat_sink",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 10
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 240
   },
   {
     "id": "recipe_ficsonium",
@@ -1553,18 +1811,22 @@
     "inputs": [
       {
         "itemId": "plutonium_waste",
-        "rate": 10
+        "rate": 10,
+        "amount": 1
       },
       {
         "itemId": "singularity_cell",
-        "rate": 10
+        "rate": 10,
+        "amount": 1
       },
       {
         "itemId": "dark_matter_residue",
-        "rate": 200
+        "rate": 200,
+        "amount": 20
       }
     ],
-    "machineId": "particle_accelerator"
+    "machineId": "particle_accelerator",
+    "cycleTime": 6
   },
   {
     "id": "recipe_ficsonium_fuel_rod",
@@ -1573,19 +1835,23 @@
     "inputs": [
       {
         "itemId": "ficsonium",
-        "rate": 5
+        "rate": 5,
+        "amount": 2
       },
       {
         "itemId": "electromagnetic_control_rod",
-        "rate": 5
+        "rate": 5,
+        "amount": 2
       },
       {
         "itemId": "ficsite_trigon",
-        "rate": 100
+        "rate": 100,
+        "amount": 40
       },
       {
         "itemId": "excited_photonic_matter",
-        "rate": 50
+        "rate": 50,
+        "amount": 20
       }
     ],
     "machineId": "quantum_encoder",
@@ -1594,7 +1860,8 @@
         "itemId": "dark_matter_residue",
         "rate": 50
       }
-    ]
+    ],
+    "cycleTime": 24
   },
   {
     "id": "recipe_empty_canister",
@@ -1603,10 +1870,12 @@
     "inputs": [
       {
         "itemId": "plastic",
-        "rate": 30
+        "rate": 30,
+        "amount": 2
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 4
   },
   {
     "id": "recipe_empty_fluid_tank",
@@ -1615,10 +1884,12 @@
     "inputs": [
       {
         "itemId": "aluminum_ingot",
-        "rate": 60
+        "rate": 60,
+        "amount": 1
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 1
   },
   {
     "id": "recipe_packaged_water",
@@ -1627,14 +1898,17 @@
     "inputs": [
       {
         "itemId": "water",
-        "rate": 60
+        "rate": 60,
+        "amount": 2
       },
       {
         "itemId": "empty_canister",
-        "rate": 60
+        "rate": 60,
+        "amount": 2
       }
     ],
-    "machineId": "packager"
+    "machineId": "packager",
+    "cycleTime": 2
   },
   {
     "id": "recipe_turbofuel",
@@ -1643,14 +1917,17 @@
     "inputs": [
       {
         "itemId": "fuel",
-        "rate": 22.5
+        "rate": 22.5,
+        "amount": 6
       },
       {
         "itemId": "compacted_coal",
-        "rate": 15
+        "rate": 15,
+        "amount": 4
       }
     ],
-    "machineId": "refinery"
+    "machineId": "refinery",
+    "cycleTime": 16
   },
   {
     "id": "recipe_compacted_coal",
@@ -1659,14 +1936,17 @@
     "inputs": [
       {
         "itemId": "coal",
-        "rate": 25
+        "rate": 25,
+        "amount": 5
       },
       {
         "itemId": "sulfur",
-        "rate": 25
+        "rate": 25,
+        "amount": 5
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 12
   },
   {
     "id": "recipe_rocket_fuel",
@@ -1675,11 +1955,13 @@
     "inputs": [
       {
         "itemId": "turbofuel",
-        "rate": 60
+        "rate": 60,
+        "amount": 6
       },
       {
         "itemId": "nitric_acid",
-        "rate": 10
+        "rate": 10,
+        "amount": 1
       }
     ],
     "machineId": "blender",
@@ -1688,7 +1970,8 @@
         "itemId": "compacted_coal",
         "rate": 10
       }
-    ]
+    ],
+    "cycleTime": 6
   },
   {
     "id": "recipe_ionized_fuel",
@@ -1697,11 +1980,13 @@
     "inputs": [
       {
         "itemId": "rocket_fuel",
-        "rate": 40
+        "rate": 40,
+        "amount": 16
       },
       {
         "itemId": "power_shard",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 1
       }
     ],
     "machineId": "refinery",
@@ -1710,7 +1995,8 @@
         "itemId": "compacted_coal",
         "rate": 5
       }
-    ]
+    ],
+    "cycleTime": 24
   },
   {
     "id": "recipe_black_powder",
@@ -1719,14 +2005,17 @@
     "inputs": [
       {
         "itemId": "coal",
-        "rate": 15
+        "rate": 15,
+        "amount": 1
       },
       {
         "itemId": "sulfur",
-        "rate": 15
+        "rate": 15,
+        "amount": 1
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 4
   },
   {
     "id": "recipe_smokeless_powder",
@@ -1735,14 +2024,17 @@
     "inputs": [
       {
         "itemId": "black_powder",
-        "rate": 20
+        "rate": 20,
+        "amount": 2
       },
       {
         "itemId": "heavy_oil_residue",
-        "rate": 10
+        "rate": 10,
+        "amount": 1
       }
     ],
-    "machineId": "refinery"
+    "machineId": "refinery",
+    "cycleTime": 6
   },
   {
     "id": "recipe_nobelisk",
@@ -1751,14 +2043,17 @@
     "inputs": [
       {
         "itemId": "black_powder",
-        "rate": 20
+        "rate": 20,
+        "amount": 2
       },
       {
         "itemId": "steel_pipe",
-        "rate": 20
+        "rate": 20,
+        "amount": 2
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 6
   },
   {
     "id": "recipe_iron_rebar",
@@ -1767,10 +2062,12 @@
     "inputs": [
       {
         "itemId": "iron_rod",
-        "rate": 15
+        "rate": 15,
+        "amount": 1
       }
     ],
-    "machineId": "constructor"
+    "machineId": "constructor",
+    "cycleTime": 4
   },
   {
     "id": "recipe_rifle_ammo",
@@ -1779,14 +2076,17 @@
     "inputs": [
       {
         "itemId": "copper_sheet",
-        "rate": 15
+        "rate": 15,
+        "amount": 3
       },
       {
         "itemId": "smokeless_powder",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 12
   },
   {
     "id": "recipe_pressure_conversion_cube",
@@ -1795,14 +2095,17 @@
     "inputs": [
       {
         "itemId": "fused_modular_frame",
-        "rate": 1
+        "rate": 1,
+        "amount": 1
       },
       {
         "itemId": "radio_control_unit",
-        "rate": 2
+        "rate": 2,
+        "amount": 2
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 60
   },
   {
     "id": "recipe_dissolved_silica",
@@ -1811,11 +2114,13 @@
     "inputs": [
       {
         "itemId": "raw_quartz",
-        "rate": 120
+        "rate": 120,
+        "amount": 24
       },
       {
         "itemId": "nitric_acid",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       }
     ],
     "machineId": "refinery",
@@ -1824,7 +2129,8 @@
         "itemId": "quartz_crystal",
         "rate": 75
       }
-    ]
+    ],
+    "cycleTime": 12
   },
   {
     "id": "recipe_polymer_resin",
@@ -1833,7 +2139,8 @@
     "inputs": [
       {
         "itemId": "crude_oil",
-        "rate": 60
+        "rate": 60,
+        "amount": 6
       }
     ],
     "machineId": "refinery",
@@ -1842,7 +2149,8 @@
         "itemId": "heavy_oil_residue",
         "rate": 20
       }
-    ]
+    ],
+    "cycleTime": 6
   },
   {
     "id": "recipe_fabric",
@@ -1851,14 +2159,17 @@
     "inputs": [
       {
         "itemId": "mycelia",
-        "rate": 15
+        "rate": 15,
+        "amount": 1
       },
       {
         "itemId": "biomass",
-        "rate": 75
+        "rate": 75,
+        "amount": 5
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 4
   },
   {
     "id": "recipe_alternate_rocketfuel_nitro_c",
@@ -1868,19 +2179,23 @@
     "inputs": [
       {
         "itemId": "fuel",
-        "rate": 100
+        "rate": 100,
+        "amount": 4
       },
       {
         "itemId": "nitrogen_gas",
-        "rate": 75
+        "rate": 75,
+        "amount": 3
       },
       {
         "itemId": "sulfur",
-        "rate": 100
+        "rate": 100,
+        "amount": 4
       },
       {
         "itemId": "coal",
-        "rate": 50
+        "rate": 50,
+        "amount": 2
       }
     ],
     "machineId": "blender",
@@ -1890,7 +2205,8 @@
         "itemId": "compacted_coal",
         "rate": 25
       }
-    ]
+    ],
+    "cycleTime": 2.4
   },
   {
     "id": "recipe_alternate_ionizedfuel_dark_c",
@@ -1900,11 +2216,13 @@
     "inputs": [
       {
         "itemId": "packaged_rocket_fuel",
-        "rate": 240
+        "rate": 240,
+        "amount": 12
       },
       {
         "itemId": "dark_matter_crystal",
-        "rate": 80
+        "rate": 80,
+        "amount": 4
       }
     ],
     "machineId": "converter",
@@ -1914,7 +2232,8 @@
         "itemId": "compacted_coal",
         "rate": 40
       }
-    ]
+    ],
+    "cycleTime": 3
   },
   {
     "id": "recipe_alternate_diamond_turbo_c",
@@ -1924,15 +2243,18 @@
     "inputs": [
       {
         "itemId": "coal",
-        "rate": 600
+        "rate": 600,
+        "amount": 30
       },
       {
         "itemId": "packaged_turbofuel",
-        "rate": 40
+        "rate": 40,
+        "amount": 2
       }
     ],
     "machineId": "particle_accelerator",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 3
   },
   {
     "id": "recipe_alternate_diamond_pink_c",
@@ -1942,15 +2264,18 @@
     "inputs": [
       {
         "itemId": "coal",
-        "rate": 120
+        "rate": 120,
+        "amount": 8
       },
       {
         "itemId": "quartz_crystal",
-        "rate": 45
+        "rate": 45,
+        "amount": 3
       }
     ],
     "machineId": "converter",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 4
   },
   {
     "id": "recipe_alternate_diamond_petroleum_c",
@@ -1960,11 +2285,13 @@
     "inputs": [
       {
         "itemId": "petroleum_coke",
-        "rate": 720
+        "rate": 720,
+        "amount": 24
       }
     ],
     "machineId": "particle_accelerator",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 2
   },
   {
     "id": "recipe_alternate_diamond_oilbased_c",
@@ -1974,11 +2301,13 @@
     "inputs": [
       {
         "itemId": "crude_oil",
-        "rate": 200
+        "rate": 200,
+        "amount": 10
       }
     ],
     "machineId": "particle_accelerator",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 3
   },
   {
     "id": "recipe_alternate_diamond_cloudy_c",
@@ -1988,15 +2317,18 @@
     "inputs": [
       {
         "itemId": "coal",
-        "rate": 240
+        "rate": 240,
+        "amount": 12
       },
       {
         "itemId": "limestone",
-        "rate": 480
+        "rate": 480,
+        "amount": 24
       }
     ],
     "machineId": "particle_accelerator",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 3
   },
   {
     "id": "recipe_alternate_darkmatter_trap_c",
@@ -2006,15 +2338,18 @@
     "inputs": [
       {
         "itemId": "time_crystal",
-        "rate": 30
+        "rate": 30,
+        "amount": 1
       },
       {
         "itemId": "dark_matter_residue",
-        "rate": 150
+        "rate": 150,
+        "amount": 5
       }
     ],
     "machineId": "particle_accelerator",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 2
   },
   {
     "id": "recipe_alternate_darkmatter_crystallization_c",
@@ -2024,11 +2359,13 @@
     "inputs": [
       {
         "itemId": "dark_matter_residue",
-        "rate": 200
+        "rate": 200,
+        "amount": 10
       }
     ],
     "machineId": "particle_accelerator",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 3
   },
   {
     "id": "recipe_alternate_wetconcrete_c",
@@ -2038,15 +2375,18 @@
     "inputs": [
       {
         "itemId": "limestone",
-        "rate": 120
+        "rate": 120,
+        "amount": 6
       },
       {
         "itemId": "water",
-        "rate": 100
+        "rate": 100,
+        "amount": 5
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 3
   },
   {
     "id": "recipe_alternate_turboheavyfuel_c",
@@ -2056,15 +2396,18 @@
     "inputs": [
       {
         "itemId": "heavy_oil_residue",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 5
       },
       {
         "itemId": "compacted_coal",
-        "rate": 30
+        "rate": 30,
+        "amount": 4
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_steelrod_c",
@@ -2074,11 +2417,13 @@
     "inputs": [
       {
         "itemId": "steel_ingot",
-        "rate": 12
+        "rate": 12,
+        "amount": 1
       }
     ],
     "machineId": "constructor",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 5
   },
   {
     "id": "recipe_alternate_steelcanister_c",
@@ -2088,11 +2433,13 @@
     "inputs": [
       {
         "itemId": "steel_ingot",
-        "rate": 40
+        "rate": 40,
+        "amount": 4
       }
     ],
     "machineId": "constructor",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 6
   },
   {
     "id": "recipe_alternate_steamedcoppersheet_c",
@@ -2102,15 +2449,18 @@
     "inputs": [
       {
         "itemId": "copper_ingot",
-        "rate": 22.5
+        "rate": 22.5,
+        "amount": 3
       },
       {
         "itemId": "water",
-        "rate": 22.5
+        "rate": 22.5,
+        "amount": 3
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_rubberconcrete_c",
@@ -2120,15 +2470,18 @@
     "inputs": [
       {
         "itemId": "limestone",
-        "rate": 100
+        "rate": 100,
+        "amount": 10
       },
       {
         "itemId": "rubber",
-        "rate": 20
+        "rate": 20,
+        "amount": 2
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 6
   },
   {
     "id": "recipe_alternate_recycledrubber_c",
@@ -2138,15 +2491,18 @@
     "inputs": [
       {
         "itemId": "plastic",
-        "rate": 30
+        "rate": 30,
+        "amount": 6
       },
       {
         "itemId": "fuel",
-        "rate": 30
+        "rate": 30,
+        "amount": 6
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_purequartzcrystal_c",
@@ -2156,15 +2512,18 @@
     "inputs": [
       {
         "itemId": "raw_quartz",
-        "rate": 67.5
+        "rate": 67.5,
+        "amount": 9
       },
       {
         "itemId": "water",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 5
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_pureironingot_c",
@@ -2174,15 +2533,18 @@
     "inputs": [
       {
         "itemId": "iron_ore",
-        "rate": 35
+        "rate": 35,
+        "amount": 7
       },
       {
         "itemId": "water",
-        "rate": 20
+        "rate": 20,
+        "amount": 4
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_purecopperingot_c",
@@ -2192,15 +2554,18 @@
     "inputs": [
       {
         "itemId": "copper_ore",
-        "rate": 15
+        "rate": 15,
+        "amount": 6
       },
       {
         "itemId": "water",
-        "rate": 10
+        "rate": 10,
+        "amount": 4
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 24
   },
   {
     "id": "recipe_alternate_purecateriumingot_c",
@@ -2210,15 +2575,18 @@
     "inputs": [
       {
         "itemId": "caterium_ore",
-        "rate": 24
+        "rate": 24,
+        "amount": 2
       },
       {
         "itemId": "water",
-        "rate": 24
+        "rate": 24,
+        "amount": 2
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 5
   },
   {
     "id": "recipe_purealuminumingot_c",
@@ -2228,11 +2596,13 @@
     "inputs": [
       {
         "itemId": "aluminum_scrap",
-        "rate": 60
+        "rate": 60,
+        "amount": 2
       }
     ],
     "machineId": "smelter",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 2
   },
   {
     "id": "recipe_alternate_polymerresin_c",
@@ -2242,7 +2612,8 @@
     "inputs": [
       {
         "itemId": "crude_oil",
-        "rate": 60
+        "rate": 60,
+        "amount": 6
       }
     ],
     "machineId": "refinery",
@@ -2252,7 +2623,8 @@
         "itemId": "heavy_oil_residue",
         "rate": 20
       }
-    ]
+    ],
+    "cycleTime": 6
   },
   {
     "id": "recipe_alternate_plasticsmartplating_c",
@@ -2262,19 +2634,23 @@
     "inputs": [
       {
         "itemId": "reinforced_iron_plate",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 1
       },
       {
         "itemId": "rotor",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 1
       },
       {
         "itemId": "plastic",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 3
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 24
   },
   {
     "id": "recipe_alternate_highspeedwiring_c",
@@ -2284,19 +2660,23 @@
     "inputs": [
       {
         "itemId": "stator",
-        "rate": 3.75
+        "rate": 3.75,
+        "amount": 2
       },
       {
         "itemId": "wire",
-        "rate": 75
+        "rate": 75,
+        "amount": 40
       },
       {
         "itemId": "high_speed_connector",
-        "rate": 1.875
+        "rate": 1.875,
+        "amount": 1
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 32
   },
   {
     "id": "recipe_alternate_heavyoilresidue_c",
@@ -2306,7 +2686,8 @@
     "inputs": [
       {
         "itemId": "crude_oil",
-        "rate": 30
+        "rate": 30,
+        "amount": 3
       }
     ],
     "machineId": "refinery",
@@ -2316,7 +2697,8 @@
         "itemId": "polymer_resin",
         "rate": 20
       }
-    ]
+    ],
+    "cycleTime": 6
   },
   {
     "id": "recipe_alternate_fusedwire_c",
@@ -2326,15 +2708,18 @@
     "inputs": [
       {
         "itemId": "copper_ingot",
-        "rate": 12
+        "rate": 12,
+        "amount": 4
       },
       {
         "itemId": "caterium_ingot",
-        "rate": 3
+        "rate": 3,
+        "amount": 1
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 20
   },
   {
     "id": "recipe_alternate_flexibleframework_c",
@@ -2344,19 +2729,23 @@
     "inputs": [
       {
         "itemId": "modular_frame",
-        "rate": 3.75
+        "rate": 3.75,
+        "amount": 1
       },
       {
         "itemId": "steel_beam",
-        "rate": 22.5
+        "rate": 22.5,
+        "amount": 6
       },
       {
         "itemId": "rubber",
-        "rate": 30
+        "rate": 30,
+        "amount": 8
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 16
   },
   {
     "id": "recipe_alternate_electrodecircuitboard_c",
@@ -2366,15 +2755,18 @@
     "inputs": [
       {
         "itemId": "rubber",
-        "rate": 20
+        "rate": 20,
+        "amount": 4
       },
       {
         "itemId": "petroleum_coke",
-        "rate": 40
+        "rate": 40,
+        "amount": 8
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_electroaluminumscrap_c",
@@ -2384,11 +2776,13 @@
     "inputs": [
       {
         "itemId": "alumina_solution",
-        "rate": 180
+        "rate": 180,
+        "amount": 12
       },
       {
         "itemId": "petroleum_coke",
-        "rate": 60
+        "rate": 60,
+        "amount": 4
       }
     ],
     "machineId": "refinery",
@@ -2398,7 +2792,8 @@
         "itemId": "water",
         "rate": 105
       }
-    ]
+    ],
+    "cycleTime": 4
   },
   {
     "id": "recipe_alternate_dilutedpackagedfuel_c",
@@ -2408,15 +2803,18 @@
     "inputs": [
       {
         "itemId": "heavy_oil_residue",
-        "rate": 30
+        "rate": 30,
+        "amount": 1
       },
       {
         "itemId": "packaged_water",
-        "rate": 60
+        "rate": 60,
+        "amount": 2
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 2
   },
   {
     "id": "recipe_alternate_copperalloyingot_c",
@@ -2426,15 +2824,18 @@
     "inputs": [
       {
         "itemId": "copper_ore",
-        "rate": 50
+        "rate": 50,
+        "amount": 5
       },
       {
         "itemId": "iron_ore",
-        "rate": 50
+        "rate": 50,
+        "amount": 5
       }
     ],
     "machineId": "foundry",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 6
   },
   {
     "id": "recipe_alternate_cokesteelingot_c",
@@ -2444,15 +2845,18 @@
     "inputs": [
       {
         "itemId": "iron_ore",
-        "rate": 75
+        "rate": 75,
+        "amount": 15
       },
       {
         "itemId": "petroleum_coke",
-        "rate": 75
+        "rate": 75,
+        "amount": 15
       }
     ],
     "machineId": "foundry",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_coatedironplate_c",
@@ -2462,15 +2866,18 @@
     "inputs": [
       {
         "itemId": "iron_ingot",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 5
       },
       {
         "itemId": "plastic",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 1
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_coatedironcanister_c",
@@ -2480,15 +2887,18 @@
     "inputs": [
       {
         "itemId": "iron_plate",
-        "rate": 30
+        "rate": 30,
+        "amount": 2
       },
       {
         "itemId": "copper_sheet",
-        "rate": 15
+        "rate": 15,
+        "amount": 1
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 4
   },
   {
     "id": "recipe_alternate_coatedcable_c",
@@ -2498,15 +2908,18 @@
     "inputs": [
       {
         "itemId": "wire",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 5
       },
       {
         "itemId": "heavy_oil_residue",
-        "rate": 15
+        "rate": 15,
+        "amount": 2
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_adheredironplate_c",
@@ -2516,15 +2929,18 @@
     "inputs": [
       {
         "itemId": "iron_plate",
-        "rate": 11.25
+        "rate": 11.25,
+        "amount": 3
       },
       {
         "itemId": "rubber",
-        "rate": 3.75
+        "rate": 3.75,
+        "amount": 1
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 16
   },
   {
     "id": "recipe_alternate_turbopressuremotor_c",
@@ -2534,23 +2950,28 @@
     "inputs": [
       {
         "itemId": "motor",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 4
       },
       {
         "itemId": "pressure_conversion_cube",
-        "rate": 1.875
+        "rate": 1.875,
+        "amount": 1
       },
       {
         "itemId": "packaged_nitrogen_gas",
-        "rate": 45
+        "rate": 45,
+        "amount": 24
       },
       {
         "itemId": "stator",
-        "rate": 15
+        "rate": 15,
+        "amount": 8
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 32
   },
   {
     "id": "recipe_alternate_turboblendfuel_c",
@@ -2560,23 +2981,28 @@
     "inputs": [
       {
         "itemId": "fuel",
-        "rate": 15
+        "rate": 15,
+        "amount": 2
       },
       {
         "itemId": "heavy_oil_residue",
-        "rate": 30
+        "rate": 30,
+        "amount": 4
       },
       {
         "itemId": "sulfur",
-        "rate": 22.5
+        "rate": 22.5,
+        "amount": 3
       },
       {
         "itemId": "petroleum_coke",
-        "rate": 22.5
+        "rate": 22.5,
+        "amount": 3
       }
     ],
     "machineId": "blender",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_superstatecomputer_c",
@@ -2586,23 +3012,28 @@
     "inputs": [
       {
         "itemId": "computer",
-        "rate": 7.199999999999999
+        "rate": 7.199999999999999,
+        "amount": 3
       },
       {
         "itemId": "electromagnetic_control_rod",
-        "rate": 2.4
+        "rate": 2.4,
+        "amount": 1
       },
       {
         "itemId": "battery",
-        "rate": 24
+        "rate": 24,
+        "amount": 10
       },
       {
         "itemId": "wire",
-        "rate": 60
+        "rate": 60,
+        "amount": 25
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 25
   },
   {
     "id": "recipe_alternate_sloppyalumina_c",
@@ -2612,15 +3043,18 @@
     "inputs": [
       {
         "itemId": "bauxite",
-        "rate": 200
+        "rate": 200,
+        "amount": 10
       },
       {
         "itemId": "water",
-        "rate": 200
+        "rate": 200,
+        "amount": 10
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 3
   },
   {
     "id": "recipe_alternate_radiocontrolsystem_c",
@@ -2630,23 +3064,28 @@
     "inputs": [
       {
         "itemId": "crystal_oscillator",
-        "rate": 1.5
+        "rate": 1.5,
+        "amount": 1
       },
       {
         "itemId": "circuit_board",
-        "rate": 15
+        "rate": 15,
+        "amount": 10
       },
       {
         "itemId": "aluminum_casing",
-        "rate": 90
+        "rate": 90,
+        "amount": 60
       },
       {
         "itemId": "rubber",
-        "rate": 45
+        "rate": 45,
+        "amount": 30
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 40
   },
   {
     "id": "recipe_alternate_plutoniumfuelunit_c",
@@ -2656,15 +3095,18 @@
     "inputs": [
       {
         "itemId": "encased_plutonium_cell",
-        "rate": 10
+        "rate": 10,
+        "amount": 20
       },
       {
         "itemId": "pressure_conversion_cube",
-        "rate": 0.5
+        "rate": 0.5,
+        "amount": 1
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 120
   },
   {
     "id": "recipe_alternate_ocsupercomputer_c",
@@ -2674,15 +3116,18 @@
     "inputs": [
       {
         "itemId": "radio_control_unit",
-        "rate": 6
+        "rate": 6,
+        "amount": 2
       },
       {
         "itemId": "cooling_system",
-        "rate": 6
+        "rate": 6,
+        "amount": 2
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 20
   },
   {
     "id": "recipe_alternate_instantscrap_c",
@@ -2692,19 +3137,23 @@
     "inputs": [
       {
         "itemId": "bauxite",
-        "rate": 150
+        "rate": 150,
+        "amount": 15
       },
       {
         "itemId": "coal",
-        "rate": 100
+        "rate": 100,
+        "amount": 10
       },
       {
         "itemId": "sulfuric_acid",
-        "rate": 50
+        "rate": 50,
+        "amount": 5
       },
       {
         "itemId": "water",
-        "rate": 60
+        "rate": 60,
+        "amount": 6
       }
     ],
     "machineId": "blender",
@@ -2714,7 +3163,8 @@
         "itemId": "water",
         "rate": 50
       }
-    ]
+    ],
+    "cycleTime": 6
   },
   {
     "id": "recipe_alternate_instantplutoniumcell_c",
@@ -2724,15 +3174,18 @@
     "inputs": [
       {
         "itemId": "non_fissile_uranium",
-        "rate": 75
+        "rate": 75,
+        "amount": 150
       },
       {
         "itemId": "aluminum_casing",
-        "rate": 10
+        "rate": 10,
+        "amount": 20
       }
     ],
     "machineId": "particle_accelerator",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 120
   },
   {
     "id": "recipe_alternate_heatfusedframe_c",
@@ -2742,23 +3195,28 @@
     "inputs": [
       {
         "itemId": "heavy_modular_frame",
-        "rate": 3
+        "rate": 3,
+        "amount": 1
       },
       {
         "itemId": "aluminum_ingot",
-        "rate": 150
+        "rate": 150,
+        "amount": 50
       },
       {
         "itemId": "nitric_acid",
-        "rate": 24
+        "rate": 24,
+        "amount": 8
       },
       {
         "itemId": "fuel",
-        "rate": 30
+        "rate": 30,
+        "amount": 10
       }
     ],
     "machineId": "blender",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 20
   },
   {
     "id": "recipe_alternate_fertileuranium_c",
@@ -2768,19 +3226,23 @@
     "inputs": [
       {
         "itemId": "uranium",
-        "rate": 25
+        "rate": 25,
+        "amount": 5
       },
       {
         "itemId": "uranium_waste",
-        "rate": 25
+        "rate": 25,
+        "amount": 5
       },
       {
         "itemId": "nitric_acid",
-        "rate": 15
+        "rate": 15,
+        "amount": 3
       },
       {
         "itemId": "sulfuric_acid",
-        "rate": 25
+        "rate": 25,
+        "amount": 5
       }
     ],
     "machineId": "blender",
@@ -2790,7 +3252,8 @@
         "itemId": "water",
         "rate": 40
       }
-    ]
+    ],
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_electricmotor_c",
@@ -2800,15 +3263,18 @@
     "inputs": [
       {
         "itemId": "electromagnetic_control_rod",
-        "rate": 3.75
+        "rate": 3.75,
+        "amount": 1
       },
       {
         "itemId": "rotor",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 2
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 16
   },
   {
     "id": "recipe_alternate_dilutedfuel_c",
@@ -2818,15 +3284,18 @@
     "inputs": [
       {
         "itemId": "heavy_oil_residue",
-        "rate": 50
+        "rate": 50,
+        "amount": 5
       },
       {
         "itemId": "water",
-        "rate": 100
+        "rate": 100,
+        "amount": 10
       }
     ],
     "machineId": "blender",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 6
   },
   {
     "id": "recipe_alternate_coolingdevice_c",
@@ -2836,19 +3305,23 @@
     "inputs": [
       {
         "itemId": "heat_sink",
-        "rate": 10
+        "rate": 10,
+        "amount": 4
       },
       {
         "itemId": "motor",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 1
       },
       {
         "itemId": "nitrogen_gas",
-        "rate": 60
+        "rate": 60,
+        "amount": 24
       }
     ],
     "machineId": "blender",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 24
   },
   {
     "id": "recipe_alternate_classicbattery_c",
@@ -2858,23 +3331,28 @@
     "inputs": [
       {
         "itemId": "sulfur",
-        "rate": 45
+        "rate": 45,
+        "amount": 6
       },
       {
         "itemId": "alclad_aluminum_sheet",
-        "rate": 52.5
+        "rate": 52.5,
+        "amount": 7
       },
       {
         "itemId": "plastic",
-        "rate": 60
+        "rate": 60,
+        "amount": 8
       },
       {
         "itemId": "wire",
-        "rate": 90
+        "rate": 90,
+        "amount": 12
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_alcladcasing_c",
@@ -2884,15 +3362,18 @@
     "inputs": [
       {
         "itemId": "aluminum_ingot",
-        "rate": 150
+        "rate": 150,
+        "amount": 20
       },
       {
         "itemId": "copper_ingot",
-        "rate": 75
+        "rate": 75,
+        "amount": 10
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_steelpipe_molded_c",
@@ -2902,15 +3383,18 @@
     "inputs": [
       {
         "itemId": "steel_ingot",
-        "rate": 50
+        "rate": 50,
+        "amount": 5
       },
       {
         "itemId": "concrete",
-        "rate": 30
+        "rate": 30,
+        "amount": 3
       }
     ],
     "machineId": "foundry",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 6
   },
   {
     "id": "recipe_alternate_steelpipe_iron_c",
@@ -2920,11 +3404,13 @@
     "inputs": [
       {
         "itemId": "iron_ingot",
-        "rate": 100
+        "rate": 100,
+        "amount": 20
       }
     ],
     "machineId": "constructor",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_steelcastedplate_c",
@@ -2934,15 +3420,18 @@
     "inputs": [
       {
         "itemId": "iron_ingot",
-        "rate": 15
+        "rate": 15,
+        "amount": 1
       },
       {
         "itemId": "steel_ingot",
-        "rate": 15
+        "rate": 15,
+        "amount": 1
       }
     ],
     "machineId": "foundry",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 4
   },
   {
     "id": "recipe_alternate_steelbeam_molded_c",
@@ -2952,15 +3441,18 @@
     "inputs": [
       {
         "itemId": "steel_ingot",
-        "rate": 120
+        "rate": 120,
+        "amount": 24
       },
       {
         "itemId": "concrete",
-        "rate": 80
+        "rate": 80,
+        "amount": 16
       }
     ],
     "machineId": "foundry",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_steelbeam_aluminum_c",
@@ -2970,11 +3462,13 @@
     "inputs": [
       {
         "itemId": "aluminum_ingot",
-        "rate": 22.5
+        "rate": 22.5,
+        "amount": 3
       }
     ],
     "machineId": "constructor",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_aluminumrod_c",
@@ -2984,11 +3478,13 @@
     "inputs": [
       {
         "itemId": "aluminum_ingot",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 1
       }
     ],
     "machineId": "constructor",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_ailimiter_plastic_c",
@@ -2998,15 +3494,18 @@
     "inputs": [
       {
         "itemId": "quickwire",
-        "rate": 120
+        "rate": 120,
+        "amount": 30
       },
       {
         "itemId": "plastic",
-        "rate": 28
+        "rate": 28,
+        "amount": 7
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 15
   },
   {
     "id": "recipe_alternate_silica_distilled_c",
@@ -3016,15 +3515,18 @@
     "inputs": [
       {
         "itemId": "dissolved_silica",
-        "rate": 120
+        "rate": 120,
+        "amount": 12
       },
       {
         "itemId": "limestone",
-        "rate": 50
+        "rate": 50,
+        "amount": 5
       },
       {
         "itemId": "water",
-        "rate": 100
+        "rate": 100,
+        "amount": 10
       }
     ],
     "machineId": "blender",
@@ -3034,7 +3536,8 @@
         "itemId": "water",
         "rate": 80
       }
-    ]
+    ],
+    "cycleTime": 6
   },
   {
     "id": "recipe_alternate_quartz_purified_c",
@@ -3044,11 +3547,13 @@
     "inputs": [
       {
         "itemId": "raw_quartz",
-        "rate": 120
+        "rate": 120,
+        "amount": 24
       },
       {
         "itemId": "nitric_acid",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       }
     ],
     "machineId": "refinery",
@@ -3058,7 +3563,8 @@
         "itemId": "dissolved_silica",
         "rate": 60
       }
-    ]
+    ],
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_quartz_fused_c",
@@ -3068,15 +3574,18 @@
     "inputs": [
       {
         "itemId": "raw_quartz",
-        "rate": 75
+        "rate": 75,
+        "amount": 25
       },
       {
         "itemId": "coal",
-        "rate": 36
+        "rate": 36,
+        "amount": 12
       }
     ],
     "machineId": "foundry",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 20
   },
   {
     "id": "recipe_alternate_ironingot_leached_c",
@@ -3086,15 +3595,18 @@
     "inputs": [
       {
         "itemId": "iron_ore",
-        "rate": 50
+        "rate": 50,
+        "amount": 5
       },
       {
         "itemId": "sulfuric_acid",
-        "rate": 10
+        "rate": 10,
+        "amount": 1
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 6
   },
   {
     "id": "recipe_alternate_ironingot_basic_c",
@@ -3104,15 +3616,18 @@
     "inputs": [
       {
         "itemId": "iron_ore",
-        "rate": 25
+        "rate": 25,
+        "amount": 5
       },
       {
         "itemId": "limestone",
-        "rate": 40
+        "rate": 40,
+        "amount": 8
       }
     ],
     "machineId": "foundry",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_copperingot_tempered_c",
@@ -3122,15 +3637,18 @@
     "inputs": [
       {
         "itemId": "copper_ore",
-        "rate": 25
+        "rate": 25,
+        "amount": 5
       },
       {
         "itemId": "petroleum_coke",
-        "rate": 40
+        "rate": 40,
+        "amount": 8
       }
     ],
     "machineId": "foundry",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_copperingot_leached_c",
@@ -3140,15 +3658,18 @@
     "inputs": [
       {
         "itemId": "copper_ore",
-        "rate": 45
+        "rate": 45,
+        "amount": 9
       },
       {
         "itemId": "sulfuric_acid",
-        "rate": 25
+        "rate": 25,
+        "amount": 5
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_cateriumingot_tempered_c",
@@ -3158,15 +3679,18 @@
     "inputs": [
       {
         "itemId": "caterium_ore",
-        "rate": 45
+        "rate": 45,
+        "amount": 6
       },
       {
         "itemId": "petroleum_coke",
-        "rate": 15
+        "rate": 15,
+        "amount": 2
       }
     ],
     "machineId": "foundry",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_cateriumingot_leached_c",
@@ -3176,15 +3700,18 @@
     "inputs": [
       {
         "itemId": "caterium_ore",
-        "rate": 54
+        "rate": 54,
+        "amount": 9
       },
       {
         "itemId": "sulfuric_acid",
-        "rate": 30
+        "rate": 30,
+        "amount": 5
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 10
   },
   {
     "id": "recipe_alternate_wire_2_c",
@@ -3194,11 +3721,13 @@
     "inputs": [
       {
         "itemId": "caterium_ingot",
-        "rate": 15
+        "rate": 15,
+        "amount": 1
       }
     ],
     "machineId": "constructor",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 4
   },
   {
     "id": "recipe_alternate_wire_1_c",
@@ -3208,11 +3737,13 @@
     "inputs": [
       {
         "itemId": "iron_ingot",
-        "rate": 12.5
+        "rate": 12.5,
+        "amount": 5
       }
     ],
     "machineId": "constructor",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 24
   },
   {
     "id": "recipe_alternate_uraniumcell_1_c",
@@ -3222,23 +3753,28 @@
     "inputs": [
       {
         "itemId": "uranium",
-        "rate": 25
+        "rate": 25,
+        "amount": 5
       },
       {
         "itemId": "silica",
-        "rate": 15
+        "rate": 15,
+        "amount": 3
       },
       {
         "itemId": "sulfur",
-        "rate": 25
+        "rate": 25,
+        "amount": 5
       },
       {
         "itemId": "quickwire",
-        "rate": 75
+        "rate": 75,
+        "amount": 15
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_turbomotor_1_c",
@@ -3248,23 +3784,28 @@
     "inputs": [
       {
         "itemId": "motor",
-        "rate": 6.5625
+        "rate": 6.5625,
+        "amount": 7
       },
       {
         "itemId": "radio_control_unit",
-        "rate": 8.4375
+        "rate": 8.4375,
+        "amount": 9
       },
       {
         "itemId": "electromagnetic_control_rod",
-        "rate": 4.6875
+        "rate": 4.6875,
+        "amount": 5
       },
       {
         "itemId": "rotor",
-        "rate": 6.5625
+        "rate": 6.5625,
+        "amount": 7
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 64
   },
   {
     "id": "recipe_alternate_stator_c",
@@ -3274,15 +3815,18 @@
     "inputs": [
       {
         "itemId": "steel_pipe",
-        "rate": 16
+        "rate": 16,
+        "amount": 4
       },
       {
         "itemId": "quickwire",
-        "rate": 60
+        "rate": 60,
+        "amount": 15
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 15
   },
   {
     "id": "recipe_alternate_silica_c",
@@ -3292,15 +3836,18 @@
     "inputs": [
       {
         "itemId": "raw_quartz",
-        "rate": 22.5
+        "rate": 22.5,
+        "amount": 3
       },
       {
         "itemId": "limestone",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 5
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_rotor_c",
@@ -3310,15 +3857,18 @@
     "inputs": [
       {
         "itemId": "steel_pipe",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       },
       {
         "itemId": "wire",
-        "rate": 30
+        "rate": 30,
+        "amount": 6
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_encasedindustrialbeam_c",
@@ -3328,15 +3878,18 @@
     "inputs": [
       {
         "itemId": "steel_pipe",
-        "rate": 24
+        "rate": 24,
+        "amount": 6
       },
       {
         "itemId": "concrete",
-        "rate": 20
+        "rate": 20,
+        "amount": 5
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 15
   },
   {
     "id": "recipe_alternate_reinforcedironplate_2_c",
@@ -3346,15 +3899,18 @@
     "inputs": [
       {
         "itemId": "iron_plate",
-        "rate": 18.75
+        "rate": 18.75,
+        "amount": 10
       },
       {
         "itemId": "wire",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 20
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 32
   },
   {
     "id": "recipe_alternate_radiocontrolunit_1_c",
@@ -3364,19 +3920,23 @@
     "inputs": [
       {
         "itemId": "heat_sink",
-        "rate": 15
+        "rate": 15,
+        "amount": 4
       },
       {
         "itemId": "high_speed_connector",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 2
       },
       {
         "itemId": "quartz_crystal",
-        "rate": 45
+        "rate": 45,
+        "amount": 12
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 16
   },
   {
     "id": "recipe_alternate_quickwire_c",
@@ -3386,15 +3946,18 @@
     "inputs": [
       {
         "itemId": "caterium_ingot",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 1
       },
       {
         "itemId": "copper_ingot",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 5
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_plastic_1_c",
@@ -3404,15 +3967,18 @@
     "inputs": [
       {
         "itemId": "rubber",
-        "rate": 30
+        "rate": 30,
+        "amount": 6
       },
       {
         "itemId": "fuel",
-        "rate": 30
+        "rate": 30,
+        "amount": 6
       }
     ],
     "machineId": "refinery",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_nuclearfuelrod_1_c",
@@ -3422,23 +3988,28 @@
     "inputs": [
       {
         "itemId": "encased_uranium_cell",
-        "rate": 20
+        "rate": 20,
+        "amount": 100
       },
       {
         "itemId": "electromagnetic_control_rod",
-        "rate": 2
+        "rate": 2,
+        "amount": 10
       },
       {
         "itemId": "crystal_oscillator",
-        "rate": 0.6000000000000001
+        "rate": 0.6000000000000001,
+        "amount": 3
       },
       {
         "itemId": "rotor",
-        "rate": 2
+        "rate": 2,
+        "amount": 10
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 300
   },
   {
     "id": "recipe_alternate_motor_1_c",
@@ -3448,19 +4019,23 @@
     "inputs": [
       {
         "itemId": "rotor",
-        "rate": 3.75
+        "rate": 3.75,
+        "amount": 3
       },
       {
         "itemId": "stator",
-        "rate": 3.75
+        "rate": 3.75,
+        "amount": 3
       },
       {
         "itemId": "crystal_oscillator",
-        "rate": 1.25
+        "rate": 1.25,
+        "amount": 1
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 48
   },
   {
     "id": "recipe_alternate_modularframe_c",
@@ -3470,15 +4045,18 @@
     "inputs": [
       {
         "itemId": "reinforced_iron_plate",
-        "rate": 2
+        "rate": 2,
+        "amount": 2
       },
       {
         "itemId": "steel_pipe",
-        "rate": 10
+        "rate": 10,
+        "amount": 10
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 60
   },
   {
     "id": "recipe_alternate_ingotsteel_2_c",
@@ -3488,15 +4066,18 @@
     "inputs": [
       {
         "itemId": "iron_ore",
-        "rate": 5
+        "rate": 5,
+        "amount": 2
       },
       {
         "itemId": "compacted_coal",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 1
       }
     ],
     "machineId": "foundry",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 24
   },
   {
     "id": "recipe_alternate_ingotsteel_1_c",
@@ -3506,15 +4087,18 @@
     "inputs": [
       {
         "itemId": "iron_ingot",
-        "rate": 40
+        "rate": 40,
+        "amount": 2
       },
       {
         "itemId": "coal",
-        "rate": 40
+        "rate": 40,
+        "amount": 2
       }
     ],
     "machineId": "foundry",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 3
   },
   {
     "id": "recipe_alternate_ingotiron_c",
@@ -3524,15 +4108,18 @@
     "inputs": [
       {
         "itemId": "iron_ore",
-        "rate": 40
+        "rate": 40,
+        "amount": 8
       },
       {
         "itemId": "copper_ore",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       }
     ],
     "machineId": "foundry",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_highspeedconnector_c",
@@ -3542,19 +4129,23 @@
     "inputs": [
       {
         "itemId": "quickwire",
-        "rate": 90
+        "rate": 90,
+        "amount": 60
       },
       {
         "itemId": "silica",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 25
       },
       {
         "itemId": "circuit_board",
-        "rate": 3
+        "rate": 3,
+        "amount": 2
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 40
   },
   {
     "id": "recipe_alternate_modularframeheavy_c",
@@ -3564,23 +4155,28 @@
     "inputs": [
       {
         "itemId": "modular_frame",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 8
       },
       {
         "itemId": "encased_industrial_beam",
-        "rate": 9.375
+        "rate": 9.375,
+        "amount": 10
       },
       {
         "itemId": "steel_pipe",
-        "rate": 33.75
+        "rate": 33.75,
+        "amount": 36
       },
       {
         "itemId": "concrete",
-        "rate": 20.625
+        "rate": 20.625,
+        "amount": 22
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 64
   },
   {
     "id": "recipe_alternate_heatsink_1_c",
@@ -3590,15 +4186,18 @@
     "inputs": [
       {
         "itemId": "aluminum_casing",
-        "rate": 30
+        "rate": 30,
+        "amount": 3
       },
       {
         "itemId": "rubber",
-        "rate": 30
+        "rate": 30,
+        "amount": 3
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 6
   },
   {
     "id": "recipe_alternate_gunpowder_1_c",
@@ -3608,15 +4207,18 @@
     "inputs": [
       {
         "itemId": "sulfur",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 1
       },
       {
         "itemId": "compacted_coal",
-        "rate": 15
+        "rate": 15,
+        "amount": 2
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 8
   },
   {
     "id": "recipe_alternate_electromagneticcontrolrod_1_c",
@@ -3626,15 +4228,18 @@
     "inputs": [
       {
         "itemId": "stator",
-        "rate": 8
+        "rate": 8,
+        "amount": 2
       },
       {
         "itemId": "high_speed_connector",
-        "rate": 4
+        "rate": 4,
+        "amount": 1
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 15
   },
   {
     "id": "recipe_alternate_crystaloscillator_c",
@@ -3644,19 +4249,23 @@
     "inputs": [
       {
         "itemId": "quartz_crystal",
-        "rate": 18.75
+        "rate": 18.75,
+        "amount": 10
       },
       {
         "itemId": "rubber",
-        "rate": 13.125
+        "rate": 13.125,
+        "amount": 7
       },
       {
         "itemId": "ai_limiter",
-        "rate": 1.875
+        "rate": 1.875,
+        "amount": 1
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 32
   },
   {
     "id": "recipe_alternate_concrete_c",
@@ -3666,15 +4275,18 @@
     "inputs": [
       {
         "itemId": "silica",
-        "rate": 15
+        "rate": 15,
+        "amount": 3
       },
       {
         "itemId": "limestone",
-        "rate": 60
+        "rate": 60,
+        "amount": 12
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_computer_2_c",
@@ -3684,15 +4296,18 @@
     "inputs": [
       {
         "itemId": "circuit_board",
-        "rate": 5
+        "rate": 5,
+        "amount": 3
       },
       {
         "itemId": "crystal_oscillator",
-        "rate": 1.6666666666666667
+        "rate": 1.6666666666666667,
+        "amount": 1
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 36
   },
   {
     "id": "recipe_alternate_computer_1_c",
@@ -3702,19 +4317,23 @@
     "inputs": [
       {
         "itemId": "circuit_board",
-        "rate": 15
+        "rate": 15,
+        "amount": 4
       },
       {
         "itemId": "quickwire",
-        "rate": 52.5
+        "rate": 52.5,
+        "amount": 14
       },
       {
         "itemId": "rubber",
-        "rate": 22.5
+        "rate": 22.5,
+        "amount": 6
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 16
   },
   {
     "id": "recipe_alternate_circuitboard_2_c",
@@ -3724,15 +4343,18 @@
     "inputs": [
       {
         "itemId": "plastic",
-        "rate": 12.5
+        "rate": 12.5,
+        "amount": 10
       },
       {
         "itemId": "quickwire",
-        "rate": 37.5
+        "rate": 37.5,
+        "amount": 30
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 48
   },
   {
     "id": "recipe_alternate_circuitboard_1_c",
@@ -3742,15 +4364,18 @@
     "inputs": [
       {
         "itemId": "copper_sheet",
-        "rate": 27.5
+        "rate": 27.5,
+        "amount": 11
       },
       {
         "itemId": "silica",
-        "rate": 27.5
+        "rate": 27.5,
+        "amount": 11
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 24
   },
   {
     "id": "recipe_alternate_cable_2_c",
@@ -3760,15 +4385,18 @@
     "inputs": [
       {
         "itemId": "quickwire",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 3
       },
       {
         "itemId": "rubber",
-        "rate": 5
+        "rate": 5,
+        "amount": 2
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 24
   },
   {
     "id": "recipe_alternate_cable_1_c",
@@ -3778,15 +4406,18 @@
     "inputs": [
       {
         "itemId": "wire",
-        "rate": 45
+        "rate": 45,
+        "amount": 9
       },
       {
         "itemId": "rubber",
-        "rate": 30
+        "rate": 30,
+        "amount": 6
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_synthetic_power_shard",
@@ -3796,19 +4427,23 @@
     "inputs": [
       {
         "itemId": "time_crystal",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       },
       {
         "itemId": "dark_matter_crystal",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       },
       {
         "itemId": "quartz_crystal",
-        "rate": 60
+        "rate": 60,
+        "amount": 12
       },
       {
         "itemId": "excited_photonic_matter",
-        "rate": 60
+        "rate": 60,
+        "amount": 12
       }
     ],
     "byproducts": [
@@ -3817,7 +4452,8 @@
         "rate": 60
       }
     ],
-    "machineId": "quantum_encoder"
+    "machineId": "quantum_encoder",
+    "cycleTime": 12
   },
   {
     "id": "recipe_packaged_rocket_fuel",
@@ -3827,14 +4463,17 @@
     "inputs": [
       {
         "itemId": "rocket_fuel",
-        "rate": 120
+        "rate": 120,
+        "amount": 2
       },
       {
         "itemId": "empty_fluid_tank",
-        "rate": 60
+        "rate": 60,
+        "amount": 1
       }
     ],
-    "machineId": "packager"
+    "machineId": "packager",
+    "cycleTime": 1
   },
   {
     "id": "recipe_packaged_ionized_fuel",
@@ -3844,14 +4483,17 @@
     "inputs": [
       {
         "itemId": "ionized_fuel",
-        "rate": 80
+        "rate": 80,
+        "amount": 4
       },
       {
         "itemId": "empty_fluid_tank",
-        "rate": 40
+        "rate": 40,
+        "amount": 2
       }
     ],
-    "machineId": "packager"
+    "machineId": "packager",
+    "cycleTime": 3
   },
   {
     "id": "recipe_alternate_screw_c",
@@ -3861,11 +4503,13 @@
     "inputs": [
       {
         "itemId": "iron_ingot",
-        "rate": 12.5
+        "rate": 12.5,
+        "amount": 5
       }
     ],
     "machineId": "constructor",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 24
   },
   {
     "id": "recipe_alternate_screw_2_c",
@@ -3875,11 +4519,13 @@
     "inputs": [
       {
         "itemId": "steel_beam",
-        "rate": 5
+        "rate": 5,
+        "amount": 1
       }
     ],
     "machineId": "constructor",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_boltedframe_c",
@@ -3889,15 +4535,18 @@
     "inputs": [
       {
         "itemId": "reinforced_iron_plate",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 3
       },
       {
         "itemId": "screw",
-        "rate": 140
+        "rate": 140,
+        "amount": 56
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 24
   },
   {
     "id": "recipe_alternate_reinforcedironplate_1_c",
@@ -3907,15 +4556,18 @@
     "inputs": [
       {
         "itemId": "iron_plate",
-        "rate": 90
+        "rate": 90,
+        "amount": 18
       },
       {
         "itemId": "screw",
-        "rate": 250
+        "rate": 250,
+        "amount": 50
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 12
   },
   {
     "id": "recipe_alternate_copperrotor_c",
@@ -3925,15 +4577,18 @@
     "inputs": [
       {
         "itemId": "copper_sheet",
-        "rate": 22.5
+        "rate": 22.5,
+        "amount": 6
       },
       {
         "itemId": "screw",
-        "rate": 195
+        "rate": 195,
+        "amount": 52
       }
     ],
     "machineId": "assembler",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 16
   },
   {
     "id": "recipe_alternate_heavyflexibleframe_c",
@@ -3943,23 +4598,28 @@
     "inputs": [
       {
         "itemId": "modular_frame",
-        "rate": 18.75
+        "rate": 18.75,
+        "amount": 5
       },
       {
         "itemId": "encased_industrial_beam",
-        "rate": 11.25
+        "rate": 11.25,
+        "amount": 3
       },
       {
         "itemId": "rubber",
-        "rate": 75
+        "rate": 75,
+        "amount": 20
       },
       {
         "itemId": "screw",
-        "rate": 390
+        "rate": 390,
+        "amount": 104
       }
     ],
     "machineId": "manufacturer",
-    "isAlternate": true
+    "isAlternate": true,
+    "cycleTime": 16
   },
   {
     "id": "recipe_liquid_biofuel",
@@ -3968,14 +4628,17 @@
     "inputs": [
       {
         "itemId": "solid_biofuel",
-        "rate": 90
+        "rate": 90,
+        "amount": 6
       },
       {
         "itemId": "water",
-        "rate": 45
+        "rate": 45,
+        "amount": 3
       }
     ],
-    "machineId": "refinery"
+    "machineId": "refinery",
+    "cycleTime": 4
   },
   {
     "id": "recipe_packaged_alumina_solution",
@@ -3984,14 +4647,17 @@
     "inputs": [
       {
         "itemId": "alumina_solution",
-        "rate": 120
+        "rate": 120,
+        "amount": 2
       },
       {
         "itemId": "empty_canister",
-        "rate": 120
+        "rate": 120,
+        "amount": 2
       }
     ],
-    "machineId": "packager"
+    "machineId": "packager",
+    "cycleTime": 1
   },
   {
     "id": "recipe_packaged_sulfuric_acid",
@@ -4000,14 +4666,17 @@
     "inputs": [
       {
         "itemId": "sulfuric_acid",
-        "rate": 40
+        "rate": 40,
+        "amount": 2
       },
       {
         "itemId": "empty_canister",
-        "rate": 40
+        "rate": 40,
+        "amount": 2
       }
     ],
-    "machineId": "packager"
+    "machineId": "packager",
+    "cycleTime": 3
   },
   {
     "id": "recipe_packaged_nitric_acid",
@@ -4016,14 +4685,17 @@
     "inputs": [
       {
         "itemId": "nitric_acid",
-        "rate": 30
+        "rate": 30,
+        "amount": 1
       },
       {
         "itemId": "empty_fluid_tank",
-        "rate": 30
+        "rate": 30,
+        "amount": 1
       }
     ],
-    "machineId": "packager"
+    "machineId": "packager",
+    "cycleTime": 2
   },
   {
     "id": "recipe_packaged_nitrogen_gas",
@@ -4032,14 +4704,17 @@
     "inputs": [
       {
         "itemId": "nitrogen_gas",
-        "rate": 240
+        "rate": 240,
+        "amount": 4
       },
       {
         "itemId": "empty_fluid_tank",
-        "rate": 60
+        "rate": 60,
+        "amount": 1
       }
     ],
-    "machineId": "packager"
+    "machineId": "packager",
+    "cycleTime": 1
   },
   {
     "id": "recipe_packaged_oil",
@@ -4048,14 +4723,17 @@
     "inputs": [
       {
         "itemId": "crude_oil",
-        "rate": 30
+        "rate": 30,
+        "amount": 2
       },
       {
         "itemId": "empty_canister",
-        "rate": 30
+        "rate": 30,
+        "amount": 2
       }
     ],
-    "machineId": "packager"
+    "machineId": "packager",
+    "cycleTime": 4
   },
   {
     "id": "recipe_packaged_heavy_oil_residue",
@@ -4064,14 +4742,17 @@
     "inputs": [
       {
         "itemId": "heavy_oil_residue",
-        "rate": 30
+        "rate": 30,
+        "amount": 2
       },
       {
         "itemId": "empty_canister",
-        "rate": 30
+        "rate": 30,
+        "amount": 2
       }
     ],
-    "machineId": "packager"
+    "machineId": "packager",
+    "cycleTime": 4
   },
   {
     "id": "recipe_packaged_liquid_biofuel",
@@ -4080,14 +4761,17 @@
     "inputs": [
       {
         "itemId": "liquid_biofuel",
-        "rate": 40
+        "rate": 40,
+        "amount": 2
       },
       {
         "itemId": "empty_canister",
-        "rate": 40
+        "rate": 40,
+        "amount": 2
       }
     ],
-    "machineId": "packager"
+    "machineId": "packager",
+    "cycleTime": 3
   },
   {
     "id": "recipe_packaged_turbofuel",
@@ -4096,14 +4780,17 @@
     "inputs": [
       {
         "itemId": "turbofuel",
-        "rate": 20
+        "rate": 20,
+        "amount": 2
       },
       {
         "itemId": "empty_canister",
-        "rate": 20
+        "rate": 20,
+        "amount": 2
       }
     ],
-    "machineId": "packager"
+    "machineId": "packager",
+    "cycleTime": 6
   },
   {
     "id": "recipe_gas_filter",
@@ -4112,18 +4799,22 @@
     "inputs": [
       {
         "itemId": "fabric",
-        "rate": 15
+        "rate": 15,
+        "amount": 2
       },
       {
         "itemId": "coal",
-        "rate": 30
+        "rate": 30,
+        "amount": 4
       },
       {
         "itemId": "iron_plate",
-        "rate": 15
+        "rate": 15,
+        "amount": 2
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 8
   },
   {
     "id": "recipe_iodine_infused_filter",
@@ -4132,18 +4823,22 @@
     "inputs": [
       {
         "itemId": "gas_filter",
-        "rate": 3.75
+        "rate": 3.75,
+        "amount": 1
       },
       {
         "itemId": "quickwire",
-        "rate": 30
+        "rate": 30,
+        "amount": 8
       },
       {
         "itemId": "aluminum_casing",
-        "rate": 3.75
+        "rate": 3.75,
+        "amount": 1
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 16
   },
   {
     "id": "recipe_stun_rebar",
@@ -4152,14 +4847,17 @@
     "inputs": [
       {
         "itemId": "iron_rebar",
-        "rate": 10
+        "rate": 10,
+        "amount": 1
       },
       {
         "itemId": "quickwire",
-        "rate": 50
+        "rate": 50,
+        "amount": 5
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 6
   },
   {
     "id": "recipe_shatter_rebar",
@@ -4168,14 +4866,17 @@
     "inputs": [
       {
         "itemId": "iron_rebar",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       },
       {
         "itemId": "quartz_crystal",
-        "rate": 15
+        "rate": 15,
+        "amount": 3
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 12
   },
   {
     "id": "recipe_explosive_rebar",
@@ -4184,18 +4885,22 @@
     "inputs": [
       {
         "itemId": "iron_rebar",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       },
       {
         "itemId": "smokeless_powder",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       },
       {
         "itemId": "steel_pipe",
-        "rate": 10
+        "rate": 10,
+        "amount": 2
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 12
   },
   {
     "id": "recipe_homing_rifle_ammo",
@@ -4204,14 +4909,17 @@
     "inputs": [
       {
         "itemId": "rifle_ammo",
-        "rate": 50
+        "rate": 50,
+        "amount": 20
       },
       {
         "itemId": "high_speed_connector",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 1
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 24
   },
   {
     "id": "recipe_turbo_rifle_ammo",
@@ -4220,18 +4928,22 @@
     "inputs": [
       {
         "itemId": "rifle_ammo",
-        "rate": 125
+        "rate": 125,
+        "amount": 25
       },
       {
         "itemId": "aluminum_casing",
-        "rate": 15
+        "rate": 15,
+        "amount": 3
       },
       {
         "itemId": "packaged_turbofuel",
-        "rate": 15
+        "rate": 15,
+        "amount": 3
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 12
   },
   {
     "id": "recipe_cartridgechaos_c",
@@ -4240,20 +4952,24 @@
     "inputs": [
       {
         "itemId": "rifle_ammo",
-        "rate": 125
+        "rate": 125,
+        "amount": 25
       },
       {
         "itemId": "aluminum_casing",
-        "rate": 15
+        "rate": 15,
+        "amount": 3
       },
       {
         "itemId": "turbofuel",
-        "rate": 15
+        "rate": 15,
+        "amount": 3
       }
     ],
     "machineId": "blender",
     "name": "Turbo Rifle Ammo",
-    "isAlternate": false
+    "isAlternate": false,
+    "cycleTime": 12
   },
   {
     "id": "recipe_gas_nobelisk",
@@ -4262,14 +4978,17 @@
     "inputs": [
       {
         "itemId": "nobelisk",
-        "rate": 5
+        "rate": 5,
+        "amount": 1
       },
       {
         "itemId": "biomass",
-        "rate": 50
+        "rate": 50,
+        "amount": 10
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 12
   },
   {
     "id": "recipe_pulse_nobelisk",
@@ -4278,14 +4997,17 @@
     "inputs": [
       {
         "itemId": "nobelisk",
-        "rate": 5
+        "rate": 5,
+        "amount": 5
       },
       {
         "itemId": "crystal_oscillator",
-        "rate": 1
+        "rate": 1,
+        "amount": 1
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 60
   },
   {
     "id": "recipe_cluster_nobelisk",
@@ -4294,14 +5016,17 @@
     "inputs": [
       {
         "itemId": "nobelisk",
-        "rate": 7.5
+        "rate": 7.5,
+        "amount": 3
       },
       {
         "itemId": "smokeless_powder",
-        "rate": 10
+        "rate": 10,
+        "amount": 4
       }
     ],
-    "machineId": "assembler"
+    "machineId": "assembler",
+    "cycleTime": 24
   },
   {
     "id": "recipe_nuke_nobelisk",
@@ -4310,21 +5035,26 @@
     "inputs": [
       {
         "itemId": "nobelisk",
-        "rate": 2.5
+        "rate": 2.5,
+        "amount": 5
       },
       {
         "itemId": "encased_uranium_cell",
-        "rate": 10
+        "rate": 10,
+        "amount": 20
       },
       {
         "itemId": "smokeless_powder",
-        "rate": 5
+        "rate": 5,
+        "amount": 10
       },
       {
         "itemId": "ai_limiter",
-        "rate": 3
+        "rate": 3,
+        "amount": 6
       }
     ],
-    "machineId": "manufacturer"
+    "machineId": "manufacturer",
+    "cycleTime": 120
   }
 ]

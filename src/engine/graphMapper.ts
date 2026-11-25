@@ -2,6 +2,7 @@ import { Edge, Node } from '@xyflow/react';
 import dagre from 'dagre';
 import { belts, BeltId, items, machines, recipes, isFluidItem } from './data';
 import { SolverNode } from './solver';
+import { getEffectiveInputRate, getMachinePowerMW } from './worldSettings';
 
 function consolidateLeafNodes(root: SolverNode): SolverNode {
   const leafNodesByItem = new Map<string, SolverNode[]>();
@@ -38,6 +39,7 @@ function consolidateLeafNodes(root: SolverNode): SolverNode {
       inputs: [],
       clockSpeed: first.clockSpeed,
       somerslooped: first.somerslooped,
+      powerPerMachine: first.powerPerMachine,
       overflowRate: first.overflowRate,
       isUnderclocked: first.isUnderclocked,
       purity: first.purity,
@@ -64,7 +66,14 @@ function generateId() {
 
 export type LayoutMode = 'aggregated' | 'expanded';
 
-export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'aggregated', beltId: BeltId = 'mk1', pipeTier: 'mk1' | 'mk2' = 'mk1', powerMultiplier: number = 1): { nodes: Node[]; edges: Edge[] } {
+export function mapSolverResultToGraph(
+  root: SolverNode,
+  mode: LayoutMode = 'aggregated',
+  beltId: BeltId = 'mk1',
+  pipeTier: 'mk1' | 'mk2' = 'mk1',
+  powerMultiplier: number = 1,
+  costMultiplier: number = 1
+): { nodes: Node[]; edges: Edge[] } {
   const consolidatedRoot = consolidateLeafNodes(root);
   const nodeList: Node[] = [];
   const edgeList: Edge[] = [];
@@ -161,7 +170,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
 
     const actualOutputRatePerMachine = machineCount > 0 ? (rate / machineCount) : (recipe?.outputRate || 0);
     // Overclock power exponent log2(2.5) ≈ 1.321928 (Satisfactory 0.7.0.0+).
-    const actualPowerUsagePerMachine = machineInfo.powerUsage * powerMultiplier * Math.pow(speedMultiplier, Math.log2(2.5)) * (isSomerslooped ? 4 : 1);
+    const actualPowerUsagePerMachine = getMachinePowerMW(machineInfo.powerUsage, clock, isSomerslooped, powerMultiplier);
 
     return {
       label,
@@ -180,7 +189,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
         itemId: inp.itemId,
         name: items[inp.itemId]?.name || inp.itemId,
         imageUrl: items[inp.itemId]?.imageUrl,
-        ratePerMachine: inp.rate * speedMultiplier,
+        ratePerMachine: getEffectiveInputRate(inp, recipe?.cycleTime, costMultiplier) * speedMultiplier,
       })),
       byproductDetails: (recipe?.byproducts || []).map(bp => ({
         itemId: bp.itemId,
@@ -742,7 +751,7 @@ export function mapSolverResultToGraph(root: SolverNode, mode: LayoutMode = 'agg
       }
     }
   } else {
-    traverseAggregated(consolidatedRoot);
+    traverseAggregated(root);
   }
 
   // Apply Dagre layout — use taller nodes to accommodate recipe details
