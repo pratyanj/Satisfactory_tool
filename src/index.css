@@ -4332,25 +4332,107 @@ input[type="number"] {
   position: relative;
 }
 
-.ib-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 20px;
-  border-bottom: 2px solid #2a2d33;
-  background: rgba(18, 19, 22, 0.4);
+/* ── Top Gunmetal Header (matches Hardware Plate cards) ── */
+.ib-topbar {
+  background: #0b0d13;
+  border-bottom: 1px solid #212636;
+  padding: 10px 24px;
   flex-shrink: 0;
-  position: relative;
+  z-index: 10;
 }
 
-.ib-toolbar::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 30px;
-  right: 30px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #f4872140, transparent);
+.ib-topbar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ib-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ib-back-btn {
+  background: #141822;
+  border: 1px solid #262d3d;
+  border-radius: 5px;
+  color: #cbd5e1;
+}
+
+.ib-back-btn:hover {
+  border-color: #f48721;
+  color: #f48721;
+}
+
+.ib-topbar-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ib-topbar-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px;
+  background: #12151e;
+  border: 1px solid #222838;
+  border-radius: 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #7c8596;
+  flex-shrink: 0;
+}
+
+.ib-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.7);
+}
+
+/* ── Unified Hardware Plate Control Deck (machined metal bezel) ── */
+.ib-controls-plate {
+  max-width: 1280px;
+  margin: 0 auto 18px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: linear-gradient(180deg, #323845 0%, #232833 35%, #1c202a 100%);
+  border: 1px solid #090b10;
+  border-radius: 9px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.65),
+    0 8px 24px rgba(0, 0, 0, 0.55);
+}
+
+.ib-controls-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 11px;
+  background: #0d1016;
+  border: 1px solid #080a0e;
+  border-radius: 5px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
 }
 
 .ib-search-wrap {
@@ -4358,162 +4440,261 @@ input[type="number"] {
   align-items: center;
   gap: 8px;
   flex: 1;
-  max-width: 360px;
-  background: #111214;
-  border: 1px solid #2a2d33;
-  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-  padding: 6px 12px;
-  transition: all 0.2s ease;
+  min-width: 220px;
+  max-width: 420px;
+  background: #10141d;
+  border: 1px solid #252c3d;
+  border-radius: 6px;
+  padding: 7px 11px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.55);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
 }
 
 .ib-search-wrap:focus-within {
   border-color: #f48721;
-  box-shadow: 0 0 10px rgba(244, 135, 33, 0.15);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(244, 135, 33, 0.25);
 }
 
 .ib-search-icon {
-  color: #8E9299;
+  color: #64748b;
   flex-shrink: 0;
+}
+
+.ib-search-wrap:focus-within .ib-search-icon {
+  color: #f48721;
 }
 
 .ib-search {
   flex: 1;
+  min-width: 0;
   background: transparent;
   border: none;
   outline: none;
-  color: #e4e3e0;
-  font-size: 13px;
-  font-family: monospace;
+  color: #f1f5f9;
+  font-size: 12.5px;
+  font-family: inherit;
 }
 
 .ib-search::placeholder {
-  color: #4b5563;
+  color: #525b6e;
 }
 
 .ib-search-clear {
-  background: none;
-  border: none;
-  color: #8E9299;
+  background: #171c28;
+  border: 1px solid #262d3d;
+  border-radius: 4px;
+  color: #8f98aa;
   cursor: pointer;
-  font-size: 11px;
-  padding: 0;
-  line-height: 1;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.14s ease;
 }
 
 .ib-search-clear:hover {
-  color: #ef4444;
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.45);
 }
 
-.ib-count {
-  font-size: 11px;
-  color: #f48721;
-  font-family: monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  white-space: nowrap;
+.ib-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .ib-pagesize-selector {
   display: flex;
   align-items: center;
-  gap: 4px;
-  background: rgba(17, 18, 20, 0.6);
-  border: 1px solid #2a2d33;
-  padding: 2px;
-  border-radius: 4px;
-  margin-left: auto;
+  gap: 3px;
+  background: #10141d;
+  border: 1px solid #252c3d;
+  padding: 3px;
+  border-radius: 6px;
 }
 
 .ib-pagesize-label {
-  font-size: 10px;
-  font-family: monospace;
-  color: #8E9299;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #6b7485;
+  letter-spacing: 0.08em;
+  padding: 0 7px;
 }
 
 .ib-pagesize-btn {
   background: transparent;
-  border: none;
-  color: #8E9299;
-  font-family: monospace;
-  font-size: 10px;
+  border: 1px solid transparent;
+  color: #8f98aa;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10.5px;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 4px 9px;
   cursor: pointer;
-  border-radius: 3px;
-  transition: all 0.15s ease;
-  line-height: 1.2;
+  border-radius: 4px;
+  transition: all 0.14s ease;
+  line-height: 1.1;
 }
 
 .ib-pagesize-btn:hover {
-  color: #f48721;
-  background: rgba(244, 135, 33, 0.05);
+  color: #f1f5f9;
+  background: #181e2c;
 }
 
 .ib-pagesize-btn--active {
-  background: rgba(244, 135, 33, 0.12);
+  background: #f48721;
+  color: #080a0f;
+  font-weight: 900;
+  border-color: #f48721;
+}
+
+.ib-pagesize-btn--active:hover {
+  background: #f48721;
+  color: #080a0f;
+}
+
+.ib-count-plate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  background: #121622;
+  border: 1px solid #252c3d;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ib-count-num {
+  font-size: 11.5px;
+  font-weight: 900;
   color: #f48721;
-  border: 1px solid rgba(244, 135, 33, 0.25);
+  font-variant-numeric: tabular-nums;
 }
 
-.ib-cats {
+.ib-count-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #7c8596;
+}
+
+/* ── Category Filter Chips (mini Hardware Plates) ── */
+.ib-cats-bay {
   display: flex;
-  gap: 8px;
-  padding: 10px 20px;
-  border-bottom: 1px solid #2a2d33;
-  background: rgba(18, 19, 22, 0.2);
-  flex-shrink: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.ib-cats::-webkit-scrollbar {
-  display: none;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 11px;
+  background: linear-gradient(180deg, #10141c 0%, #0b0e14 100%);
+  border: 1px solid #080a0e;
+  border-radius: 5px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.75), 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .ib-cat-pill {
-  padding: 4px 12px;
+  display: inline-flex;
+  align-items: stretch;
+  padding: 0;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #232939;
+  background: #0b0d13;
+  color: #94a3b8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 10px;
   font-weight: 700;
-  font-family: monospace;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
+  letter-spacing: 0.07em;
+  transition: all 0.14s ease;
+}
+
+.ib-cat-pill-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 9px;
+}
+
+.ib-cat-pill-mark {
+  width: 8px;
+  height: 8px;
+  border-radius: 1.5px;
+  background: #2f374a;
+  flex-shrink: 0;
+  transition: background 0.14s ease;
+}
+
+.ib-cat-pill-name {
   white-space: nowrap;
-  border: 1px solid #2a2d33;
-  background: rgba(255, 255, 255, 0.02);
-  color: #8E9299;
-  clip-path: polygon(6px 0, 100% 0, 100% 100%, 0 100%);
-  transition: all 0.15s ease;
+}
+
+.ib-cat-pill-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  padding: 0 7px;
+  background: #131722;
+  border-left: 1px solid #212737;
+  color: #6b7485;
+  font-size: 9.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  transition: all 0.14s ease;
 }
 
 .ib-cat-pill:hover {
-  color: #f48721;
-  background: rgba(244, 135, 33, 0.04);
-  border-color: #f4872140;
+  border-color: #3a445c;
+  background: #141925;
+  color: #f1f5f9;
+}
+
+.ib-cat-pill:hover .ib-cat-pill-mark {
+  background: rgba(244, 135, 33, 0.7);
+}
+
+.ib-cat-pill:hover .ib-cat-pill-count {
+  color: #cbd5e1;
 }
 
 .ib-cat-pill--active {
-  background: #2a2d33;
-  border-color: #2a2d33;
-  color: #fff;
-  border-bottom: 2px solid #f48721;
-  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 100%, 0 100%);
+  border-color: #f48721;
+  background: linear-gradient(180deg, rgba(244, 135, 33, 0.16), rgba(244, 135, 33, 0.08));
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(244, 135, 33, 0.18);
+}
+
+.ib-cat-pill--active .ib-cat-pill-mark {
+  background: repeating-linear-gradient(
+    -45deg,
+    #f48721,
+    #f48721 2.5px,
+    #11151e 2.5px,
+    #11151e 4.5px
+  );
+  width: 10px;
+  height: 10px;
+}
+
+.ib-cat-pill--active .ib-cat-pill-count {
+  background: #f48721;
+  border-left-color: #f48721;
+  color: #080a0f;
 }
 
 .ib-grid-wrap {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 22px 24px;
 }
 
 .ib-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 12px;
-  max-width: 960px;
+  grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+  gap: 14px;
+  max-width: 1280px;
   margin: 0 auto;
 }
 
@@ -4525,6 +4706,209 @@ input[type="number"] {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 80px 20px;
+}
+
+/* Design 4: 3D Machined Metal Frame Plate Card */
+.ib-plate-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 5px;
+  background: linear-gradient(180deg, #323845 0%, #242934 24%, #1d212b 82%, #292f3b 100%);
+  border: 1px solid #090b10;
+  border-radius: 9px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.65),
+    0 8px 22px rgba(0, 0, 0, 0.65);
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+  font-family: inherit;
+  text-align: left;
+  height: 100%;
+}
+
+.ib-plate-card:hover {
+  border-color: #f48721;
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 135, 33, 0.45),
+    0 12px 28px rgba(0, 0, 0, 0.72),
+    0 0 0 1px rgba(244, 135, 33, 0.45);
+}
+
+.ib-plate-head {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  min-height: 32px;
+  background: #0c0f15;
+  border: 1px solid #080a0e;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.85),
+    0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.ib-plate-head-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.ib-plate-hazard {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    #f48721,
+    #f48721 3px,
+    #11151e 3px,
+    #11151e 5.5px
+  );
+  box-shadow: 0 0 6px rgba(244, 135, 33, 0.25);
+}
+
+.ib-plate-hazard-svg {
+  flex-shrink: 0;
+  display: block;
+}
+
+.ib-plate-cat {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #aeb7c7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ib-plate-corner-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  padding: 0 9px;
+  background: #f48721;
+  color: #080a0f;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.25);
+}
+
+/* 3D Mitered Metal Showcase Frame */
+.ib-plate-stage {
+  padding: 3px;
+  background: linear-gradient(180deg, #2e3441 0%, #1c212b 100%);
+  border: 1px solid #080a0e;
+  border-radius: 5px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.ib-plate-bay {
+  height: 132px;
+  border-style: solid;
+  border-width: 11px;
+  border-top-color: #10141c;
+  border-left-color: #232936;
+  border-right-color: #232936;
+  border-bottom-color: #343b4a;
+  border-radius: 3px;
+  background: radial-gradient(circle at 50% 48%, #202836 0%, #141a24 68%, #0f141d 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.8),
+    inset 0 8px 18px rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 6px;
+}
+
+.ib-plate-img {
+  width: 82px !important;
+  height: 82px !important;
+  max-width: 82px !important;
+  max-height: 82px !important;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.78));
+  transition: transform 0.2s ease;
+}
+
+.ib-plate-card:hover .ib-plate-img {
+  transform: scale(1.06);
+}
+
+.ib-plate-foot {
+  margin-top: 0;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, #10141c 0%, #0b0e14 100%);
+  border: 1px solid #080a0e;
+  border-radius: 5px;
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.75),
+    0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.ib-plate-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #f1f5f9;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+  transition: color 0.15s ease;
+}
+
+.ib-plate-card:hover .ib-plate-title {
+  color: #ffffff;
+}
+
+.ib-plate-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #7c8596;
+  white-space: nowrap;
+}
+
+.ib-plate-meta-icon {
+  color: #64748b;
+  transition: color 0.15s ease;
+}
+
+.ib-plate-card:hover .ib-plate-meta-icon {
+  color: #f48721;
 }
 
 .ib-card {
@@ -7907,12 +8291,19 @@ input[type="number"] {
 
 /* ── 5. ITEM BROWSER (Codex) & DETAIL VIEW OVERRIDES ── */
 @media (max-width: 768px) {
-  /* Codex toolbar search bar size mapping */
-  .ib-toolbar {
+  .ib-topbar {
+    padding: 8px 12px !important;
+  }
+
+  .ib-topbar-status {
+    display: none !important;
+  }
+
+  .ib-controls-head {
     flex-direction: column !important;
     align-items: stretch !important;
-    gap: 12px !important;
-    padding: 12px 14px !important;
+    gap: 10px !important;
+    padding: 10px !important;
   }
 
   .ib-search-wrap {
@@ -7920,13 +8311,8 @@ input[type="number"] {
     width: 100% !important;
   }
 
-  .ib-count {
-    text-align: right;
-  }
-
-  .ib-pagesize-selector {
-    margin-left: 0 !important;
-    justify-content: center;
+  .ib-controls-right {
+    justify-content: space-between !important;
   }
 
   .ib-grid-wrap {
@@ -7934,8 +8320,8 @@ input[type="number"] {
   }
 
   .ib-grid {
-    grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)) !important;
-    gap: 8px !important;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+    gap: 10px !important;
   }
 
   /* Codex Details Page column stacking */
