@@ -1,4 +1,5 @@
 import React from 'react';
+import { ArrowLeft, FileText, Lock } from 'lucide-react';
 import { buildings, items, recipes, getBuildingMachineId } from '../engine/data';
 import { AppImage } from './AppImage';
 import { RecipeTable } from './ItemDetail';
@@ -62,23 +63,21 @@ export function BuildingDetail({ buildingId, onBack, onNavigateItem }: Props) {
   return (
     <div className="id-root">
       {/* FICSIT Telemetry Header */}
-      <div className="relative z-10 flex items-center gap-3 px-5 pt-3 pb-2 border-b border-[#2a2d33] bg-[#121316]/60 shrink-0">
-        <div style={{ width: 3, height: 14, background: 'linear-gradient(180deg, #f48721, #c45700)', borderRadius: 2 }} />
-        <span className="text-[9px] font-mono tracking-[0.25em] text-[#f48721] uppercase font-bold">
-          FICSIT // Building Specification
-        </span>
-        <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, #f4872130, transparent)' }} />
-        <span className="text-[8px] font-mono text-[#6b7280] tracking-widest uppercase">SCHEMA STATUS: COMPLIANT</span>
-      </div>
-
-      {/* Back bar */}
-      <div className="id-topbar flex justify-between items-center pr-6">
-        <div className="flex items-center gap-3">
-          <button className="id-back-btn" onClick={onBack}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6" /></svg>
-            Buildings
-          </button>
-          <span className="id-breadcrumb">/ {b.name}</span>
+      <div className="ib-topbar">
+        <div className="ib-topbar-inner">
+          <div className="ib-topbar-left">
+            <button type="button" className="cdx-back-btn ib-back-btn" onClick={onBack}>
+              <ArrowLeft size={13} />
+              <span>Buildings</span>
+            </button>
+            <span className="ib-plate-hazard" aria-hidden="true" />
+            <span className="ib-topbar-title">FICSIT // BUILDING SPECIFICATION</span>
+            <span className="id-breadcrumb">/ {b.name}</span>
+          </div>
+          <div className="ib-topbar-status">
+            <span className="ib-status-dot" />
+            <span>SCHEMA // COMPLIANT</span>
+          </div>
         </div>
       </div>
 
@@ -87,25 +86,26 @@ export function BuildingDetail({ buildingId, onBack, onNavigateItem }: Props) {
         <div className="id-col">
           <div className="sf-item-hero-card">
             <div className="sf-item-hero-header">
-              <span className="sf-item-hero-title">{b.name.toUpperCase()}</span>
+              <div className="sf-item-hero-title-wrap">
+                <span className="ib-plate-hazard" aria-hidden="true" />
+                <span className="sf-item-hero-title">{b.name.toUpperCase()}</span>
+              </div>
+              <span className="sf-item-hero-cat-tag">{b.category}</span>
             </div>
             <div className="sf-item-hero-body">
               <div className="sf-item-hero-img-wrap">
-                <div className="sf-item-hero-img-grid" />
                 <AppImage idKey={b.id} fallbackUrl={b.imageUrl} alt={b.name} className="sf-item-hero-img" />
-                <div className="sf-item-hero-caution-l" />
-                <div className="sf-item-hero-caution-r" />
               </div>
               <div className="sf-item-hero-info">
                 <div className="sf-item-hero-row">
                   <span className="sf-item-hero-label">CATEGORY</span>
                   <span className="sf-item-hero-val">{b.category}</span>
                 </div>
-                {GENERATOR_SPECS[b.id] ? (
+                {generatorInfo ? (
                   <div className="sf-item-hero-row">
                     <span className="sf-item-hero-label">POWER GENERATED</span>
-                    <span className="sf-item-hero-val" style={{ color: '#22c55e' }}>
-                      {GENERATOR_SPECS[b.id].powerGen}
+                    <span className="sf-item-hero-val" style={{ color: '#4ade80' }}>
+                      {generatorInfo.powerGen}
                     </span>
                   </div>
                 ) : (
@@ -131,7 +131,13 @@ export function BuildingDetail({ buildingId, onBack, onNavigateItem }: Props) {
           </div>
 
           {b.description && (
-            <div className="bld-desc-card">{b.description}</div>
+            <div className="bld-desc-plate">
+              <div className="bld-desc-head">
+                <FileText size={11} />
+                <span>SPECIFICATION NOTES</span>
+              </div>
+              <div className="bld-desc-body">{b.description}</div>
+            </div>
           )}
         </div>
 
@@ -146,16 +152,22 @@ export function BuildingDetail({ buildingId, onBack, onNavigateItem }: Props) {
                 {b.buildCost.map(c => (
                   <button
                     key={c.name}
-                    className="sf-recipe-item-chip"
+                    type="button"
+                    className="bld-cost-card"
                     onClick={() => c.itemId && onNavigateItem(c.itemId)}
                     disabled={!c.itemId}
-                    title={c.name}
+                    title={`${c.name} × ${c.amount}`}
                   >
-                    <AppImage idKey={c.itemId ?? ''} fallbackUrl={c.itemId ? items[c.itemId]?.imageUrl : undefined} alt={c.name} className="sf-recipe-item-img" />
-                    <div className="sf-recipe-item-details">
-                      <span className="sf-recipe-item-name">{c.name}</span>
-                      <span className="sf-recipe-item-rate">× {c.amount}</span>
-                    </div>
+                    <span className="bld-cost-img-well">
+                      <AppImage
+                        idKey={c.itemId ?? ''}
+                        fallbackUrl={c.itemId ? items[c.itemId]?.imageUrl : undefined}
+                        alt={c.name}
+                        className="bld-cost-img"
+                      />
+                    </span>
+                    <span className="bld-cost-name">{c.name}</span>
+                    <span className="bld-cost-qty">×{c.amount}</span>
                   </button>
                 ))}
               </div>
@@ -174,17 +186,21 @@ export function BuildingDetail({ buildingId, onBack, onNavigateItem }: Props) {
                   return (
                     <button
                       key={f.itemId}
-                      className="sf-recipe-item-chip"
+                      type="button"
+                      className="bld-cost-card"
                       onClick={() => onNavigateItem(f.itemId)}
                       title={it.name}
                     >
-                      <AppImage idKey={f.itemId} fallbackUrl={it.imageUrl} alt={it.name} className="sf-recipe-item-img" />
-                      <div className="sf-recipe-item-details">
-                        <span className="sf-recipe-item-name">{it.name}</span>
-                        <span className="sf-recipe-item-rate">
-                          {f.rate} /min {f.water ? `(+ ${f.water} Water/min)` : ''}
-                        </span>
-                      </div>
+                      <span className="bld-cost-img-well">
+                        <AppImage idKey={f.itemId} fallbackUrl={it.imageUrl} alt={it.name} className="bld-cost-img" />
+                      </span>
+                      <span className="bld-cost-meta">
+                        <span className="bld-cost-name">{it.name}</span>
+                        {f.water && (
+                          <span className="bld-cost-sub">+{f.water} Water/m</span>
+                        )}
+                      </span>
+                      <span className="bld-cost-qty">{f.rate}/m</span>
                     </button>
                   );
                 })}
@@ -197,11 +213,16 @@ export function BuildingDetail({ buildingId, onBack, onNavigateItem }: Props) {
               <div className="sf-recipes-sec-header">
                 <h3 className="sf-recipes-sec-title">UNLOCKED BY</h3>
               </div>
-              <div className="bld-unlock-card">
-                <span className="bld-unlock-type">{b.unlock.type}</span>
-                <div className="bld-unlock-text">
-                  <span className="bld-unlock-name">{b.unlock.schematic}</span>
-                  {b.unlock.tier != null && <span className="bld-unlock-tier">HUB Tier {b.unlock.tier}</span>}
+              <div className="bld-unlock-plate">
+                <div className="bld-unlock-card">
+                  <span className="bld-unlock-badge">
+                    <Lock size={11} />
+                    <span>{b.unlock.type}</span>
+                  </span>
+                  <div className="bld-unlock-text">
+                    <span className="bld-unlock-name">{b.unlock.schematic}</span>
+                    {b.unlock.tier != null && <span className="bld-unlock-tier">HUB Tier {b.unlock.tier}</span>}
+                  </div>
                 </div>
               </div>
             </div>

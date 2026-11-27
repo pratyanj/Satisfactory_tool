@@ -1,4 +1,5 @@
 import React from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PaginationProps {
   page: number;
@@ -24,18 +25,50 @@ export function Pagination({ page, pageCount, onChange }: PaginationProps) {
   const pages = pageWindow(page, pageCount);
 
   return (
-    <div className="cdx-pager">
-      <button className="cdx-pager-btn" disabled={page <= 1} onClick={() => onChange(page - 1)}>‹ Prev</button>
-      {pages.map((p, i) =>
-        p === '…'
-          ? <span key={`e${i}`} className="cdx-pager-ellipsis">…</span>
-          : <button
-              key={p}
-              className={`cdx-pager-btn ${p === page ? 'cdx-pager-btn--active' : ''}`}
-              onClick={() => onChange(p)}
-            >{p}</button>
-      )}
-      <button className="cdx-pager-btn" disabled={page >= pageCount} onClick={() => onChange(page + 1)}>Next ›</button>
-    </div>
+    <nav className="cdx-pager" aria-label="Pagination">
+      <div className="cdx-pager-plate">
+        <div className="cdx-pager-tray">
+          <button
+            type="button"
+            className="cdx-pager-btn cdx-pager-btn--nav"
+            disabled={page <= 1}
+            onClick={() => onChange(page - 1)}
+          >
+            <ChevronLeft size={13} />
+            <span>Prev</span>
+          </button>
+
+          <div className="cdx-pager-pages">
+            {pages.map((p, i) =>
+              p === '…' ? (
+                <span key={`e${i}`} className="cdx-pager-ellipsis">
+                  …
+                </span>
+              ) : (
+                <button
+                  key={p}
+                  type="button"
+                  className={`cdx-pager-btn ${p === page ? 'cdx-pager-btn--active' : ''}`}
+                  onClick={() => onChange(p)}
+                  aria-current={p === page ? 'page' : undefined}
+                >
+                  {p}
+                </button>
+              )
+            )}
+          </div>
+
+          <button
+            type="button"
+            className="cdx-pager-btn cdx-pager-btn--nav"
+            disabled={page >= pageCount}
+            onClick={() => onChange(page + 1)}
+          >
+            <span>Next</span>
+            <ChevronRight size={13} />
+          </button>
+        </div>
+      </div>
+    </nav>
   );
 }

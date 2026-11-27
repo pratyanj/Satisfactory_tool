@@ -3,6 +3,7 @@
  * Adds PlayerMarker and ResourceNodeLayer integration
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Maximize2, Minus, Plus } from 'lucide-react';
 import { MapContainer, ImageOverlay, TileLayer, Polyline, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -51,17 +52,84 @@ function MapController({
   onBoundsChange: (b: L.LatLngBounds) => void;
 }) {
   const map = useMap();
+  const hasFittedRef = useRef(false);
+
   useEffect(() => {
     mapRef.current = map;
+    if (!hasFittedRef.current) {
+      const size = map.getSize();
+      if (size.x > 0 && size.y > 0) {
+        map.fitBounds(MAP_BOUNDS, { padding: [18, 18], animate: false });
+        hasFittedRef.current = true;
+      }
+    }
     onZoomChange(map.getZoom());
     onBoundsChange(map.getBounds());
   }, [map]);
+
   // Re-report the viewport after each pan/zoom so off-screen markers can be culled.
   useMapEvents({
     zoomend: () => { onZoomChange(map.getZoom()); onBoundsChange(map.getBounds()); },
     moveend: () => { onBoundsChange(map.getBounds()); },
   });
   return null;
+}
+
+// ─── Custom FICSIT Zoom / Reset HUD ───────────────────────────────────────────
+function MapHudControls({ zoom }: { zoom: number }) {
+  const map = useMap();
+
+  const handleZoomIn = () => {
+    map.zoomIn(0.5);
+  };
+  const handleZoomOut = () => {
+    map.zoomOut(0.5);
+  };
+  const handleFitWorld = () => {
+    map.fitBounds(MAP_BOUNDS, { padding: [18, 18], animate: true });
+  };
+
+  return (
+    <div
+      className="wmp-zoom-hud"
+      onDoubleClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
+      <button
+        type="button"
+        className="wmp-hud-btn"
+        onClick={handleZoomIn}
+        title="Zoom in"
+        aria-label="Zoom in"
+        disabled={zoom >= MAX_ZOOM}
+      >
+        <Plus size={14} />
+      </button>
+      <div className="wmp-hud-zoom-readout" title="Current zoom">
+        {zoom.toFixed(1)}×
+      </div>
+      <button
+        type="button"
+        className="wmp-hud-btn"
+        onClick={handleZoomOut}
+        title="Zoom out"
+        aria-label="Zoom out"
+        disabled={zoom <= MIN_ZOOM}
+      >
+        <Minus size={14} />
+      </button>
+      <div className="wmp-hud-divider" />
+      <button
+        type="button"
+        className="wmp-hud-btn"
+        onClick={handleFitWorld}
+        title="Fit full world map"
+        aria-label="Fit full world map"
+      >
+        <Maximize2 size={13} />
+      </button>
+    </div>
+  );
 }
 
 // Building rendering lives in BuildingFootprintLayer.tsx (footprint rectangles
@@ -261,14 +329,20 @@ export function WorldMap({
       {isImageLayer && !bgLoaded && (
         <MapImageLoader url={layerUrl} onLoaded={handleBgLoaded} />
       )}
-      
+
+      {/* Subtle top-right sector telemetry watermark */}
+      <div className="wmp-sector-badge" aria-hidden="true">
+        <span className="wmp-sector-dot" />
+        <span>MASSAGE-2(A-B)b // CARTOGRAPHY</span>
+      </div>
+
       {buildings.length > 0 && (
         <div className="world-map-search-overlay">
           <MapSearch buildings={buildings} mapRef={combinedRef} />
         </div>
       )}
 
-      {/* Layer switcher (Realistic / Game Map / No Map) */}
+      {/* Layer switcher (Terrain / Grid) */}
       {onMapLayerChange && (
         <div className="world-map-layer-switcher">
           <MapLayerSwitcher current={mapLayer} onChange={onMapLayerChange} />
@@ -278,14 +352,22 @@ export function WorldMap({
       {/* MapContainer is ALWAYS mounted so Leaflet initialises immediately.
           The loading overlay above covers it until the image is ready. */}
       <MapContainer
-        crs={CRS} center={center} zoom={DEFAULT_ZOOM} minZoom={MIN_ZOOM} maxZoom={MAX_ZOOM}
-        maxBounds={[[-MAP_IMAGE_SIZE - 16, -16], [16, MAP_IMAGE_SIZE + 16]]}
+        crs={CRS}
+        center={center}
+        zoom={DEFAULT_ZOOM}
+        minZoom={MIN_ZOOM}
+        maxZoom={MAX_ZOOM}
+        zoomSnap={0.25}
+        zoomDelta={0.5}
+        wheelPxPerZoomLevel={90}
+        maxBounds={[[-MAP_IMAGE_SIZE - 32, -32], [32, MAP_IMAGE_SIZE + 32]]}
         maxBoundsViscosity={0.8}
-        style={{ width: '100%', height: '100%', minHeight: 0, background: '#0d1117', flex: 1 }}
-        zoomControl={true}
+        style={{ width: '100%', height: '100%', minHeight: 0, background: 'transparent', flex: 1 }}
+        zoomControl={false}
         preferCanvas={true}
       >
         <MapController mapRef={combinedRef} onZoomChange={setZoom} onBoundsChange={setBounds} />
+        <MapHudControls zoom={zoom} />
         <MapStatusBar saveName={saveName} />
 
         {/* Background: self-hosted tile pyramid (default) or legacy single image */}

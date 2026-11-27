@@ -10,6 +10,8 @@ import { toPng, toSvg } from 'html-to-image';
 import { MousePointer2, Plus, Ungroup, Hand, Download, WandSparkles, SplitSquareHorizontal } from 'lucide-react';
 import ELK from 'elkjs/lib/elk.bundled.js';
 import { machines, isFluidItem } from '../../engine/data';
+import { getMachinePowerMW, type NodePurity } from '../../engine/worldSettings';
+import { AppImage } from '../AppImage';
 
 const elk = new ELK();
 
@@ -31,8 +33,11 @@ interface FactoryGraphProps {
   beltId?: string;
   pipeTier?: 'mk1' | 'mk2';
   isFullscreen?: boolean;
-  perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean; purity?: 'impure' | 'normal' | 'pure' }>;
-  onUpdatePerMachineSettings?: (itemId: string, settings: { clockSpeed?: number; somerslooped?: boolean; purity?: 'impure' | 'normal' | 'pure' }) => void;
+  perMachineSettings?: Record<string, { clockSpeed?: number; somerslooped?: boolean; purity?: NodePurity }>;
+  onUpdatePerMachineSettings?: (itemId: string, settings: { clockSpeed?: number; somerslooped?: boolean; purity?: NodePurity }) => void;
+  powerMultiplier?: number;
+  defaultNodePurity?: NodePurity;
+  disableAnimations?: boolean;
 }
 
 const nodeTypes = {
@@ -301,7 +306,9 @@ function FactoryGraphInner({
   pipeTier = 'mk1',
   isFullscreen = false,
   perMachineSettings = {},
-  onUpdatePerMachineSettings
+  onUpdatePerMachineSettings,
+  powerMultiplier = 1,
+  defaultNodePurity = 'normal',
 }: FactoryGraphProps) {
   const { getNodes, getEdges, fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -327,7 +334,7 @@ function FactoryGraphInner({
 
   const [localClock, setLocalClock] = useState<number>(100);
   const [localSomersloop, setLocalSomersloop] = useState<boolean>(false);
-  const [localPurity, setLocalPurity] = useState<'impure' | 'normal' | 'pure'>('normal');
+  const [localPurity, setLocalPurity] = useState<NodePurity>(defaultNodePurity);
 
   const isMinerNode = !!(isValidMachineNode && selectedNode?.data?.machineId?.toString().startsWith('miner'));
   const isExtractorNode = !!(isValidMachineNode && (
@@ -339,9 +346,9 @@ function FactoryGraphInner({
     if (isValidMachineNode && itemId) {
       setLocalClock(customConfig.clockSpeed ?? (selectedNode?.data?.clockSpeed as number) ?? 100);
       setLocalSomersloop(!isExtractorNode && (customConfig.somerslooped ?? (selectedNode?.data?.somerslooped as boolean) ?? false));
-      setLocalPurity(customConfig.purity ?? (selectedNode?.data?.purity as 'impure' | 'normal' | 'pure') ?? 'normal');
+      setLocalPurity(customConfig.purity ?? (selectedNode?.data?.purity as NodePurity) ?? defaultNodePurity);
     }
-  }, [itemId, isValidMachineNode, perMachineSettings, isExtractorNode]);
+  }, [itemId, isValidMachineNode, perMachineSettings, isExtractorNode, defaultNodePurity]);
 
   const handleClockChange = (newVal: number) => {
     setLocalClock(newVal);
@@ -353,7 +360,7 @@ function FactoryGraphInner({
     setLocalSomersloop(nextVal);
     onUpdatePerMachineSettings?.(itemId, { clockSpeed: localClock, somerslooped: nextVal, purity: localPurity });
   };
-  const handlePurityChange = (newPurity: 'impure' | 'normal' | 'pure') => {
+  const handlePurityChange = (newPurity: NodePurity) => {
     setLocalPurity(newPurity);
     onUpdatePerMachineSettings?.(itemId, { clockSpeed: localClock, somerslooped: localSomersloop, purity: newPurity });
   };
@@ -361,7 +368,7 @@ function FactoryGraphInner({
   const handleResetNode = () => {
     setLocalClock(100);
     setLocalSomersloop(false);
-    setLocalPurity('normal');
+    setLocalPurity(defaultNodePurity);
     onUpdatePerMachineSettings?.(itemId, { clockSpeed: undefined, somerslooped: undefined, purity: undefined });
   };
 
@@ -377,7 +384,7 @@ function FactoryGraphInner({
   const solvedSloopMult = (selectedNode?.data?.somerslooped as boolean) ? 2 : 1;
   const localSloopMult = localSomersloop ? 2 : 1;
   
-  const solvedPurity = (selectedNode?.data?.purity as 'impure' | 'normal' | 'pure') ?? 'normal';
+  const solvedPurity = (selectedNode?.data?.purity as NodePurity) ?? defaultNodePurity;
   const solvedPurityMult = solvedPurity === 'pure' ? 2.0 : solvedPurity === 'impure' ? 0.5 : 1.0;
   const localPurityMult = localPurity === 'pure' ? 2.0 : localPurity === 'impure' ? 0.5 : 1.0;
 
@@ -385,8 +392,8 @@ function FactoryGraphInner({
     ? solvedMachines * (solvedClock * solvedSloopMult * solvedPurityMult) / (localClock * localSloopMult * localPurityMult)
     : solvedMachines;
   const previewBasePower = machines[selectedNode?.data?.machineId as string]?.powerUsage || 0;
-  // Overclock power exponent log2(2.5) ≈ 1.321928 (Satisfactory 0.7.0.0+).
-  const previewPower = previewMachines * previewBasePower * Math.pow(localClock / 100, Math.log2(2.5)) * (localSomersloop ? 4 : 1);
+  // Overclock power exponent log2(2.5) ≈ 1.321928 (Satisfactory 0.7.0.0+) + world power multiplier.
+  const previewPower = previewMachines * getMachinePowerMW(previewBasePower, localClock, localSomersloop, powerMultiplier);
   // Multiply each input's solved total by this to reflect a somersloop toggle.
   const inputSloopFactor = solvedSloopMult / localSloopMult;
 
@@ -840,10 +847,11 @@ function FactoryGraphInner({
               {/* Machine Summary Box */}
               <div className="bg-[#050607] border border-[#1d2024] rounded-lg p-3 relative shrink-0 flex flex-col gap-2.5">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-[#121316] border border-[#23252a] rounded-lg p-1 flex items-center justify-center shrink-0 shadow-inner">
-                    {selectedNode.data.itemImageUrl && (
-                      <img 
-                        src={selectedNode.data.itemImageUrl as string} 
+                  <div className="w-12 h-12 bg-[#121316] border border-[#23252a] rounded-lg p-1 flex items-center justify-center shrink-0 shadow-inner overflow-hidden">
+                    {(selectedNode.data.itemId || selectedNode.data.itemImageUrl) && (
+                      <AppImage
+                        idKey={selectedNode.data.itemId as string | undefined}
+                        fallbackUrl={selectedNode.data.itemImageUrl as string | undefined}
                         className="w-10 h-10 object-contain filter drop-shadow(0 2px 4px rgba(0,0,0,0.5))"
                         alt={selectedNode.data.item as string}
                       />
@@ -1036,8 +1044,13 @@ function FactoryGraphInner({
                       return (
                         <div key={idx} className="flex items-center justify-between font-mono text-[10px]">
                           <div className="flex items-center gap-1.5 text-[#a0a4ab] min-w-0">
-                            {inp.imageUrl && (
-                              <img src={inp.imageUrl} className="w-3.5 h-3.5 object-contain shrink-0" alt={inp.name} />
+                            {(inp.itemId || inp.imageUrl) && (
+                              <AppImage
+                                idKey={inp.itemId}
+                                fallbackUrl={inp.imageUrl}
+                                className="w-3.5 h-3.5 object-contain shrink-0"
+                                alt={inp.name}
+                              />
                             )}
                             <span className="truncate max-w-[150px]">{inp.name}</span>
                           </div>

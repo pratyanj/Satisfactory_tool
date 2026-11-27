@@ -1,4 +1,5 @@
 import React from 'react';
+import { ArrowLeft, ArrowRight, Clock } from 'lucide-react';
 import { items, recipes, machines, type Recipe } from '../engine/data';
 import { AppImage } from './AppImage';
 
@@ -13,6 +14,17 @@ const RADIOACTIVE_ITEMS = new Set([
 
 function fmtRate(r: number) {
   return Number.isInteger(r) ? `${r}` : r.toFixed(r % 1 === 0.5 ? 1 : 4).replace(/\.?0+$/, '');
+}
+
+function formatRecipeName(recipe: Recipe): string {
+  return (
+    recipe.name ??
+    recipe.id
+      .replace(/^recipe_alternate_/, 'Alternate: ')
+      .replace(/^recipe_/, '')
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase())
+  );
 }
 
 interface Props {
@@ -37,52 +49,53 @@ export function ItemDetail({ itemId, onBack, onNavigate, onNavigateBuilding }: P
 
   return (
     <div className="id-root">
-      {/* FICSIT Telemetry Header */}
-      <div className="relative z-10 flex items-center gap-3 px-5 pt-3 pb-2 border-b border-[#2a2d33] bg-[#121316]/60 shrink-0">
-        <div style={{
-          width: 3, height: 14,
-          background: 'linear-gradient(180deg, #f48721, #c45700)',
-          borderRadius: 2,
-        }} />
-        <span className="text-[9px] font-mono tracking-[0.25em] text-[#f48721] uppercase font-bold">
-          FICSIT // Item Specification
-        </span>
-        <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, #f4872130, transparent)' }} />
-        <span className="text-[8px] font-mono text-[#6b7280] tracking-widest uppercase">
-          {isRadioactive ? 'HAZARD STATUS: CRITICAL' : 'SCHEMA STATUS: COMPLIANT'}
-        </span>
-      </div>
+      {/* Unified Machined Top Header */}
+      <div className="ib-topbar">
+        <div className="ib-topbar-inner">
+          <div className="ib-topbar-left">
+            <button type="button" className="cdx-back-btn ib-back-btn" onClick={onBack}>
+              <ArrowLeft size={13} />
+              <span>Items</span>
+            </button>
+            <span className="ib-plate-hazard" aria-hidden="true" />
+            <span className="ib-topbar-title">FICSIT // ITEM SPECIFICATION</span>
+            <span className="id-breadcrumb">/ {item.name}</span>
+          </div>
 
-      {/* Back bar */}
-      <div className="id-topbar flex justify-between items-center pr-6">
-        <div className="flex items-center gap-3">
-          <button className="id-back-btn" onClick={onBack}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-            Item Browser
-          </button>
-          <span className="id-breadcrumb">/ {item.name}</span>
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="ib-topbar-status">
+              <span
+                className="ib-status-dot"
+                style={isRadioactive ? { background: '#ef4444', boxShadow: '0 0 8px rgba(239,68,68,0.75)' } : undefined}
+              />
+              <span>{isRadioactive ? 'HAZARD // CRITICAL' : 'SCHEMA // COMPLIANT'}</span>
+            </div>
+            {(producingRecipes.length > 0 || usedAsIngredient.length > 0) && (
+              <ViewToggle viewMode={viewMode} onChange={setViewMode} />
+            )}
+          </div>
         </div>
-        
-        {(producingRecipes.length > 0 || usedAsIngredient.length > 0) && (
-          <ViewToggle viewMode={viewMode} onChange={setViewMode} />
-        )}
       </div>
 
       <div className="id-body">
         {/* Left column */}
         <div className="id-col">
-          {/* Premium FICSIT Hero Card */}
+          {/* Machined Gunmetal Hero Card */}
           <div className={`sf-item-hero-card ${isRadioactive ? 'sf-item-hero-card--radioactive' : ''}`}>
             <div className="sf-item-hero-header">
-              <span className="sf-item-hero-title">{item.name.toUpperCase()}</span>
-              {isRadioactive && <span className="sf-item-hero-hazard">☢ HAZARD</span>}
+              <div className="sf-item-hero-title-wrap">
+                <span className="ib-plate-hazard" aria-hidden="true" />
+                <span className="sf-item-hero-title">{item.name.toUpperCase()}</span>
+              </div>
+              {isRadioactive ? (
+                <span className="sf-item-hero-hazard">☢ HAZARD</span>
+              ) : (
+                <span className="sf-item-hero-cat-tag">{item.category}</span>
+              )}
             </div>
             <div className="sf-item-hero-body">
               <div className="sf-item-hero-img-wrap">
-                <div className="sf-item-hero-img-grid" />
                 <AppImage idKey={item.id} fallbackUrl={item.imageUrl} alt={item.name} className="sf-item-hero-img" />
-                <div className="sf-item-hero-caution-l" />
-                <div className="sf-item-hero-caution-r" />
               </div>
               <div className="sf-item-hero-info">
                 <div className="sf-item-hero-row">
@@ -277,8 +290,8 @@ export function RecipeCard({ recipe, highlightId, onNavigate, onNavigateBuilding
           >
             <div className="sf-recipe-flow-machine-glow" />
             <div className="sf-recipe-flow-machine-core">
-              {machine && machine.imageUrl ? (
-                <img src={machine.imageUrl} alt={machine.name} className="sf-recipe-flow-machine-img" />
+              {machine ? (
+                <AppImage idKey={machine.id} fallbackUrl={machine.imageUrl} alt={machine.name} className="sf-recipe-flow-machine-img" />
               ) : (
                 <span className="sf-recipe-flow-machine-placeholder">🔨</span>
               )}
@@ -415,111 +428,172 @@ function ViewToggle({ viewMode, onChange }: { viewMode: 'flow' | 'table'; onChan
 // ============================================================
 // Table View Components
 // ============================================================
-export function RecipeTable({ recipes, highlightId, onNavigate, onNavigateBuilding }: { recipes: Recipe[]; highlightId: string; onNavigate: (id: string) => void; onNavigateBuilding: (id: string) => void }) {
+export function RecipeTable({
+  recipes,
+  highlightId,
+  onNavigate,
+  onNavigateBuilding,
+}: {
+  recipes: Recipe[];
+  highlightId: string;
+  onNavigate: (id: string) => void;
+  onNavigateBuilding?: (id: string) => void;
+}) {
   return (
     <div className="sf-rt">
-      {/* Header row */}
-      <div className="sf-rt-header">
-        <div className="sf-rt-th sf-rt-th--name">RECIPE NAME</div>
-        <div className="sf-rt-th sf-rt-th--ingredients">INGREDIENTS</div>
-        <div className="sf-rt-th sf-rt-th--products">PRODUCTS</div>
-        <div className="sf-rt-th sf-rt-th--machine">MACHINE</div>
-      </div>
-      {/* Data rows */}
-      {recipes.map(r => (
-        <RecipeTableRow key={r.id} recipe={r} highlightId={highlightId} onNavigate={onNavigate} onNavigateBuilding={onNavigateBuilding} />
+      {recipes.map((r) => (
+        <RecipeTableRow
+          key={r.id}
+          recipe={r}
+          highlightId={highlightId}
+          onNavigate={onNavigate}
+          onNavigateBuilding={onNavigateBuilding}
+        />
       ))}
     </div>
   );
 }
 
-function RecipeTableRow({ recipe, highlightId, onNavigate, onNavigateBuilding }: { recipe: Recipe; highlightId: string; onNavigate: (id: string) => void; onNavigateBuilding: (id: string) => void }) {
+function RecipeIoPill({
+  itemId,
+  rate,
+  isHighlighted,
+  isByproduct,
+  onNavigate,
+}: {
+  itemId: string;
+  rate: number;
+  isHighlighted: boolean;
+  isByproduct?: boolean;
+  onNavigate: (id: string) => void;
+}) {
+  const it = items[itemId];
+  if (!it) return null;
+
+  return (
+    <button
+      type="button"
+      className={`sf-rt-pill ${isHighlighted ? 'sf-rt-pill--highlight' : ''} ${
+        isByproduct ? 'sf-rt-pill--byproduct' : ''
+      }`}
+      onClick={() => onNavigate(itemId)}
+      title={`${it.name} (${fmtRate(rate)}/min)`}
+    >
+      <span className="sf-rt-pill-img-wrap">
+        <AppImage
+          idKey={itemId}
+          fallbackUrl={it.imageUrl}
+          alt={it.name}
+          className="sf-rt-pill-img"
+        />
+      </span>
+      <span className="sf-rt-pill-info">
+        <span className="sf-rt-pill-name">{it.name}</span>
+        <span className="sf-rt-pill-rate">
+          {fmtRate(rate)}
+          <span className="sf-rt-pill-unit">/m</span>
+        </span>
+      </span>
+    </button>
+  );
+}
+
+function RecipeTableRow({
+  recipe,
+  highlightId,
+  onNavigate,
+  onNavigateBuilding,
+}: {
+  recipe: Recipe;
+  highlightId: string;
+  onNavigate: (id: string) => void;
+  onNavigateBuilding?: (id: string) => void;
+}) {
   const machine = machines[recipe.machineId];
   const isAlternate = recipe.id.startsWith('recipe_alternate_');
-  const recipeName = recipe.name ?? recipe.id
-    .replace(/^recipe_alternate_/, 'Alternate: ')
-    .replace(/^recipe_/, '')
-    .replace(/_/g, ' ')
-    .replace(/\b\w/g, c => c.toUpperCase());
+  const recipeName = formatRecipeName(recipe);
 
   const allOutputs = [
-    { itemId: recipe.outputItemId, rate: recipe.outputRate },
-    ...(recipe.byproducts ?? []),
+    { itemId: recipe.outputItemId, rate: recipe.outputRate, isByproduct: false },
+    ...(recipe.byproducts ?? []).map((b) => ({ ...b, isByproduct: true })),
   ];
 
   return (
-    <div className="sf-rt-row">
-      {/* Recipe Name */}
-      <div className="sf-rt-td sf-rt-td--name">
-        {isAlternate && <span className="sf-recipe-card-alt-badge">ALT</span>}
-        <span className="sf-rt-recipe-name">{recipeName}</span>
-      </div>
+    <article className={`sf-rt-row-card ${isAlternate ? 'is-alternate' : ''}`}>
+      {/* Header Bar: Recipe Identity + Full Machine Telemetry */}
+      <div className="sf-rt-row-head">
+        <div className="sf-rt-row-title-wrap">
+          {isAlternate && <span className="sf-recipe-card-alt-badge">ALT</span>}
+          <span className="sf-rt-recipe-name">{recipeName}</span>
+          {recipe.cycleTime != null && (
+            <span className="sf-rt-cycle-pill" title="Cycle duration">
+              <Clock size={10} />
+              <span>{recipe.cycleTime}s</span>
+            </span>
+          )}
+        </div>
 
-      {/* Ingredients */}
-      <div className="sf-rt-td sf-rt-td--ingredients">
-        {recipe.inputs.map((inp, idx) => {
-          const it = items[inp.itemId];
-          if (!it) return null;
-          return (
-            <React.Fragment key={inp.itemId}>
-              <button
-                className={`sf-rt-chip ${inp.itemId === highlightId ? 'sf-rt-chip--highlight' : ''}`}
-                onClick={() => onNavigate(inp.itemId)}
-                title={it.name}
-              >
-                <AppImage idKey={inp.itemId} fallbackUrl={it.imageUrl} alt={it.name} className="sf-rt-chip-img" />
-                <span className="sf-rt-chip-rate">
-                  {fmtRate(inp.rate)}<span className="sf-rt-chip-unit">/min</span>
-                </span>
-              </button>
-              {idx < recipe.inputs.length - 1 && <span className="sf-rt-op">+</span>}
-            </React.Fragment>
-          );
-        })}
-      </div>
-
-      {/* Products */}
-      <div className="sf-rt-td sf-rt-td--products">
-        <span className="sf-rt-op sf-rt-op--eq">=</span>
-        {allOutputs.map((out, idx) => {
-          const it = items[out.itemId];
-          if (!it) return null;
-          return (
-            <React.Fragment key={out.itemId}>
-              <button
-                className={`sf-rt-chip ${out.itemId === highlightId ? 'sf-rt-chip--highlight' : ''}`}
-                onClick={() => onNavigate(out.itemId)}
-                title={it.name}
-              >
-                <AppImage idKey={out.itemId} fallbackUrl={it.imageUrl} alt={it.name} className="sf-rt-chip-img" />
-                <span className="sf-rt-chip-rate">
-                  {fmtRate(out.rate)}<span className="sf-rt-chip-unit">/min</span>
-                </span>
-              </button>
-              {idx < allOutputs.length - 1 && <span className="sf-rt-op">+</span>}
-            </React.Fragment>
-          );
-        })}
-      </div>
-
-      {/* Machine */}
-      <div className="sf-rt-td sf-rt-td--machine">
         {machine ? (
           <button
             type="button"
-            className="flex items-center gap-1.5 hover:text-[#f48721] transition-colors outline-none cursor-pointer bg-transparent border-none text-left"
-            onClick={() => onNavigateBuilding(recipe.machineId)}
-            title={`View ${machine.name} specifications`}
+            className="sf-rt-machine-btn"
+            disabled={!onNavigateBuilding}
+            onClick={() => onNavigateBuilding?.(recipe.machineId)}
+            title={onNavigateBuilding ? `View ${machine.name} specifications` : machine.name}
           >
-            {machine.imageUrl && (
-              <img src={machine.imageUrl} alt={machine.name} className="sf-rt-machine-img" />
+            <AppImage
+              idKey={machine.id}
+              fallbackUrl={machine.imageUrl}
+              alt={machine.name}
+              className="sf-rt-machine-img"
+            />
+            <span className="sf-rt-machine-name">{machine.name}</span>
+            {machine.powerUsage > 0 && (
+              <span className="sf-rt-machine-power">{machine.powerUsage} MW</span>
             )}
-            <span className="sf-rt-machine-name">{machine.name} {machine.powerUsage ? `(${machine.powerUsage} MW)` : ''}</span>
           </button>
         ) : (
-          <span className="sf-rt-machine-name" style={{ opacity: 0.4 }}>Craft Bench</span>
+          <span className="sf-rt-machine-bench">Craft Bench</span>
         )}
       </div>
-    </div>
+
+      {/* Conversion Body: Inputs -> Products */}
+      <div className="sf-rt-row-body">
+        <div className="sf-rt-io-col">
+          <span className="sf-rt-io-label">INPUTS</span>
+          <div className="sf-rt-io-pills">
+            {recipe.inputs.map((inp) => (
+              <RecipeIoPill
+                key={inp.itemId}
+                itemId={inp.itemId}
+                rate={inp.rate}
+                isHighlighted={inp.itemId === highlightId}
+                onNavigate={onNavigate}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="sf-rt-flow-arrow" aria-hidden="true">
+          <ArrowRight size={15} />
+        </div>
+
+        <div className="sf-rt-io-col sf-rt-io-col--out">
+          <span className="sf-rt-io-label">PRODUCTS</span>
+          <div className="sf-rt-io-pills">
+            {allOutputs.map((out) => (
+              <RecipeIoPill
+                key={out.itemId}
+                itemId={out.itemId}
+                rate={out.rate}
+                isHighlighted={out.itemId === highlightId}
+                isByproduct={out.isByproduct}
+                onNavigate={onNavigate}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </article>
   );
 }

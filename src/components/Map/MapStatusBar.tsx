@@ -1,14 +1,13 @@
 /**
  * MapStatusBar.tsx
- * Bottom status bar overlay on the world map showing:
- *  - Save file name (left)
+ * Bottom telemetry bar overlay on the world map showing:
+ *  - Save status / file name (left)
  *  - Live cursor coordinates in UE world space (center-left)
- *  - Current biome name (center)
+ *  - Current biome name (center-right)
  *  - Zoom level (right)
- *
- * Matches the bottom bar from satisfactory-calculator.com.
  */
 import React, { useEffect, useState, useCallback } from 'react';
+import { Compass, Crosshair, HardDrive, Scan } from 'lucide-react';
 import { useMapEvents } from 'react-leaflet';
 import { latLngToGame } from './mapUtils';
 import { getBiome, initBiomes } from '../../engine/biomeDetector';
@@ -24,7 +23,9 @@ function StatusBarInner({ saveName }: MapStatusBarProps) {
   const [zoom, setZoom] = useState<number | null>(null);
 
   // Warm biome cache on mount
-  useEffect(() => { initBiomes(); }, []);
+  useEffect(() => {
+    initBiomes();
+  }, []);
 
   const handleMouseMove = useCallback((e: L.LeafletMouseEvent) => {
     const { lat, lng } = e.latlng;
@@ -49,32 +50,38 @@ function StatusBarInner({ saveName }: MapStatusBarProps) {
 
   return (
     <div className="msb-root">
-      {/* Left — save name */}
+      {/* Left — save status */}
       <div className="msb-section msb-left">
-        <span className="msb-icon">💾</span>
-        <span className="msb-text msb-save-name">{saveName ?? '—'}</span>
+        <span className={`msb-status-dot ${saveName ? 'is-live' : ''}`} />
+        <HardDrive size={12} className="msb-icon" />
+        <span className="msb-text msb-save-name">
+          {saveName ?? 'NO SAVE LOADED'}
+        </span>
       </div>
 
       {/* Centre — coordinates */}
       <div className="msb-section msb-centre">
-        <span className="msb-label">Coordinates</span>
+        <Crosshair size={12} className="msb-icon msb-icon--amber" />
+        <span className="msb-label">COORDS</span>
         <span className="msb-text msb-coords">
-          {coords
-            ? `${fmtCoord(coords.x)} / ${fmtCoord(coords.y)}`
-            : '— / —'}
+          {coords ? `${fmtCoord(coords.x)}, ${fmtCoord(coords.y)} m` : '— , —'}
         </span>
       </div>
 
       {/* Centre-right — biome */}
       <div className="msb-section msb-biome-section">
-        <span className="msb-label">Biome</span>
+        <Compass size={12} className="msb-icon msb-icon--green" />
+        <span className="msb-label">SECTOR</span>
         <span className="msb-text msb-biome">{biome}</span>
       </div>
 
       {/* Right — zoom */}
       <div className="msb-section msb-right">
-        <span className="msb-label">Zoom</span>
-        <span className="msb-text">{zoom !== null ? zoom.toFixed(1) : '—'}</span>
+        <Scan size={12} className="msb-icon" />
+        <span className="msb-label">ZOOM</span>
+        <span className="msb-text msb-zoom-val">
+          {zoom !== null ? `${zoom.toFixed(2)}×` : '—'}
+        </span>
       </div>
     </div>
   );
