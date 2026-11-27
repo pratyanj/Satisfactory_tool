@@ -25,14 +25,16 @@ interface CodexBrowserShellProps {
   pageCount: number;
   onPageChange: (page: number) => void;
   onBack: () => void;
+  /** 'grid' wraps children in responsive card grid; 'list' uses full-width max-1280 list wrapper. */
+  layout?: 'grid' | 'list';
   children: React.ReactNode;
 }
 
 const PAGE_SIZE_OPTIONS = [20, 40, 60] as const;
 
 /**
- * Shared Industrial Hardware Plate shell for ItemBrowser and BuildingBrowser,
- * unifying the outer header, search/pagesize bar, and category filter chips with CodexPlateCard.
+ * Shared Industrial Hardware Plate shell for ItemBrowser, BuildingBrowser, and RecipeBrowser,
+ * unifying the outer header, search/pagesize bar, and category filter chips.
  */
 export function CodexBrowserShell({
   title,
@@ -50,6 +52,7 @@ export function CodexBrowserShell({
   pageCount,
   onPageChange,
   onBack,
+  layout = 'grid',
   children,
 }: CodexBrowserShellProps) {
   return (
@@ -152,7 +155,9 @@ export function CodexBrowserShell({
           </div>
         ) : (
           <>
-            <div className="ib-grid">{children}</div>
+            <div className={layout === 'list' ? 'cdx-recipe-wrap' : 'ib-grid'}>
+              {children}
+            </div>
             <Pagination page={page} pageCount={pageCount} onChange={onPageChange} />
           </>
         )}
